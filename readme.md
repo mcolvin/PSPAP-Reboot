@@ -1,3 +1,7 @@
+ <script type="text/javascript"
+      src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
 # Abundance
 ##Site-level
 * How many replicates are needed to estimate abundance reliably?  What is reliable?
@@ -30,6 +34,6 @@
 1) Do fish move large distances outside of migrations?  What is the optimal time to do capture-recapture? Options: none, some, a lot.  
 
 2) What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?  
-
+http://latex.codecogs.com/gif.latex?\phi
 
 		
