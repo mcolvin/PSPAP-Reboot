@@ -23,17 +23,18 @@
     * M0- varies by bend  
     * Mt – varies by bend and secondary occasion   
     * Constant phi within segment, varies among years 
-	    * ![equation](http://latex.codecogs.com/gif.latex?logit(\phi) = \Beta_0 + \epsilon_{year}) where $\epsilon_{year} \sim N(0,\sigma)$
+	    * ![equation](http://latex.codecogs.com/gif.latex?logit(\phi) = \Beta_0 + \epsilon_{year})
+		where ![equation](http://latex.codecogs.com/gif.latex?\epsilon_{year} \sim N(0,\sigma))
 * Robust design with telemetry 
     * In segment (perfect detection, imperfect detection)
     * River sweep (perfect detection, imperfect detection)
-	    * $logit(\phi) = \Beta_0 + \epsilon_{year} where $\epsilon_{year} \sim N(0,\sigma)$
-		* $Z_{track,segment,year}\sim binomial(\phi_{segment,year})
+	    * ![equation](http://latex.codecogs.com/gif.latex?logit(\phi) = \Beta_0 + \epsilon_{year})
+		where ![equation](http://latex.codecogs.com/gif.latex?\epsilon_{year} \sim N(0,\sigma))
+		* ![equation](http://latex.codecogs.com/gif.latex?Z_{track,segment,year}\sim binomial(\phi_{segment,year}))
 		* River sweep to inform $\phi$,$\gamma\prime$ and $\gamma\prime\prime$ from tracking tags
 
 1) Do fish move large distances outside of migrations?  What is the optimal time to do capture-recapture? Options: none, some, a lot.  
 
 2) What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?  
-http://latex.codecogs.com/gif.latex?\phi
 
 		
