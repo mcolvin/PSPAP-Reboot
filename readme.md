@@ -23,7 +23,7 @@
     * M0- varies by bend  
     * Mt – varies by bend and secondary occasion   
     * Constant phi within segment, varies among years 
-	    * $logit(\phi) = \Beta_0 + \epsilon_{year} where $\epsilon_{year} \sim N(0,\sigma)$
+	    * ![equation](http://latex.codecogs.com/gif.latex?logit(\phi) = \Beta_0 + \epsilon_{year}) where $\epsilon_{year} \sim N(0,\sigma)$
 * Robust design with telemetry 
     * In segment (perfect detection, imperfect detection)
     * River sweep (perfect detection, imperfect detection)
