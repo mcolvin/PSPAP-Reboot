@@ -7,12 +7,37 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+_archive/
 
 # Windows Installer files
 *.cab
 *.msi
 *.msm
 *.msp
+
+# OFFICE FILES
+*.xlsx
+*.docx
+*.pptx
+*.accdb
+
+# DATA FILES
+*.rds
+*.rdata
+
+# MARK FILES
+*.inp
+*.res
+*.vcv
+*.out
+*.tmp
+
+# BUG FILES
+inits*.txt
+coda*.txt
+script.txt
+data.txt
+*.bug
 
 # Windows shortcuts
 *.lnk
