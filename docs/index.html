@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Pallid Sturgeon Population Assessment - reboot</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PDSG PSPAP Reboot</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Course information
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="syllabus.html">Course Syllabus</a>
+    </li>
+    <li>
+      <a href="final-project.html">About final project</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Unmarked estimators
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module-01-01.html">Dail Madsen</a>
+    </li>
+    <li>
+      <a href="Module-01-02.html">Topic 2</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Marked estimators
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module-02-01.html">Robust Design</a>
+    </li>
+    <li>
+      <a href="Module-02-02.html">Topic 2</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Pallid Sturgeon Population Assessment - reboot</h1>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#current-population-assessment-overview">Current population assessment overview</a></li>
+<li><a href="#current-assessment-and-am">Current assessment and AM</a></li>
+<li><a href="#study-objectives">Study objectives</a></li>
+<li><a href="#capture-recapture-approaches">Capture-recapture approaches</a></li>
+<li><a href="#unmarked-approaches">Unmarked approaches</a></li>
+</ul>
+</div>
+
+<!--
+source("build.R")
+-->
+<div id="current-population-assessment-overview" class="section level2">
+<h2>Current population assessment overview</h2>
+<div id="spatial-extent-and-grain" class="section level3">
+<h3>Spatial extent and grain</h3>
+</div>
+<div id="existing-evaluations" class="section level3">
+<h3>Existing evaluations</h3>
+</div>
+<div id="other-considerations" class="section level3">
+<h3>Other considerations</h3>
+</div>
+</div>
+<div id="current-assessment-and-am" class="section level2">
+<h2>Current assessment and AM</h2>
+<p>The objectives are: 1. 5000 natural origin individuals per segment 2. Positive growth rate 3. Age - 1 survival of xxx</p>
+</div>
+<div id="study-objectives" class="section level2">
+<h2>Study objectives</h2>
+<p>The objectives of this study are to</p>
+<ol style="list-style-type: decimal">
+<li>provide potential approaches that will meet population objective</li>
+<li>feed into ongoing adaptive management</li>
+<li>build on or cross walk to existing PSPAP program</li>
+<li>economic &amp; feasible</li>
+</ol>
+<p>Table 1. Estimator types</p>
+<table>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Estimator</th>
+<th align="center">Abundance</th>
+<th align="center">Demographic rates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Capture-recapture</td>
+<td>Closed population</td>
+<td align="center">X</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Cormack-Jolly-Seber</td>
+<td align="center"></td>
+<td align="center">X</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Jolly-Seber</td>
+<td align="center">X</td>
+<td align="center">X</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Robust-design</td>
+<td align="center">X</td>
+<td align="center">X</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Pradel</td>
+<td align="center"></td>
+<td align="center">X</td>
+</tr>
+<tr class="even">
+<td>Unmarked</td>
+<td>Relative abundance</td>
+<td align="center">X</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Occupancy</td>
+<td align="center">X</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>N-mixture</td>
+<td align="center">X</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Dail-Madsen</td>
+<td align="center">X</td>
+<td align="center">X</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Data</th>
+<th>Description</th>
+<th align="center">Movement</th>
+<th align="center">Growth</th>
+<th align="center">Survival</th>
+<th align="center">Recruitment</th>
+<th align="center">Abundance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Segment</td>
+<td>Sweep</td>
+<td>Sweep of river segment for telemetry fish</td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">a</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Receiver</td>
+<td>Sentinel recievers placed between segments</td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td>Bend</td>
+<td>Sweep</td>
+<td>Sweep of bend for telemetry fish</td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">x</td>
+<td align="center"></td>
+<td align="center">a</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Trot line</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Trawl</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Trawl 2</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Gill net</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Seine</td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="capture-recapture-approaches" class="section level2">
+<h2>Capture-recapture approaches</h2>
+<div id="abundance" class="section level3">
+<h3>Abundance</h3>
+</div>
+<div id="demographic-rates" class="section level3">
+<h3>Demographic rates</h3>
+</div>
+<div id="abundance-and-demographic-rates" class="section level3">
+<h3>Abundance and demographic rates</h3>
+</div>
+</div>
+<div id="unmarked-approaches" class="section level2">
+<h2>Unmarked approaches</h2>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

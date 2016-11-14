@@ -1,0 +1,29 @@
+
+Table 1. Estimator types
+
+
+| Type              	| Estimator           	| Abundance 	| Demographic rates 	|
+|-------------------	|---------------------	|:---------:	|:-----------------:	|
+| Capture-recapture 	| Closed population   	|     X     	|                   	|
+|                   	| Cormack-Jolly-Seber 	|           	|         X         	|
+|                   	| Jolly-Seber         	|     X     	|         X         	|
+|                   	| Robust-design       	|     X     	|         X         	|
+|                   	| Pradel              	|           	|         X         	|
+| Unmarked          	| Relative abundance  	|     X     	|                   	|
+|                   	| Occupancy           	|     X     	|                   	|
+|                   	| N-mixture           	|     X     	|                   	|
+|                   	| Dail-Madsen         	|     X     	|         X         	|
+
+
+
+| Level    	| Data     	| Description                                	| Movement 	| Growth 	| Survival 	| Recruitment 	| Abundance 	|
+|----------	|----------	|--------------------------------------------	|:--------:	|:------:	|:--------:	|:-----------:	|:---------:	|
+| Segment 	| Sweep    	| Sweep of river segment for telemetry fish  	|     x    	|        	|     x    	|             	|     a     	|
+|          	| Receiver 	| Sentinel recievers placed between segments 	|     x    	|        	|          	|             	|           	|
+| Bend     	| Sweep    	| Sweep of bend for telemetry fish           	|     x    	|        	|     x    	|             	|     a     	|
+|          	| Trot line	|                                            	|          	|        	|          	|             	|           	|
+|          	| Trawl    	|                                            	|          	|        	|          	|             	|           	|
+|          	| Trawl 2  	|                                            	|          	|        	|          	|             	|           	|
+|          	| Gill net 	|                                            	|          	|        	|          	|             	|           	|
+|          	| Seine    	|                                            	|          	|        	|          	|             	|           	|
+

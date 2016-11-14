@@ -1,0 +1,66 @@
+---
+title: "Pallid Sturgeon Population Assessment - reboot"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+<!--
+source("build.R")
+-->
+
+## Current population assessment overview
+
+### Background and implementation
+
+
+
+### Spatial extent and grain
+
+
+
+### Existing evaluations
+
+
+
+### Other considerations
+
+
+
+
+## Current assessment and AM
+
+
+The objectives are:
+
+1. 5000 natural origin individuals per segment 
+2. Positive growth rate
+3. Age - 1 survival of xxx
+
+
+## Study objectives
+
+The objectives of this study are to
+
+1. provide potential approaches that will meet population objective
+2. feed into ongoing adaptive management
+3. build on or cross walk to existing PSPAP program
+4. economic & feasible
+
+
+
+
+
+```{r child = 'tables.Rmd'}
+```
+
+
+## Capture-recapture approaches
+
+### Abundance
+
+### Demographic rates
+
+### Abundance and demographic rates
+
+## Unmarked approaches

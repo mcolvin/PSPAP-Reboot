@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PDSG PSPAP Reboot</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Course information
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="syllabus.html">Course Syllabus</a>
+    </li>
+    <li>
+      <a href="final-project.html">About final project</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Unmarked estimators
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module-01-01.html">Dail Madsen</a>
+    </li>
+    <li>
+      <a href="Module-01-02.html">Topic 2</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Marked estimators
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module-02-01.html">Robust Design</a>
+    </li>
+    <li>
+      <a href="Module-02-02.html">Topic 2</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="pradel-model" class="section level2">
+<h2>Pradel model</h2>
+<p><em>Michael E. Colvin</em> <em>14 July 2016</em></p>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>The information contained in capture histories informs the survival from one time interval to the next.<br />
+This information when viewed in reverse order contains information on entry into the population. Specifically, prior to being captured a critter is either at large (present but not captured) or not present (i.e., unborn). Therefore looking at capture histories in reverse order estimates ‘recruitment’. Typical with capture-mark-recapture approaches estimated parameters can be estimated and related to covariates.</p>
+<p>The Pradel model originally developed by Pradel back in the 70s estimates survival and recruitment using this reversal symmetry. Essentially, when looking at a capture history of a fish in reverse with particular examination of the preceeding 0s. Suppose a capture history of a fish is 00010101, on the first 3 occassions a fish could be alive and uncaptured or waiting to be born. Using this information a cmr program may be able to simulaneously model survival and recruitment. This is appealing because recruitment can be thought of simply surviving age-0 or age-1 which can be related to covariates. Thinking outside of the box on this one might be able to model the effect of environmental covariates hypothesized to influence recruitment.</p>
+<p>The objective of this brief is to explore whether this might make sense. It is not a full proof of concept but a simple what if. Therefore the usual caveats are at work here, specifically this might work well on a computer but may fail miserably in the field.</p>
+</div>
+<div id="simulating-some-known-data." class="section level2">
+<h2>Simulating some known data.</h2>
+<p>To test the approach we need to simulate some data from some known parameters.<br />
+The Pradel model estimates <span class="math inline">\(\phi\)</span>, <span class="math inline">\(p\)</span>, and <span class="math inline">\(f\)</span>, where these values represent survival, capture probability, and recruitment rate.</p>
+<p>For the simualion I simulated 10 occasions, coudld be 10 years, 10 months, so on.</p>
+<ul>
+<li>Survival <span class="math inline">\(\phi\)</span> was set at 0.8</li>
+<li>Capture probability <span class="math inline">\(p\)</span> was set at 0.3</li>
+<li>Recruitment rate <span class="math inline">\(f\)</span> was set at 0.195 (i.e., Recruits = <span class="math inline">\(f\)</span>*Abundance)</li>
+<li>Intial population was set to be 2000 critters</li>
+</ul>
+<pre class="r"><code># SIMULATE POPULATION AND CAPTURE HISTORIES
+n_occ&lt;- 10
+phi&lt;- rep(0.8,n_occ-1)
+p&lt;- rep(0.3,n_occ)
+f&lt;- 0.195
+n&lt;- 2000 # initial population size
+R&lt;- c(n)
+for(i in 2:n_occ)
+    {
+    R&lt;- c(R,rpois(1,n[i-1]*f))
+    n&lt;- c(n, rbinom(1,n[i-1],phi)+R[i]) 
+    }
+super_n&lt;- sum(R) # total population
+# WHEN DO CRITTERS RECRUIT TO THE POPULATION?
+ent&lt;-rep(c(1:length(R)),R)
+ch&lt;-Z&lt;- matrix(0,super_n,n_occ)
+for(i in 1:super_n)
+    {
+    Z[i,ent[i]]&lt;-1
+    indx&lt;- ent[i]+1
+    if(indx&lt;=n_occ)
+        {
+        for(j in indx:n_occ)
+            {
+            Z[i,j]&lt;- rbinom(1,1,phi[j-1]*Z[i,j-1])
+            }
+        }       
+    }</code></pre>
+<p>The code above simulates a population of indviduals given a recruitment rate where the number of recruits is a function of the population in this case. It may not be in some cases and this can be account for in the Pradel formulation. Now we can look at the ‘true’ population dynamics.</p>
+<pre class="r"><code>plot(colSums(Z),type=&#39;b&#39;,ylab=&quot;Abundance&quot;,xlab=&quot;Years&quot;)</code></pre>
+<p><img src="Pradel-Model_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Now we can use the ‘true’ population dynamics to simulate the capture process and make some capture histories.</p>
+<pre class="r"><code># SIMULATE CAPTURE HISTORY
+for(i in 1:super_n)
+    {
+    for(j in 1:n_occ)
+        {
+        ch[i,j]&lt;- rbinom(1,1,p[j]*Z[i,j])
+        }
+    }</code></pre>
+<p>In the capture histories there are fish that were present but not captured, we need to drop those from the histories.</p>
+<pre class="r"><code>ch&lt;- ch[which(apply(ch,1,sum)!=0),]</code></pre>
+<p>The library ‘Rmark’ gets us access to program mark through R which we can we to set up the capture histories and design matrices.</p>
+<pre class="r"><code>library(RMark)</code></pre>
+<pre><code>## Warning: package &#39;RMark&#39; was built under R version 3.1.3</code></pre>
+<pre><code>## Loading required package: snowfall</code></pre>
+<pre><code>## Warning: package &#39;snowfall&#39; was built under R version 3.1.3</code></pre>
+<pre><code>## Loading required package: snow</code></pre>
+<pre><code>## Warning: package &#39;snow&#39; was built under R version 3.1.3</code></pre>
+<pre><code>## This is RMark 2.1.14</code></pre>
+<pre class="r"><code># PROCESS CPATURE HISTORIES INTO A DATA.FRAME
+ch&lt;- data.frame(ch=apply(ch,1, paste,collapse=&quot;&quot;),stringsAsFactors = FALSE)
+# PROCESS CPATURE HISTORIES INTO A LIST FOR MARK
+ch_proc&lt;- process.data(ch,model=&quot;Pradrec&quot;, begin.time=2005)
+# MAKE THE DESIGN MATRIX FOR THE CMR DATA
+ddl&lt;-make.design.data(ch_proc)</code></pre>
+<p>Now that the data is all set up we can feed some formulas for <span class="math inline">\(\phi\)</span>, <span class="math inline">\(p\)</span>, and <span class="math inline">\(f\)</span> to MARK for estimation. These are all time invariant formulations (i.e.,<span class="math inline">\(\phi\)</span>, <span class="math inline">\(p\)</span>, and <span class="math inline">\(f\)</span> are constant over time).</p>
+<pre class="r"><code>Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+f.dot=list(formula=~1)
+m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot))</code></pre>
+<pre><code>## 
+## Output summary for Pradrec model
+## Name : Phi(~1)p(~1)f(~1) 
+## 
+## Npar :  3
+## -2lnL:  28618.65
+## AICc :  28624.65
+## 
+## Beta
+##                   estimate        se       lcl        ucl
+## Phi:(Intercept)  1.4586078 0.0405140  1.379200  1.5380153
+## p:(Intercept)   -0.9296884 0.0333911 -0.995135 -0.8642418
+## f:(Intercept)   -1.6682383 0.0345549 -1.735966 -1.6005108
+## 
+## 
+## Real Parameter Phi
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197
+##       2012      2013
+##  0.8113197 0.8113197
+## 
+## 
+## Real Parameter p
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.2829879 0.2829879 0.2829879 0.2829879 0.2829879 0.2829879 0.2829879
+##       2012      2013      2014
+##  0.2829879 0.2829879 0.2829879
+## 
+## 
+## Real Parameter f
+##      2005     2006     2007     2008     2009     2010     2011     2012
+##  0.188579 0.188579 0.188579 0.188579 0.188579 0.188579 0.188579 0.188579
+##      2013
+##  0.188579</code></pre>
+<p>You can also recast the model to estimate lambda.</p>
+<pre class="r"><code>ch_proc&lt;- process.data(ch,model=&quot;Pradlambda&quot;, begin.time=2005)
+ddl&lt;-make.design.data(ch_proc)
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+Lambda.dot=list(formula=~1)
+m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.dot))</code></pre>
+<pre><code>## 
+## Output summary for Pradlambda model
+## Name : Phi(~1)p(~1)Lambda(~1) 
+## 
+## Npar :  3
+## -2lnL:  28618.65
+## AICc :  28624.65
+## 
+## Beta
+##                         estimate        se        lcl        ucl
+## Phi:(Intercept)     1.4586080000 0.0405140  1.3792005  1.5380154
+## p:(Intercept)      -0.9296889000 0.0333911 -0.9951355 -0.8642424
+## Lambda:(Intercept) -0.0001013879 0.0046094 -0.0091358  0.0089330
+## 
+## 
+## Real Parameter Phi
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197
+##       2012      2013
+##  0.8113197 0.8113197
+## 
+## 
+## Real Parameter p
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.2829878 0.2829878 0.2829878 0.2829878 0.2829878 0.2829878 0.2829878
+##       2012      2013      2014
+##  0.2829878 0.2829878 0.2829878
+## 
+## 
+## Real Parameter Lambda
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.9998986 0.9998986 0.9998986 0.9998986 0.9998986 0.9998986 0.9998986
+##       2012      2013
+##  0.9998986 0.9998986</code></pre>
+<p>Neat, the lambdas for each year are 0.9999 with a 95% CIs of 1.00462, 0.99091. That seems reasonable the population looks to be decreasing over time and hence lambda &lt; 1.</p>
+</div>
+<div id="application-to-am-and-the-big-picture" class="section level2">
+<h2>Application to AM and the big picture</h2>
+<p>The potential application of this is linking managment actions to demographic rates. For example suppose over the 10 years IRC habitat was constructed and hypothesized to influence recruitment. Well in this case we can simulate that is in fact the case.<br />
+First we need to set up the relation between IRC and recruitment rate. The effect is modeled using a log link. For this example the baseline recruitment rate is 0.26 (the log of that is -1.33) and is the intercept of the equation. The effect of IRC, which might be measured in area is 0.003. Putting those together the equation to predict recruitment rate is <span class="math inline">\(f= exp(\beta_{0} + \beta_{1} \cdot IRC)\)</span> The code below implents this for some IRC values.</p>
+<pre class="r"><code>irc&lt;- c(37,31,24,27,6,32,10,26,6)
+# EFFECT OF IRC
+B_irc&lt;- 0.008
+B_0&lt;- -1.33
+f&lt;- exp(B_0 + B_irc*irc)</code></pre>
+<p>The predicted recruitment as a function of IRC looks like the figure below.</p>
+<pre class="r"><code>plot(f~irc, ylab=&quot;Recruitment rate&quot;, xlab=&quot;IRC&quot;)</code></pre>
+<p><img src="Pradel-Model_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div id="fitting-a-covariate-to-recruitment" class="section level3">
+<h3>Fitting a covariate to recruitment</h3>
+<p>Using the same code to simulate a population with constant <span class="math inline">\(\phi\)</span> as above but now allowing <span class="math inline">\(f\)</span> to vary over time as a function of IRC we can simulate the population data.</p>
+<pre class="r"><code># MODEL AS A FUNCTION OF IRC
+n_occ&lt;- 10
+phi&lt;- rep(0.8,n_occ-1)
+p&lt;- rep(0.3,n_occ)
+n&lt;- 2000 # initial population size
+R&lt;- c(n)
+for(i in 2:n_occ)
+    {
+    R&lt;- c(R,rpois(1,n[i-1]*f[i-1]))
+    n&lt;- c(n, rbinom(1,n[i-1],phi)+R[i]) 
+    }
+super_n&lt;- sum(R) # total population
+# WHEN DO CRITTERS RECRUIT TO THE POPULATION?
+ent&lt;-rep(c(1:length(R)),R)
+ch&lt;-Z&lt;- matrix(0,super_n,n_occ)
+for(i in 1:super_n)
+    {
+    Z[i,ent[i]]&lt;-1
+    indx&lt;- ent[i]+1
+    if(indx&lt;=n_occ)
+        {
+        for(j in indx:n_occ)
+            {
+            Z[i,j]&lt;- rbinom(1,1,phi[j-1]*Z[i,j-1])
+            }
+        }       
+    }</code></pre>
+<p>The population dynamics are plotted below.</p>
+<pre class="r"><code>plot(colSums(Z),type=&#39;b&#39;,ylab=&quot;Abundance&quot;, xlab=&quot;Occasion&quot;)</code></pre>
+<p><img src="Pradel-Model_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Now that we have the true population data we can simulate the capture histories given <span class="math inline">\(p\)</span></p>
+<pre class="r"><code># SIMULATE CAPTURE HISTORY
+for(i in 1:super_n)
+    {
+    for(j in 1:n_occ)
+        {
+        ch[i,j]&lt;- rbinom(1,1,p[j]*Z[i,j])
+        }
+    }
+ch&lt;- ch[which(apply(ch,1,sum)!=0),]</code></pre>
+<p>Some processing of the simulated data to feed to MARK.</p>
+<pre class="r"><code>ch&lt;- data.frame(ch=apply(ch,1, paste,collapse=&quot;&quot;),stringsAsFactors = FALSE)
+ch_proc&lt;- process.data(ch,model=&quot;Pradrec&quot;, begin.time=2005)
+ddl&lt;-make.design.data(ch_proc)
+ddl$f$irc&lt;- irc # ADD AMOUNT OF IRC TO USE AS A COVARIATE</code></pre>
+<p>Now we can do as we did previously but now there is a new bit relating <span class="math inline">\(f\)</span> to IRC <code>f.irc=list(formula=~irc+1)</code>.</p>
+<pre class="r"><code># FIT PRADEL RECRUITMENT MODEL WITH F A FUNCTION OF IRC
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+f.irc=list(formula=~irc+1)
+m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.irc))</code></pre>
+<pre><code>## 
+## Output summary for Pradrec model
+## Name : Phi(~1)p(~1)f(~irc + 1) 
+## 
+## Npar :  4
+## -2lnL:  50105.95
+## AICc :  50113.96
+## 
+## Beta
+##                   estimate        se        lcl        ucl
+## Phi:(Intercept)  1.3474939 0.0329243  1.2829624  1.4120255
+## p:(Intercept)   -0.8391741 0.0273343 -0.8927494 -0.7855989
+## f:(Intercept)   -1.2716865 0.0681119 -1.4051858 -1.1381873
+## f:irc            0.0043854 0.0031174 -0.0017248  0.0104956
+## 
+## 
+## Real Parameter Phi
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.7937196 0.7937196 0.7937196 0.7937196 0.7937196 0.7937196 0.7937196
+##       2012      2013
+##  0.7937196 0.7937196
+## 
+## 
+## Real Parameter p
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3017088 0.3017088 0.3017088 0.3017088 0.3017088 0.3017088 0.3017088
+##       2012      2013      2014
+##  0.3017088 0.3017088 0.3017088
+## 
+## 
+## Real Parameter f
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3297474 0.3211842 0.3114745 0.3155993 0.2878331 0.3225958 0.2929267
+##       2012      2013
+##  0.3142183 0.2878331</code></pre>
+<p>Well the estimates look good, I fed the simulation a <span class="math inline">\(\beta_{0} = -1.33\)</span> and got back -1.2716865. For the effect of IRC I used a <span class="math inline">\(\beta_{1} = 0.008\)</span> and got back 0.0043854.</p>
+<p><strong>Estimates and true values will not exactly match but will improve with more occasions, recaptures, and so on.</strong></p>
+<p>A information theoretic appraoch could be used to evalaute the effect of IRC versus no effect of IRC.</p>
+<pre class="r"><code>f.dot=list(formula=~1)
+f.irc=list(formula=~irc+1)
+m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot))</code></pre>
+<pre><code>## 
+## Output summary for Pradrec model
+## Name : Phi(~1)p(~1)f(~1) 
+## 
+## Npar :  3
+## -2lnL:  50107.95
+## AICc :  50113.95
+## 
+## Beta
+##                   estimate        se        lcl       ucl
+## Phi:(Intercept)  1.3476487 0.0329880  1.2829922  1.412305
+## p:(Intercept)   -0.8425043 0.0272481 -0.8959106 -0.789098
+## f:(Intercept)   -1.1813116 0.0199021 -1.2203198 -1.142303
+## 
+## 
+## Real Parameter Phi
+##      2005     2006     2007     2008     2009     2010     2011     2012
+##  0.793745 0.793745 0.793745 0.793745 0.793745 0.793745 0.793745 0.793745
+##      2013
+##  0.793745
+## 
+## 
+## Real Parameter p
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3010076 0.3010076 0.3010076 0.3010076 0.3010076 0.3010076 0.3010076
+##       2012      2013      2014
+##  0.3010076 0.3010076 0.3010076
+## 
+## 
+## Real Parameter f
+##      2005     2006     2007     2008     2009     2010     2011     2012
+##  0.306876 0.306876 0.306876 0.306876 0.306876 0.306876 0.306876 0.306876
+##      2013
+##  0.306876</code></pre>
+<pre class="r"><code>m2&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.irc))</code></pre>
+<pre><code>## 
+## Output summary for Pradrec model
+## Name : Phi(~1)p(~1)f(~irc + 1) 
+## 
+## Npar :  4
+## -2lnL:  50105.95
+## AICc :  50113.96
+## 
+## Beta
+##                   estimate        se        lcl        ucl
+## Phi:(Intercept)  1.3474945 0.0329243  1.2829630  1.4120261
+## p:(Intercept)   -0.8391746 0.0273343 -0.8927498 -0.7855994
+## f:(Intercept)   -1.2716903 0.0681123 -1.4051905 -1.1381901
+## f:irc            0.0043855 0.0031175 -0.0017247  0.0104958
+## 
+## 
+## Real Parameter Phi
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.7937197 0.7937197 0.7937197 0.7937197 0.7937197 0.7937197 0.7937197
+##       2012      2013
+##  0.7937197 0.7937197
+## 
+## 
+## Real Parameter p
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3017087 0.3017087 0.3017087 0.3017087 0.3017087 0.3017087 0.3017087
+##       2012      2013      2014
+##  0.3017087 0.3017087 0.3017087
+## 
+## 
+## Real Parameter f
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3297482 0.3211846 0.3114745 0.3155995 0.2878323 0.3225963 0.2929261
+##       2012      2013
+##  0.3142185 0.2878323</code></pre>
+<pre class="r"><code>summary(m1)$AICc # AICc value for m1</code></pre>
+<pre><code>## [1] 50113.95</code></pre>
+<pre class="r"><code>summary(m2)$AICc # AICc value for m2</code></pre>
+<pre><code>## [1] 50113.96</code></pre>
+<p>With AICc values of 50113.95 and 50113.96 for m1 and m2 respectively there might be some weak evidence for an effect of IRC.</p>
+</div>
+<div id="fitting-a-covariate-to-lambda" class="section level3">
+<h3>Fitting a covariate to lambda</h3>
+<p>Using the same approach we can fit a covariate to lamba. This is not as directly interpretable but simply illustrates the approach.</p>
+<pre class="r"><code>ch_proc&lt;- process.data(ch,model=&quot;Pradlambda&quot;, begin.time=2005)
+ddl&lt;-make.design.data(ch_proc)
+ddl$Lambda$irc&lt;- irc # ADD AMOUNT OF IRC TO USE AS A COVARIATE
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+Lambda.irc=list(formula=~irc+1)
+m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.irc))</code></pre>
+<pre><code>## 
+## Output summary for Pradlambda model
+## Name : Phi(~1)p(~1)Lambda(~irc + 1) 
+## 
+## Npar :  4
+## -2lnL:  50105.95
+## AICc :  50113.96
+## 
+## Beta
+##                      estimate           se           lcl        ucl
+## Phi:(Intercept)     1.3475089 0.0329248000  1.2829763000  1.4120414
+## p:(Intercept)      -0.8391911 0.0273322000 -0.8927622000 -0.7856200
+## Lambda:(Intercept)  0.0709210 0.0180173000  0.0356071000  0.1062350
+## Lambda:irc          0.0012203 0.0008636874 -0.0004724789  0.0029132
+## 
+## 
+## Real Parameter Phi
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.7937221 0.7937221 0.7937221 0.7937221 0.7937221 0.7937221 0.7937221
+##       2012      2013
+##  0.7937221 0.7937221
+## 
+## 
+## Real Parameter p
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3017052 0.3017052 0.3017052 0.3017052 0.3017052 0.3017052 0.3017052
+##       2012      2013      2014
+##  0.3017052 0.3017052 0.3017052
+## 
+## 
+## Real Parameter Lambda
+##      2005     2006     2007     2008     2009     2010     2011     2012
+##  1.123079 1.114886 1.105402 1.109457 1.081386 1.116247 1.086677 1.108104
+##      2013
+##  1.081386</code></pre>
+</div>
+</div>
+<div id="caveats" class="section level2">
+<h2>Caveats</h2>
+<ol style="list-style-type: decimal">
+<li>This approach may be useful, or not, but may warrant consideration.</li>
+<li>The approach will not get at abundance and therefor will not be useful for getting at some objectives.</li>
+<li>It is dependent on many assumptions and conditions and as we all know working on a big river throws some big monkey wrenches.</li>
+<li>This simulation made a number of simplifying assumptions, constant <span class="math inline">\(\phi\)</span>, constant <span class="math inline">\(p\)</span> which may be relaxed to a degree.</li>
+<li>The consequence of violating the assumptions is always problematic.</li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
