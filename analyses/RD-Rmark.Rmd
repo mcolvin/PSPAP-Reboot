@@ -1,4 +1,8 @@
+---
+title: ""
+---
 
+<!-- <img src="media/banner-01.jpg" ALIGN="center" width=99%/> -->
 
 
 ```{r}
@@ -133,14 +137,6 @@ segments(c(1:length(derived$ucl)),derived$lcl, c(1:length(derived$lcl)),derived$
 cleanup(ask=FALSE)
 
 ```
-
-
-
-
-
-
-
-
 
 
 

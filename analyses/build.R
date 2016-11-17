@@ -13,6 +13,9 @@ junk <- c(dir(path=getwd(), pattern=c("inp")),
 if(length(junk)>0){file.remove(junk) }
 
 
+
+
+
 # COPY FILES TO DOCS FOR GITHUB.IO
 system(paste("xcopy", 
     '"C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/analyses/_site"', 

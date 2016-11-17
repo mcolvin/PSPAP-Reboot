@@ -1,10 +1,18 @@
+
  <script type="text/javascript"
       src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
 
+    
+# Major questions
+
+1. Can this be done with MARK only?
+1. Does this require a bugs model?
+
 # Abundance
 ##Site-level
-* How many replicates are needed to estimate abundance reliably?  What is reliable?
+* How many replicates are needed to estimate abundance reliably?
+What is reliable?
     * Constant p
     * Heterogeneous capture probability
     * Some movement in and out…
@@ -33,8 +41,10 @@
 		* ![equation](http://latex.codecogs.com/gif.latex?Z_{track,segment,year}\sim binomial(\phi_{segment,year}))
 		* River sweep to inform $\phi$,$\gamma\prime$ and $\gamma\prime\prime$ from tracking tags
 
-1) Do fish move large distances outside of migrations?  What is the optimal time to do capture-recapture? Options: none, some, a lot.  
+1) Do fish move large distances outside of migrations?
+What is the optimal time to do capture-recapture? Options: none, some, a lot.  
 
-2) What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?  
+2) What is better to estimate as a random subset of bends or randomly tag a
+bunch of fish and recapture in random bends?  
 
 		

@@ -1,15 +1,8 @@
 ---
-title: "Robust design-incorporating auxiliary information."
-author: Michael E. Colvin
-date: 30 September 2016
-output:
-  md_document:
-    variant: markdown_github
-  html_document:
-    theme: flatly
-    highlight: espresso
-    toc: FALSE
+title: ""
 ---
+
+<!-- <img src="media/banner-01.jpg" ALIGN="center" width=99%/> -->
 
 
 
@@ -88,19 +81,48 @@ Similarly, Guy et al. (xxxx) ....
 ## Parameter estimates
 
 * Including both tags really biased $\gamma^{\prime\prime}$ and $\gamma^{\prime}$
-<img src="readme_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+```{r,echo=FALSE}
+out<- readRDS("C:/Users/mcolvin/Google Drive/Tutorials/Robust-Design-Rmark-With-Acoustic/sim-output2.RDS")
+out$vals$bias_acoustic<- out$vals$acoustic-out$vals$true
+out$vals$bias_pit<- out$vals$pit-out$vals$true
+
+boxplot(bias_acoustic~parm,out$vals,at=c(1:4)-0.2,boxwex=0.35,xaxt='n',las=1)
+boxplot(bias_pit~parm,out$vals,at=c(1:4)+0.2,add=TRUE,boxwex=0.35,xaxt='n',yaxt='n',col="grey")
+axis(1,c(1:4),labels=unique(out$vals$parm))
+abline(h=0,lty=3)
+legend("topright",c("Both","PIT"),fill=c("white","grey"))
+```
 
 ## Abundance estimates
 
 Using both was not great, underestimted the true abundance, result of bias in $\gamma^{\prime\prime}$ and $\gamma^{\prime}$
 
-<img src="readme_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+```{r,echo=FALSE}
+
+out$abundance$bias_acoustic<- out$abundance$acoustic-out$abundance$true
+out$abundance$bias_pit<- out$abundance$pit-out$abundance$true
+
+boxplot(bias_acoustic~occasion,out$abundance,at=c(1:5)-0.2,boxwex=0.35,xaxt='n',las=1,ylim=c(-25,10),xlab="Occasion")
+boxplot(bias_pit~occasion,out$abundance,at=c(1:5)+0.2,add=TRUE,boxwex=0.35,xaxt='n',yaxt='n',col="grey")
+axis(1,c(1:5),labels=unique(out$abundance$occasion))
+abline(h=0,lty=3)
+legend("bottomright",c("Both","PIT"),fill=c("white","grey"))
+```
 
 ## Abundance estimate precision (CV)
 
 I do not believe the standard error estimates for using both.  I believe they are smaller than PIT only but not 0.
 
-<img src="readme_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+```{r,echo=FALSE}
+out$abundance$acoustic_cv<-out$abundance$acoustic_se/out$abundance$acoustic
+out$abundance$pit_cv<-out$abundance$pit_se/out$abundance$pit
+
+boxplot(acoustic_cv~occasion,out$abundance,at=c(1:5)-0.2,boxwex=0.35,xaxt='n',las=1,xlab="Occasion")
+boxplot(pit_cv~occasion,out$abundance,at=c(1:5)+0.2,add=TRUE,boxwex=0.35,xaxt='n',yaxt='n',col="grey")
+axis(1,c(1:5),labels=unique(out$abundance$occasion))
+abline(h=0,lty=3)
+legend("topleft",c("Both","PIT"),fill=c("white","grey"))
+```
 
 
 # Discussion
@@ -112,14 +134,6 @@ captures it over estimates  the probability of Observable --> observable (i.e., 
 $\gamma^{\prime\prime}$ is underestimated
 * First test is to fix $\gamma^{\prime\prime}$ and $\gamma^{\prime}$ to zero in simulated data and in the design matrix to 
 see if that clears up the bias in abundance.
-
-
-
-
-
-
-
-
 
 
 

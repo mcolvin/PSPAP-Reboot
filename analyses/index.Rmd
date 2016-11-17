@@ -13,11 +13,47 @@ source("build.R")
 
 ### Background and implementation
 
+* Began 2003
+* Ramped up in xxx
+The Pallid Sturgeon 
 
+<!-- add a timeline of sampling from Welker and Drobish-->
 
 ### Spatial extent and grain
 
+' A total of 13 new Missouri River Mainstem segments have been delineated.
+A series of physical characteristics were used to delineate these segments
+for the Missouri River.' Welker and Drobish 2016
 
+1. Fort Peck Dam downstream to the Milk River (RM 1771.5-1760)
+    a. water temperature, turbidity, spillway releases, degrading streambed
+2. Milk River downstream to Wolf Point (RM 1760-1701)
+    a. degrading streambed/transition segment, temperature, turbidity
+3. Wolf Point downstream to the confluence with Yellowstone River (RM 1701-1582)
+    a. aggrading stream bed
+4. Confluence with the Yellowstone River through the headwaters of Lake Sakakawea (RM
+1582-1568)
+    a. major tributary, natural hydrograph
+5. Fort Randall Dam downstream to the Niobrara River* (RM 880-845)
+    a. tributaries, temperature, turbidity, degrading/aggrading stream bed
+6. Niobrara River downstream to the headwaters of Lewis and Clark Lake* (RM 845-825)
+    a. major tributary, aggrading stream bed, temperature, turbidity
+7. Gavins Point Dam downstream to Lower Ponca Bend (RM 811-750)
+    a. temperature, turbidity, flow fluctuations, degrading
+8. Lower Ponca Bend downstream to the Platte River (RM 750-595.5)
+    a. degraded stream bed, channelized, turbidity, flow fluctuations
+9. Platte River downstream to Kansas River (RM 595.5-367.5)
+    a. major tributary, degrading/aggrading stream bed, tributary mouth, restoration projects
+10. Kansas River downstream to Grand River (RM 367.5-250)
+    a. major tributary, less influence of dam releases (Gavins Point Dam), natural
+    hydrograph, restoration projects
+11. Kansas River upstream to the Hwy 7 bridge (Kansas River: RM 0-20)
+12. Grand River to Glasgow-Combined into segment 13-Effective 7/01/2005.
+13. Grand River to the Osage River (RM 250-130)
+    a. major tributary, floodplain, natural hydrograph, restoration projects
+14. Osage River downstream to the mouth (RM 130-0)
+    a. major tributary, restoration projects
+    b. backflow, delta, natural hydrograph, restoration projects
 
 ### Existing evaluations
 
@@ -25,7 +61,7 @@ source("build.R")
 
 ### Other considerations
 
-
+* Length, weight, 
 
 
 ## Current assessment and AM
@@ -33,12 +69,23 @@ source("build.R")
 
 The objectives are:
 
-1. 5000 natural origin individuals per segment 
-2. Positive growth rate
-3. Age - 1 survival of xxx
+Fundamental Objective: 
+Avoid jeopardizing the continued existence of the pallid sturgeon from the US Army Corps of Engineers
+ actions on the Missouri River.
 
+
+Sub-objective 1: Increase pallid sturgeon recruitment to age 1.
+
+1. Metrics: primary metric is catch rates of age 0 and age 1 pallid sturgeon;
+2. secondary metrics include model-based estimates of abundance of age 0 and age 1 pallid sturgeon,
+and the survival of hatchery and naturally reproducing fish to age 1. 
+
+Sub-objective 2: Maintain or increase numbers of pallid sturgeon as an interim measure until sufficient
+and sustained natural recruitment occurs.
 
 ## Study objectives
+
+Pallid Sturgeon only...
 
 The objectives of this study are to
 

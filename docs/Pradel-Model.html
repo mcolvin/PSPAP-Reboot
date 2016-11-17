@@ -178,16 +178,16 @@ $(document).ready(function () {
       <ul class="nav navbar-nav">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Course information
+    Marked estimators
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="syllabus.html">Course Syllabus</a>
+      <a href="Pradel-Model.html">Pradel Model</a>
     </li>
     <li>
-      <a href="final-project.html">About final project</a>
+      <a href="Module-02-02.html">Topic 2</a>
     </li>
   </ul>
 </li>
@@ -203,21 +203,6 @@ $(document).ready(function () {
     </li>
     <li>
       <a href="Module-01-02.html">Topic 2</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Marked estimators
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="Module-02-01.html">Robust Design</a>
-    </li>
-    <li>
-      <a href="Module-02-02.html">Topic 2</a>
     </li>
   </ul>
 </li>
@@ -325,35 +310,35 @@ m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot))</cod
 ## Name : Phi(~1)p(~1)f(~1) 
 ## 
 ## Npar :  3
-## -2lnL:  28618.65
-## AICc :  28624.65
+## -2lnL:  27319.71
+## AICc :  27325.72
 ## 
 ## Beta
-##                   estimate        se       lcl        ucl
-## Phi:(Intercept)  1.4586078 0.0405140  1.379200  1.5380153
-## p:(Intercept)   -0.9296884 0.0333911 -0.995135 -0.8642418
-## f:(Intercept)   -1.6682383 0.0345549 -1.735966 -1.6005108
+##                   estimate        se        lcl       ucl
+## Phi:(Intercept)  1.4252007 0.0395486  1.3476855  1.502716
+## p:(Intercept)   -0.8593599 0.0334209 -0.9248648 -0.793855
+## f:(Intercept)   -1.7234718 0.0359290 -1.7938927 -1.653051
 ## 
 ## 
 ## Real Parameter Phi
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197
+##  0.8061524 0.8061524 0.8061524 0.8061524 0.8061524 0.8061524 0.8061524
 ##       2012      2013
-##  0.8113197 0.8113197
+##  0.8061524 0.8061524
 ## 
 ## 
 ## Real Parameter p
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.2829879 0.2829879 0.2829879 0.2829879 0.2829879 0.2829879 0.2829879
+##  0.2974731 0.2974731 0.2974731 0.2974731 0.2974731 0.2974731 0.2974731
 ##       2012      2013      2014
-##  0.2829879 0.2829879 0.2829879
+##  0.2974731 0.2974731 0.2974731
 ## 
 ## 
 ## Real Parameter f
-##      2005     2006     2007     2008     2009     2010     2011     2012
-##  0.188579 0.188579 0.188579 0.188579 0.188579 0.188579 0.188579 0.188579
-##      2013
-##  0.188579</code></pre>
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.1784455 0.1784455 0.1784455 0.1784455 0.1784455 0.1784455 0.1784455
+##       2012      2013
+##  0.1784455 0.1784455</code></pre>
 <p>You can also recast the model to estimate lambda.</p>
 <pre class="r"><code>ch_proc&lt;- process.data(ch,model=&quot;Pradlambda&quot;, begin.time=2005)
 ddl&lt;-make.design.data(ch_proc)
@@ -366,36 +351,36 @@ m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.
 ## Name : Phi(~1)p(~1)Lambda(~1) 
 ## 
 ## Npar :  3
-## -2lnL:  28618.65
-## AICc :  28624.65
+## -2lnL:  27319.71
+## AICc :  27325.72
 ## 
 ## Beta
-##                         estimate        se        lcl        ucl
-## Phi:(Intercept)     1.4586080000 0.0405140  1.3792005  1.5380154
-## p:(Intercept)      -0.9296889000 0.0333911 -0.9951355 -0.8642424
-## Lambda:(Intercept) -0.0001013879 0.0046094 -0.0091358  0.0089330
+##                      estimate        se        lcl        ucl
+## Phi:(Intercept)     1.4252007 0.0395486  1.3476854  1.5027159
+## p:(Intercept)      -0.8593600 0.0334209 -0.9248649 -0.7938551
+## Lambda:(Intercept) -0.0155219 0.0047154 -0.0247641 -0.0062797
 ## 
 ## 
 ## Real Parameter Phi
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197 0.8113197
+##  0.8061524 0.8061524 0.8061524 0.8061524 0.8061524 0.8061524 0.8061524
 ##       2012      2013
-##  0.8113197 0.8113197
+##  0.8061524 0.8061524
 ## 
 ## 
 ## Real Parameter p
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.2829878 0.2829878 0.2829878 0.2829878 0.2829878 0.2829878 0.2829878
+##  0.2974731 0.2974731 0.2974731 0.2974731 0.2974731 0.2974731 0.2974731
 ##       2012      2013      2014
-##  0.2829878 0.2829878 0.2829878
+##  0.2974731 0.2974731 0.2974731
 ## 
 ## 
 ## Real Parameter Lambda
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.9998986 0.9998986 0.9998986 0.9998986 0.9998986 0.9998986 0.9998986
+##  0.9845979 0.9845979 0.9845979 0.9845979 0.9845979 0.9845979 0.9845979
 ##       2012      2013
-##  0.9998986 0.9998986</code></pre>
-<p>Neat, the lambdas for each year are 0.9999 with a 95% CIs of 1.00462, 0.99091. That seems reasonable the population looks to be decreasing over time and hence lambda &lt; 1.</p>
+##  0.9845979 0.9845979</code></pre>
+<p>Neat, the lambdas for each year are 0.9846 with a 95% CIs of 1.00473, 0.97554. That seems reasonable the population looks to be decreasing over time and hence lambda &lt; 1.</p>
 </div>
 <div id="application-to-am-and-the-big-picture" class="section level2">
 <h2>Application to AM and the big picture</h2>
@@ -468,37 +453,37 @@ m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.irc))</cod
 ## Name : Phi(~1)p(~1)f(~irc + 1) 
 ## 
 ## Npar :  4
-## -2lnL:  50105.95
-## AICc :  50113.96
+## -2lnL:  51606.17
+## AICc :  51614.18
 ## 
 ## Beta
 ##                   estimate        se        lcl        ucl
-## Phi:(Intercept)  1.3474939 0.0329243  1.2829624  1.4120255
-## p:(Intercept)   -0.8391741 0.0273343 -0.8927494 -0.7855989
-## f:(Intercept)   -1.2716865 0.0681119 -1.4051858 -1.1381873
-## f:irc            0.0043854 0.0031174 -0.0017248  0.0104956
+## Phi:(Intercept)  1.4176230 0.0337115  1.3515484  1.4836976
+## p:(Intercept)   -0.8787526 0.0267968 -0.9312744 -0.8262309
+## f:(Intercept)   -1.5145693 0.0732350 -1.6581100 -1.3710287
+## f:irc            0.0150753 0.0032102  0.0087832  0.0213674
 ## 
 ## 
 ## Real Parameter Phi
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.7937196 0.7937196 0.7937196 0.7937196 0.7937196 0.7937196 0.7937196
+##  0.8049655 0.8049655 0.8049655 0.8049655 0.8049655 0.8049655 0.8049655
 ##       2012      2013
-##  0.7937196 0.7937196
+##  0.8049655 0.8049655
 ## 
 ## 
 ## Real Parameter p
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.3017088 0.3017088 0.3017088 0.3017088 0.3017088 0.3017088 0.3017088
+##  0.2934363 0.2934363 0.2934363 0.2934363 0.2934363 0.2934363 0.2934363
 ##       2012      2013      2014
-##  0.3017088 0.3017088 0.3017088
+##  0.2934363 0.2934363 0.2934363
 ## 
 ## 
 ## Real Parameter f
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.3297474 0.3211842 0.3114745 0.3155993 0.2878331 0.3225958 0.2929267
+##  0.3841264 0.3509066 0.3157633 0.3303719 0.2407208 0.3562367 0.2556831
 ##       2012      2013
-##  0.3142183 0.2878331</code></pre>
-<p>Well the estimates look good, I fed the simulation a <span class="math inline">\(\beta_{0} = -1.33\)</span> and got back -1.2716865. For the effect of IRC I used a <span class="math inline">\(\beta_{1} = 0.008\)</span> and got back 0.0043854.</p>
+##  0.3254288 0.2407208</code></pre>
+<p>Well the estimates look good, I fed the simulation a <span class="math inline">\(\beta_{0} = -1.33\)</span> and got back -1.5145693. For the effect of IRC I used a <span class="math inline">\(\beta_{1} = 0.008\)</span> and got back 0.0150753.</p>
 <p><strong>Estimates and true values will not exactly match but will improve with more occasions, recaptures, and so on.</strong></p>
 <p>A information theoretic appraoch could be used to evalaute the effect of IRC versus no effect of IRC.</p>
 <pre class="r"><code>f.dot=list(formula=~1)
@@ -509,76 +494,76 @@ m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot))</cod
 ## Name : Phi(~1)p(~1)f(~1) 
 ## 
 ## Npar :  3
-## -2lnL:  50107.95
-## AICc :  50113.95
+## -2lnL:  51629.15
+## AICc :  51635.15
 ## 
 ## Beta
-##                   estimate        se        lcl       ucl
-## Phi:(Intercept)  1.3476487 0.0329880  1.2829922  1.412305
-## p:(Intercept)   -0.8425043 0.0272481 -0.8959106 -0.789098
-## f:(Intercept)   -1.1813116 0.0199021 -1.2203198 -1.142303
+##                   estimate        se        lcl        ucl
+## Phi:(Intercept)  1.4183161 0.0339417  1.3517904  1.4848419
+## p:(Intercept)   -0.8892073 0.0267720 -0.9416804 -0.8367341
+## f:(Intercept)   -1.1983832 0.0200289 -1.2376399 -1.1591265
 ## 
 ## 
 ## Real Parameter Phi
-##      2005     2006     2007     2008     2009     2010     2011     2012
-##  0.793745 0.793745 0.793745 0.793745 0.793745 0.793745 0.793745 0.793745
-##      2013
-##  0.793745
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.8050743 0.8050743 0.8050743 0.8050743 0.8050743 0.8050743 0.8050743
+##       2012      2013
+##  0.8050743 0.8050743
 ## 
 ## 
 ## Real Parameter p
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.3010076 0.3010076 0.3010076 0.3010076 0.3010076 0.3010076 0.3010076
+##  0.2912734 0.2912734 0.2912734 0.2912734 0.2912734 0.2912734 0.2912734
 ##       2012      2013      2014
-##  0.3010076 0.3010076 0.3010076
+##  0.2912734 0.2912734 0.2912734
 ## 
 ## 
 ## Real Parameter f
-##      2005     2006     2007     2008     2009     2010     2011     2012
-##  0.306876 0.306876 0.306876 0.306876 0.306876 0.306876 0.306876 0.306876
-##      2013
-##  0.306876</code></pre>
+##       2005      2006      2007      2008      2009      2010      2011
+##  0.3016816 0.3016816 0.3016816 0.3016816 0.3016816 0.3016816 0.3016816
+##       2012      2013
+##  0.3016816 0.3016816</code></pre>
 <pre class="r"><code>m2&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.irc))</code></pre>
 <pre><code>## 
 ## Output summary for Pradrec model
 ## Name : Phi(~1)p(~1)f(~irc + 1) 
 ## 
 ## Npar :  4
-## -2lnL:  50105.95
-## AICc :  50113.96
+## -2lnL:  51606.17
+## AICc :  51614.18
 ## 
 ## Beta
 ##                   estimate        se        lcl        ucl
-## Phi:(Intercept)  1.3474945 0.0329243  1.2829630  1.4120261
-## p:(Intercept)   -0.8391746 0.0273343 -0.8927498 -0.7855994
-## f:(Intercept)   -1.2716903 0.0681123 -1.4051905 -1.1381901
-## f:irc            0.0043855 0.0031175 -0.0017247  0.0104958
+## Phi:(Intercept)  1.4176223 0.0337115  1.3515476  1.4836969
+## p:(Intercept)   -0.8787526 0.0267969 -0.9312745 -0.8262308
+## f:(Intercept)   -1.5145661 0.0732371 -1.6581109 -1.3710214
+## f:irc            0.0150752 0.0032103  0.0087829  0.0213674
 ## 
 ## 
 ## Real Parameter Phi
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.7937197 0.7937197 0.7937197 0.7937197 0.7937197 0.7937197 0.7937197
+##  0.8049654 0.8049654 0.8049654 0.8049654 0.8049654 0.8049654 0.8049654
 ##       2012      2013
-##  0.7937197 0.7937197
+##  0.8049654 0.8049654
 ## 
 ## 
 ## Real Parameter p
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.3017087 0.3017087 0.3017087 0.3017087 0.3017087 0.3017087 0.3017087
+##  0.2934363 0.2934363 0.2934363 0.2934363 0.2934363 0.2934363 0.2934363
 ##       2012      2013      2014
-##  0.3017087 0.3017087 0.3017087
+##  0.2934363 0.2934363 0.2934363
 ## 
 ## 
 ## Real Parameter f
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.3297482 0.3211846 0.3114745 0.3155995 0.2878323 0.3225963 0.2929261
+##  0.3841257 0.3509062 0.3157633 0.3303717 0.2407214 0.3562363 0.2556836
 ##       2012      2013
-##  0.3142185 0.2878323</code></pre>
+##  0.3254286 0.2407214</code></pre>
 <pre class="r"><code>summary(m1)$AICc # AICc value for m1</code></pre>
-<pre><code>## [1] 50113.95</code></pre>
+<pre><code>## [1] 51635.15</code></pre>
 <pre class="r"><code>summary(m2)$AICc # AICc value for m2</code></pre>
-<pre><code>## [1] 50113.96</code></pre>
-<p>With AICc values of 50113.95 and 50113.96 for m1 and m2 respectively there might be some weak evidence for an effect of IRC.</p>
+<pre><code>## [1] 51614.18</code></pre>
+<p>With AICc values of 51635.15 and 51614.18 for m1 and m2 respectively there might be some weak evidence for an effect of IRC.</p>
 </div>
 <div id="fitting-a-covariate-to-lambda" class="section level3">
 <h3>Fitting a covariate to lambda</h3>
@@ -595,36 +580,36 @@ m1&lt;-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.
 ## Name : Phi(~1)p(~1)Lambda(~irc + 1) 
 ## 
 ## Npar :  4
-## -2lnL:  50105.95
-## AICc :  50113.96
+## -2lnL:  51605.72
+## AICc :  51613.72
 ## 
 ## Beta
-##                      estimate           se           lcl        ucl
-## Phi:(Intercept)     1.3475089 0.0329248000  1.2829763000  1.4120414
-## p:(Intercept)      -0.8391911 0.0273322000 -0.8927622000 -0.7856200
-## Lambda:(Intercept)  0.0709210 0.0180173000  0.0356071000  0.1062350
-## Lambda:irc          0.0012203 0.0008636874 -0.0004724789  0.0029132
+##                      estimate           se        lcl        ucl
+## Phi:(Intercept)     1.4178599 0.0337164000  1.3517758  1.4839440
+## p:(Intercept)      -0.8788360 0.0267913000 -0.9313470 -0.8263251
+## Lambda:(Intercept)  0.0171929 0.0177109000 -0.0175204  0.0519062
+## Lambda:irc          0.0041334 0.0008543972  0.0024587  0.0058080
 ## 
 ## 
 ## Real Parameter Phi
 ##       2005      2006      2007      2008      2009      2010      2011
-##  0.7937221 0.7937221 0.7937221 0.7937221 0.7937221 0.7937221 0.7937221
+##  0.8050027 0.8050027 0.8050027 0.8050027 0.8050027 0.8050027 0.8050027
 ##       2012      2013
-##  0.7937221 0.7937221
+##  0.8050027 0.8050027
 ## 
 ## 
 ## Real Parameter p
-##       2005      2006      2007      2008      2009      2010      2011
-##  0.3017052 0.3017052 0.3017052 0.3017052 0.3017052 0.3017052 0.3017052
-##       2012      2013      2014
-##  0.3017052 0.3017052 0.3017052
+##      2005     2006     2007     2008     2009     2010     2011     2012
+##  0.293419 0.293419 0.293419 0.293419 0.293419 0.293419 0.293419 0.293419
+##      2013     2014
+##  0.293419 0.293419
 ## 
 ## 
 ## Real Parameter Lambda
 ##      2005     2006     2007     2008     2009     2010     2011     2012
-##  1.123079 1.114886 1.105402 1.109457 1.081386 1.116247 1.086677 1.108104
+##  1.185456 1.156418 1.123438 1.137455 1.042887 1.161207 1.060273 1.132764
 ##      2013
-##  1.081386</code></pre>
+##  1.042887</code></pre>
 </div>
 </div>
 <div id="caveats" class="section level2">
