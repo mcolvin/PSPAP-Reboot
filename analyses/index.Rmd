@@ -43,3 +43,84 @@ The objectives of this study are to:
 * build on or cross wal
 
 
+## Marked populations
+
+
+
+
+Abundance
+
+Site-level
+* How many replicates are needed to estimate abundance reliably?  What is reliable?
+    * Constant p
+    * Heterogeneous capture probability
+    * Some movement in and out
+* Benefit of using tagged critters?
+
+Segment-level
+* Estimates from 25% of bends in segment per year?
+* Dependent on bend size
+* Relate to density?
+* Consequences of some movement?
+
+Survival
+* Robust design
+    * M0- varies by bend $\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend$
+    * Mt – varies by bend and secondary occasion $\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend+{{\beta }_{2}}\cdot Occasion+{{\beta }_{3}}\cdot Bend\cdot Occasion$ 
+    * Constant phi within segment, varies among years
+        * $\operatorname{logit}(\phi )={{\beta }_{0}}+{{\epsilon }_{year}}$ where ${{\epsilon }_{year}}\tilde{\ }N(0,\sigma )$ 
+* Robust design with telemetry 
+    * In segment (perfect detection, imperfect detection)
+    * River sweep (perfect detection, imperfect detection)
+        * $\operatorname{logit}(\phi )={{\beta }_{0}}+{{\epsilon }_{year}}$ where ${{\epsilon }_{year}}\tilde{\ }N(0,\sigma )$ 
+        * ${{Z}_{track,segement,year}}\tilde{\ }binomial({{\phi }_{segment,year}})$ 
+        * River sweep to inform $\phi$, $\gamma \prime $, and $\gamma\prime\prime$from tracking tags
+
+1. Do fish move large distances outside of migrations?  What is the optimal time to do capture-recapture? Options: none, some, a lot.  
+2. What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?  
+
+| Option 	|       Model       	| $N_{true}$ 	|               N Bends              	|   Occasions  	|
+|--------	|:-----------------:	|:----------:	|:----------------------------------:	|:------------:	|
+| V01    	| $p{{(.)}_{bend}}$ 	|    5000    	| 5,7,10,15,20,25,30,35,40,50,75,100 	| 4 to 10 by 1 	|
+|        	|                   	|            	|                                    	|              	|
+|        	|                   	|            	|                                    	|              	|		
+				
+
+BUGS model to estimate close population
+
+`mod<- function()
+	{
+	for(i in 1:M)
+		{
+		z[i]~dbin(omega,1) # LATENT VARIABLE, DATA AUGMENTATION
+		for(j in 1:T)
+			{
+			p_eff[i,j]<- z[i]*p_cap # CONDITIONAL SPECIFICATION
+			obs[i,j]~dbern(p_eff[i,j])			
+			}#i
+		}#j
+	# DERIVED PARAMETERS
+	N<-sum(z[]) 
+	
+	# PRIORS
+	omega~dunif(0,1)
+	p_cap~dunif(0,1)
+    }`
+	
+K160: Korman, J., J. Schick, and B. Mossop. 2016. Estimating Riverwide Abundance of Juvenile Fish Populations: How Much Sampling is Enough? North American Journal of Fisheries Management 36:213-229.
+
+
+Robust design	PSPAP
+	PSPAP + telemetry
+	PSPAP + river sweek
+	PSPAP + telemtry + river sweep
+	
+Robust design	Random reaches
+	Random reaches + telemetry
+	Random reaches + river sweek
+	Random reaches + telemtry + river sweep
+	
+                
+                
+                
+                

@@ -1,0 +1,287 @@
+---
+title: "Sampling, modeling, experiments that might get at age-0 and age-1 survival- N-Mixture models Part 2 the Dail Madsen"
+author: Michael E. Colvin
+date: 23 July 2016
+output:
+  html_document:
+    theme: flatly
+    highlight: espresso
+    toc: TRUE
+---
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+options(scipen=15)
+library(unmarked)
+library(mgcv)
+library(reshape2)
+library(lattice)
+library(fields)
+library(animation)
+library(knitr)
+setwd("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/DailMadsen")
+rivDat<- read.csv("omaha_temperature.csv")
+rivDat$datetime<-as.character(rivDat$datetime)
+
+rivDat$date<-as.Date(rivDat$datetime,
+	"%m/%d/%Y %H:%M")
+rivDat$jday<- format(rivDat$date, "%j")
+```
+
+## Overview: Estimating abundance dynamics from unmarked indivuals.
+
+
+The _N_-mixture model was generalized to a population dynamics model by Dail and Madsen. The gist of their model was that, similar to a Jolly-Seber model used to estimate population abundance and survival, the estimates of an _N_-mixture model could be coupled together to estimate abundance, survival, and recruitment, given imperfect capture of unmarked individuals.  
+
+Variables at play are using unmarked jargon:
+
+* $\lambda$ is initial population density (lambda)
+* $\omega$ is survival (omega)
+* $\gamma$ is recruitment (gamma)
+* $p$ is capture probability
+
+In the model recruitment is not neccessarily linked to population abunandance, although there are gereralizations such as a logstic and other asymptiotic functions.  As with the previous demonstration lets suppose an IRC habitat looks like the image below where darker blue represents deeper water.  
+
+
+## Application to IRC monitoring
+
+### What a hypothetical IRC might look like
+
+Suppose again there is an IRC habitat with a spatial domain that looks like the image below.  The blue represents depth (darker = deeper). 
+
+```{r,echo=FALSE}
+bnrdry_x<- c(1,2,3,4,5,6,5,4,3,2,1)
+bnrdry_y<- c(1,3,6,7,9,8,1,1,2,0,1)
+thalx<-seq(-10,10,0.1)
+slp<- 2.2
+thaly<- -3 + slp*thalx
+xx<- as.matrix(expand.grid(
+	x=seq(0,10,0.2),
+	y=seq(0,10,0.2)))
+pip<-in.out(as.matrix(cbind(bnrdry_x,
+	bnrdry_y)),xx)
+
+irc<- as.data.frame(xx[pip,])
+names(irc)<-c("x","y")
+irc$siteId<- c(1:nrow(irc))
+irc$depth<- sapply(1:nrow(irc),function(x)
+	{
+	a=-3
+	b=2.2
+	x0<-irc$x[x]
+	y0<-irc$y[x]
+	val<-(((x0+b*y0-b*a)/(b^2 + 1))-x0)^2 + (b*((x0+b*y0-b*a)/(b^2+1))+a-y0)^2
+	d<- sqrt(val)
+	return(d)
+	})
+irc$depth<- exp(1.5 + -1.75*irc$depth)
+z<- dcast(irc,x~y,value.var="depth")
+x<-z[,1]
+y<-as.numeric(names(z[-1]))
+z<- as.matrix(z[,-1])
+image.plot(x,y,z,xlim=c(0,7),xlab="X",ylab="Y",ylim=c(0,9), col=rainbow(n=20,start=3/6,end=4/6),asp=1)	
+contour(x,y,z,level=0,add=TRUE)
+```
+Because we are dealing with abundance dynamics the underlying density is a result of critters recruiting to and surviving within the IRC.  Hypothethically we would expect the IRC to initially be void of age-0 Pallid Sturgon.  Free Embryos then drift in and are intercepted and then they hang out and rear.  This process an be visuallize by thee graphic below where for the first couple of weeks there are no age-0 Pallid Sturgeon and then fish begin to be intercepted adn then survival dynamics play out.  
+
+Within the polygon above the true density of Pallid Sturgeon is 4 fish per square meter (i.e., $\lambda = 4$ in _N_-mixture jargon).  Applying that density to the polygon, fish abundance dynamics might looks like this:
+
+
+```{r}
+lambda <- 4 # INITIAL DENSITY
+gamma <- 1.5 # RECRUITMENT
+omega <- 0.8 # APPARENT SURVIVAL
+T <- 18:45 # WEEKS	
+
+depth<-c(0:9)
+dat<- expand.grid(T=T,D=depth)
+dat$eR<-exp(6.35+ -0.16*dat$T + -0.1*dat$D)
+xyplot(eR~T,dat, group=D,type='l')
+```
+
+```{r}
+y <- N <-S <- G <- matrix(NA, 
+	nrow(irc), length(T))
+# INITIAL ABUNDANCE
+N[,1] <- rpois(nrow(irc), 0) 
+
+# SIMULATE POPULATION DYNAMICS
+for(t in 2:length(T)) 
+	{
+    S[,t] <- rbinom(nrow(irc), 
+		N[,t-1], omega) # SURVIVAL
+	gamma<- exp(4.35+ -0.16*t +
+		-0.1*irc$depth)
+    G[,t] <- rpois(nrow(irc), gamma)# RECRUITMENT
+    N[,t] <- S[,t] + G[,t] # ABUND NEXT T
+    }
+matplot(T,t(N),type='l')
+# WEEK 29 is mid july
+	
+	
+```
+
+```{r}
+	
+	
+```{r}
+M <- 20  # NUMBER OF SAMPLING SITES	
+p <- 0.3 #
+nreps<- 3
+# SIMULATE CATCH GIVEN POPULATION DYNAMICS
+y <- vector(length=nrow(irc))
+for(i in 1:ncol(N))
+	{
+	y<-cbind(y,matrix(
+		rbinom(nrow(irc)*nreps,
+		N[,i], p),
+		ncol=nreps,
+		nrow=nrow(irc),
+		byrow=FALSE))
+	}
+y<-y[,-1]
+sampleIndx<-sample(c(1:nrow(irc)),M,
+	replace=FALSE)
+obs<- y[sampleIndx,]
+
+``` 
+
+```{r} 
+# PREPARE DATA FOR DATA ANALYSIS
+umf <- unmarkedFramePCO(y = obs, 	
+	numPrimary=length(T),
+	#siteCovs=data.frame(
+	#	depth=irc$depth[sampleIndx]),
+	#yearlySiteCovs=list(
+	#	week=matrix(T,nrow=M,
+	#		length(T),byrow=FALSE))
+	)
+summary(umf)
+
+# Fit model and backtransform
+fit <- pcountOpen(
+	~1, 
+	~1,#depth + week, 
+	~1, 
+	~1, 
+	umf, 
+	K=250,
+	control=list(trace=TRUE))
+
+
+#lam <- exp(coef(m1, type="lambda"))
+#gam <- exp(coef(m1, type="gamma"))
+#om <- plogis(coef(m1, type="omega"))
+#p <- plogis(coef(m1, type="det"))
+```
+
+### No covariates, 5 weeks (primary occasions), 3 secondary occasions
+
+mod<-function()
+	{
+	#lambda ~ dunif(0, 5)  # No problem in JAGS
+	lambda ~ dgamma(0.001, 0.001)
+	r ~ dunif(-5, 5)
+	p ~ dunif(0, 1)
+	for(i in 1:nSites) 
+		{
+		N[i,1] ~ dpois(lambda)
+		for(k in 1:nReps) 
+			{
+			y[i,1,k] ~ dbin(p, N[i,1])
+			}
+		for(t in 2:nYears) 
+			{
+			muN[i,t-1] <- exp(r)*N[i,t-1]
+			N[i,t] ~ dpois(muN[i,t-1])
+			for(k in 1:nReps) 
+				{
+				y[i,t,k] ~ dbin(p, N[i,t])
+				}
+			}
+		}
+	}
+
+
+# Load rjags
+#library(rjags)
+
+# Format data and create function to initiate parameters
+dat.exp <- list(nSites=nSites, nYears=nYears, nReps=nReps, y=y)
+init.exp <- function() list(lambda=runif(1, 0, 5),
+                        r=rnorm(1), p=runif(1), N=N+5)
+pars.exp <- c("lambda", "r", "p")
+
+# Compile the model.
+# The adaptive phase tries to improve the efficiency of the samplers
+jm.exp <- jags.model("dm_exp.txt", dat.exp, init.exp, n.chains=2,
+                     n.adapt=500)
+
+# Draw samples from the posterior
+# In practice, you would need many more iterations
+jc.exp <- coda.samples(jm.exp, pars.exp, n.iter=1000)
+
+# View the Markov chains
+plot(jc.exp)
+
+# Summarize the posteriors
+summary(jc.exp)
+
+
+
+
+
+
+
+
+
+
+
+```{r lmSim, fig.show='animate',echo=FALSE}
+oopt<- ani.options(interval = 0.3, nmax = 101)
+for(i in 1:10){
+plot(runif(10))
+ani.pause()
+}
+ani.options(oopt)
+```
+
+
+ 
+lam <- exp(coef(m1, type="lambda"))
+gam <- exp(coef(m1, type="gamma"))
+om <- plogis(coef(m1, type="omega"))
+p <- plogis(coef(m1, type="det"))
+
+N.hat1 <- colSums(bup(re))
+CI <- apply(confint(re), c(2,3), sum)
+ ```
+ 
+ ```{r}
+## Not run:
+# Finite sample inference.
+# Abundance at site i, year t
+#re <- ranef(m1)
+#devAskNewPage(TRUE)
+#plot(re, layout=c(5,5), subset = site %in% 1:25 & year %in% 1:2,
+#     xlim=c(-1,15))
+#devAskNewPage(FALSE)
+# 
+#(N.hat1 <- colSums(bup(re)))
+#CI <- apply(confint(re), c(2,3), sum)
+# 
+# 
+## Expected values of N[i,t]
+#N.hat2 <- matrix(NA, M, T)
+#N.hat2[,1] <- lam
+#for(t in 2:T) {
+#    N.hat2[,t] <- om*N.hat2[,t-1] + gam
+#    }
+# 
+#rbind(N=colSums(N), N.hat1=N.hat1, N.hat2=colSums(N.hat2))
+# 
+# 
+#plot(1:T, N.hat1, ylim=c(0,600))
+#points(1:T, colSums(N), col="blue", pch=16)
+#arrows(1:T, CI[1,], 1:T, CI[2,], code=3, length=0.05, angle=90)
+### End(Not run)
+```
