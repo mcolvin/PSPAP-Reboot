@@ -29,6 +29,9 @@ analyses/_site/
 *.rds
 *.rdata
 
+# NPP FILES
+*.SESSION
+
 # MARK FILES
 *.inp
 *.res
