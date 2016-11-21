@@ -14,7 +14,7 @@ bookdown::render_book("",output="bookdown::gitbook",
 # RELATIVE PATH _main_files/ANALYSIS FOLDER/FIGURES/XXXX.PNG
 system(paste("xcopy","*.png",
     '"C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/Docs/_main_files"',
-   "/s" ))    
+   "/s /y" ))    
 -->
 
 # Stuff to put here
