@@ -27,7 +27,7 @@ Ramped up in xxx The Pallid Sturgeon
 
 ## Spatial extent and grain
 
-```{r echo=FALSE, out.width="33%"}
+```{r echo=FALSE, out.width="95%"}
 knitr::include_graphics("Study-Area/figures/study-area-1.png")
 ```
 
