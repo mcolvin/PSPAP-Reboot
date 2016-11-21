@@ -27,7 +27,7 @@ Ramped up in xxx The Pallid Sturgeon
 
 ## Spatial extent and grain
 
-<img src="_main_files/study area/figures/study-area-1.png" align="center" width="95%"> 
+<img src="_main_files/Study-Area/figures/study-area-1.png" align="center" width="95%"> 
 
 
 
