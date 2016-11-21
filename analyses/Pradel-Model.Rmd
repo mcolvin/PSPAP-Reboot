@@ -89,8 +89,8 @@ Some processing of the simulated data to feed to MARK.
 
 Now we can do as we did previously but now there is a new bit relating $f$ to IRC `f.irc=list(formula=~irc+1)`.
 
-Well the estimates look good, I fed the simulation a $\beta_{0} = `r B_0`$ and got back `r coef(m1)[3,1]`.
-For the effect of IRC I used a $\beta_{1} = `r B_irc`$ and got back `r coef(m1)[4,1]`.
+Well the estimates look good, I fed the simulation a $\beta_{0} = r B_0$ and got back ` coef(m1)[3,1]`.
+For the effect of IRC I used a $\beta_{1} = r B_irc$ and got back r coef(m1)[4,1].
 
   
 **Estimates and true values will not exactly match but will improve with more occasions, recaptures, and so on.**

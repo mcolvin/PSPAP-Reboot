@@ -7,7 +7,14 @@ output: bookdown::gitbook
 ---
 
 <!--
-bookdown::render_book("",output="bookdown::gitbook")
+# COPY FILES TO DOCS FOR GITHUB.IO
+bookdown::render_book("",output="bookdown::gitbook",
+    output_dir = "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs")
+# COPY MEDIA TO DOCS
+# RELATIVE PATH _main_files/ANALYSIS FOLDER/FIGURES/XXXX.PNG
+system(paste("xcopy","*.png",
+    '"C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/Docs/_main_files"',
+   "/s" ))    
 -->
 
 # Stuff to put here
@@ -16,7 +23,15 @@ Current population assessment overview
 Background and implementation
 Began 2003
 Ramped up in xxx The Pallid Sturgeon
-Spatial extent and grain
+
+
+## Spatial extent and grain
+
+<img src="_main_files/study area/figures/study-area-1.png" align="center" width="95%"> 
+
+
+
+
 Existing evaluations
 Other considerations
 Length, weight,
@@ -40,7 +55,7 @@ The objectives of this study are to:
 
 * provide potential approaches that will meet population objective
 * feed into ongoing adaptive management
-* build on or cross wal
+* build on or cross walk
 
 
 ## Marked populations
@@ -51,6 +66,7 @@ The objectives of this study are to:
 Abundance
 
 Site-level
+
 * How many replicates are needed to estimate abundance reliably?  What is reliable?
     * Constant p
     * Heterogeneous capture probability
@@ -58,12 +74,14 @@ Site-level
 * Benefit of using tagged critters?
 
 Segment-level
+
 * Estimates from 25% of bends in segment per year?
 * Dependent on bend size
 * Relate to density?
 * Consequences of some movement?
 
 Survival
+
 * Robust design
     * M0- varies by bend $\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend$
     * Mt – varies by bend and secondary occasion $\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend+{{\beta }_{2}}\cdot Occasion+{{\beta }_{3}}\cdot Bend\cdot Occasion$ 
@@ -76,6 +94,7 @@ Survival
         * ${{Z}_{track,segement,year}}\tilde{\ }binomial({{\phi }_{segment,year}})$ 
         * River sweep to inform $\phi$, $\gamma \prime $, and $\gamma\prime\prime$from tracking tags
 
+        
 1. Do fish move large distances outside of migrations?  What is the optimal time to do capture-recapture? Options: none, some, a lot.  
 2. What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?  
 
@@ -112,13 +131,13 @@ K160: Korman, J., J. Schick, and B. Mossop. 2016. Estimating Riverwide Abundance
 
 Robust design	PSPAP
 	PSPAP + telemetry
-	PSPAP + river sweek
-	PSPAP + telemtry + river sweep
+	PSPAP + river sweep
+	PSPAP + telemetry + river sweep
 	
 Robust design	Random reaches
 	Random reaches + telemetry
-	Random reaches + river sweek
-	Random reaches + telemtry + river sweep
+	Random reaches + river sweep
+	Random reaches + telemetry + river sweep
 	
                 
                 

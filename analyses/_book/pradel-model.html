@@ -26,7 +26,7 @@
 <meta name="author" content="Michael E. Colvin">
 
 
-<meta name="date" content="2016-11-18">
+<meta name="date" content="2016-11-21">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,7 +34,7 @@
   
   
 <link rel="prev" href="basic-robust-design.html">
-
+<link rel="next" href="tables.html">
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -63,7 +63,10 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Stuff to put here</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Stuff to put here</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#spatial-extent-and-grain"><i class="fa fa-check"></i><b>1.1</b> Spatial extent and grain</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#marked-populations"><i class="fa fa-check"></i><b>1.2</b> Marked populations</a></li>
+</ul></li>
 <li class="chapter" data-level="2" data-path="basic-robust-design.html"><a href="basic-robust-design.html"><i class="fa fa-check"></i><b>2</b> Basic Robust Design</a><ul>
 <li class="chapter" data-level="2.1" data-path="basic-robust-design.html"><a href="basic-robust-design.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
 <li class="chapter" data-level="2.2" data-path="basic-robust-design.html"><a href="basic-robust-design.html#parameters-for-the-robust-design"><i class="fa fa-check"></i><b>2.2</b> Parameters for the robust design</a></li>
@@ -78,6 +81,7 @@
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="pradel-model.html"><a href="pradel-model.html#caveats"><i class="fa fa-check"></i><b>3.4</b> Caveats</a></li>
 </ul></li>
+<li class="chapter" data-level="4" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i><b>4</b> Tables</a></li>
 </ul>
 
       </nav>
@@ -135,7 +139,7 @@ First we need to set up the relation between IRC and recruitment rate. The effec
 <p>Now that we have the true population data we can simulate the capture histories given <span class="math inline">\(p\)</span></p>
 <p>Some processing of the simulated data to feed to MARK.</p>
 <p>Now we can do as we did previously but now there is a new bit relating <span class="math inline">\(f\)</span> to IRC <code>f.irc=list(formula=~irc+1)</code>.</p>
-<p>Well the estimates look good, I fed the simulation a <span class="math inline">\(\beta_{0} = -1.33\)</span> and got back 0.0466037. For the effect of IRC I used a <span class="math inline">\(\beta_{1} = 0.008\)</span> and got back 0.0029999.</p>
+<p>Well the estimates look good, I fed the simulation a <span class="math inline">\(\beta_{0} = r B_0\)</span> and got back <code>coef(m1)[3,1]</code>. For the effect of IRC I used a <span class="math inline">\(\beta_{1} = r B_irc\)</span> and got back r coef(m1)[4,1].</p>
 <p><strong>Estimates and true values will not exactly match but will improve with more occasions, recaptures, and so on.</strong></p>
 <p>A information theoretic appraoch could be used to evalaute the effect of IRC versus no effect of IRC.</p>
 <p>With AICc values of r round(summary(m1)<span class="math inline">\(AICc,2) and  r round(summary(m2)\)</span>AICc,2) for m1 and m2 respectively there might be some weak evidence for an effect of IRC.</p>
@@ -155,171 +159,6 @@ First we need to set up the relation between IRC and recruitment rate. The effec
 <li>The consequence of violating the assumptions is always problematic.</li>
 </ol>
 
-<p>Table 1. Estimator types</p>
-<table>
-<thead>
-<tr class="header">
-<th>Type</th>
-<th>Estimator</th>
-<th align="center">Abundance</th>
-<th align="center">Demographic rates</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Capture-recapture</td>
-<td>Closed population</td>
-<td align="center">X</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Cormack-Jolly-Seber</td>
-<td align="center"></td>
-<td align="center">X</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Jolly-Seber</td>
-<td align="center">X</td>
-<td align="center">X</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Robust-design</td>
-<td align="center">X</td>
-<td align="center">X</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Pradel</td>
-<td align="center"></td>
-<td align="center">X</td>
-</tr>
-<tr class="even">
-<td>Unmarked</td>
-<td>Relative abundance</td>
-<td align="center">X</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Occupancy</td>
-<td align="center">X</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td></td>
-<td>N-mixture</td>
-<td align="center">X</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Dail-Madsen</td>
-<td align="center">X</td>
-<td align="center">X</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr class="header">
-<th>Level</th>
-<th>Data</th>
-<th>Description</th>
-<th align="center">Movement</th>
-<th align="center">Growth</th>
-<th align="center">Survival</th>
-<th align="center">Recruitment</th>
-<th align="center">Abundance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Segment</td>
-<td>Sweep</td>
-<td>Sweep of river segment for telemetry fish</td>
-<td align="center">x</td>
-<td align="center"></td>
-<td align="center">x</td>
-<td align="center"></td>
-<td align="center">a</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Receiver</td>
-<td>Sentinel receivers placed between segments</td>
-<td align="center">x</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td>Bend</td>
-<td>Sweep</td>
-<td>Sweep of bend for telemetry fish</td>
-<td align="center">x</td>
-<td align="center"></td>
-<td align="center">x</td>
-<td align="center"></td>
-<td align="center">a</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Trot line</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Trawl</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Trawl 2</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Gill net</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Seine</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-</tbody>
-</table>
-<p>S=Denotes the Standard (required) gear type for a given habitat E=Denotes a gear that is undergoing an experimental evaluation proposal. All other Applications are wild (W) Applicable to all gear types and habitats: Deploy gear within a habitat type where conditions (depth, width, velocity) allow proper deployment * Island Tips are only associated with Secondary Connected, Deranged, Braided and Dendritic Channels **Excludes non-flowing pools</p>
-
 </div>
 </div>
             </section>
@@ -327,8 +166,8 @@ First we need to set up the relation between IRC and recruitment rate. The effec
           </div>
         </div>
       </div>
-<a href="basic-robust-design.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="basic-robust-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tables.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
