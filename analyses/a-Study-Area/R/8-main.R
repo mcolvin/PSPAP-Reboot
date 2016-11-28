@@ -1,7 +1,5 @@
 
-
-
-setwd("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/analyses/Study Area")
+    setwd(gsub("/R","",getwd(),ignore.case=FALSE))
 
     source("./R/1-global.R")
     source("./R/2-functions.R")
@@ -10,8 +8,7 @@ setwd("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot
     source("./R/5-figures.R")
     source("./R/6-tables.R")
     source("./R/7-analysis.R")
-    
-    
+
     figures(1);fn<-"study-area-1.png"
     savePlot(paste0(getwd(),"/figures/",fn),type='png')
 
@@ -19,5 +16,5 @@ setwd("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot
     # HATCHERIES
     figures(3);fn<-"study-area-hatcheries.png"
     savePlot(paste0(getwd(),"/figures/",fn),type='png')
-
+    dev.off()
        

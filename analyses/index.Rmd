@@ -5,34 +5,82 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 ---
+```{r,echo=FALSE}
+library(knitr)
+```
 
 <!--
 # COPY FILES TO DOCS FOR GITHUB.IO
 bookdown::render_book("",output="bookdown::gitbook",
     output_dir = "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs")
-# COPY MEDIA TO DOCS
-# RELATIVE PATH _main_files/ANALYSIS FOLDER/FIGURES/XXXX.PNG
-system(paste("xcopy","*.png",
-    '"C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/Docs/_main_files"',
-   "/s /y" ))    
 -->
 
-# Stuff to put here
+# Missouri River pallid sturgeon declines and recovery program
 
+
+
+## About the PSPAP
+
+The Pallid Sturgeon Population Assessment Program (PSAPS) began in 2003.
 Current population assessment overview
 Background and implementation
-Began 2003
+The PSPAP program began in 2003 
 Ramped up in xxx The Pallid Sturgeon
 
 
-## Spatial extent and grain
+## Spatial extent, grain, organization, and sampling
+
+Missouri River pallid sturgeon recovery is limited to the upper and lower Missouri
+ River segments, Recovery Priority Management Areas 2 and 4 respectively (Figure 1.1).
+These segments are 
+The upper and lower Missouri River segments are xx km and xx km respectively (Table 1.1).
+
+<!--
+add a figure of Proportion sampled for each year
+add a figure of year and each bend with 0---0 for each sampling occasion.  ------0---0---0
+-->
+
+Segments within RPMAs (Table 1.1)
+
+Bends within segments
+
+The spatial grain of the monitoring program is the river bend, defined as {welker and drobish}.
+ major segment.
+Within each segment, 25% of bends are randomly sampled annually.
+*It is unclear whether a bend can be resampled the following year*
 
 ```{r echo=FALSE, out.width="95%"}
-knitr::include_graphics("Study-Area/figures/study-area-1.png")
+include_graphics("Study-Area/figures/study-area-1.png")
 ```
 
+Figure 1.1. Major Missouri River pallid sturgeon management units.
+The Pallid Sturgeon Population Assessment Program is implemented in the upper,
+ segmented, and lower Missouri River.
 
 
+Figure 1.2. Upper and lower Missouri River segments establishing the spatial extent
+ of Missouri River pallid sturgeon recovery.
+Alternating gray and black line segments denote river bends that serve as the
+ spatial grain and sampling unit for population and demographic estimates.
+ 
+Table 1.1.
+
+| RPMA (rkm start, stop) | Segment (rkm start,stop) | Bends |
+|------------------------|--------------------------|-------|
+| 1                      |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+| 2                      |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
+|                        |                          |       |
 
 
 Existing evaluations
