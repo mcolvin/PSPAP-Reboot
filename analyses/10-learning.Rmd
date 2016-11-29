@@ -1,0 +1,13 @@
+
+# Learning and combining information 
+
+## PSPAP reboot SDM/ARM Figures
+
+some text...
+
+
+```{r echo=FALSE, out.width="95%"}
+include_graphics("10-Learning/figures/Combining-information.png")
+```
+
+

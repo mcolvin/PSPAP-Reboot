@@ -9,3 +9,8 @@
     source("./R/5-figures.R")
     source("./R/6-tables.R")
     source("./R/7-analysis.R")
+
+    
+    figures(1);fn<- "Combining-information.png"
+    savePlot(paste0(getwd(),"/figures/",fn),type="png")
+    dev.off()
