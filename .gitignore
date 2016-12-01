@@ -11,7 +11,11 @@ _literature/
 _archive/
 _site/
 analyses/_site/
+analyses/_data/
+PSPAP-Population-Assessment-Robust-Design/
+_data/
 
+*.neta
 
 # Windows Installer files
 *.cab

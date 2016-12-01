@@ -33,8 +33,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="about-the-pspap.html">
+<link rel="prev" href="estimating-pallid-sturgeon-survival-in-marked-populations.html">
+<link rel="next" href="estimating-pallid-sturgeon-survival-in-marked-populations-1.html">
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -133,131 +133,19 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">PSPAP Reboot</h1>
-<h4 class="author"><em>Michael E. Colvin</em></h4>
-<h4 class="date"><em>2016-12-01</em></h4>
+<div id="estimating-pallid-sturgeon-survival-in-unmarked-populations-1" class="section level1">
+<h1><span class="header-section-number">6</span> Estimating pallid sturgeon survival in unmarked populations</h1>
+<div id="introduction-2" class="section level2">
+<h2><span class="header-section-number">6.1</span> Introduction</h2>
 </div>
-<div id="missouri-river-pallid-sturgeon-declines-and-recovery-program" class="section level1">
-<h1><span class="header-section-number">1</span> Missouri River pallid sturgeon declines and recovery program</h1>
-<p>Population Assessment Approach The approach evaluated here was designed to inform pallid sturgeon monitoring and assessment objectives and integrate with the Pallid Sturgeon population model. The core of sampling effort is based on a robust design and an integrative population model proposed to serve as the population inventory framework assimilating data needed to estimate parameters for the population model, calibrate catch data, and to provide a check on population estimate trends. The objectives of the population assessment approach described here is to develop and approach that: 1) informs objectives and sub-objectives, 2) informs population model, and 3) cross walk to legacy catch data. To meet these objectives several components of Pallid Sturgeon monitoring need to be formally integrated such that efforts provide usable information (Figure 1)</p>
-<div id="marked-populations" class="section level2">
-<h2><span class="header-section-number">1.1</span> Marked populations</h2>
-<p>Abundance</p>
-<p>Site-level</p>
-<ul>
-<li>How many replicates are needed to estimate abundance reliably? What is reliable?
-<ul>
-<li>Constant p</li>
-<li>Heterogeneous capture probability</li>
-<li>Some movement in and out</li>
-</ul></li>
-<li>Benefit of using tagged critters?</li>
-</ul>
-<p>Segment-level</p>
-<ul>
-<li>Estimates from 25% of bends in segment per year?</li>
-<li>Dependent on bend size</li>
-<li>Relate to density?</li>
-<li>Consequences of some movement?</li>
-</ul>
-<p>Survival</p>
-<ul>
-<li>Robust design
-<ul>
-<li>M0- varies by bend <span class="math inline">\(\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend\)</span></li>
-<li>Mt – varies by bend and secondary occasion <span class="math inline">\(\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend+{{\beta }_{2}}\cdot Occasion+{{\beta }_{3}}\cdot Bend\cdot Occasion\)</span></li>
-<li>Constant phi within segment, varies among years
-<ul>
-<li><span class="math inline">\(\operatorname{logit}(\phi )={{\beta }_{0}}+{{\epsilon }_{year}}\)</span> where <span class="math inline">\({{\epsilon }_{year}}\tilde{\ }N(0,\sigma )\)</span></li>
-</ul></li>
-</ul></li>
-<li>Robust design with telemetry
-<ul>
-<li>In segment (perfect detection, imperfect detection)</li>
-<li>River sweep (perfect detection, imperfect detection)
-<ul>
-<li><span class="math inline">\(\operatorname{logit}(\phi )={{\beta }_{0}}+{{\epsilon }_{year}}\)</span> where <span class="math inline">\({{\epsilon }_{year}}\tilde{\ }N(0,\sigma )\)</span></li>
-<li><span class="math inline">\({{Z}_{track,segement,year}}\tilde{\ }binomial({{\phi }_{segment,year}})\)</span></li>
-<li>River sweep to inform <span class="math inline">\(\phi\)</span>, $$, and <span class="math inline">\(\gamma\prime\prime\)</span>from tracking tags</li>
-</ul></li>
-</ul></li>
-</ul>
-<ol style="list-style-type: decimal">
-<li>Do fish move large distances outside of migrations? What is the optimal time to do capture-recapture? Options: none, some, a lot.<br />
-</li>
-<li>What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th>Option</th>
-<th align="center">Model</th>
-<th align="center"><span class="math inline">\(N_{true}\)</span></th>
-<th align="center">N Bends</th>
-<th align="center">Occasions</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>V01</td>
-<td align="center"><span class="math inline">\(p{{(.)}_{bend}}\)</span></td>
-<td align="center">5000</td>
-<td align="center">5,7,10,15,20,25,30,35,40,50,75,100</td>
-<td align="center">4 to 10 by 1</td>
-</tr>
-<tr class="even">
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-</tbody>
-</table>
-<p>BUGS model to estimate close population</p>
-<p>`mod&lt;- function() { for(i in 1:M) { z[i]~dbin(omega,1) # LATENT VARIABLE, DATA AUGMENTATION for(j in 1:T) { p_eff[i,j]&lt;- z[i]*p_cap # CONDITIONAL SPECIFICATION obs[i,j]~dbern(p_eff[i,j])<br />
-}#i }#j # DERIVED PARAMETERS N&lt;-sum(z[])</p>
-<pre><code># PRIORS
-omega~dunif(0,1)
-p_cap~dunif(0,1)
-}`</code></pre>
-<p>K160: Korman, J., J. Schick, and B. Mossop. 2016. Estimating Riverwide Abundance of Juvenile Fish Populations: How Much Sampling is Enough? North American Journal of Fisheries Management 36:213-229.</p>
-<p>Robust design PSPAP PSPAP + telemetry PSPAP + river sweep PSPAP + telemetry + river sweep</p>
-<p>Robust design Random reaches Random reaches + telemetry Random reaches + river sweep Random reaches + telemetry + river sweep</p>
-<p>River bends, defined as a outer bend and crossover were used to simulate spatial dynamics. The location of individual Pallid Sturgeon were tracked during each time step and moved to a new bend, conditional on survival and previous bend location assuming a multinomial distirubtion as,</p>
-<p>Loc_{j,t+t}~Multinomial(p_{I,.,t}</p>
-<p>Where varibles and indices are defined in table xx. The vector of probabilities <span class="math inline">\(p_{I,.,t}\)</span> predicts the proble location given the previous bend location. This approach to movement provided a flexible approach to modeling movement that can be readily related to management actions. Specifically, $p_{I,j,t} is an array of probabilities with each row summing to one forming a 12 transition matrices providing the probility of moving from bend <span class="math inline">\(i\)</span> to bend <span class="math inline">\(j\)</span>. This array of probabilities provides a plugin location for movement. The diagonal represents the probability of remaining in the same reach, off diagonal elements represent downstream or upstream movements.</p>
+<div id="methods-3" class="section level2">
+<h2><span class="header-section-number">6.2</span> Methods</h2>
 </div>
-<div id="management-effects-on-movement" class="section level2">
-<h2><span class="header-section-number">1.2</span> Management effects on movement</h2>
-<p>The effect of management actions on movement or drift of adult or larval Pallid Sturgeion respectively can be simulated by modifying monthly transition matrices. For example, suppose that adult Pallid Sturgeon migrate upstream given a flow or temperature cue. This directed movement can be simulated by specifying the probability of a fish moving to downstream bends equal to 0 and upstream bends greather than 0. Similarly, the effect of flow on free embryo drift can be simulated with increased downstream probabilities.</p>
-<p>Y_{I,j,t+1}=_0 + <em>1 Q</em>{I,j,t} for i&lt;=j i&gt;j = 0</p>
-<p>Current model implementation requires an array of transitions for each timestep. Future model versions will attempt to reefing the linke between environmental covariates like flow such that a time series of predicted flows can be used as as inputs. The relationship between movement and varying covariates may take the form of a model prediction given previous location. For example, movement in terms of kilometers could be modeled</p>
-<p><span class="math inline">\(rkm_{t+1} = \beta_0 + \beta_1 \cdot Q + \beta_2 \cdot rkm_t + \beta_3 \cdot Q \cdot rkm_t + \sigma\)</span>.</p>
-<p>The equation predicts how far, on average, a pallid sturgeon will move given an effect of flow and current location. The interaction term accounts for the effect of location (i.e., fish cannot move as far if they are near the uppermost bends).</p>
+<div id="results-3" class="section level2">
+<h2><span class="header-section-number">6.3</span> Results</h2>
 </div>
-<div id="effects-on-survival" class="section level2">
-<h2><span class="header-section-number">1.3</span> Effects on survival</h2>
-<p>Modeling the effect of management actions on survival is specified by a logistic equation. Specifically, the base survivals are simulated using the equation</p>
-<p><span class="math inline">\(\Phi_{stage} = \frac{exp(\beta_0)}{1+exp(\beta_0)}\)</span>,</p>
-<p>Where <span class="math inline">\(\beta_0\)</span> represents the expected survival on logit scale. For example, adult survival is expected</p>
-</div>
-<div id="capture-recapture-of-marked-individuals" class="section level2">
-<h2><span class="header-section-number">1.4</span> Capture-recapture of marked Individuals</h2>
-<p>Historically, individual Pallid Sturgeon were marked with passive integrated transponder (PIT), radio or acoustic tag. PIT tags provide a way to uniquely identify fish when they are captured, but the amount of information provided by PIT tags is constrained by recapture of the fish. However if a PIT tagged fish is recaptured, it can inform estimates of survival, origin (i.e., natural, hatchery), and growth. Alternatively, fish that are tagged with an acoustic or radio tags can be actively tracked or passively detected, informing migration rates, habitat use, and survival. Using marked fish within a robust design will likely be limited to PIT tagged fish; however use of acoustic or radio tagged fish is discussed below.<br />
-Design and Understanding from Simulations A preliminary simulation was performed as a proof of concept to evaluate whether a capture-recapture study of individual fish using a robust design would be feasible on a river the size of the Missouri River. First a geographic template was used based on the current PSPAP river bend sampling units, where a river bends are defined as a three continuous habitats (channel cross-over, inside bend, outside bend) and vary in number and size from for the lower and upper basin (Lower: N=317, mean=4 rkm, min=0.2, max=19; Upper: N=157, mean=2.3, min=0.6, max=8). Simulations were performed using the lower basin sampling units as templates. Population dynamics were simulated given known recruitment, survival, and abundance. Given the population dynamics, capture histories were simulated for two levels of capture probability 0.1 and 0.4. These values were selected based on capture probability estimates (Rotella and Hadley 2010, Steffensen et al. 2015). These simulated capture histories were then used to estimate population abundance, survival, and recruitment. The robust design estimator used was the simplest case, assuming homogenous capture probabilities among secondary sampling units and that capture probability was homogenous among bends. The simulation used 5 primary sampling periods and varying secondary sampling occasions (2 through 10) to evaluate estimator performance, reliability, and effort levels.<br />
-Within a primary sampling occasion at least 2 secondary capture occasions are required to estimate the population using capture-recapture of marked individuals and more are likely needed if heterogeneous capture probabilities are present. Over a spatial extent, sampling at least 20% of the river bends was necessary in preliminary simulations. While this preliminary simulation does not address specific gears, selecting gears and sampling occasions that maximize catch will likely result in reduced effort. Based on preliminary analyses, the population abundance could be estimated (Figure 2). With the exception of a capture probability of 0.1 reasonable abundance estimates were achieve by sampling 20% of the bends if capture probability was 0.4 (Figure 2). If capture probability was 0.1 either more bends needed to be sampled or 6 or greater sampling occasions. There was no appreciable effect of increased secondary occasions to estimate population abundance if capture probability was 0.4. It should be recognized these simulations were conducted under the best case scenario (i.e., homogenous survival and capture probability) and therefore may not reflect the challenges to sampling a large turbid river like the Missouri River and additional study is required to evaluate ‘worst case’ scenarios.<br />
-Additional Information to Complete Design This simulation study is preliminary and suggests that a robust design mark recapture approach may be a useful monitoring approach. To fully complete the robust design, a level 1 study should be implemented to evaluate spatial and temporal configurations required to achieve acceptable population and demographic rate estimates. Additionally, if the monitoring program will be used to detect the effect of management actions, a power analysis must be completed. The amount of effort required to provide reasonable estimates should be considered. Lastly, including auxiliary information such as data from tagging arrays or river tracking in an integrated population model will provide a unifying framework incorporating system level monitoring and providing estimates and feedback necessary to parameterize and calibrate the population model.<br />
-Caveats and considerations There are many assumptions required to estimate population abundance and demographic rates. For example, in this preliminary analysis survival and detection probability was constant among primary and secondary occasions, which is likely a poor assumption. Additionally, factors affecting Pallid Sturgeon survival, such as age, growth, condition were not evaluated and should be accounted for to improve estimates and also capture the effect of these variables on survival such that they can then be potentially linked to management actions. Additional research will be required to evaluate the tradeoffs of efforts with estimate bias and precision. Also, evaluation of how sensitive estimates are to violation of assumption will be necessary prior to implementation of monitoring programs. Lastly, the monitoring design will have to be optimized within the constraints of the finite resources available to monitor Pallid Sturgeon on an annual basis, which is not a trivial task in a large turbid system like the Missouri River.</p>
-
+<div id="discussion-3" class="section level2">
+<h2><span class="header-section-number">6.4</span> Discussion</h2>
 </div>
 </div>
             </section>
@@ -265,8 +153,8 @@ Caveats and considerations There are many assumptions required to estimate popul
           </div>
         </div>
       </div>
-
-<a href="about-the-pspap.html" class="navigation navigation-next navigation-unique" aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+<a href="estimating-pallid-sturgeon-survival-in-marked-populations.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="estimating-pallid-sturgeon-survival-in-marked-populations-1.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>

@@ -69,7 +69,7 @@ The effect is modeled using a log link.
 For this example the baseline recruitment rate is 0.26 (the log of that is -1.33) and is the intercept of the equation.
 The effect of IRC, which might be measured in area is 0.003.
 Putting those together the equation to predict recruitment rate is $f= exp(\beta_{0} + \beta_{1} \cdot IRC)$
-The code below implents this for some IRC values.
+The code below implements this for some IRC values.
 
 
 The predicted recruitment as a function of IRC looks like the figure below.
