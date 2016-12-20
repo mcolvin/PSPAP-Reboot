@@ -1,0 +1,55 @@
+---
+title: "Estimating bend-level abundance- Mo with axillary information"
+author: Michael E. Colvin
+date: 4 October 2016
+output:
+  html_document:
+    theme: flatly
+    highlight: espresso
+    toc: FALSE
+---
+
+
+<!--
+rmarkdown::render("index.Rmd")
+-->
+
+# Analysis objectives
+
+1. Evaluate the number of recapture occasions need to estimate capture probability($p$) and abundance ($N$) for
+varying population and capture probabilities
+2. Evaluate the use of tagged telemetry fish to reduce effort
+
+
+```{r,echo=FALSE}
+library(pander)
+source("./R/7_main.R")
+
+```
+The design should meet the following criteria:
+
+1. Be estimable at least 90% of simulations 
+2. Estimates mean absolute deviation within 20% of true value
+3. Mean relative standard error of estimate less than or equal to 20%
+    1. Abundance
+    2. Demographic rates
+        1. Lambda
+        2. Survival
+        3. Gamma
+
+Segment level estimate
+1. closed w/in bend (rd) N = sum(N_bend/bend length)
+2. closed w/in segment  
+3. 
+
+Rules of thumb, N recaptures? number of fish? 
+use shovelnose for capture probabilities?
+
+
+```{r}
+
+```
+
+
+
+

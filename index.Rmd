@@ -9,7 +9,7 @@ output: bookdown::gitbook
 library(knitr)
 ```
 
-<!--
+<!-- 100
 # COPY FILES TO DOCS FOR GITHUB.IO
 bookdown::render_book("",output="bookdown::gitbook",
     output_dir = "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs")
@@ -17,59 +17,68 @@ bookdown::render_book("",output="bookdown::gitbook",
 
 # Missouri River pallid sturgeon declines and recovery program
 
-Population Assessment Approach
-The approach evaluated here was designed to inform pallid sturgeon monitoring and assessment objectives and integrate with the Pallid Sturgeon population model.  The core of sampling effort is based on a robust design and an integrative population model proposed to serve as the population inventory framework assimilating data needed to estimate parameters for the population model, calibrate catch data, and to provide a check on population estimate trends.  The objectives of the population assessment approach described here is to develop and approach that:  1) informs objectives and sub-objectives, 2) informs population model, and 3) cross walk to legacy catch data.  To meet these objectives several components of Pallid Sturgeon monitoring need to be formally integrated such that efforts provide usable information (Figure 1)
+## Historic And Current Population Assessment Approach
+
+The approach evaluated here was designed to inform pallid sturgeon monitoring and assessment objectives and integrate with the Pallid Sturgeon population model. The core of sampling effort is based on a robust design and an integrative population model proposed to serve as the population inventory framework assimilating data needed to estimate parameters for the population model, calibrate catch data, and to provide a check on population estimate trends. The objectives of the population assessment approach described here is to develop and approach that: 1) informs objectives and sub-objectives, 2) informs population model, and 3) cross walk to legacy catch data. To meet these objectives several components of Pallid Sturgeon monitoring need to be formally integrated such that efforts provide usable information (Figure 1). 
+
+
+## Major questions
+
+1. Can the existing monitoring design be used in a capture-recapture context to estimate abundance
+ and survival at the segment level?
+## Analysis approach
+
+
+### A simulated population
 
 
 
 
 
+## Document Organization
+
+This document is organized into 5 main sections covering major elements required
+ to meet the objectives of the Pallid Sturgeon BiOp (is that right?)
+For each measurable attribute approaches using marked and unmarked fish are used to evaluate
+ varying sampling effort and design.  
+The monitoring program is designed to build on existing PSPAP program such that new monitoring
+ data will reaming comparable to legacy PSPAP data.  
+ 
+1. Abundance
+    1. Marked individuals
+    1. Unmarked individuals
+2. Survival
+    1. Marked individuals
+    1. Unmarked individuals
+3. Recruitment
+    1. Marked individuals
+    1. Unmarked individuals
+4. Abundance and demographic rates 
+    1. Marked individuals
+    1. Unmarked individuals
+5. Other components
+    1. Movement
+    2. Condition
+    3. Growth
+    4. Fecundity
+
+<!--
+link the above items abund, surv, recruit, move,.. to CEMs and pop model
+
+Make a harder case for links to pop model and CEMs
+-->
+    
+    
 ## Marked populations
 
 
 
 
-Abundance
-
-Site-level
-
-* How many replicates are needed to estimate abundance reliably?  What is reliable?
-    * Constant p
-    * Heterogeneous capture probability
-    * Some movement in and out
-* Benefit of using tagged critters?
-
-Segment-level
-
-* Estimates from 25% of bends in segment per year?
-* Dependent on bend size
-* Relate to density?
-* Consequences of some movement?
-
-Survival
-
-* Robust design
-    * M0- varies by bend $\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend$
-    * Mt – varies by bend and secondary occasion $\text{logit}(p)={{\beta }_{0}}+{{\beta }_{1}}\cdot Bend+{{\beta }_{2}}\cdot Occasion+{{\beta }_{3}}\cdot Bend\cdot Occasion$ 
-    * Constant phi within segment, varies among years
-        * $\operatorname{logit}(\phi )={{\beta }_{0}}+{{\epsilon }_{year}}$ where ${{\epsilon }_{year}}\tilde{\ }N(0,\sigma )$ 
-* Robust design with telemetry 
-    * In segment (perfect detection, imperfect detection)
-    * River sweep (perfect detection, imperfect detection)
-        * $\operatorname{logit}(\phi )={{\beta }_{0}}+{{\epsilon }_{year}}$ where ${{\epsilon }_{year}}\tilde{\ }N(0,\sigma )$ 
-        * ${{Z}_{track,segement,year}}\tilde{\ }binomial({{\phi }_{segment,year}})$ 
-        * River sweep to inform $\phi$, $\gamma \prime $, and $\gamma\prime\prime$from tracking tags
-
         
 1. Do fish move large distances outside of migrations?  What is the optimal time to do capture-recapture? Options: none, some, a lot.  
 2. What is better to estimate as a random subset of bends or randomly tag a bunch of fish and recapture in random bends?  
 
-| Option 	|       Model       	| $N_{true}$ 	|               N Bends              	|   Occasions  	|
-|--------	|:-----------------:	|:----------:	|:----------------------------------:	|:------------:	|
-| V01    	| $p{{(.)}_{bend}}$ 	|    5000    	| 5,7,10,15,20,25,30,35,40,50,75,100 	| 4 to 10 by 1 	|
-|        	|                   	|            	|                                    	|              	|
-|        	|                   	|            	|                                    	|              	|		
-				
+
 
 BUGS model to estimate close population
 
@@ -90,7 +99,7 @@ BUGS model to estimate close population
 	# PRIORS
 	omega~dunif(0,1)
 	p_cap~dunif(0,1)
-    }`
+}`
 	
 K160: Korman, J., J. Schick, and B. Mossop. 2016. Estimating Riverwide Abundance of Juvenile Fish Populations: How Much Sampling is Enough? North American Journal of Fisheries Management 36:213-229.
 

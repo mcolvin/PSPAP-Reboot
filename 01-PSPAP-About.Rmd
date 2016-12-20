@@ -41,29 +41,10 @@ The Pallid Sturgeon Population Assessment Program is implemented in the upper,
  segmented, and lower Missouri River.
 
 
-Figure 1.2. Upper and lower Missouri River segments establishing the spatial extent
- of Missouri River pallid sturgeon recovery.
-Alternating gray and black line segments denote river bends that serve as the
- spatial grain and sampling unit for population and demographic estimates.
+*Figure 1.2. Upper and lower Missouri River segments establishing the spatial extent  of Missouri River pallid sturgeon recovery. Alternating gray and black line segments denote river bends that serve as the  spatial grain and sampling unit for population and demographic estimates.*
+
  
 Table 1.1.
-
-| RPMA (rkm start, stop) | Segment (rkm start,stop) | Bends |
-|------------------------|--------------------------|-------|
-| 1                      |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-| 2                      |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
-|                        |                          |       |
 
 
 Existing evaluations
