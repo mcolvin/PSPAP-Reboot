@@ -30,7 +30,7 @@ _data/
 *.accdb
 
 # DATA FILES
-*.rds
+
 *.rdata
 
 # NPP FILES

@@ -1,5 +1,5 @@
 
-#' A FUNCTION TO SIMULATE DATA
+# A FUNCTION TO SIMULATE DATA
 sim_ch<-function(inputs,index)
 	{
 	# SET UP CAPTURE HISTORY MATRIX
@@ -48,8 +48,10 @@ sim_ch<-function(inputs,index)
 	}	
 
 
-#' A FUNCTION TO ESTIMATE ABUNDANCE AND CAPTURE PROBABILITY
-estimate<- function(dat,indx)
+# A FUNCTION TO ESTIMATE:
+# 1. ABUNDANCE AND 
+# 2. CAPTURE PROBABILITY
+estimate<- function(dat,inputs,indx)
 	{
 	# ESTIMATE ABUNDANCE USING ACOUSTIC FISH
 	M0_proc<-process.data(data=dat$acoustic,

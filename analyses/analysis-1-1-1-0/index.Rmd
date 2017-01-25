@@ -9,10 +9,30 @@ output:
     toc: FALSE
 ---
 
+```{r, echo=FALSE}  
+    # RUN SOURCE CODE
+    source("./R/1_global.R")
+    source("./R/2_functions.R")
+    source("./R/3_load.R")
+    source("./R/4_clean.R")
+    source("./R/5_tables.R")
+    source("./R/6_figures.R")   
+```
 
-<!--
-rmarkdown::render("index.Rmd")
--->
+```{r,eval=FALSE}
+    source("./R/6_analysis.R")
+```
+To do:
+1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
+
+
+
+```{r}
+figures(1)
+```
+
+
+<!-- rmarkdown::render("index.Rmd")# -->
 
 # Analysis objectives
 
