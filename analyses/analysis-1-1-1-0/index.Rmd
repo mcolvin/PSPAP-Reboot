@@ -20,7 +20,7 @@ output:
 ```
 
 ```{r,eval=FALSE}
-    source("./R/6_analysis.R")
+    source("./R/7_analysis.R")
 ```
 To do:
 1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
