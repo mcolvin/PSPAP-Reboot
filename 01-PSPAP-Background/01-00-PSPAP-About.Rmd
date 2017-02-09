@@ -42,14 +42,15 @@ The PSPAP program began in 2003
 Ramped up in xxx The Pallid Sturgeon
 
 
-## Spatial extent, grain, organization, and sampling
+## Spatial extent, grain, organization, and sampling 
 
 The spatial grain of the monitoring program is the river bend, defined 
 as {welker and drobish}. Within each segment, 25% of bends are randomly 
 sampled annually. Bends may be sampled the following year if selected 
 and there are no fixed reaches that are sampled each year. 
 
- 
+figure \@ref(fig:xxxx) and stuff
+\@ref(study-area)
 
 
 Missouri River pallid sturgeon recovery is limited to the upper and 
@@ -59,13 +60,13 @@ Analysis (EA), RPMA 2 and 4 are referred to as the upper and lower
 basins respectively. 
 
 
-```{r echo=FALSE, out.width="95%"}
+
+
+
+```{r xxxx, echo=FALSE, out.width="95%",fig.cap="Major Missouri River pallid sturgeon management units considered as part of the ongoing EA and adaptive management planning. The Pallid Sturgeon Population Assessment Program is implemented in the upper, segmented, and lower Missouri River."} 
 include_graphics("analyses/01-Study-Area/figures/study-area-1.png")
-```    
-Figure 1.1. Major Missouri River pallid sturgeon management units 
-considered as part of the ongoing EA and adaptive management planning. 
-The Pallid Sturgeon Population Assessment Program is implemented in the 
-upper, segmented, and lower Missouri River. 
+```
+    
 
 
 
@@ -238,7 +239,7 @@ occasion.  ------0---0---0
 
 
 
-## About this report
+## About this report {#study-area}
 
 This report steps through simulations to evaluate potential PSPAP 
 designs that align with the the fundamental objectives outlined by the 

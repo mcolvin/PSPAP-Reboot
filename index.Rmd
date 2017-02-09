@@ -1,5 +1,5 @@
 --- 
-title: "PSPAP Reboot"
+title: "Estimating abundance and demographic rates of long-lived fish in the Missouri River"
 author: "Michael E. Colvin, and others..."
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -8,11 +8,15 @@ cover-image: images/Missouri_Yellowstone-for-web.jpg
 ---
 
 
+
 # Preface {-}
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE}
+*This is work in progress, results are provisional and subject to change.
+Do not used or cite this material in any way*
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,out.width="100%"}
 library(knitr)
-include_graphics('images/Missouri_Yellowstone-for-web.jpg', dpi = NA)
+include_graphics('images/Missouri_Yellowstone-for-web.jpg')
 ```
 
 <!-- compile book
@@ -24,8 +28,4 @@ bookdown::render_book("",
 
 -->
 
-
-
-<!-- Section 1. Missouri River pallid sturgeon declines and recovery program-->  
-
-
+## Structure of the book {-}
