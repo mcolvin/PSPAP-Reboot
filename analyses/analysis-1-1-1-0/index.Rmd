@@ -9,30 +9,119 @@ output:
     toc: FALSE
 ---
 
-```{r, echo=FALSE}  
+<!-- 
+To do:
+1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
+
+rmarkdown::render("index.Rmd")# render index for this analysis
+# the results of this analysis (i.e., figures, tables) are sourced by the gitbook
+
+-->
+
+```{r, echo=FALSE,message=FALSE, warnings=FALSE}  
     # RUN SOURCE CODE
     source("./R/1_global.R")
     source("./R/2_functions.R")
     source("./R/3_load.R")
     source("./R/4_clean.R")
     source("./R/5_tables.R")
-    source("./R/6_figures.R")   
+    source("./R/6_figures.R") 
+
+    source("./R/7_analysis.R")    
 ```
 
-```{r,eval=FALSE}
-    source("./R/7_analysis.R")
-```
-To do:
-1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
+
+
+### Analysis objectives
+
+The objectives of this analysis were to:
+
+1. evaluate the benefit of using telemetry information in abundance estimates
+2. if so, then how many telemetry fish and occasions are needed to estimate abundance given accurancy and precision criteria.
 
 
 
-```{r}
+Randomly get fish within segment
+probably better to just break out to bends and run that way.
+
+
+## Methods
+
+### Simulated population
+
+* Segment assigned 25  578 1131 1683 2236 2789 3342 3894 4447 5000
+* Number of telemetry fish was c(2,5,10,20,30)
+* Number of occasions was 2,3,4, or 5
+* Detection probabilities were 0.050, 0.125, 0.200, 0.275, 0.350, 0.425, and 0.500
+* All possible combinations: 280
+* 100 replicates of each combination
+
+
+### Abundance estimator
+
+#### Model
+
+#### Using telemetry fish
+
+#### Assumptions
+
+* No movement
+* No mortality
+* No tag loss
+* Equally vulnerable to capture
+
+
+
+### Design criteria
+
+The design should meet the following criteria:
+1. Be estimable for 100% of simulations 
+2. Estimates mean absolute deviation (MAD) within 20% of true value
+3. Mean relative standard error (RSE) of estimate less than or equal to 20%
+    1. Abundance
+
+Segment level estimate
+1. closed w/in bend (rd) N = sum(N_bend/bend length)
+2. closed w/in segment  
+3. 
+
+### Decision model
+
+#### Parameterization
+
+
+#### Effort and Cost
+
+* Trotlining (3 person crew)
+    * 1 lead; 35 to 50 k/year 
+    * 2 technicians ; 22 to 35 k/year
+    * 35% fringe
+* VR100 @ 2000 x 2
+* Telemetry Tags @ 200 to 300 $/tag
+* PIT Tags @ 1 $/tag
+
+
+
+
+## Results
+
+## Discussion
+Rules of thumb, N recaptures? number of fish? 
+use shovelnose for capture probabilities?
+
+
+
+
+```{r,echo=FALSE}
 figures(1)
 ```
 
+_Figure 1._
+Figure of reliability, accuracy, and precision for abundance and detection probability estimates.
+Abundance estimate reliability (top), accuracy (2nd from top), precision (middle row).
+Bottom 2 rows present accuracy and precision for detection probability estimates.
 
-<!-- rmarkdown::render("index.Rmd")# -->
+
 
 # Analysis objectives
 
@@ -46,29 +135,7 @@ library(pander)
 source("./R/7_main.R")
 
 ```
-The design should meet the following criteria:
 
-1. Be estimable at least 90% of simulations 
-2. Estimates mean absolute deviation within 20% of true value
-3. Mean relative standard error of estimate less than or equal to 20%
-    1. Abundance
-    2. Demographic rates
-        1. Lambda
-        2. Survival
-        3. Gamma
-
-Segment level estimate
-1. closed w/in bend (rd) N = sum(N_bend/bend length)
-2. closed w/in segment  
-3. 
-
-Rules of thumb, N recaptures? number of fish? 
-use shovelnose for capture probabilities?
-
-
-```{r}
-
-```
 
 
 

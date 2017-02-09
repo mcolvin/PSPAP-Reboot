@@ -33,8 +33,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html">
+<link rel="prev" href="monitoring-learning-and-decision-making.html">
+<link rel="next" href="power-of-monitoring-data-to-detect-management-effect.html">
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -127,41 +127,21 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">PSPAP Reboot</h1>
-<h4 class="author"><em>Michael E. Colvin, and others…</em></h4>
-<h4 class="date"><em>2017-02-09</em></h4>
-</div>
-<div id="preface" class="section level1 unnumbered">
-<h1>Preface</h1>
-<p><img src="images/Missouri_Yellowstone-for-web.jpg" /><!-- --></p>
-<!-- compile book
-
-library(knitr)
-bookdown::render_book("",
-    output="bookdown::gitbook",
-    output_dir = "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs")
-
--->
-<!-- Section 1. Missouri River pallid sturgeon declines and recovery program-->
-
-<!--
-# Missouri River pallid sturgeon declines and recovery program
-censored to keep index file
-Chapter 2
-
-to do:
-* add a figure of Proportion sampled for each year
-* add a figure of year and each bend with 0---0 for each sampling occasion.
--->
+<div id="assimilation-and-integrating-monitoring-research-and-management" class="section level1">
+<h1><span class="header-section-number">Chapter 8</span> Assimilation and integrating monitoring, research and management</h1>
+<p>Integrating monitoring with the adaptive management plan will pose challenge in a decision making context. In particular, the adaptive management plan utilizes multiple sources of information at varying scales of implementation (Level 1 and 2, Process and implementation). Level 1 study consists of small scale experiments and information learned from these studies may not adequately scale to the population level. For example, scientific studies conducted in ponds, flumes, or under controlled laboratory conditions may not generalize to the population level. However this information is important to synthesize an incorporate into decision making and adaptive management as these values may be the only source of that can inform demographic rates used in the population model. A formal framework to integrate information acquired from studies at the varying levels has not been developed and represents a challenge to integrate information across study levels.</p>
+<p>The exact nature of a framework to integrate what is learned from levels of studies in the AM plan is uncertain. One approach that has been used to combine sources of information is Bayes Theorem, which can assimilate prior and current information into a posterior distribution of values. This approach is potentially useful because it can be used in either a scenario planning approach (i.e., evaluating scenarios through a model) or in a decision model such as a Bayesian Decision Network (BDN) (Nyberg et al. 2006). This section provides an example of how Bayes Theorem is used to update a distribution of survivals for embryos and some potentially usefly applications of BDNs to assimilate and incorporate information learned from studies at varying levels in a decision making context. It should be recognized that this is one approach that shows promise and is commonly used in a decision making context, but there may be other approaches that are more suitable, however are yet unidentified.</p>
+<p>Suppose that prior to any level of study, survival of embryos to free embryos (<span class="math inline">\({{\phi }_{embryo}}\)</span>) was believed to be some value with some measure of uncertainty. This value and associated uncertainty can be derived by literature review or expert elicitation. In this hypothetical example, suppose the initial value and associated uncertainty for embryo survival (<span class="math inline">\({{\phi }_{embryo}}\)</span>) was determined by expert elicitation. An approach to perform the elicitation would be to have experts adjust the parameters of the equation<span class="math display">\[\text{logit}({{\phi }_{embryo}})={{\beta 
+}_{0}}+\varepsilon \]</span>, where <span class="math inline">\(\beta_0\)</span> is the expected survival on logit scale and $$ is a normally distributed error term controlling the uncertainty around <span class="math inline">\(\phi_{embryo}\)</span>. If the results of this hypothetical elicitation were <span class="math inline">\({{\beta }_{0}}=-12.1\)</span> and <span class="math inline">\(\varepsilon =0.2\)</span>, the resulting distribution of <span class="math inline">\({{\phi }_{embryo}}\)</span> is illustrated in Figure 1. This distribution of <span class="math inline">\({{\phi }_{embryo}}\)</span> values can then be used in stochastic population simulations to evaluate population dynamics and viability over the long term.</p>
+<p>Model parameterized by expert elicitation provides a rapid framework to evaluate the effect of management actions in an objective that otherwise may take months to years or may be impossible to estimate. Sensitivity analysis provides a method to evaluate how dependent model outcomes are on these inputs and potentially guide research and monitoring. As the adaptive management plan moves forward, studies at varying levels will further inform demographic parameters like <span class="math inline">\({{\phi }_{embryo}}\)</span>. For example, suppose a study is implemented that provides estimates of embryo survival based on a flume study and survival was estimated from the same logit linear model where <span class="math inline">\({{\beta }_{0}}=-11.5\)</span> and <span class="math inline">\(\varepsilon =0.1\)</span> which is illustrated in Figure 1. This study, while not at the scale of the entire system, provides additional information on embryo survival and can be incorporated and assimilated using Bayes theorem to update the distribution of survival values resulting from expert elicitation (Hilborn and Mangel 1997, Clemen et al. 2001, Conroy and Peterson 2013). Incorporating and assimilation the information results in a posterior distribution representing the assimilation of the two information sources illustrated in Figure 1. Population model simulations can then be conducted using the new distribution of survivals assimilating expert elicitation and monitoring results.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html" class="navigation navigation-next navigation-unique" aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+<a href="monitoring-learning-and-decision-making.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="power-of-monitoring-data-to-detect-management-effect.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>

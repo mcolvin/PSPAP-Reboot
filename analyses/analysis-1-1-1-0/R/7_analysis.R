@@ -21,22 +21,24 @@ if(nrow(inputs)>0){
 ## SIMULATIONS TO PARAMETERIZE A BDN
 
 ### RUN SIMULATION OF VARING INPUTS
-for(kk in 1:nrow(bdn_inputs))
+if(exists('bdn_inputs')==TRUE)
     {
-    # SIMULATE DATASET
-    tmp<-sim_ch(inputs=bdn_inputs,index=kk)
-    if(is.null(tmp)==FALSE)
+    for(kk in 1:nrow(bdn_inputs))
         {
-        # ESTIMATE 
-        tmpp<-estimate(dat=tmp,
-            inputs=bdn_inputs,indx=kk)
-        out_bdn<-rbind(out_bdn,tmpp)
-        cleanup(ask=FALSE)
-        print(round(kk/nrow(bdn_inputs)*100,3))		
+        # SIMULATE DATASET
+        tmp<-sim_ch(inputs=bdn_inputs,index=kk)
+        if(is.null(tmp)==FALSE)
+            {
+            # ESTIMATE 
+            tmpp<-estimate(dat=tmp,
+                inputs=bdn_inputs,indx=kk)
+            out_bdn<-rbind(out_bdn,tmpp)
+            cleanup(ask=FALSE)
+            print(round(kk/nrow(bdn_inputs)*100,3))		
+            }
+        # SAVE SIMULATION RESULTS
+        saveRDS(out_bdn,"./output/BDN-results.RDS")
         }
-    # SAVE SIMULATION RESULTS
-    saveRDS(out_bdn,"./output/BDN-results.RDS")
     }
-
 
 

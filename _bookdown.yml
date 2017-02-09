@@ -1,0 +1,9 @@
+book_filename: "bookdown-demo"
+chapter_name: "Chapter "
+rmd_files: ["index.Rmd",
+    "01-PSPAP-Background/01-00-PSPAP-About.Rmd",
+    "02-Abundance/02-00-Abundance.Rmd",
+    "03-Demographic-Rates/03-00-Demographics.Rmd",
+    "04-Abundance-And-Demographic-Rates/04-00-Abundance-And-Demographics.Rmd",
+    "05-Logistics-And-Cost/10-00-Effort-And-Cost.Rmd",
+    "06-Decision-Making/15-00-PSPAP-and-Decision-Making.Rmd"]

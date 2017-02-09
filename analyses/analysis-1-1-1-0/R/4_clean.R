@@ -23,8 +23,11 @@ inputs<- subset(inputs,!(id %in% done))
 out[out==-99]<-NA
 
 
-# SET UP GRID FOR PARAMETERIZING A CPT
 
+
+
+
+# SET UP GRID FOR PARAMETERIZING A CPT
 if(exists('out_bdn')==FALSE)
     {
     out_bdn<-data.frame()
@@ -32,16 +35,15 @@ if(exists('out_bdn')==FALSE)
 
 # SET UP GRID TO PARAMETERIZE A BDN
 nreps<-300000 # NUMBER OF STOCHASTIC REPS,RETURNS 2 SIMS PER REP (ACOUSTIC, NO ACOUSTIC)
-n_to_do<- nreps-nrow(out_bdn)
-bdn_inputs<- data.frame(
-    N=round(runif(n_to_do,5,200),0),
-    nocc=round(runif(n_to_do,1,5),0),
-    p=runif(n_to_do,0.005,0.3),
-    reps=c((nreps-n_to_do+1):nreps),  # set this up to track in output 
-    ntrack=round(runif(n_to_do,1,30),0))
-
-# CHECK TO SEE HOW MANY REPS ARE DONE
-    
+n_to_do<- nreps-max(out_bdn$reps)# CHECK TO SEE HOW MANY REPS ARE DONE
+if(n_to_do>0){
+    bdn_inputs<- data.frame(
+        N=round(runif(n_to_do,5,200),0),
+        nocc=round(runif(n_to_do,1,5),0),
+        p=runif(n_to_do,0.005,0.3),
+        reps=c((nreps-n_to_do+1):nreps),  # set this up to track in output 
+        ntrack=round(runif(n_to_do,1,30),0))
+        }
         
         
         
