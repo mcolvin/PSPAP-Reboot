@@ -1,0 +1,8 @@
+
+
+tmp<- ddply(dat,
+    
+
+
+
+

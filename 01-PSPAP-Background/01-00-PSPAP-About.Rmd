@@ -68,6 +68,33 @@ include_graphics("analyses/01-Study-Area/figures/study-area-1.png")
 ```
     
 
+The objectives of the Pallid Sturgeon Population Assessment Program are:
+
+Objectives
+1. Evaluate annual results and long-term trends in pallid sturgeon 
+population abundance and geographic distribution throughout the Missouri 
+River System. 
+2. Evaluate annual results and long-term trends of habitat usage of 
+pallid sturgeon and hatchery-stocked pallid sturgeon by season and life 
+stage. 
+3. Evaluate population structure and dynamics of pallid sturgeon in the 
+Missouri River system. 
+4. Evaluate annual results and long-term trends in the population 
+abundance of native target species and geographic distribution 
+throughout the Missouri River system. These target species include: 
+shovelnose sturgeon (_Scaphirhynchus platorynchus_), blue sucker 
+(_Cycleptus elongates_), sauger (_Zander canadense_), plains and Western 
+silvery minnows (_Hybognathus_ spp.), sand shiner (_Notropis stramineus_), 
+and three main channel inhabiting cyprinids in the genus _Macrhybopsis_. 
+These three species, sturgeon chub (_M. gelida_), sicklefin chub (_M. 
+meeki_), and speckled chub (_M. aestivalis_), are the main forage for 
+piscivorous pallid sturgeon and are rare themselves in some sections of 
+the Missouri River. 
+5. Evaluate annual results and long-term trends of habitat usage of the 
+target native species by season and life stage. 
+6. Evaluate annual results and long-term trends in all remaining 
+species (minimum of 50 fish collected/species) population abundance and 
+geographic distribution throughout the Missouri River system. 
 
 
 
@@ -143,7 +170,9 @@ river bend sampling units, where a river bends are defined as a three
 continuous habitats (channel cross-over, inside bend, outside bend) and 
 vary in number and size from for the lower and upper basin (Lower: 
 N=317, mean=4 rkm, min=0.2, max=19; Upper: N=157, mean=2.3, min=0.6, 
-max=8). Simulations were performed using the lower basin sampling units 
+max=8). 
+
+Simulations were performed using the lower basin sampling units 
 as templates. Population dynamics were simulated given known 
 recruitment, survival, and abundance. Given the population dynamics, 
 capture histories were simulated for two levels of capture probability 
@@ -346,4 +375,25 @@ Braided and Dendritic Channels
 
 * Excludes non-flowing pools
 
-<!--chapter:end:tables.Rmd-->
+## Habitat Assessment and Monitoring Project (HAMP) 
+
+The HAMP focuses on assessing the physical and biological responses of 
+habitat creation efforts in the channelized Missouri River. Physical 
+responses are characterized by diversity of depth, velocity, slope, 
+substrate, etc., while biological responses are characterized by various 
+metrics related to pallid sturgeon and a series of native target species 
+(i.e., sicklefin chubs, sturgeon chubs, speckled chubs, plains and 
+western silvery minnow, young of the year blue sucker and sauger). 
+
+
+### Objectives of the Project
+
+1. Evaluate annual and multi-year trends in physical diversity (i.e., 
+depth, velocity, substrate) and change in modified sites relative to 
+control sites over time (a control site is a site that remains as 
+unmodified from its current status). 
+2. Evaluate annual and multi-year trends of fish metrics (i.e., catch 
+per unit effort, presence/absence) of pallid sturgeon and target species 
+between modified and control sites. 
+
+

@@ -172,10 +172,10 @@ estimate<- function(dat,inputs,indx)
 	
 	
 	
-plot_metrics<-function(metric,NN,xxt="s",main=FALSE)
+plot_metrics<-function(metric,NN,xxt="s",main=FALSE,datt=pdat)
 	{
 	form<- as.formula(paste(metric,"~nocc"))
-	ppdat<-subset(pdat,N==NN)
+	ppdat<-subset(datt,N==NN)
 	ppdat<- ppdat[order(ppdat$type,ppdat$p),]
 
 	# NTRACK = 0 

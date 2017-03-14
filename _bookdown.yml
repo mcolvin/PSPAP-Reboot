@@ -1,5 +1,5 @@
-book_filename: "bookdown-demo"
-chapter_name: "Chapter "
+book_filename: "pspap"
+chapter_name: "Section "
 rmd_files: ["index.Rmd",
     "01-PSPAP-Background/01-00-PSPAP-About.Rmd",
     "02-Abundance/02-00-Abundance.Rmd",

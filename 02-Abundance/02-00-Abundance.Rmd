@@ -34,7 +34,6 @@ reliable?
 
 Each major question corresponds to a chapter in this report.
 
-
 Chapter 3. How many occasions are needed to estimate abundance at the 
 bend-level and segment level? 
 Chapter 4.. How should segment estimates be aggregated? 
@@ -47,25 +46,6 @@ Chapter 4.. How should segment estimates be aggregated?
 probabilities? 
 
 
-BUGS model to estimate close population
 
-`mod<- function()
-	{
-	for(i in 1:M)
-		{
-		z[i]~dbin(omega,1) # LATENT VARIABLE, DATA AUGMENTATION
-		for(j in 1:T)
-			{
-			p_eff[i,j]<- z[i]*p_cap # CONDITIONAL SPECIFICATION
-			obs[i,j]~dbern(p_eff[i,j])			
-			}#i
-		}#j
-	# DERIVED PARAMETERS
-	N<-sum(z[]) 
-	
-	# PRIORS
-	omega~dunif(0,1)
-	p_cap~dunif(0,1)
-    }`
-	
-
+```{r child = '/02-Abundance/analysis-1-1-1-0/index.Rmd'}
+```

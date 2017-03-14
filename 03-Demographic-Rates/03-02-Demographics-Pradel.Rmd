@@ -1,37 +1,8 @@
 
-<!--
-Chapter 2
-
-to do:
-
--->
+# Pradel model
 
 
-# Estimating Pallid Sturgeon Demographic Rates
-
-## Effects on survival
-
-Modeling the effect of management actions on survival is specified by a 
-logistic equation. Specifically, the base survivals are simulated using 
-the equation 
-
-
-$$\Phi_{stage} = \frac{exp(\beta_0)}{1+exp(\beta_0)},$$
-
-Where $\beta_0$ represents the expected survival on logit scale. For 
-example, adult survival is expected 
-
-            
-     
-
-
-
-
-
-## Pradel model
-
-
-### Background
+## Background
 
 The information contained in capture histories informs the survival from 
 one time interval to the next. This information when viewed in reverse 
@@ -42,8 +13,7 @@ histories in reverse order estimates recruitment. Typical with
 capture-mark-recapture approaches estimated parameters can be estimated 
 and related to covariates. 
 
-
-The Pradel model originally developed by Pradel back in the 70s 
+ The Pradel model originally developed by Pradel back in the 70s 
 estimates survival and recruitment using this reversal symmetry. 
 Essentially, when looking at a capture history of a fish in reverse with 
 particular examination of the preceding 0s. Suppose a capture history of 
@@ -54,7 +24,7 @@ appealing because recruitment can be thought of simply surviving age-0
 or age-1 which can be related to covariates. Thinking outside of the box 
 on this one might be able to model the effect of environmental 
 covariates hypothesized to influence recruitment. 
-
+ 
 
 The objective of this brief is to explore whether this might make sense. 
 It is not a full proof of concept but a simple what if. Therefore the 
@@ -63,9 +33,8 @@ computer but may fail miserably in the field.
 
 
 
-### Simulating some known data.
-
-To test the approach we need to simulate some data from some known 
+## Simulating some known data.
+ To test the approach we need to simulate some data from some known 
 parameters. The Pradel model estimates $\phi$, $p$, and $f$, where these 
 values represent survival, capture probability, and recruitment rate. 
 For the simulation I simulated 10 occasions, could be 10 years, 10 
@@ -76,13 +45,11 @@ months, so on.
 * Capture probability $p$ was set at 0.3
 * Recruitment rate $f$ was set at 0.195 (i.e., Recruits = $f$*Abundance)
 * Initial population was set to be 2000 critters
-
-The code above simulates a population of individuals given a recruitment 
-rate where the number of recruits is a function of the population in 
-this case. It may not be in some cases and this can be account for in 
-the Pradel formulation. Now we can look at the 'true' population 
-dynamics. 
-
+ The code above simulates a population of individuals given a 
+recruitment rate where the number of recruits is a function of the 
+population in this case. It may not be in some cases and this can be 
+account for in the Pradel formulation. Now we can look at the 'true' 
+population dynamics. 
 
 Now we can use the 'true' population dynamics to simulate the capture 
 process and make some capture histories. In the capture histories there 
@@ -99,7 +66,6 @@ lambda < 1.
 
 
 ## Application to AM and the big picture
-
 The potential application of this is linking management actions to 
 demographic rates. For example suppose over the 10 years IRC habitat was 
 constructed and hypothesized to influence recruitment. Well in this case 
@@ -112,7 +78,7 @@ the equation to predict recruitment rate is $f= exp(\beta_{0} +
 \beta_{1} \cdot IRC)$ The code below implements this for some IRC 
 values. 
 
-
+ 
 
 The predicted recruitment as a function of IRC looks like the figure 
 below. 
@@ -123,8 +89,7 @@ below.
 Using the same code to simulate a population with constant $\phi$ as 
 above but now allowing $f$ to vary over time as a function of IRC we can 
 simulate the population data. The population dynamics are plotted below. 
-
-
+ 
 Now that we have the true population data we can simulate the capture 
 histories given $p$ Some processing of the simulated data to feed to 
 MARK. Now we can do as we did previously but now there is a new bit 
@@ -133,28 +98,21 @@ look good, I fed the simulation a $\beta_{0} = r B_0$ and got back `
 coef(m1)[3,1]`. For the effect of IRC I used a $\beta_{1} = r B_irc$ and 
 got back r coef(m1)[4,1]. 
 
-
-  
-**Estimates and true values will not exactly match but will improve 
+ **Estimates and true values will not exactly match but will improve 
 with more occasions, recaptures, and so on.** 
-
-
  
-
 
 A information theoretic approach could be used to evaluate the effect of 
 IRC versus no effect of IRC. 
 
-
-With AICc values of r round(summary(m1)$AICc,2) and r 
+ With AICc values of r round(summary(m1)$AICc,2) and r 
 round(summary(m2)$AICc,2) for m1 and m2 respectively there might be some 
 weak evidence for an effect of IRC. 
 
 
 
 ### Fitting a covariate to lambda
-
-Using the same approach we can fit a covariate to lamba. This is not as 
+ Using the same approach we can fit a covariate to lamba. This is not as 
 directly interpretable but simply illustrates the approach. 
 
 
@@ -169,7 +127,3 @@ working on a big river throws some big monkey wrenches.
 $\phi$, constant $p$ which may be relaxed to a degree. 
 1. The consequence of violating the assumptions is always problematic.  
 
-
-```{r, child="03-Demographic-Rates/03-01-Demographics-CJS.Rmd"}
-
-```

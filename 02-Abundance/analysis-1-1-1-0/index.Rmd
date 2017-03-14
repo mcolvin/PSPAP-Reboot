@@ -112,8 +112,11 @@ use shovelnose for capture probabilities?
 
 
 
+<!--NN: 25 578 1131 1683 2236 2789 3342 3894 4447 5000 -->
+        
+
 ```{r,echo=FALSE}
-figures(1)
+figures(1, NN= 25)
 ```
 
 _Figure 1._
@@ -122,21 +125,17 @@ Abundance estimate reliability (top), accuracy (2nd from top), precision (middle
 Bottom 2 rows present accuracy and precision for detection probability estimates.
 
 
-
+```{r,echo=FALSE}
+figures(1, NN=578)
+```
+```{r,echo=FALSE}
+figures(1, NN=5000)
+```
 # Analysis objectives
 
 1. Evaluate the number of recapture occasions need to estimate capture probability($p$) and abundance ($N$) for
 varying population and capture probabilities
 2. Evaluate the use of tagged telemetry fish to reduce effort
-
-
-```{r,echo=FALSE}
-library(pander)
-source("./R/7_main.R")
-
-```
-
-
 
 
 

@@ -57,7 +57,7 @@ populations of the Upper and Lower Missouri River.
 
 ## Analysis objectives
 
-<!--
+<!-- source for existing analysis
 ```{r,echo=FALSE}
 #source("./RD-Rmark/R/3-load.R")
 #source("./RD-Rmark/R/4-clean.R")
@@ -135,7 +135,7 @@ Pallid Sturgeon respectively can be simulated by modifying monthly
 transition matrices. For example, suppose that adult Pallid Sturgeon 
 migrate upstream given a flow or temperature cue. This directed movement 
 can be simulated by specifying the probability of a fish moving to 
-downstream bends equal to 0 and upstream bends greather than 0. 
+downstream bends equal to 0 and upstream bends greater than 0. 
 Similarly, the effect of flow on free embryo drift can be simulated with 
 increased downstream probabilities. 
 
@@ -144,7 +144,7 @@ Y_{I,j,t+1}=\beta_0 + \beta_1 \cdot Q_{I,j,t} for i<=j
 i>j = 0
 
 Current model implementation requires an array of transitions for each 
-timestep. Future model versions will attempt to reefing the linke 
+time step. Future model versions will attempt to reefing the link 
 between environmental covariates like flow such that a time series of 
 predicted flows can be used as as inputs. The relationship between 
 movement and varying covariates may take the form of a model prediction 

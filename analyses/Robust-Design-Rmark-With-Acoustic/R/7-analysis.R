@@ -14,12 +14,14 @@ for(ii in start:150)
 		n_unobservable=25)
 
 	rd_acoustic<- process.data(data=out$acoustic$ch, 
-		groups="acoustic",model="Robust", 
+		groups="acoustic",
+        model="Robust", 
 		time.intervals=out$acoustic$occs) # CLUTCH...
 	rd_acoustic_ddl<-make.design.data(rd_acoustic)
 
 	rd_pit<- process.data(data=out$pit$ch, 
-		groups="acoustic",model="Robust", 
+		groups="acoustic",
+        model="Robust", 
 		time.intervals=out$pit$occs) # CLUTCH...
 	rd_pit_ddl<-make.design.data(rd_pit)
 

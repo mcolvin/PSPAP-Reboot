@@ -10,8 +10,7 @@ tables<-function(n)
 			accuracy_p = mean(abs(p_hat-p),na.rm=TRUE)/max(p),
 			precision_N = mean(N_hat_se/N_hat,na.rm=TRUE),
 			precision_p = mean(p_hat_se/p_hat,na.rm=TRUE))
-
-		return(tmp)
+        return(tmp)
 		}
 	}
 	
