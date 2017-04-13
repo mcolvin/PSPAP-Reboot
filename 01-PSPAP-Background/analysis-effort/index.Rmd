@@ -1,0 +1,55 @@
+---
+title: "Quantifying effort and distribution of PSPAP gears"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+---
+
+<!--
+rmarkdown::render("index.Rmd")# build page
+-->
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+source("R/1_global.R")
+source("R/2_functions.R")
+source("R/3_load-and-clean.R")
+source("R/4_figures.R")
+source("R/5_tables.R")
+source("R/6_analysis.R")
+```  
+## Objectives
+
+1. Characterize temporal use of gear for PSPAP duration
+2. Quantify effort and associated dispersion for each PSPAP gear
+
+## Methods
+
+* fit distribution to effort for common gear types
+
+## Results
+
+
+
+
+
+## Figures
+
+```{r,echo=FALSE}
+figures(1)
+```
+
+Figure 1. Illustration of gears used since 2003 for Pallid Sturgeon 
+Population assessment in the Missouri River. Top panel is for Lower basin (RPMA 4)
+and bottom panel is for Upper basin (RPMA 2). 
+
+## Tables
+
+Table 1. Summary of frequency of use for each gear type by year. 
+```{r,echo=FALSE}
+library(knitr)
+kable(tables(1),
+    col.names=c("Basin","PSPAP gear code", "Gear id",2003:2016))
+    
+```

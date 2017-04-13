@@ -1,0 +1,67 @@
+---
+title: "PSPAP 2.0 Objectives hierarchy"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn
+  word_document:
+    highlight: zenburn
+
+---
+
+<!--
+rmarkdown::render("objectives-hiearachy.Rmd",
+    output_format="word_document",
+    output_dir="./drafts")# build page
+-->
+
+
+
+# Objectives hierarchy and attributes
+
+* Quantify PS recruitment to age-1
+    * Power to detect age-1 recruits if recruitment occurs
+    * Segment level age-1 abundance
+        * bias
+        * precision
+    * Estimate age-1 recruitment rate
+        * bias
+        * precision
+* Quantify PS population trend
+    * Estimate RPMA level population growth rate $\lambda$
+        * bias
+        * precision
+* Provide relevant PS model inputs
+    * Estimate segment-level abundance, origin-specific 
+        * bias
+        * precision
+        * spatial distribution
+    * Survival (RPMA level)
+        * bias
+        * precision
+    * Fecundity (RPMA level)
+        * bias
+        * precision
+    * Growth (RPMA)
+        * bias 
+        * precision
+    * Movement
+        * fidelity
+        * among segment movement
+    * Population strcture and characteristics
+        
+    * Sex ratio (segment level)
+        * bias
+        * precision
+* Maintain compatibility with legacy PSPAP data
+    * Proportion of randomly selected bends within segment
+    * Gears similarity: proportion of standard gears used by design
+    * Effort similarity: deviation from average effort
+* Stay below cost constraints
+    * Minimize costs
+  
+  
+  
