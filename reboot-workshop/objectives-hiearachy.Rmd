@@ -1,12 +1,12 @@
 ---
-title: "PSPAP 2.0 Objectives hierarchy"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "PSPAP Workshop Objectives hierarchy"
+date: "Workshop held March 21, 2017"
 output:  
   html_document:
     theme: readable
     highlight: tango
   pdf_document:
-    highlight: zenburn
+    highlight: zenburn 
   word_document:
     highlight: zenburn
 
@@ -15,6 +15,7 @@ output:
 <!--
 rmarkdown::render("objectives-hiearachy.Rmd",
     output_format="word_document",
+    output_file = paste(format(Sys.time(), '%Y%m%d'),"objectives-hiearachy.docx",sep="-"),
     output_dir="./drafts")# build page
 -->
 
@@ -22,20 +23,32 @@ rmarkdown::render("objectives-hiearachy.Rmd",
 
 # Objectives hierarchy and attributes
 
-* Quantify PS recruitment to age-1
-    * Power to detect age-1 recruits if recruitment occurs
+The numbered objectives correspond to fundamental objectives identified 
+during the workshop. Bulleted lists within each numbered objective in 
+bold are measurable attributes that can be used to quantify each 
+objective. For example there are 3 attributes under objective 1 that can 
+be quantified for each monitoring alternative. Assuming these attributes 
+are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet 
+may receive a weight of 33% if each attribute is equally important to 
+decision makers. Alternatively these values can be weighted to reflect 
+perceived importance by decision makers. 
+
+
+
+1. **Quantify PS recruitment to age-1 (Natural origin)**
+    * Power to detect age-1 natural origin recruits if recruitment occurs
     * Segment level age-1 abundance
         * bias
         * precision
-    * Estimate age-1 recruitment rate
+    * Estimate age-1 recruitment rate (natural origin)
         * bias
         * precision
-* Quantify PS population trend
+2. **Quantify PS population trend (natural and hatchery origin)**
     * Estimate RPMA level population growth rate $\lambda$
         * bias
         * precision
-* Provide relevant PS model inputs
-    * Estimate segment-level abundance, origin-specific 
+3. **Provide relevant PS model inputs**
+    * Estimate segment-level abundance, origin and stage specific 
         * bias
         * precision
         * spatial distribution
@@ -51,16 +64,18 @@ rmarkdown::render("objectives-hiearachy.Rmd",
     * Movement
         * fidelity
         * among segment movement
-    * Population strcture and characteristics
-        
+    * Population structure and characteristics (segment level)
+        * Size structure
+            * bias 
+            * precision
     * Sex ratio (segment level)
         * bias
         * precision
-* Maintain compatibility with legacy PSPAP data
+4. **Maintain compatibility with legacy PSPAP data**
     * Proportion of randomly selected bends within segment
     * Gears similarity: proportion of standard gears used by design
     * Effort similarity: deviation from average effort
-* Stay below cost constraints
+5. **Stay below cost constraints**
     * Minimize costs
   
   
