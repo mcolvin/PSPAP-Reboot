@@ -3,9 +3,8 @@ figures<- function(n){
 if(n==1){
     # ENTIRE STUDY AREA
 	plot(manunits,col="black",lwd=1)
-	plot(umo,col="black",lwd=2,add=TRUE)	
-	plot(wb,add=TRUE,col="grey",border="grey",lwd=2.5)		
-	plot(lmo,col="black",add=TRUE,lwd=2)
+	plot(bends,col="black",lwd=2,add=TRUE)	
+	plot(reservoirs,add=TRUE,col="grey",border="grey",lwd=2.5)		
 	points(-104.54,47.28,pch=19,cex=1)          # INTAKE
 	points(-106.422049, 48.001600,pch=19, cex=1)# FORT PECK DAM	
 	points(-101.411601,47.498528,pch=19,cex=1)  # GARRISON DAM		
@@ -72,21 +71,6 @@ if(n==3)
 	points(-99.448768,44.049215,pch=19,cex=1)   # BIG BEND DAM	
 	points(-98.562062,43.059483,pch=19,cex=1)   # FORT RANDALL DAM
 	points(-97.485244,42.860696,pch=19,cex=1)   # GAVINS POINT DAM
-	#map.scale(y=42,ratio=FALSE)
-	#arrows(-109.5,43,-109.5,45,lwd=3,length=0.15)
-	#text(-109.5,42.5,"N",cex=1.2)
-#	par(xpd=TRUE)	
-#	segments(-90.120752, 38.813236, -90.120752, 50,lwd=2)
-#	segments(-97.485244,42.860696,-97.485244,50,lwd=2) # GAVINS POINT DAM
-#	segments(-103.5,48.001600,-103.5,50,lwd=2)	
-#	segments(-106.422049,48.001600,-106.422049,50,lwd=2)
-
-#	text(mean(c(-90.120752,-97.485244)),50,"Lower Missouri \n River \n",
-#		col="black",cex=0.8)
-#	text(mean(c(-103.5,-97.485244)),50,"Segmented \n reach \n",
-#		col="black",cex=0.8)	
-#	text(mean(c(-103.5,-106.422049)),50,"Upper \n Missouri \n River",
-#		col="black",cex=0.8)
 	text(-95,33, "Mississippi River \n and Atchafalaya \n Basin")
 		
 	par(srt=-45)
