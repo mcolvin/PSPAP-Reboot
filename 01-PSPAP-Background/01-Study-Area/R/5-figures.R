@@ -63,9 +63,8 @@ if(n==1){
 if(n==3)
 	{
 	plot(manunits,col="black",lwd=1)
-	plot(umo,col="black",lwd=2,add=TRUE)	
-	plot(wb,add=TRUE,col="grey",border="grey",lwd=2.5)		
-	plot(lmo,col="black",add=TRUE,lwd=2)
+	plot(bends,col="black",lwd=4,add=TRUE)	
+	plot(reservoirs,add=TRUE,col="grey",border="grey",lwd=2.5)		
 	points(-104.54,47.28,pch=19,cex=1)          # INTAKE
 	points(-106.422049, 48.001600,pch=19, cex=1)# FORT PECK DAM	
 	points(-101.411601,47.498528,pch=19,cex=1)  # GARRISON DAM		
@@ -88,7 +87,7 @@ if(n==3)
 #		col="black",cex=0.8)	
 #	text(mean(c(-103.5,-106.422049)),50,"Upper \n Missouri \n River",
 #		col="black",cex=0.8)
-	text(-86.5,33, "Mississippi River \n and Atchafalaya \n Basin")
+	text(-95,33, "Mississippi River \n and Atchafalaya \n Basin")
 		
 	par(srt=-45)
 	text(-98.5,41.5, "Missouri River")
@@ -98,24 +97,11 @@ if(n==3)
 	points(y~x,hatcheries,pch=15,cex=1.8)
 	text(hatcheries$x, hatcheries$y, 
 		hatcheries$Hatchery,cex=0.6,pos=c(1,1,4,4,1,1))
-
-
-
-		}
+	}
 
 if(n==4)
     {
-    plot(majorstreams[majorstreams$NAME%in%c("Mississippi River","Missouri River"),],
-		axes=TRUE)
-	plot(majorstreams, col="red",add=TRUE)
-		axes=TRUE)
-	plot(wb2[wb2$Name%in%c("Lewis and Clark Lake"),],col='red',add=TRUE)
-	plot(wb2[wb2$Name%in%c("Lewis and Clark Lake"),],col='red',axes=T)
-	
-	
-	ind<-grep("Miss", unique(majorstreams$NAME))
-	plot(majorstreams[ind,])
-	sort(unique(majorstreams$NAME))[7000:8000]
+  
     
     }
 	

@@ -62,14 +62,15 @@ lmo_miss<- readOGR("C:/Users/My Document/projects/Pallid Sturgeon/data/GIS",
 
     
 # HATCHERY DATA
-chan<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Data/pallids.accdb")
+chan<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")
 hatcheries<- sqlFetch(chan, "Hatchery_latlongs")
-
 
 # LOAD MAJOR STREAMS - MAY BE REDUNDANCE WITH ABOVE, CONSOLIDATING CODE
 majorstreams<- readOGR("C:/Users/mcolvin/My documents/projects/gis coverages/National Coverages", 
     "hydrogl020")
 
+    
+    
 # WATER BODIES 
 
 ## LOAD DATA
@@ -80,16 +81,17 @@ reservoirs<- subset(wb, Name %in%c("Lake Sakakawea",
     "Lake Francis Case","Lake Oahe", "Lake Sharpe", "Fort Peck Lake",
     "Lewis and Clark Lake"))
 
-checksums$reservoirs<- digest(reservoirs, algo="md5")  
-    
-    
-plot(wb2)
-
+plot(bends)
 ## LOAD BEND DATA 
 
-
-
-
+bends<- readOGR("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/GIS", 
+    "bends_sp_ll")
+    
+    
+    
+plot(bends,axes=TRUE)
+plot(reservoirs,add=TRUE)
+points(y~x,hatcheries,pch=19)
 
 
 
