@@ -1,0 +1,113 @@
+---
+title: "Creating a reference population"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: readable
+    highlight: tango
+---
+
+```{r, echo=FALSE}
+source("src/1_global.R")
+source("src/2_functions.R")
+source("src/3_load-and-clean.R")
+source("src/4_figures.R")
+source("src/5_tables.R")
+```
+
+<!--
+rmarkdown::render("index.Rmd",output_format='html_document')# build page
+-->
+
+# Overview
+
+A reference population of known pallid sturgeon abundance is needed to 
+evaluate varying monitoring designs and their ability to achieve the fundamental
+objectives identified during the first population assessment program workshop. 
+
+
+# Objectives
+
+The objectives of this analysis were to:
+
+1. Create a spatially explicit pallid sturgeon population with known
+bend-level abundances, and
+2. Simulate the reference population for 20 years with varying but known
+survival and recruitment
+
+
+# Methods
+
+## Spatial extent and grain
+
+This analysis was constrained to generate reference pallid sturgeon populations
+for segments and bend within Missouri River RPMAs 2 and 4. Bends of varying length
+were used to generate the spatial distribution of pallid sturgeon (Table 1).
+
+
+
+## Creating a reference population
+
+### Density formulation
+We randomly assigned the number of pallid sturgeon occupying each bend given
+reported segment level densities by origin (Table 2). The number of pallid sturgeon
+assigned to a bend was stochastically generated from a Poisson distribution given the 
+segment density accounting for bend length as:
+
+$$N_{segment,bend}\sim Poisson(\lambda_{segment,origin}\cdot Length_{segment,bend}) \text{(1)}$$
+
+where 
+ 
+* $N$ is the number of pallid sturgeon within each bend,
+* $\lambda$ is the segment and origin specific density in fish per RKM,
+* $Length$ is bend length in RKM,
+* $segment$ indexes segment within RPMA,
+* $bend$ indexes bend with segment,
+* $origin$ indexes whether pallid sturgeon were hatchery or natural origin, and
+* $bend$ indexes bend within segment. 
+
+## Abundance formulation
+
+We also used an abundance formulation to provide additional analysis flexibility.
+This approach required an segment and origin specific abundance as a vector of 
+bend-specific probabilities 
+
+
+$$N_{segment,bend}\sim Multinomial(Abundance_{segment,origin}, p_{segment,bend}) \text{(2)}$$
+
+where 
+ 
+* $N$ is the number of pallid sturgeon within each bend,
+* $Abundance$ is the segment and origin specific total pallid sturgeon abundance,
+* $p$ is the bend specific location probability,
+* $segment$ indexes segment within RPMA,
+* $bend$ indexes bend with segment,
+* $origin$ indexes whether pallid sturgeon were hatchery or natural origin, and
+* $bend$ indexes bend within segment. 
+
+
+# Results and Discussion
+
+How did wildhaber and adam do it did they do virtual or just trend.
+
+# Figures
+
+
+# Tables
+
+
+Table 1. Summary of bends within PSPAP Missouri river segments.
+ 
+```{r,echo=FALSE}
+tbl<-tables(1)
+tbl$basin<- ifelse(tbl$basin=="lower",4,2)
+tbl$b_segment<-as.numeric(tbl$b_segment)
+tbl<- tbl[order(tbl$b_segment),]
+tbl[duplicated(tbl$basin),]$basin<-""
+kable(tbl,row.names=FALSE,
+    col.names=c("RPMA","Segment","Number of bends",
+        "Minimum length (km)", "Mean length (km)","Maximum length (km)"),
+    align="lccccc")
+```
+
+Table 2. Segement and river level densities by origin
