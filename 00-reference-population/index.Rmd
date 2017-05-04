@@ -17,6 +17,10 @@ source("src/5_tables.R")
 
 <!--
 rmarkdown::render("index.Rmd",output_format='html_document')# build page
+
+??? 
+* How static are habitats within bend... markov matrices of units
+* Don't actually measure habitat dimensions? WTF?
 -->
 
 # Overview
