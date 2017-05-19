@@ -11,8 +11,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
     
     # inputs
     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
-    ## 
-    fish_density: density of fish within segment; fish/rkm
+    ##     fish_density: density of fish within segment; fish/rkm
     ## type: input for fish type [hatchery, natural]
     
     # outputs
