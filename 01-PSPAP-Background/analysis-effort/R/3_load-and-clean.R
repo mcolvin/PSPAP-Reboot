@@ -1,92 +1,94 @@
 
 
-# CHECK TO SEE IF PROCESSED
-# EFFORT DATA EXISTS
-checksum<- "FAIL" 
-fn<- dir("./output")
-## LOAD PREPROCESSED DATA IF EXISTS
-## IT TAKES A LONG TIME TO PROCESS THE DATA
-## SO IT HAS BEEN PROCESSED AND SAVED TO AN RDS
-## FILE TO QUICKLY IMPORT. THE HASH IS AN MD5 CHECK SUM
-## (I.E., A FINGERPRINT) TO COMPARE THE IMPORTED DATA 
-## TO THE CHECK SUM. 
-if("dat.RDS" %in% fn)
-    {
-    # LOAD PROCESSED DATA
-    dat<-readRDS("./output/dat.RDS")
-    hash1<-readRDS("./output/hash.RDS")
-    checksum<- ifelse(hash1==digest(dat,algo="md5", serialize=TRUE),"PASS","FAIL")
-    }
+## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
+#com3<- odbcConnectAccess2007("C:/Users/mcolvin/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+dat<-sqlFetch(com3, "Gear-Specific-Effort")
+## CONVERT TO CHARACTER
+dat$STARTTIME<- as.character(dat$STARTTIME)
+dat$STOPTIME<- as.character(dat$STOPTIME)
+## FILL NON TIME FORMATS WITH NA
+dat[-(grep(":",dat$STARTTIME)),]$STARTTIME<- NA
+dat[-(grep(":",dat$STOPTIME)),]$STOPTIME<- NA   
+## DROP NAs
+dat<- subset(dat, !(is.na(STARTTIME)));dim(dat)
+dat<- subset(dat, !(is.na(STOPTIME)));dim(dat)
+dat<- subset(dat, !(is.na(SETDATE)))   ;dim(dat)
+## MAKE SURE ALL IS UPPER CASE
+dat$STARTTIME<- toupper(dat$STARTTIME)
+dat$STOPTIME<-toupper(dat$STOPTIME)
 
-# IMPORT EFFORT DATA
-if(!("dat.RDS" %in% fn) | 
-    checksum=="FAIL")
-    {
-    ## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
-    com3<- odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")
-    dat<-sqlFetch(com3, "Gear-Specific-Effort")
-    ## CONVERT TO CHARACTER
-    dat$STARTTIME<- as.character(dat$STARTTIME)
-    dat$STOPTIME<- as.character(dat$STOPTIME)
+## LOAD GEAR DATA
+gear_dat<-sqlFetch(com3, "Gear-Meta-Data")
+names(gear_dat)[2]<-"gear_type"
+## SUBSET OUT DUPLICATE GEARS 
+# POT02, HN, SHN,TN11, MOT02, OT04, OT02
+gear_dat<- gear_dat[-which(duplicated(gear_dat$gear_code)==TRUE),]
+## MERGE GEAR TYPE WITH EFFORT DATA   
+dat<- merge(dat,gear_dat[,c(2,3,4,5,7,10)],by.x="GEAR",
+            by.y="gear_code",all.x=TRUE)
 
-    ## FILL NON TIME FORMATS WITH NA
-    dat[-(grep(":",dat$STARTTIME)),]$STARTTIME<- NA
-    dat[-(grep(":",dat$STOPTIME)),]$STOPTIME<- NA
-    dat$STARTTIME<- toupper(dat$STARTTIME)
-    dat$STOPTIME<-toupper(dat$STOPTIME)
 
-    ## NEW START/STOP FIELDS
-    ## FOR START AS FRACTIONAL HOUR
-    dat$start_time<- NA
-    dat$stop_time<- NA
+### UPDATE STOP DATE FOR OVERNIGHTS
+dat$STOPDATE<- dat$SETDATE+60*60*24*dat$overnight
 
-    ## CONVERT ALL TO HOUR FRACTION TIME
-    ## START TIME
-    dat$start_time<-unlist(lapply(1:nrow(dat),function(x)
-        {
-        xx<-unlist(
-            strsplit(
-                dat[x,]$STARTTIME,":"
-                ))
-        hr<-as.numeric(xx[1])+ 
-            as.numeric(xx[2])/60
-        return(hr)
-        }))
+## CONVERT ALL TO HOUR FRACTION TIME
+## START TIME
+dat$start_time<-unlist(lapply(1:nrow(dat),function(x)
+{
+  pp<- NA
+  xx<-unlist(
+    strsplit(
+      dat[x,]$STARTTIME,":"
+    ))
+  if(length(grep("PM",xx))==0|{length(grep("PM",xx))>0 & xx[1]==12}) # HANDLE AM, NON PM, AND 12PM FORMATS
+  {
+    pp<-paste(as.character(dat[x,]$SETDATE)," ",as.numeric(xx[1]),":", 
+              as.numeric(xx[2]),":00",sep="") 
+    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+  }
+  if(length(grep("PM",xx))>0 & xx[1]!=12) # HANDLE REMAINING PM FORMATS
+  {
+    pp<-paste(as.character(dat[x,]$SETDATE)," ",as.numeric(xx[1])+12,":", 
+              as.numeric(xx[2]),":00",sep="") 
+    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+  }
+  return(as.character(pp))
+}))
 
-    ## STOP TIME
-    dat$stop_time<-unlist(lapply(1:nrow(dat),function(x)
-        {
-        xx<-unlist(
-            strsplit(
-                dat[x,]$STOPTIME,":"
-                ))
-        hr<-as.numeric(xx[1])+ 
-            as.numeric(xx[2])/60
-        return(hr)
-        }))  
-        
-    ## FORMAT PM
-    ## CONVERT HR:MIN:SEC TO HOURS
-    indx<-grep("PM",dat$STARTTIME)
-    dat[indx,]$start_time<-dat[indx,]$start_time+12
+## STOP TIME
+# xx<-strsplit(dat$STOPTIME,":")
+# hr<- unlist(lapply(xx, `[[`, 1))
+# mins<- unlist(lapply(xx, `[[`, 2))
+# apply(cbind(hr,mins),1,paste,collapse=":")
+dat$stop_time<-unlist(lapply(1:nrow(dat),function(x)
+{
+  pp<- NA
+  xx<-unlist(
+    strsplit(
+      dat[x,]$STOPTIME,":"
+    ))
+  if(length(grep("PM",xx))==0|{length(grep("PM",xx))>0 & xx[1]==12}) # HANDLE AM, NON PM FORMATS, AND 12PM
+  {
+    pp<-paste(as.character(dat[x,]$STOPDATE)," ",as.numeric(xx[1]),":", 
+              as.numeric(xx[2]),":00",sep="") 
+    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+  }
+  if(length(grep("PM",xx))>0 & xx[1]!=12) # HANDLE REMAINING PM FORMATS
+  {
+    pp<-paste(as.character(dat[x,]$STOPDATE)," ",as.numeric(xx[1])+12,":", 
+              as.numeric(xx[2]),":00",sep="") 
+    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+  }
+  return(as.character(pp))
+})) 
+dat$stop_time<- strptime(dat$stop_time,"%Y-%m-%d %H:%M:%S")
+dat$start_time<- strptime(dat$start_time,"%Y-%m-%d %H:%M:%S")
 
-    indx<-grep("PM",dat$STOPTIME)
-    dat[indx,]$stop_time<-dat[indx,]$stop_time+12
+## CALCULATE EFFORT
+dat$effort<-as.numeric(dat$stop_time-dat$start_time)/60 # EFFORT IN MINUTES
+dat<-subset(dat,effort>0)
+names(dat)<-tolower(names(dat))
 
-    ## CALCULATE EFFORT
-    dat$effort<-dat$stop_time-dat$start_time
-
-    ## LOAD GEAR DATA
-    gear_dat<-sqlFetch(com3, "Gear-Meta-Data")
-    names(gear_dat)[2]<-"gear_type"
-    ## MERGE GEAR TYPE WITH EFFORT DATA
-    dat<- merge(dat,gear_dat[,c(2,3,4,6,9)],by.x="GEAR",
-        by.y="gear_code",all.x=TRUE)
-    names(dat)<-tolower(names(dat))
-    saveRDS(dat,"./output/dat.RDS")
-    hash<-digest(dat,algo="md5", serialize=TRUE)# md5 check sum, fingerprint data
-    saveRDS(hash,"./output/hash.RDS")# save fingerprint to check later 
-    }
-	
-
-  
+##FIX TYPO IN COLUMN NAME
+colnames(dat)[14]<-"standard_gear"
