@@ -163,9 +163,26 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 <li><span class="math inline">\(bend\)</span> indexes bend within segment.</li>
 </ul>
 </div>
+<div id="assumptions" class="section level2">
+<h2>Assumptions</h2>
+<ol style="list-style-type: decimal">
+<li>No movement</li>
+<li>No recruitment</li>
+<li>Survival homogenous among individuals</li>
+</ol>
 </div>
-<div id="results-and-discussion" class="section level1">
-<h1>Results and Discussion</h1>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
+<ul>
+<li>Number of bends for each RPMA</li>
+</ul>
+</div>
+<div id="discussion" class="section level1">
+<h1>Discussion</h1>
+<ul>
+<li>Virtual versus power analysis of a post-hoc glm to get trend</li>
+</ul>
 <p>How did wildhaber and adam do it did they do virtual or just trend.</p>
 </div>
 <div id="figures" class="section level1">
@@ -272,7 +289,7 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 </div>
 <div id="code" class="section level1">
 <h1>Code</h1>
-<p>Box 1.</p>
+<p>Box 1. Function used to simulate reference populations given pallid sturgeon density, survival, and spatial structure.</p>
 <pre><code>## function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
 ##     bends=NULL,
 ##     fish_density=1,
@@ -284,7 +301,7 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 ##     
 ##     # inputs
 ##     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
-##     ## fish_density: density of fish within segment; fish/rkm
+##     ##     fish_density: density of fish within segment; fish/rkm
 ##     ## type: input for fish type [hatchery, natural]
 ##     
 ##     # outputs
