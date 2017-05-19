@@ -89,10 +89,22 @@ where
 * $origin$ indexes whether pallid sturgeon were hatchery or natural origin, and
 * $bend$ indexes bend within segment. 
 
+## Assumptions
 
-# Results and Discussion
+1. No movement 
+2. No recruitment
+3. Survival homogenous among individuals
+
+# Results 
+
+* Number of bends for each RPMA
+
+
+# Discussion
+* Virtual versus power analysis of a post-hoc glm to get trend
 
 How did wildhaber and adam do it did they do virtual or just trend.
+
 
 # Figures
 
@@ -114,4 +126,15 @@ kable(tbl,row.names=FALSE,
     align="lccccc")
 ```
 
-Table 2. Segement and river level densities by origin
+Table 2. Segment and river level densities by origin
+
+
+# Code
+
+Box 1. Function used to simulate reference populations given pallid sturgeon
+density, survival, and spatial structure. 
+
+```{r,echo=FALSE}
+print(reference_population)
+```
+

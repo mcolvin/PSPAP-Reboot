@@ -2,7 +2,8 @@
 # About
 
 This folder contains scripts to produce pallid sturgeon
-reference populations used in subsequent analyses.
+reference populations used in subsequent analyses of potential monitoring
+programs.
 
 ## Files and structure
 
@@ -17,4 +18,4 @@ Files and folder within this directory.
     * 5_tables.R - a function that returns publication and report table
     * 6_analysis.R - a file where analyses are completed
 * dat-contains any input files required for analysis
-* output-contains any ouput files generated during analysis
+* output-contains any output files generated during analysis

@@ -100,13 +100,17 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Creating a reference population</h1>
-<h4 class="date"><em>01 May, 2017</em></h4>
+<h4 class="date"><em>19 May, 2017</em></h4>
 
 </div>
 
 
 <!--
 rmarkdown::render("index.Rmd",output_format='html_document')# build page
+
+??? 
+* How static are habitats within bend... markov matrices of units
+* Don't actually measure habitat dimensions? WTF?
 -->
 <div id="overview" class="section level1">
 <h1>Overview</h1>
@@ -128,6 +132,8 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 </div>
 <div id="creating-a-reference-population" class="section level2">
 <h2>Creating a reference population</h2>
+<div id="density-formulation" class="section level3">
+<h3>Density formulation</h3>
 <p>We randomly assigned the number of pallid sturgeon occupying each bend given reported segment level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density accounting for bend length as:</p>
 <p><span class="math display">\[N_{segment,bend}\sim Poisson(\lambda_{segment,origin}\cdot Length_{segment,bend}) \text{(1)}\]</span></p>
 <p>where</p>
@@ -141,8 +147,10 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 <li><span class="math inline">\(bend\)</span> indexes bend within segment.</li>
 </ul>
 </div>
-<div id="alternative-formulation" class="section level2">
-<h2>Alternative formulation</h2>
+</div>
+<div id="abundance-formulation" class="section level2">
+<h2>Abundance formulation</h2>
+<p>We also used an abundance formulation to provide additional analysis flexibility. This approach required an segment and origin specific abundance as a vector of bend-specific probabilities</p>
 <p><span class="math display">\[N_{segment,bend}\sim Multinomial(Abundance_{segment,origin}, p_{segment,bend}) \text{(2)}\]</span></p>
 <p>where</p>
 <ul>
@@ -260,7 +268,67 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 </tr>
 </tbody>
 </table>
-<p>Table 2. Segement and river level densities by origin</p>
+<p>Table 2. Segment and river level densities by origin</p>
+</div>
+<div id="code" class="section level1">
+<h1>Code</h1>
+<p>Box 1.</p>
+<pre><code>## function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
+##     bends=NULL,
+##     fish_density=1,
+##     nyears=10,
+##     phi=0.95)
+##     {
+##     # this function allocates fish to bends within a segment
+##     # probabilistically given bend weights
+##     
+##     # inputs
+##     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
+##     ## fish_density: density of fish within segment; fish/rkm
+##     ## type: input for fish type [hatchery, natural]
+##     
+##     # outputs
+##     ## out: a matrix where each row is a bend and 
+##     ##   each column represents a year; number
+##     
+##     # assumptions
+##     ## no movement
+##     ## no recruitment
+##     ## survival homogenous for individuals
+##     
+##     ## ERROR HANDLING
+##     if(dim(phi)[1]!=length(segs) &amp;
+##         dim(phi)[1]!=nyears)
+##         {return(print(&quot;Survival(phi) needs to be a matrix \n
+##         with rows equal to the number of segments \n
+##         and the same number of columns as years-1 to simulate&quot;))}
+## 
+##     # GET BEND INFORMATION
+##     tmp&lt;- subset(bends, b_segment%in% segs)
+##     tmp&lt;- tmp[order(tmp$b_segment, tmp$bend_num),]
+##     bends_in_segs&lt;-aggregate(bend_num~b_segment,tmp,length) 
+##     phi_indx&lt;-rep(1:nrow(bends_in_segs),bends_in_segs$bend_num)
+##     # MATRIX OF ABUNDANCES TO RETURN
+##     out&lt;- matrix(0,nrow(tmp), nyears)
+##      
+##     # INITIAL ABUNDANCES
+##     ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
+##     ## DENSITY FOR BEND SIZE
+##     out[,1]&lt;- rpois(nrow(out),
+##         lambda=fish_density*tmp$length.rkm)
+##     # SIMULATE DYNAMICS
+##     ## SURVIVAL
+##     for(i in 2:nyears)
+##         {
+##         # SET UP VECTOR OF SEGMENT
+##         # SPECIFIC SURVIVALS        
+##         phi_t&lt;- phi[phi_indx,i-1]
+##         out[,i]&lt;- rbinom(nrow(out),
+##             size=out[,i-1],
+##             prob=phi_t)
+##         }
+##     return(out)# return relevant stuff
+##     }</code></pre>
 </div>
 
 
