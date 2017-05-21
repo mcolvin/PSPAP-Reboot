@@ -25,6 +25,7 @@ library(knitr)
 bookdown::preview_chapter("index.Rmd",
     output_dir = "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs")
 
+BUILD<- TRUE
 bookdown::render_book("",
     output="bookdown::gitbook",
     output_dir = "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs")
@@ -67,9 +68,9 @@ or population viability models that can be used to forecast population
 effects of management actions (Murphy and Weiland, 2011, 2014) 
 
 
-## Structure of the book {-}
+## Structure of the report {-}
 
-The efforts documented in this book represent a iterative and integrative
+The efforts documented in this report represent a iterative and integrative
 approaches to developing a monitoring program that:
 
 1. Meets the needs of ongoing adaptive management,

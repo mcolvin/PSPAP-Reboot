@@ -26,7 +26,7 @@
 <meta name="author" content="Michael E. Colvin, and others…">
 
 
-<meta name="date" content="2017-02-09">
+<meta name="date" content="2017-05-21">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,7 +34,7 @@
   
   
 <link rel="prev" href="index.html">
-<link rel="next" href="estimating-pallid-sturgeon-abundance.html">
+<link rel="next" href="quantifying-effort-and-distribution-of-pspap-gears.html">
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,6 +51,43 @@
 
 
 
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
 
 </head>
 
@@ -64,7 +101,9 @@
 
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a><ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#structure-of-the-book"><i class="fa fa-check"></i>Structure of the book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#what-is-the-purpose-of-this-document"><i class="fa fa-check"></i>What is the purpose of this document</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#the-missouri-river-pallid-sturgeon-effects-analysis"><i class="fa fa-check"></i>The Missouri River Pallid Sturgeon Effects Analysis</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#structure-of-the-report"><i class="fa fa-check"></i>Structure of the report</a></li>
 </ul></li>
 <li class="chapter" data-level="1" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><i class="fa fa-check"></i><b>1</b> Missouri River pallid sturgeon declines and recovery program</a><ul>
 <li class="chapter" data-level="1.1" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html#about-the-pspap"><i class="fa fa-check"></i><b>1.1</b> About the PSPAP</a></li>
@@ -72,45 +111,20 @@
 <li class="chapter" data-level="1.3" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html#capture-recapture-of-marked-individuals"><i class="fa fa-check"></i><b>1.3</b> Capture-recapture of marked Individuals</a></li>
 <li class="chapter" data-level="1.4" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html#study-area"><i class="fa fa-check"></i><b>1.4</b> About this report</a></li>
 <li class="chapter" data-level="1.5" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html#tables"><i class="fa fa-check"></i><b>1.5</b> Tables</a></li>
+<li class="chapter" data-level="1.6" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html#habitat-assessment-and-monitoring-project-hamp"><i class="fa fa-check"></i><b>1.6</b> Habitat Assessment and Monitoring Project (HAMP)</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="missouri-river-pallid-sturgeon-declines-and-recovery-program.html"><a href="missouri-river-pallid-sturgeon-declines-and-recovery-program.html#objectives-of-the-project"><i class="fa fa-check"></i><b>1.6.1</b> Objectives of the Project</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="estimating-pallid-sturgeon-abundance.html"><a href="estimating-pallid-sturgeon-abundance.html"><i class="fa fa-check"></i><b>2</b> Estimating pallid sturgeon abundance</a><ul>
-<li class="chapter" data-level="2.1" data-path="estimating-pallid-sturgeon-abundance.html"><a href="estimating-pallid-sturgeon-abundance.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
-<li class="chapter" data-level="2.2" data-path="estimating-pallid-sturgeon-abundance.html"><a href="estimating-pallid-sturgeon-abundance.html#abundance"><i class="fa fa-check"></i><b>2.2</b> Abundance</a></li>
-<li class="chapter" data-level="2.3" data-path="estimating-pallid-sturgeon-abundance.html"><a href="estimating-pallid-sturgeon-abundance.html#site-level"><i class="fa fa-check"></i><b>2.3</b> Site-level</a></li>
-<li class="chapter" data-level="2.4" data-path="estimating-pallid-sturgeon-abundance.html"><a href="estimating-pallid-sturgeon-abundance.html#segment-level"><i class="fa fa-check"></i><b>2.4</b> Segment-level</a></li>
-<li class="chapter" data-level="2.5" data-path="estimating-pallid-sturgeon-abundance.html"><a href="estimating-pallid-sturgeon-abundance.html#major-questions"><i class="fa fa-check"></i><b>2.5</b> Major questions</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html"><i class="fa fa-check"></i><b>3</b> Estimating Pallid Sturgeon Demograpic Rates</a><ul>
-<li class="chapter" data-level="3.1" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#effects-on-survival"><i class="fa fa-check"></i><b>3.1</b> Effects on survival</a></li>
-<li class="chapter" data-level="3.2" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#pradel-model"><i class="fa fa-check"></i><b>3.2</b> Pradel model</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#background"><i class="fa fa-check"></i><b>3.2.1</b> Background</a></li>
-<li class="chapter" data-level="3.2.2" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#simulating-some-known-data."><i class="fa fa-check"></i><b>3.2.2</b> Simulating some known data.</a></li>
+<li class="chapter" data-level="2" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html"><i class="fa fa-check"></i><b>2</b> Quantifying effort and distribution of PSPAP gears</a><ul>
+<li class="chapter" data-level="2.1" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#objectives"><i class="fa fa-check"></i><b>2.1</b> Objectives</a></li>
+<li class="chapter" data-level="2.2" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#methods"><i class="fa fa-check"></i><b>2.2</b> Methods</a></li>
+<li class="chapter" data-level="2.3" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#results"><i class="fa fa-check"></i><b>2.3</b> Results</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#gear-use-over-time-by-basin"><i class="fa fa-check"></i><b>2.3.1</b> Gear Use Over Time by Basin</a></li>
+<li class="chapter" data-level="2.3.2" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#gear-use-over-time-by-bend"><i class="fa fa-check"></i><b>2.3.2</b> Gear Use Over Time by Bend</a></li>
+<li class="chapter" data-level="2.3.3" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#effort-analysis"><i class="fa fa-check"></i><b>2.3.3</b> Effort Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#application-to-am-and-the-big-picture"><i class="fa fa-check"></i><b>3.3</b> Application to AM and the big picture</a><ul>
-<li class="chapter" data-level="3.3.1" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#fitting-a-covariate-to-recruitment"><i class="fa fa-check"></i><b>3.3.1</b> Fitting a covariate to recruitment</a></li>
-<li class="chapter" data-level="3.3.2" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#fitting-a-covariate-to-lambda"><i class="fa fa-check"></i><b>3.3.2</b> Fitting a covariate to lambda</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#caveats"><i class="fa fa-check"></i><b>3.4</b> Caveats</a></li>
-<li class="chapter" data-level="3.5" data-path="estimating-pallid-sturgeon-demograpic-rates.html"><a href="estimating-pallid-sturgeon-demograpic-rates.html#cjs"><i class="fa fa-check"></i><b>3.5</b> CJS</a></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="estimating-pallid-sturgeon-abundance-and-demographic-rates.html"><a href="estimating-pallid-sturgeon-abundance-and-demographic-rates.html"><i class="fa fa-check"></i><b>4</b> Estimating Pallid Sturgeon Abundance and Demographic Rates</a><ul>
-<li class="chapter" data-level="4.1" data-path="estimating-pallid-sturgeon-abundance-and-demographic-rates.html"><a href="estimating-pallid-sturgeon-abundance-and-demographic-rates.html#robust-design-overview"><i class="fa fa-check"></i><b>4.1</b> Robust Design Overview</a></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="basic-robust-design.html"><a href="basic-robust-design.html"><i class="fa fa-check"></i><b>5</b> Basic Robust Design</a><ul>
-<li class="chapter" data-level="5.1" data-path="basic-robust-design.html"><a href="basic-robust-design.html#overview-1"><i class="fa fa-check"></i><b>5.1</b> Overview</a></li>
-<li class="chapter" data-level="5.2" data-path="basic-robust-design.html"><a href="basic-robust-design.html#parameters-for-the-robust-design"><i class="fa fa-check"></i><b>5.2</b> Parameters for the robust design</a></li>
-<li class="chapter" data-level="5.3" data-path="basic-robust-design.html"><a href="basic-robust-design.html#analysis-objectives"><i class="fa fa-check"></i><b>5.3</b> Analysis objectives</a></li>
-<li class="chapter" data-level="5.4" data-path="basic-robust-design.html"><a href="basic-robust-design.html#management-effects-on-movement"><i class="fa fa-check"></i><b>5.4</b> Management effects on movement</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="effort-cost-and-logistics.html"><a href="effort-cost-and-logistics.html"><i class="fa fa-check"></i><b>6</b> Effort, cost, and logistics</a></li>
-<li class="chapter" data-level="7" data-path="monitoring-learning-and-decision-making.html"><a href="monitoring-learning-and-decision-making.html"><i class="fa fa-check"></i><b>7</b> Monitoring, Learning, and Decision Making</a><ul>
-<li class="chapter" data-level="7.1" data-path="monitoring-learning-and-decision-making.html"><a href="monitoring-learning-and-decision-making.html#assimilation-and-interpretation-of-data-for-decision-making"><i class="fa fa-check"></i><b>7.1</b> Assimilation and interpretation of data for decision making</a></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="assimilation-and-integrating-monitoring-research-and-management.html"><a href="assimilation-and-integrating-monitoring-research-and-management.html"><i class="fa fa-check"></i><b>8</b> Assimilation and integrating monitoring, research and management</a></li>
-<li class="chapter" data-level="9" data-path="power-of-monitoring-data-to-detect-management-effect.html"><a href="power-of-monitoring-data-to-detect-management-effect.html"><i class="fa fa-check"></i><b>9</b> Power of monitoring data to detect management effect</a></li>
-<li class="chapter" data-level="10" data-path="value-of-monitoring-data.html"><a href="value-of-monitoring-data.html"><i class="fa fa-check"></i><b>10</b> Value of monitoring data</a></li>
-<li class="chapter" data-level="11" data-path="caveats-and-considerations.html"><a href="caveats-and-considerations.html"><i class="fa fa-check"></i><b>11</b> Caveats and considerations</a><ul>
-<li class="chapter" data-level="11.1" data-path="caveats-and-considerations.html"><a href="caveats-and-considerations.html#figures"><i class="fa fa-check"></i><b>11.1</b> Figures</a></li>
+<li class="chapter" data-level="2.4" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#figures"><i class="fa fa-check"></i><b>2.4</b> Figures</a></li>
+<li class="chapter" data-level="2.5" data-path="quantifying-effort-and-distribution-of-pspap-gears.html"><a href="quantifying-effort-and-distribution-of-pspap-gears.html#tables-1"><i class="fa fa-check"></i><b>2.5</b> Tables</a></li>
 </ul></li>
 </ul>
 
@@ -130,7 +144,7 @@
 
             <section class="normal" id="section-">
 <div id="missouri-river-pallid-sturgeon-declines-and-recovery-program" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Missouri River pallid sturgeon declines and recovery program</h1>
+<h1><span class="header-section-number">Section 1</span> Missouri River pallid sturgeon declines and recovery program</h1>
 <div id="about-the-pspap" class="section level2">
 <h2><span class="header-section-number">1.1</span> About the PSPAP</h2>
 <p>The Pallid Sturgeon Population Assessment Program (PSAPS) began in 2003.</p>
@@ -147,6 +161,8 @@
 Figure 1.1: Major Missouri River pallid sturgeon management units considered as part of the ongoing EA and adaptive management planning. The Pallid Sturgeon Population Assessment Program is implemented in the upper, segmented, and lower Missouri River.
 </p>
 </div>
+<p>The objectives of the Pallid Sturgeon Population Assessment Program are:</p>
+<p>Objectives 1. Evaluate annual results and long-term trends in pallid sturgeon population abundance and geographic distribution throughout the Missouri River System. 2. Evaluate annual results and long-term trends of habitat usage of pallid sturgeon and hatchery-stocked pallid sturgeon by season and life stage. 3. Evaluate population structure and dynamics of pallid sturgeon in the Missouri River system. 4. Evaluate annual results and long-term trends in the population abundance of native target species and geographic distribution throughout the Missouri River system. These target species include: shovelnose sturgeon (<em>Scaphirhynchus platorynchus</em>), blue sucker (<em>Cycleptus elongates</em>), sauger (<em>Zander canadense</em>), plains and Western silvery minnows (<em>Hybognathus</em> spp.), sand shiner (<em>Notropis stramineus</em>), and three main channel inhabiting cyprinids in the genus <em>Macrhybopsis</em>. These three species, sturgeon chub (<em>M. gelida</em>), sicklefin chub (<em>M. meeki</em>), and speckled chub (<em>M. aestivalis</em>), are the main forage for piscivorous pallid sturgeon and are rare themselves in some sections of the Missouri River. 5. Evaluate annual results and long-term trends of habitat usage of the target native species by season and life stage. 6. Evaluate annual results and long-term trends in all remaining species (minimum of 50 fish collected/species) population abundance and geographic distribution throughout the Missouri River system.</p>
 <p>RPMA 2 (RM 1771.5-1568)</p>
 <ul>
 <li>Segment 1 (RM 1771.5-1760) Fort Peck Dam to Confluence of Milk River</li>
@@ -174,7 +190,8 @@ make this inline a bit more readable by making assignments above.
 </div>
 <div id="capture-recapture-of-marked-individuals" class="section level2">
 <h2><span class="header-section-number">1.3</span> Capture-recapture of marked Individuals</h2>
-<p>Historically, individual Pallid Sturgeon were marked with passive integrated transponder (PIT), radio or acoustic tag. PIT tags provide a way to uniquely identify fish when they are captured, but the amount of information provided by PIT tags is constrained by recapture of the fish. However if a PIT tagged fish is recaptured, it can inform estimates of survival, origin (i.e., natural, hatchery), and growth. Alternatively, fish that are tagged with an acoustic or radio tags can be actively tracked or passively detected, informing migration rates, habitat use, and survival. Using marked fish within a robust design will likely be limited to PIT tagged fish; however use of acoustic or radio tagged fish is discussed below. Design and Understanding from Simulations A preliminary simulation was performed as a proof of concept to evaluate whether a capture-recapture study of individual fish using a robust design would be feasible on a river the size of the Missouri River. First a geographic template was used based on the current PSPAP river bend sampling units, where a river bends are defined as a three continuous habitats (channel cross-over, inside bend, outside bend) and vary in number and size from for the lower and upper basin (Lower: N=317, mean=4 rkm, min=0.2, max=19; Upper: N=157, mean=2.3, min=0.6, max=8). Simulations were performed using the lower basin sampling units as templates. Population dynamics were simulated given known recruitment, survival, and abundance. Given the population dynamics, capture histories were simulated for two levels of capture probability 0.1 and 0.4. These values were selected based on capture probability estimates (Rotella and Hadley 2010, Steffensen et al. 2015). These simulated capture histories were then used to estimate population abundance, survival, and recruitment. The robust design estimator used was the simplest case, assuming homogenous capture probabilities among secondary sampling units and that capture probability was homogenous among bends. The simulation used 5 primary sampling periods and varying secondary sampling occasions (2 through 10) to evaluate estimator performance, reliability, and effort levels. Within a primary sampling occasion at least 2 secondary capture occasions are required to estimate the population using capture-recapture of marked individuals and more are likely needed if heterogeneous capture probabilities are present. Over a spatial extent, sampling at least 20% of the river bends was necessary in preliminary simulations. While this preliminary simulation does not address specific gears, selecting gears and sampling occasions that maximize catch will likely result in reduced effort. Based on preliminary analyses, the population abundance could be estimated (Figure 2). With the exception of a capture probability of 0.1 reasonable abundance estimates were achieve by sampling 20% of the bends if capture probability was 0.4 (Figure 2). If capture probability was 0.1 either more bends needed to be sampled or 6 or greater sampling occasions. There was no appreciable effect of increased secondary occasions to estimate population abundance if capture probability was 0.4. It should be recognized these simulations were conducted under the best case scenario (i.e., homogeneous survival and capture probability) and therefore may not reflect the challenges to sampling a large turbid river like the Missouri River and additional study is required to evaluate ‘worst case’ scenarios. Additional Information to Complete Design This simulation study is preliminary and suggests that a robust design mark recapture approach may be a useful monitoring approach. To fully complete the robust design, a level 1 study should be implemented to evaluate spatial and temporal configurations required to achieve acceptable population and demographic rate estimates. Additionally, if the monitoring program will be used to detect the effect of management actions, a power analysis must be completed. The amount of effort required to provide reasonable estimates should be considered. Lastly, including auxiliary information such as data from tagging arrays or river tracking in an integrated population model will provide a unifying framework incorporating system level monitoring and providing estimates and feedback necessary to parameterize and calibrate the population model. Caveats and considerations There are many assumptions required to estimate population abundance and demographic rates. For example, in this preliminary analysis survival and detection probability was constant among primary and secondary occasions, which is likely a poor assumption. Additionally, factors affecting Pallid Sturgeon survival, such as age, growth, condition were not evaluated and should be accounted for to improve estimates and also capture the effect of these variables on survival such that they can then be potentially linked to management actions. Additional research will be required to evaluate the trade-offs of efforts with estimate bias and precision. Also, evaluation of how sensitive estimates are to violation of assumption will be necessary prior to implementation of monitoring programs. Lastly, the monitoring design will have to be optimized within the constraints of the finite resources available to monitor Pallid Sturgeon on an annual basis, which is not a trivial task in a large turbid system like the Missouri River.</p>
+<p>Historically, individual Pallid Sturgeon were marked with passive integrated transponder (PIT), radio or acoustic tag. PIT tags provide a way to uniquely identify fish when they are captured, but the amount of information provided by PIT tags is constrained by recapture of the fish. However if a PIT tagged fish is recaptured, it can inform estimates of survival, origin (i.e., natural, hatchery), and growth. Alternatively, fish that are tagged with an acoustic or radio tags can be actively tracked or passively detected, informing migration rates, habitat use, and survival. Using marked fish within a robust design will likely be limited to PIT tagged fish; however use of acoustic or radio tagged fish is discussed below. Design and Understanding from Simulations A preliminary simulation was performed as a proof of concept to evaluate whether a capture-recapture study of individual fish using a robust design would be feasible on a river the size of the Missouri River. First a geographic template was used based on the current PSPAP river bend sampling units, where a river bends are defined as a three continuous habitats (channel cross-over, inside bend, outside bend) and vary in number and size from for the lower and upper basin (Lower: N=317, mean=4 rkm, min=0.2, max=19; Upper: N=157, mean=2.3, min=0.6, max=8).</p>
+<p>Simulations were performed using the lower basin sampling units as templates. Population dynamics were simulated given known recruitment, survival, and abundance. Given the population dynamics, capture histories were simulated for two levels of capture probability 0.1 and 0.4. These values were selected based on capture probability estimates (Rotella and Hadley 2010, Steffensen et al. 2015). These simulated capture histories were then used to estimate population abundance, survival, and recruitment. The robust design estimator used was the simplest case, assuming homogenous capture probabilities among secondary sampling units and that capture probability was homogenous among bends. The simulation used 5 primary sampling periods and varying secondary sampling occasions (2 through 10) to evaluate estimator performance, reliability, and effort levels. Within a primary sampling occasion at least 2 secondary capture occasions are required to estimate the population using capture-recapture of marked individuals and more are likely needed if heterogeneous capture probabilities are present. Over a spatial extent, sampling at least 20% of the river bends was necessary in preliminary simulations. While this preliminary simulation does not address specific gears, selecting gears and sampling occasions that maximize catch will likely result in reduced effort. Based on preliminary analyses, the population abundance could be estimated (Figure 2). With the exception of a capture probability of 0.1 reasonable abundance estimates were achieve by sampling 20% of the bends if capture probability was 0.4 (Figure 2). If capture probability was 0.1 either more bends needed to be sampled or 6 or greater sampling occasions. There was no appreciable effect of increased secondary occasions to estimate population abundance if capture probability was 0.4. It should be recognized these simulations were conducted under the best case scenario (i.e., homogeneous survival and capture probability) and therefore may not reflect the challenges to sampling a large turbid river like the Missouri River and additional study is required to evaluate ‘worst case’ scenarios. Additional Information to Complete Design This simulation study is preliminary and suggests that a robust design mark recapture approach may be a useful monitoring approach. To fully complete the robust design, a level 1 study should be implemented to evaluate spatial and temporal configurations required to achieve acceptable population and demographic rate estimates. Additionally, if the monitoring program will be used to detect the effect of management actions, a power analysis must be completed. The amount of effort required to provide reasonable estimates should be considered. Lastly, including auxiliary information such as data from tagging arrays or river tracking in an integrated population model will provide a unifying framework incorporating system level monitoring and providing estimates and feedback necessary to parameterize and calibrate the population model. Caveats and considerations There are many assumptions required to estimate population abundance and demographic rates. For example, in this preliminary analysis survival and detection probability was constant among primary and secondary occasions, which is likely a poor assumption. Additionally, factors affecting Pallid Sturgeon survival, such as age, growth, condition were not evaluated and should be accounted for to improve estimates and also capture the effect of these variables on survival such that they can then be potentially linked to management actions. Additional research will be required to evaluate the trade-offs of efforts with estimate bias and precision. Also, evaluation of how sensitive estimates are to violation of assumption will be necessary prior to implementation of monitoring programs. Lastly, the monitoring design will have to be optimized within the constraints of the finite resources available to monitor Pallid Sturgeon on an annual basis, which is not a trivial task in a large turbid system like the Missouri River.</p>
 <p>Figure 1.2. Upper and lower Missouri River segments establishing the spatial extent of Missouri River pallid sturgeon recovery. Alternating gray and black line segments denote river bends that serve as the spatial grain and sampling unit for population and demographic estimates.</p>
 <p>Table 1.1. Summary of bends within PSPAP Missouri and Kansas River (11) segments.</p>
 <table>
@@ -492,14 +509,18 @@ occasion.  ------0---0---0
 <li><p>Island Tips are only associated with Secondary Connected, Deranged, Braided and Dendritic Channels</p></li>
 <li><p>Excludes non-flowing pools</p></li>
 </ul>
+</div>
+<div id="habitat-assessment-and-monitoring-project-hamp" class="section level2">
+<h2><span class="header-section-number">1.6</span> Habitat Assessment and Monitoring Project (HAMP)</h2>
+<p>The HAMP focuses on assessing the physical and biological responses of habitat creation efforts in the channelized Missouri River. Physical responses are characterized by diversity of depth, velocity, slope, substrate, etc., while biological responses are characterized by various metrics related to pallid sturgeon and a series of native target species (i.e., sicklefin chubs, sturgeon chubs, speckled chubs, plains and western silvery minnow, young of the year blue sucker and sauger).</p>
+<div id="objectives-of-the-project" class="section level3">
+<h3><span class="header-section-number">1.6.1</span> Objectives of the Project</h3>
+<ol style="list-style-type: decimal">
+<li>Evaluate annual and multi-year trends in physical diversity (i.e., depth, velocity, substrate) and change in modified sites relative to control sites over time (a control site is a site that remains as unmodified from its current status).</li>
+<li>Evaluate annual and multi-year trends of fish metrics (i.e., catch per unit effort, presence/absence) of pallid sturgeon and target species between modified and control sites.</li>
+</ol>
 
-
-<!--
-Chapter 2
-
-to do:
-
--->
+</div>
 </div>
 </div>
             </section>
@@ -508,7 +529,7 @@ to do:
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="estimating-pallid-sturgeon-abundance.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+<a href="quantifying-effort-and-distribution-of-pspap-gears.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
@@ -547,17 +568,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

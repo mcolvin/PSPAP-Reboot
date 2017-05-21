@@ -26,8 +26,11 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 # Overview
 
 A reference population of known pallid sturgeon abundance is needed to 
-evaluate varying monitoring designs and their ability to achieve the fundamental
-objectives identified during the first population assessment program workshop. 
+evaluate varying monitoring designs and their ability to achieve the 
+fundamental objectives identified during the first population assessment 
+program workshop. 
+
+
 
 
 # Objectives

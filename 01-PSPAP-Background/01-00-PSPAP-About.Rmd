@@ -9,32 +9,30 @@ to do:
 * add a figure of year and each bend with 0---0 for each sampling occasion.
 -->
 
-
-# Missouri River pallid sturgeon declines and recovery program
-
-```{r, echo=FALSE,message=FALSE}
-library(RODBC);library(reshape2);library(plyr)
+ 
+```{r,echo=TRUE}
+library(RODBC)
+library(reshape2)
+library(plyr)
 com<- odbcConnectAccess2007('C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/PDSG-data.accdb')
 bends<- sqlFetch(com, "bend-level-data")
 # SUMMARY TABLE OF THE NUMBER OF BENDS WITHIN SEGMENT
 bends$tmp<- 1
 
 # BEND SUMMARY TABLE
-xx<- ddply(bends,.(B_SEGMENT),summarize,
+xx<- plyr::ddply(bends,.(B_SEGMENT),summarize,
     seglength = sum(LENGTHRKM),
     N=sum(tmp),
     minRKM = min(LENGTHRKM),
     mnRKM = mean(LENGTHRKM),
     maxRKM = max(LENGTHRKM))
-```
+ ```   
 
+# Missouri River pallid sturgeon declines and recovery program
 
 ## About the PSPAP
 
-
-
 The Pallid Sturgeon Population Assessment Program (PSAPS) began in 2003. 
-
 
 Current population assessment overview
 Background and implementation
@@ -244,7 +242,9 @@ spatial grain and sampling unit for population and demographic
 estimates. 
 
 
- 
+
+
+
 
 
 Table 1.1. Summary of bends within PSPAP Missouri and Kansas River (11) 
