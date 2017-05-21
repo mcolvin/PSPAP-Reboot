@@ -1,3 +1,9 @@
+<!--
+This takes a while to run, might drop outputs to RDS and then load that 
+rather than running all the source files. 
+
+
+-->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 FP<-ifelse(BUILD==TRUE,# FOR BUILDING REPORT
@@ -14,10 +20,20 @@ source(paste(FP,"6_analysis.R",sep=""))
 # Quantifying effort and distribution of PSPAP gears
  
 ## Objectives
-In carrying out the goals of the PSPAP, it is important to understand the use of gears over space and time.  Catch effort by gear is linked both to data collection costs (including man-hours for gear deployment), as well as power to detect changes in population size.  Both costs and detection power are important for determining optimal data collection strategies for accurate population estimation under budget constraints.  To study effort by gear type and frequency of gear use, we address the following objectives: 
+In carrying out the goals of the PSPAP, it is important to understand 
+the use of gears over space and time. Catch effort by gear is linked 
+both to data collection costs (including man-hours for gear deployment), 
+as well as power to detect changes in population size. Both costs and 
+detection power are important for determining optimal data collection 
+strategies for accurate population estimation under budget constraints. 
+To study effort by gear type and frequency of gear use, we address the 
+following objectives: 
+
 
 1. Characterize temporal use of gear for PSPAP duration.
-2. Quantify effort and associated dispersion for each PSPAP standard gear.
+2. Quantify effort and associated dispersion for each PSPAP standard 
+gear. 
+
 
 ## Methods
 For all analyses, the data for the lower and upper basins were 
@@ -163,14 +179,18 @@ figures(1)
 ```
 
 Figure 1. Illustration of gears used since 2003 for Pallid Sturgeon 
-Population assessment in the Missouri River. Top panel is for Lower basin (RPMA 4)
-and bottom panel is for Upper basin (RPMA 2). 
+Population assessment in the Missouri River. Top panel is for Lower 
+basin (RPMA 4) and bottom panel is for Upper basin (RPMA 2). 
+
+
 
 ## Tables
 
-Table 1. Summary of frequency of use for each gear type by  year. An asterisk (*) following a gear name indicates that the data from this gear was used in the effort analysis (summarized in Table 4).  
+Table 1. Summary of frequency of use for each gear type by year. An 
+asterisk (*) following a gear name indicates that the data from this 
+gear was used in the effort analysis (summarized in Table 4). 
+
 ```{r,echo=FALSE}
-library(knitr)
 kable(tables(1),
     col.names=c("Basin","PSPAP gear code", "Gear id",2003:2016),
     row.names=FALSE)
@@ -178,27 +198,34 @@ kable(tables(1),
 ```
 
 
-Table 2. Frequency of use (number of deployments) for each standard gear type by bend (within river segment) and year.  An asterisk (*) following a gear name indicates that the data from this gear was used in the effort analysis (summarized in Table 4).  
+Table 2. Frequency of use (number of deployments) for each standard gear 
+type by bend (within river segment) and year. An asterisk (*) following 
+a gear name indicates that the data from this gear was used in the 
+effort analysis (summarized in Table 4). 
+
 ```{r,echo=FALSE}
-library(knitr)
 kable(tables(2),
     col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id",2003:2016),
     row.names =FALSE)
    
 ```
 
-Table 3. Summary of the number of deployments for each standard gear type by bend (within river segment) per year.  An asterisk (*) following a gear name indicates that the data from this gear was used in the effort analysis (summarized in Table 4).  
+Table 3. Summary of the number of deployments for each standard gear 
+type by bend (within river segment) per year. An asterisk (*) following 
+a gear name indicates that the data from this gear was used in the 
+effort analysis (summarized in Table 4). 
+
 ```{r,echo=FALSE}
-library(knitr)
 kable(tables(3),
     col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id", "Minimum","Maximum","Mean","Median", "Total Deployments"),
     row.names =FALSE)
    
 ```
 
-Table 4. Summary of effort data (minutes of use per catch trial) for each common gear type. 
+Table 4. Summary of effort data (minutes of use per catch trial) for 
+each common gear type. 
+
 ```{r,echo=FALSE}
-library(knitr)
 kable(tables(4),
     col.names=c("Basin","PSPAP gear code", "Gear id","No. of Obs.","Mean Effort", "Standard Deviation","Minimum","Maximum", "Median", "Gamma_Shape", "Gamma_Rate"),
     row.names =FALSE)
