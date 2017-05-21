@@ -73,6 +73,7 @@ are given in Table 2.
 
 
 ## Results
+
 As expected, results varied by basin. In the lower basin trotlines TLC4 
 were deployed the least (24 times) and mini-fike nets were deployed the 
 most (7,411 times) out of all common gear types across the PSPAP 
@@ -80,6 +81,7 @@ duration (Table 4). In the upper basin, trotlines TLO1 were the least
 deployed common gear type (20 times) and trammel nets were the most 
 deployed common gear type (10,924 times) throughout the 14 years 
 reported. Gear deployment also varied by year and bend. 
+
 
 
 ### Gear Use Over Time by Basin
@@ -122,31 +124,11 @@ deployments of each gear type within a particular bend during each year
 of the PSPAP. This information is summarized in Table 3. 
 
 
-No bend was sampled by standard gears during every year of the PSPAP. 
-Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and 
-three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 
-3) were sampled the least at only one deployment of a standard gear in 
-the 14 years of the PSPAP. These lower basin bends were sampled by a 
-trotline (TLS2 & TLC2, respectively) while the upper basin bends were 
-sampled by a trammel net. Overall, the bend with the most total 
-deployments of standard gears over the course of the PSPAP was bend 17 
-within the upper basin river segment 4 at a total of 719 deployments. In 
-the lower basin, river segment 7 bend 4 had the highest standard gear 
-usage with 368 deployments. 
+No bend was sampled by standard gears during every year of the PSPAP. Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 3) were sampled the least at only one deployment of a standard gear in the 14 years of the PSPAP. These lower basin bends were sampled by a trotline (TLS2 & TLC2, respectively) while the upper basin bends were sampled by a trammel net. Overall, the bend with the most total deployments of standard gears over the course of the PSPAP was bend 17 within the upper basin river segment 4 at a total of 719 deployments. In the lower basin, river segment 7 bend 4 had the highest standard gear usage with 368 deployments. 
 
 
-As seen in Table 3, several standard gears were deployed only once in a 
-given bend over the entire duration of the PSPAP. On the opposite side 
-of the spectrum, in 2005 there were 205 trammel nets deployed within 
-upper basin segment 4 bend 14---the most deployments of a particular 
-standard gear in a river bend in any year. Across years, the most 
-deployments of a single gear type by bend was 503 trammel net 
-deployments, which occurred in upper basin bend 17 within river segment 
-4. In the lower basin, the bends with the most deployments of a single 
-gear type within and across years were both found in segment 7. Across 
-years, bend 4 had the most gear deployments (127 trotlines, 
-configuration TLC1), while within years bend 17 had the most (32 
-mini-fyke nets in 2010). 
+As seen in Table 3, several standard gears were deployed only once in a given bend over the entire duration of the PSPAP. On the opposite side of the spectrum, in 2005 there were 205 trammel nets deployed within upper basin segment 4 bend 14---the most deployments of a particular standard gear in a river bend in any year. Across years, the most deployments of a single gear type by bend was 503 trammel net deployments, which occurred in upper basin bend 17 within river segment 4. In the lower basin, the bends with the most deployments of a single gear type within and across years were both found in segment 7. Across years, bend 4 had the most gear deployments (127 trotlines, configuration TLC1), while within years bend 17 had the most (32 mini-fyke nets in 2010). 
+
 
 
 ###Effort Analysis
@@ -168,6 +150,11 @@ the effort data seemed to have multiple modes (LB: TLS1; UB: OT16, TLC1)
 and those where one effort level occurred often and several other effort 
 levels occurred rarely, resulting in a probability density function with 
 a large spike (LB: TN; UB:GN81, TLC2). 
+
+
+No bend was sampled by standard gears during every year of the PSPAP.  Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 3) were sampled the least at only one deployment of a standard gear in the 14 years of the PSPAP.  These lower basin bends were sampled by a trotline (TLS2 & TLC2, respectively) while the upper basin bends were sampled by a trammel net. Overall, the bend with the most total deployments of standard gears over the course of the PSPAP was bend 17 within the upper basin river segment 4 at a total of 718 deployments.  In the lower  basin, river segment 7 bend 4 had the highest standard gear usage with 368 deployments. 
+
+As seen in Table 3, several standard gears were deployed only once in a given bend over the entire duration of the PSPAP.  On the opposite side of the spectrum, in 2005 there were 204 trammel nets deployed within upper basin segment 4 bend 14---the most deployments of a particular standard gear in a river bend in any year.  Across years, the most deployments of a single gear type by bend was 502 trammel net deployments, which occurred in upper basin bend 17 within river segment 4.  In the lower basin, the most deployments of a single gear type within a year was 32, which occurred in two different bends during different years: bend 17 in segment 7 (32 mini-fyke nets in 2010) and bend 1 in segment 9 (32 TLS1 trotlines in 2007). Across years, segment 7 bend 4 had the most gear deployments (127 trotlines, configuration TLC1).
 
 
 
