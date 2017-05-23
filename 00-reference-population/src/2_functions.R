@@ -62,6 +62,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
 
 catch_counts<-function(seg,
                        N,
+                       gr,
+                       effort)
   {
     #DETERMINE EFFORT BY GEAR
     if(!any(levels(effort$gear)==gr)) print(paste(gr, " is not a standard, common gear.")) #Check gear is standard and common

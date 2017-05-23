@@ -11,10 +11,14 @@ fish_density<- 10
 sim_pop<-reference_population(segs=segs,
     bends=bends,# BENDS DATAFRAME
     fish_density=10, # FISH DENSITY PER RKM
+    #nyears=nyears, #NUMBER OF YEARS TO PROJECT
     phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
     
 head(sim_pop)  
+
+
+
 
 f<- 200 # trammel
 q<- 0.01
