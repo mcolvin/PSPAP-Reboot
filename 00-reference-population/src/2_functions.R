@@ -25,13 +25,13 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
     
     ## ERROR HANDLING
     if(dim(phi)[1]!=length(segs) &
-        dim(phi)[1]!=nyears)
+        dim(phi)[1]!=nyears) #should this be dim(phi)[2]!=nyears?
         {return(print("Survival(phi) needs to be a matrix \n
         with rows equal to the number of segments \n
         and the same number of columns as years-1 to simulate"))}
 
     # GET BEND INFORMATION
-    tmp<- subset(bends, b_segment%in% segs)
+    tmp<- subset(bends, b_segment %in% segs)
     tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]
     bends_in_segs<-aggregate(bend_num~b_segment,tmp,length) 
     phi_indx<-rep(1:nrow(bends_in_segs),bends_in_segs$bend_num)
@@ -56,18 +56,31 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
         }
     return(out)# return relevant stuff
     }
+
+
+
+
+catch_counts<-function(seg,
+                       N,
+                       gr,
+                       effort)
+  {
+    #DETERMINE EFFORT BY GEAR
+    if(!any(levels(effort$gear)==gr)) print(paste(gr, " is not a standard, common gear.")) #Check gear is standard and common
+    b<-ifelse(seg %in% c(7,8,9,11,10,13,14), "LB", 
+                  ifelse(seg %in% c(1,2,3,4), "UB", "NA")) #Use segment to define basin
+    if(b=="NA") print("This segment is not in RPMA 2 or RPMA 4.") #Check basin
+    gear_eft<-subset(effort, basin==b & gear==gr) #Select effort data for particular gear by basin
+    f<-rgamma(1,shape=gear_eft$gamma_shape, rate=gear_eft$gamma_rate)
     
+    #DETERMINE CATCHABILITY (0<q<1/f)
+    q=0.0002
     
-   
+    #DETERMINE CATCH
+    C<-q*N*f
+    return(C)
+  }
 
 
-
-
-
-
-
-
-
-
-
-
+    
+  
