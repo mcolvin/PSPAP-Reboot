@@ -60,83 +60,25 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
 
 
 
-catch_counts<-function(abundance,
-                       gear)
+catch_counts<-function(seg,
+                       N,
   {
-    #Determine effort by gear
+    #DETERMINE EFFORT BY GEAR
+    if(!any(levels(effort$gear)==gr)) print(paste(gr, " is not a standard, common gear.")) #Check gear is standard and common
+    b<-ifelse(seg %in% c(7,8,9,11,10,13,14), "LB", 
+                  ifelse(seg %in% c(1,2,3,4), "UB", "NA")) #Use segment to define basin
+    if(b=="NA") print("This segment is not in RPMA 2 or RPMA 4.") #Check basin
+    gear_eft<-subset(effort, basin==b & gear==gr) #Select effort data for particular gear by basin
+    f<-rgamma(1,shape=gear_eft$gamma_shape, rate=gear_eft$gamma_rate)
     
+    #DETERMINE CATCHABILITY (0<q<1/f)
+    q=0.0002
+    
+    #DETERMINE CATCH
+    C<-q*N*f
+    return(C)
   }
 
 
     
-    
-catch_population<- function(segs=c(1,2,3,4,7,8,9,11,10,13,14),
-                            bends=NULL,
-                            fish_density=1,
-                            nyears=10,
-                            phi=0.95,
-                            gear)
-{
-  # this function determines the number of PS caught in a bend by a particular gear 
-  # probabilistically given an effort distribution by gear and bend abundance
   
-  
-  # inputs
-  ## segment: segment [1,2,3,4,7,8,9,10,13,14]
-  ##     fish_density: density of fish within segment; fish/rkm
-  ## type: input for fish type [hatchery, natural]
-  
-  # outputs
-  ## out: a matrix where each row is a bend and 
-  ##   each column represents a year; number
-  
-  # assumptions
-  ## no movement
-  ## no recruitment
-  ## survival homogenous for individuals
-  
-  sim_pop<-reference_population(segs,
-                                bends,# BENDS DATAFRAME
-                                fish_density, # FISH DENSITY PER RKM
-                                nyears, #NUMBER OF YEARS TO PROJECT
-                                phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
-  
-  
-  # GET BEND INFORMATION
-  tmp<- subset(bends, b_segment %in% segs)
-  tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]
-  bends_in_segs<-aggregate(bend_num~b_segment,tmp,length) 
-  phi_indx<-rep(1:nrow(bends_in_segs),bends_in_segs$bend_num)
-  # MATRIX OF ABUNDANCES TO RETURN
-  out<- matrix(0,nrow(tmp), nyears)
-  
-  # INITIAL ABUNDANCES
-  ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
-  ## DENSITY FOR BEND SIZE
-  out[,1]<- rpois(nrow(out),
-                  lambda=fish_density*tmp$length.rkm)
-  # SIMULATE DYNAMICS
-  ## SURVIVAL
-  for(i in 2:nyears)
-  {
-    # SET UP VECTOR OF SEGMENT
-    # SPECIFIC SURVIVALS        
-    phi_t<- phi[phi_indx,i-1]
-    out[,i]<- rbinom(nrow(out),
-                     size=out[,i-1],
-                     prob=phi_t)
-  }
-  return(out)# return relevant stuff
-  }
-
-
-
-
-
-
-
-
-
-
-
-
