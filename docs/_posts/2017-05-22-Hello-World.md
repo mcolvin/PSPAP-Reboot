@@ -9,6 +9,7 @@ the evaluation of varying Missouri River Pallid Sturgeon monitoring
 designs and integration with the Missouri River adaptive management 
 plan. 
 
+
 A blog format was selected for used because of the archival nature of 
 communications but also the ability for stakeholders to provide feedback 
 in the comments section. A comments section will be available for each 
