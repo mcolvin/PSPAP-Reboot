@@ -24,7 +24,6 @@ UBgears<-unlist(lapply(unlist(levels(datUB$gear)), function(x)
 }
 ))
 
-
 # MAKE A LIST OF DISTRIBUTION PARAMETERS
 valuesLB<-unlist(lapply(c(1:12,15,16,18), dfitfunLB))
 shapesLB<-c(valuesLB[(2*c(1:length(LBgears))-1)])
@@ -36,6 +35,25 @@ ratesUB<-c(valuesUB[(2*c(1:length(UBgears)))])
 
 shapes<-c(shapesLB[1:12],NA,NA,shapesLB[13:14],NA,shapesLB[15],shapesUB)
 rates<-c(ratesLB[1:12],NA,NA,ratesLB[13:14],NA,ratesLB[15],ratesUB)
+
+#######################################################
+# WRITE A TABLE OF EFFORT DATA FOR EACH GEAR BY BASIN #
+#######################################################
+
+  datS<-subset(dat,standard_gear=="yes") #ONLY STANDARD GEARS
+  datS$tmp<-1 #TO SUM FOR COUNTS
+  eft<-dcast(datS, basin+gear+gear_id~"observations", value.var="tmp", sum)
+  eft$mean_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),mean)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),mean)[,2]))
+  eft$sd_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),sd)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),sd)[,2]))
+  eft$min_effort<-c(aggregate(datLB$effort,by=list(datLB$gear),min)[,2],aggregate(datUB$effort,by=list(datUB$gear),min)[,2])
+  eft$max_effort<-c(aggregate(datLB$effort,by=list(datLB$gear),max)[,2],aggregate(datUB$effort,by=list(datUB$gear),max)[,2])
+  eft$median_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),median)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),median)[,2]))
+  eft$gamma_shape<-shapes
+  eft$gamma_rate<-rates
+  eft<-subset(eft,observations>=10)
+  write.table(eft, file="C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/01-PSPAP-Background/analysis-effort/output/effort_dat.csv")
+  
+  #read.table("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/01-PSPAP-Background/analysis-effort/output/effort_dat.csv")
 
 #MIN AND MAX DEPLOYMENTS OF A GEAR BY BASIN OVER ENTIRE PSPAP
   max(tables(4)$observations)
