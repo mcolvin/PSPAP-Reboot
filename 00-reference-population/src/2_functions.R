@@ -82,7 +82,16 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   
   # outputs
   ## out: an array of numerical values representing catch
-  ##    out[i,j,k] is the catch for bend i in year j with gear k 
+  ##    out[i,j,k] is the catch for bend i in year j with gear k
+  ##    k=1 GN14
+  ##    k=2 GN18
+  ##    k=3 GN41
+  ##    k=4 GN81
+  ##    k=5 MF
+  ##    k=6 OT16
+  ##    k=7 TLC1
+  ##    k=8 TLC2
+  ##    k=9 TN
   
   # assumptions--unless these are somehow factored into q, we have:
   ## no movement
