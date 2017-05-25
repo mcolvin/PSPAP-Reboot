@@ -69,7 +69,7 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   # each bend within a segment probabilistically given bend
   # abundance and a gamma distribution for effort
   
-  # a formulat for catchability (q) still needs to be worked in
+  # a formula for catchability (q) still needs to be worked in
   # currently q is constant at 0.0002
   
   # inputs
@@ -128,7 +128,7 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
         fUB<-mapply(rgamma, n=indx,shape=eftUB$gamma_shape, rate=eftUB$gamma_rate)
         fLB<-mapply(rgamma, n=(nrow(n)-indx),shape=eftLB$gamma_shape, rate=eftLB$gamma_rate)
         f<-rbind(fUB,fLB)
-        out[,j,]<-mapply(C,q=q,N=n[,j], f=f)
+        out[,j,]<-round(mapply(C,q=q,N=n[,j], f=f))
       }
   
     return(out) 

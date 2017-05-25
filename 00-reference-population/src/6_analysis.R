@@ -17,7 +17,7 @@
 
 
 ## Catch Simulations
-  sim_catch<-catch_counts3(segs=segs,
+  sim_catch<-catch_counts(segs=segs,
                           bends=bends,
                           n=sim_pop,
                           effort=effort)
