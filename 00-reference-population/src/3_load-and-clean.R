@@ -19,5 +19,9 @@
   effort[13,1]<-"UB"
   effort[11,4:11]<-as.integer(rep(0,8))
   effort[13,4:11]<-as.integer(rep(0,8))
+  
+  
+  # READ IN DENSITY DATA
+  dens<-read.csv("./dat/fish_density.csv")
 
 
