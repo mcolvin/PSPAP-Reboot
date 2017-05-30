@@ -23,5 +23,9 @@
   
   # READ IN DENSITY DATA
   dens<-read.csv("./dat/fish_density.csv")
-
+  # REMOVE WU AND HOLAN DATA
+  dens<-rbind(dens[1:4,],dens[7:nrow(dens),])
+  # MAKE COLUMN NAMES LOWER CASE
+  names(dens)<-tolower(names(dens))
+  
 
