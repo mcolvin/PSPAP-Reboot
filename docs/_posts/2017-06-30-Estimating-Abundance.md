@@ -9,8 +9,8 @@ published: false
 for blog post:
 docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
 filename<- "2017-06-30-Estimating-Abundance.md"
-knitr::knit("index.Rmd", 
-    output=paste(docs,filename,sep=""))
+knit("index.Rmd", 
+    ouput=paste(docs,filename,sep="")
 
 To do:
 1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
@@ -20,17 +20,7 @@ rmarkdown::render("index.Rmd")# render index for this analysis
 
 -->
 
-```{r, echo=FALSE,message=FALSE, warnings=FALSE,eval=FALSE}  
-    # RUN SOURCE CODE
-    source("./R/1_global.R")
-    source("./R/2_functions.R")
-    source("./R/3_load.R")
-    source("./R/4_clean.R")
-    source("./R/5_tables.R")
-    source("./R/6_figures.R") 
 
-   # source("./R/7_analysis.R")    
-```
 
 ## Site-level
 
@@ -147,9 +137,7 @@ use shovelnose for capture probabilities?
 <!--NN: 25 578 1131 1683 2236 2789 3342 3894 4447 5000 -->
         
 
-```{r,echo=FALSE,eval=FALSE}
-figures(1, NN= 25)
-```
+
 
 _Figure 1._
 Figure of reliability, accuracy, and precision for abundance and detection probability estimates.
@@ -157,12 +145,8 @@ Abundance estimate reliability (top), accuracy (2nd from top), precision (middle
 Bottom 2 rows present accuracy and precision for detection probability estimates.
 
 
-```{r,echo=FALSE,eval=FALSE}
-figures(1, NN=578)
-```
-```{r,echo=FALSE,eval=FALSE}
-figures(1, NN=5000)
-```
+
+
 # Analysis objectives
 
 1. Evaluate the number of recapture occasions need to estimate capture probability($p$) and abundance ($N$) for
