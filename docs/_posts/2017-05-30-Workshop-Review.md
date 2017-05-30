@@ -24,11 +24,6 @@ and the University of Nebraska at Lincoln.
 
 The fundamental objectives of PSPAP v. 2.0 workshop were to:
 
-Provide essential population-level information needed for the Missouri 
-River Recovery Project to achieve its fundamental objectives. Details to 
-be provided by USACE and USFWS 
-
-
 * Fundamental objective of Workshop
     * Contribute to redesign of the pallid sturgeon population assessment 
     project to improve support for decision making under the MRRP. 
@@ -41,11 +36,9 @@ be provided by USACE and USFWS
 
 
 
-## Anticipated workshop deliverables
+## Anticipated workshop outcomes
 
-The original announcement to sent to workshop invitees is [here]({{ 
-site.baseurl }}/pdfs/workshop-announcement.pdf) 
-
+The outcomes of the workshop were anticipated to be: 
 
 * Shared understanding of how objectives fit within the MRRP and FWS 
 objectives and constraints. 
@@ -61,7 +54,10 @@ simulations.
 PSPAP v. 2.0, and trade-offs among the identified objectives. 
 
 
+## Workshop archive
 
+The original announcement to sent to workshop invitees is [here]({{ 
+site.baseurl }}/pdfs/workshop-announcement.pdf) 
 
 
 ![Sub-Adult Pallid Sturgeons]({{ site.baseurl }}/images/14979392701_a6e3667e14_o.jpg)
