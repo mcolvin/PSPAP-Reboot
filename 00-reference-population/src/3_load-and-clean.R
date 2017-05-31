@@ -19,5 +19,14 @@
   effort[13,1]<-"UB"
   effort[11,4:11]<-as.integer(rep(0,8))
   effort[13,4:11]<-as.integer(rep(0,8))
+  
+  
+  # READ IN DENSITY DATA
+  dens<-read.csv("./dat/fish_density.csv")
+  # REMOVE WU AND HOLAN DATA
+  dens<-rbind(dens[1:4,],dens[7:nrow(dens),])
+  # MAKE COLUMN NAMES LOWER CASE
+  names(dens)<-tolower(names(dens))
 
+  
 
