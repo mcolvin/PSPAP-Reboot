@@ -13,10 +13,9 @@ sim_pop<-reference_population(segs=segs,
     phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 ## Catch Simulations
-
-  sim_catch<-catch_counts(segs=segs,
+sim_catch<-catch_counts(segs=segs,
                           bends=bends,
-                          n=sim_pop$out,
+                         n=sim_pop,
                           effort=effort)
 
   head(sim_catch)
@@ -27,7 +26,7 @@ sim_pop<-reference_population(segs=segs,
   
   
 #Sampling Simulation
-  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop$out)
+  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop)
   nrow(sim_pop)*ncol(sim_pop)==nrow(sim_samp)
   head(sim_samp)
   str(sim_samp)
@@ -47,11 +46,6 @@ sim_pop<-reference_population(segs=segs,
             phi=phi,
             effort=effort)
   head(sim_data)
-
-
-
-
-    
 
 
 
