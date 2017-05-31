@@ -1,22 +1,19 @@
 ## Population Simulations
-  segs<- c(1,2,3,4,7,8,9,10,13,14)
-  nyears<- 10
+segs<- c(1,2,3,4,7,8,9,11,10,13,14)
+nyears<- 10
 
-  beta0<- 2.9444
-  phi<-matrix(plogis(beta0),length(segs),nyears-1)
+beta0<- 2.9444
+phi<-matrix(plogis(beta0),length(segs),nyears-1)
 
-  fish_density<- 10
+fish_density<- 10
 
-  sim_pop<-reference_population(segs=segs,
-                                bends=bends,# BENDS DATAFRAME
-                                fish_density=10, # FISH DENSITY PER RKM
-                                #nyears=nyears, #NUMBER OF YEARS TO PROJECT
-                                phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
-
-  head(sim_pop) 
-
+sim_pop<-reference_population(segs=segs,
+    bends=bends,# BENDS DATAFRAME
+    fish_density=10, # FISH DENSITY PER RKM
+    phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 ## Catch Simulations
+
   sim_catch<-catch_counts(segs=segs,
                           bends=bends,
                           n=sim_pop,
@@ -50,6 +47,33 @@
             phi=phi,
             effort=effort)
   head(sim_data)
+
+sim_catch<-catch_counts(segs=segs,
+    bends=bends,
+    n=sim_pop$out,
+    effort=effort)
+
+## TROTLINE DATA FOR UPPER AND LOWER BASIN
+GN14<-sim_catch[,,1]
+basinMeta<- sim_pop$basinMeta
+
+
+    
+    
+    
+head(sim_catch[,,1])
+
+dim(sim_catch)
+
+#NOTE: sim_catch[i,j,k] will give the catch for bend i, in year j, when using gear k.
+#See function description for list of gears k.
+
+
+
+
+
+
+
 
 CPUE<-C/f
 
