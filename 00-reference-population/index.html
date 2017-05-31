@@ -101,7 +101,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Creating a reference population</h1>
-<h4 class="date"><em>26 May, 2017</em></h4>
+<h4 class="date"><em>30 May, 2017</em></h4>
 
 </div>
 
@@ -286,83 +286,84 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 </tr>
 </tbody>
 </table>
-<p>Table 2. Segment and river level densities by origin</p>
+<p>Table 2. Segment and river level densities by origin.</p>
 <table>
 <thead>
 <tr class="header">
 <th align="left">RPMA</th>
-<th align="center">Segments</th>
+<th align="left">Segments</th>
 <th align="center">Fish Type</th>
 <th align="center">Minimum Density (fish/rkm)</th>
 <th align="center">Mean Density (fish/rkm)</th>
 <th align="center">Maximum Density (fish/rkm)</th>
-<th align="center">Most Recent Mean Density (fish/rkm)</th>
-<th align="center">Most Recent Report Year</th>
+<th align="center">Year</th>
+<th align="center">References</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">2</td>
-<td align="center">1-4</td>
+<td align="left">1-4</td>
 <td align="center">H</td>
 <td align="center">57.9</td>
 <td align="center">91.6</td>
 <td align="center">125.2</td>
-<td align="center">91.6</td>
 <td align="center">2013</td>
+<td align="center">[1]</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
-<td align="center">1-4</td>
+<td align="left"></td>
 <td align="center">W</td>
 <td align="center">0.2</td>
 <td align="center">0.3</td>
 <td align="center">0.5</td>
-<td align="center">0.3</td>
-<td align="center">2008</td>
+<td align="center">2008*</td>
+<td align="center">[2]-[4]</td>
 </tr>
 <tr class="odd">
 <td align="left">4</td>
-<td align="center">7-9</td>
+<td align="left">7-9</td>
 <td align="center">H</td>
 <td align="center">26.9</td>
-<td align="center">29.8</td>
-<td align="center">40.3</td>
 <td align="center">32.3</td>
+<td align="center">40.3</td>
 <td align="center">2010</td>
+<td align="center">[5]</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
-<td align="center">7-9</td>
+<td align="left"></td>
 <td align="center">W</td>
 <td align="center">4.5</td>
-<td align="center">6.7</td>
-<td align="center">10.2</td>
 <td align="center">5.7</td>
+<td align="center">10.2</td>
 <td align="center">2010</td>
+<td align="center">[5]</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
-<td align="center">10,13,14</td>
+<td align="left">10, 13, 14</td>
 <td align="center">H</td>
 <td align="center">5.5</td>
-<td align="center">7.8</td>
-<td align="center">10.2</td>
 <td align="center">5.5</td>
+<td align="center">10.2</td>
 <td align="center">2013</td>
+<td align="center">[6]</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
-<td align="center">10,13,14</td>
+<td align="left"></td>
 <td align="center">W</td>
 <td align="center">0.6</td>
-<td align="center">0.8</td>
 <td align="center">0.9</td>
 <td align="center">0.9</td>
 <td align="center">2013</td>
+<td align="center">[6]</td>
 </tr>
 </tbody>
 </table>
+<p>*Estimated year of data collection based on reference date.</p>
 </div>
 <div id="code" class="section level1">
 <h1>Code</h1>

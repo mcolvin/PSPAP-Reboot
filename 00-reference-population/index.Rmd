@@ -129,19 +129,21 @@ kable(tbl,row.names=FALSE,
     align="lccccc")
 ```
 
-Table 2. Segment and river level densities by origin
+Table 2. Segment and river level densities by origin. 
+
+
 ```{r,warning=FALSE, echo=FALSE}
 tbl2<-tables(2)
-#RENAMING SEGS 1-4 & LY AS SEG 1 
-tbl2$segments[1:2]<-1
-tbl2$segments<-as.numeric(tbl2$segments)
-tbl2<-tbl2[order(tbl2$segments),]
-tbl2$segments<-ifelse(tbl2$segments==1, "1-4", ifelse(tbl2$segments==8, "7-9", "10,13,14"))
+tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
 tbl2[duplicated(tbl2$rpma),]$rpma<-""
+tbl2[duplicated(tbl2$segments),]$segments<-""
 kable(tbl2,row.names=FALSE,
-    col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Mean Density (fish/rkm)","Maximum Density (fish/rkm)", "Most Recent Mean Density (fish/rkm)", "Most Recent Report Year"),
-    align="lcccccccc")
+    col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Mean Density (fish/rkm)","Maximum Density (fish/rkm)", "Year", "References"),
+    align="llcccccc")
 ```
+  
+  *Estimated year of data collection based on reference date.    
+
 
 # Code
 
