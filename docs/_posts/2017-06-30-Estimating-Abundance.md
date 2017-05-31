@@ -1,15 +1,17 @@
 ---
-title: "Estimating bend-level abundance- Mo with axillary information"
-author: Michael E. Colvin
-date: 4 October 2016
-output:
-  html_document:
-    theme: flatly
-    highlight: espresso
-    toc: FALSE
+layout: post
+title: Estimating abundance using capture-recapture
+published: false
 ---
 
 <!-- 
+
+for blog post:
+docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
+filename<- "2017-06-30-Estimating-Abundance.md"
+knit("index.Rmd", 
+    ouput=paste(docs,filename,sep="")
+
 To do:
 1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
 
@@ -18,19 +20,39 @@ rmarkdown::render("index.Rmd")# render index for this analysis
 
 -->
 
-```{r, echo=FALSE,message=FALSE, warnings=FALSE}  
-    # RUN SOURCE CODE
-    source("./R/1_global.R")
-    source("./R/2_functions.R")
-    source("./R/3_load.R")
-    source("./R/4_clean.R")
-    source("./R/5_tables.R")
-    source("./R/6_figures.R") 
-
-    source("./R/7_analysis.R")    
-```
 
 
+## Site-level
+
+* How many replicates are needed to estimate abundance reliably? What is 
+reliable? 
+    * Constant p
+    * Heterogeneous capture probability
+    * Some movement in and out
+* Benefit of using tagged critters?
+
+
+## Segment-level
+
+* Estimates from 25% of bends in segment per year?
+* Dependent on bend size
+* Relate to density?
+* Consequences of some movement?
+
+## Major questions 
+
+Each major question corresponds to a chapter in this report.
+
+Chapter 3. How many occasions are needed to estimate abundance at the 
+bend-level and segment level? 
+Chapter 4.. How should segment estimates be aggregated? 
+    1. Derived from average bend estimates?
+    2. Estimated at the segment level from bend-level data?
+3. Do acoustic tags help in reducing the number of occasions? 
+    1. If so how many tags are needed? 
+    2. Can segment sweeps help in estimating segment level abundance?
+4. What is the value of using shovelnose to estimate a common capture 
+probabilities? 
 
 ### Analysis objectives
 
@@ -115,9 +137,7 @@ use shovelnose for capture probabilities?
 <!--NN: 25 578 1131 1683 2236 2789 3342 3894 4447 5000 -->
         
 
-```{r,echo=FALSE}
-figures(1, NN= 25)
-```
+
 
 _Figure 1._
 Figure of reliability, accuracy, and precision for abundance and detection probability estimates.
@@ -125,12 +145,8 @@ Abundance estimate reliability (top), accuracy (2nd from top), precision (middle
 Bottom 2 rows present accuracy and precision for detection probability estimates.
 
 
-```{r,echo=FALSE}
-figures(1, NN=578)
-```
-```{r,echo=FALSE}
-figures(1, NN=5000)
-```
+
+
 # Analysis objectives
 
 1. Evaluate the number of recapture occasions need to estimate capture probability($p$) and abundance ($N$) for
