@@ -15,7 +15,7 @@ Pallid-reproductive-evaluation.pdf
 
 A couple of quick excerpts of note: 
 
-Detectability objetive (bend tracked for transmittered fish prior to 
+Detectability objective (bend tracked for transmittered fish prior to 
 deploying PSPAP standard effort): 
 
 Zero small (339-500 mm) pallid sturgeon located within sampled bends 

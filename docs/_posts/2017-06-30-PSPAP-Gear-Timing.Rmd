@@ -1,0 +1,18 @@
+---
+layout: post
+title: Catch, Catchability, & Capture Probability
+published: false
+---
+
+<!-- 
+for blog post:
+docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
+filename<- "2017-06-30-Estimating-Abundance.md"
+knit("index.Rmd", 
+    output=paste(docs,filename,sep="")
+-->
+
+```{r,echo=FALSE}
+dat<- sqlFetch(com3,"Gear-Specific-Effort")
+
+```
