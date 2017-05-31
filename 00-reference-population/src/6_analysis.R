@@ -16,7 +16,7 @@ sim_pop<-reference_population(segs=segs,
 
   sim_catch<-catch_counts(segs=segs,
                           bends=bends,
-                          n=sim_pop,
+                          n=sim_pop$out,
                           effort=effort)
 
   head(sim_catch)
@@ -27,7 +27,7 @@ sim_pop<-reference_population(segs=segs,
   
   
 #Sampling Simulation
-  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop)
+  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop$out)
   nrow(sim_pop)*ncol(sim_pop)==nrow(sim_samp)
   head(sim_samp)
   str(sim_samp)
@@ -48,40 +48,10 @@ sim_pop<-reference_population(segs=segs,
             effort=effort)
   head(sim_data)
 
-sim_catch<-catch_counts(segs=segs,
-    bends=bends,
-    n=sim_pop$out,
-    effort=effort)
 
-## TROTLINE DATA FOR UPPER AND LOWER BASIN
-GN14<-sim_catch[,,1]
-basinMeta<- sim_pop$basinMeta
 
 
     
-    
-    
-head(sim_catch[,,1])
-
-dim(sim_catch)
-
-#NOTE: sim_catch[i,j,k] will give the catch for bend i, in year j, when using gear k.
-#See function description for list of gears k.
 
 
 
-
-
-
-
-
-CPUE<-C/f
-
-# CATCH EFFORT
-p<-0.05 # capture p
-
-catch<- rbinom(1,N,p)
-ind<- rep(1,N)
-
-ch<- rbinom(N,1,p)
-ch<- cbind(ch,  rbinom(N,1,p))
