@@ -115,7 +115,8 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                 may not have been cleaned up."))}
   
   # DETERMINE CATCHABILITY (0<q<1/f)
-    q=0.0004
+    q<-catchability
+    q<-matrix(unlist(lapply(q, rep, times=nrow(n))),c(nrow(n),9))
   
   # DETERMINE CATCH
     out<-array(0,c(dim(n),nrow(effort)/2,2))
