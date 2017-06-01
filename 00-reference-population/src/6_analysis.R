@@ -14,21 +14,24 @@ sim_pop<-reference_population(segs=segs,
 
 ## Catch Simulations
 sim_catch<-catch_counts(segs=segs,
-                          bends=bends,
-                          n=sim_pop$out,
-                          catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
-                          deployments=rep(8,9),
-                          effort=effort)
+                        bends=bends,
+                        abund=sim_pop$out,
+                        gears=c("GN14", "GN81", "TN", "OT16", "TLC1"),
+                        catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+                        deployments=rep(8,9),
+                        effort=effort)
 
-  head(sim_catch)
-  sim_catch[1:6,1,1]
-  dim(sim_catch)
-    #NOTE: sim_catch[i,j,k] will give the catch for bend i, in year j, when using gear k.
+  head(sim_catch$catch)
+  sim_catch$catch[1:6,1,1]
+  dim(sim_catch$catch)
+  head(sim_catch$effort)
+  dim(sim_catch$effort)
+    #NOTE: sim_catch$catch[i,j,k] will give the catch for bend i, in year j, when using gear k.
     #See function description for list of gears k.
-  
+  names(sim_catch$catch[,,1])<-g[1]
   
 #Sampling Simulation
-  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop$out)
+  sim_samp<-bend_samples(segs=segs,bends=bends,abund=sim_pop$out)
   nrow(sim_pop$out)*ncol(sim_pop$out)==nrow(sim_samp)
   head(sim_samp)
   str(sim_samp)
@@ -48,7 +51,8 @@ sim_catch<-catch_counts(segs=segs,
   
   sim_dat<-samp_dat(segs=segs,
             bends=bends,# BENDS DATAFRAME
-            n=sim_pop$out,
+            abund=sim_pop$out,
+            gears=c("GN14", "GN81", "TN", "OT16", "TLC1"),
             catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
             deployments=rep(8,9),
             effort=effort)
@@ -110,8 +114,8 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 ##### RUN RANDOM SAMPLING EFFORTS AND PULL OUT TREND
-n<-100 #number of replicates
-result <- t(replicate(n, get.trnd(segs=segs,
+nrep<-100 #number of replicates
+result <- t(replicate(nrep, get.trnd(segs=segs,
                                   bends=bends,# BENDS DATAFRAME
                                   n=sim_pop$out,
                                   effort=effort)
@@ -120,7 +124,7 @@ result<-as.data.frame(result)
 result$sig<-ifelse(result$pval<0.05,1,0)
 head(result)
 mean(result$year)
-power<-sum(result$sig)/n
+power<-sum(result$sig)/nrep
 power
 
 
