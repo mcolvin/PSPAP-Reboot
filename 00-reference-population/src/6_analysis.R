@@ -15,7 +15,8 @@ sim_pop<-reference_population(segs=segs,
 ## Catch Simulations
 sim_catch<-catch_counts(segs=segs,
                           bends=bends,
-                         n=sim_pop,
+                          catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+                          n=sim_pop,
                           effort=effort)
 
   head(sim_catch)
@@ -39,13 +40,18 @@ sim_catch<-catch_counts(segs=segs,
   beta0<- 2.9444
   phi<-matrix(plogis(beta0),length(segs),nyears-1)
   
+  catchability<-c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1)
+  
   sim_data<-samp_dat(segs=segs,
             bends=bends,# BENDS DATAFRAME
             fish_density=10, # FISH DENSITY PER RKM
             nyears=nyears, #NUMBER OF YEARS TO PROJECT
             phi=phi,
+            catchability=catchability,
             effort=effort)
   head(sim_data)
+  
+  
 sim_data$cpue<- sim_data$catch/sim_data$effort
 tmp<- aggregate(cpue~year+segment,sim_data,mean)
 tmp$segment<- as.factor(tmp$segment)
