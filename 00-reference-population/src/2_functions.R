@@ -61,7 +61,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
 catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                         bends=NULL,
                         n=NULL,
-                        catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+                        #gears=c("GN14", "GN41", "GN18")
+                        catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
                         deployments=rep(8,9),
                         effort=NULL)
 { 
@@ -209,26 +210,28 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
 samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL,
-                   fish_density=1,
-                   nyears=10,
-                   phi=0.95,
-                   catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+                   #fish_density=1,
+                   #nyears=10,
+                   #phi=0.95,
+                   n=NULL,
+                   catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
                    deployments=rep(8,9),
                    effort=NULL)
 {
-  #OBTAIN SIMPULATED REFERENCE POPULATION
-  sim_pop<-reference_population(segs=segs,
-                                bends=bends,# BENDS DATAFRAME
-                                fish_density=fish_density, # FISH DENSITY PER RKM
-                                nyears=nyears, #NUMBER OF YEARS TO PROJECT
-                                phi=phi)
+  ##OBTAIN SIMPULATED REFERENCE POPULATION
+  #sim_pop<-reference_population(segs=segs,
+  #                              bends=bends,# BENDS DATAFRAME
+  #                              fish_density=fish_density, # FISH DENSITY PER RKM
+  #                              nyears=nyears, #NUMBER OF YEARS TO PROJECT
+  #                              phi=phi)
+  
   #DETERMINE WHICH BENDS TO SAMPLE
-  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop$out)
+  sim_samp<-bend_samples(segs=segs,bends=bends,n=n) #n=sim_pop$out)
   
   #ADD CATCH AND EFFORT FOR TROTLINE TLC1 (k=7)
   sim_catch<-catch_counts(segs=segs,
                           bends=bends,
-                          n=sim_pop$out,
+                          n=n, #n=sim_pop$out,
                           catchability=catchability,
                           deployments=deployments,
                           effort=effort)
@@ -238,11 +241,54 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   sim_catch<-sim_catch[,,7,1]
   CATCH<-c(sim_catch[,1:ncol(sim_catch)])
   CATCH<-ifelse(sim_samp$sampled==1,CATCH,NA)
+  CPUE<- CATCH/EFFORT
   
-  out<-data.frame(sim_samp[,1:6], EFFORT, CATCH, sim_samp[,7:8])
+  out<-data.frame(sim_samp[,1:6], EFFORT, CATCH, CPUE, sim_samp[,7:8])
   names(out)<- tolower(names(out))
   return(out)
 }
 
+
+
+
+# GETTING TREND
+
+get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
+                   bends=NULL, #UPLOADED
+                   n=NULL, #RUN REFERENCE_POPULATION FUNCTION TO GET
+                   catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002), #BY GEAR,
+                   deployments=rep(8,9), #BY GEAR,
+                   effort=NULL) #UPLOADED
+{
+  # GET CATCH SIMULATION DATA
+  sim_dat<-samp_dat(segs=segs,
+                    bends=bends,# BENDS DATAFRAME
+                    n=n,
+                    catchability=catchability,
+                    deployments=deployments,
+                    effort=effort)
+  
+  # GET AVERAGE SEGMENT CPUE BY YEAR
+  tmp<- aggregate(cpue~year+segment,sim_dat,mean)
+  tmp$segment<- as.factor(tmp$segment)
+  tmp$lncpue<- log(tmp$cpue)
+  
+  # FIT LINEAR MODEL FOR TREND
+  fit<- lm(lncpue~segment+year, tmp)
+  
+  # THE GOODIES
+  ## TREND ESTIMATE
+  trnd<- coef(fit)['year']
+  ## STANDARD ERROR FOR TREND ESTIMATE
+  se<-summary(fit)$coefficients['year',2]
+  names(se)<-"se"
+  ## PVALUE FOR TREND ESTIMATE
+  pval<-summary(fit)$coefficients['year',4]
+  names(pval)<-"pval"
+  
+  # OUTPUT THE GOODIES
+  out<-c(trnd, se, pval)
+  return(out)
+}
  
  
