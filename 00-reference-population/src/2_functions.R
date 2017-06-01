@@ -210,21 +210,11 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
 samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL,
-                   #fish_density=1,
-                   #nyears=10,
-                   #phi=0.95,
                    n=NULL,
                    catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
                    deployments=rep(8,9),
                    effort=NULL)
 {
-  ##OBTAIN SIMPULATED REFERENCE POPULATION
-  #sim_pop<-reference_population(segs=segs,
-  #                              bends=bends,# BENDS DATAFRAME
-  #                              fish_density=fish_density, # FISH DENSITY PER RKM
-  #                              nyears=nyears, #NUMBER OF YEARS TO PROJECT
-  #                              phi=phi)
-  
   #DETERMINE WHICH BENDS TO SAMPLE
   sim_samp<-bend_samples(segs=segs,bends=bends,n=n) #n=sim_pop$out)
   
