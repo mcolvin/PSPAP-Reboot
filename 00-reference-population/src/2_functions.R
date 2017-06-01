@@ -132,6 +132,7 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
         fUB<-mapply(rgamma, n=indx,shape=eftUB$gamma_shape, rate=eftUB$gamma_rate)
         fLB<-mapply(rgamma, n=(nrow(n)-indx),shape=eftLB$gamma_shape, rate=eftLB$gamma_rate)
         f<-rbind(fUB,fLB)
+        f<-d*f
         out[,j,,1]<-round(mapply(C,q=q,N=n[,j], f=f))
         out[,j,,2]<-f
       }
