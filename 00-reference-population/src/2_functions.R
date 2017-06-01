@@ -60,8 +60,9 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
 # FUNCTION TO DETERMINE CATCH COUNTS IN A BEND FOR ALL STANDARD, COMMON GEARS
 catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                         bends=NULL,
-                        catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
                         n=NULL,
+                        catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+                        deployments=rep(8,9),
                         effort=NULL)
 { 
   # this function calculates the number of fish caught in
@@ -114,9 +115,12 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
       {return(print("LB gears differ from UB gears.  Effort \n
                 may not have been cleaned up."))}
   
-  # DETERMINE CATCHABILITY (0<q<1/f)
+  # DETERMINE CATCHABILITY BY GEAR (0<q<1/f)
     q<-catchability
     q<-matrix(unlist(lapply(q, rep, times=nrow(n))),c(nrow(n),9))
+    
+  # DETERMINE DEPLOYMENTS BY GEAR
+    d<-matrix(unlist(lapply(deployments, rep, times=nrow(n))),c(nrow(n),9))
   
   # DETERMINE CATCH
     out<-array(0,c(dim(n),nrow(effort)/2,2))
@@ -208,6 +212,7 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    nyears=10,
                    phi=0.95,
                    catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+                   deployments=rep(8,9),
                    effort=NULL)
 {
   #OBTAIN SIMPULATED REFERENCE POPULATION
@@ -222,8 +227,9 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   #ADD CATCH AND EFFORT FOR TROTLINE TLC1 (k=7)
   sim_catch<-catch_counts(segs=segs,
                           bends=bends,
-                          catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
                           n=sim_pop$out,
+                          catchability=catchability,
+                          deployments=deployments,
                           effort=effort)
   sim_effort<-sim_catch[,,7,2]
   EFFORT<-c(sim_effort[,1:ncol(sim_effort)])

@@ -15,8 +15,9 @@ sim_pop<-reference_population(segs=segs,
 ## Catch Simulations
 sim_catch<-catch_counts(segs=segs,
                           bends=bends,
+                          n=sim_pop$out,
                           catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
-                          n=sim_pop,
+                          deployments=rep(8,9),
                           effort=effort)
 
   head(sim_catch)
@@ -27,8 +28,8 @@ sim_catch<-catch_counts(segs=segs,
   
   
 #Sampling Simulation
-  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop)
-  nrow(sim_pop)*ncol(sim_pop)==nrow(sim_samp)
+  sim_samp<-bend_samples(segs=segs,bends=bends,n=sim_pop$out)
+  nrow(sim_pop$out)*ncol(sim_pop$out)==nrow(sim_samp)
   head(sim_samp)
   str(sim_samp)
   
@@ -40,20 +41,19 @@ sim_catch<-catch_counts(segs=segs,
   beta0<- 2.9444
   phi<-matrix(plogis(beta0),length(segs),nyears-1)
   
-  catchability<-c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1)
-  
-  sim_data<-samp_dat(segs=segs,
+  sim_dat<-samp_dat(segs=segs,
             bends=bends,# BENDS DATAFRAME
             fish_density=10, # FISH DENSITY PER RKM
             nyears=nyears, #NUMBER OF YEARS TO PROJECT
             phi=phi,
-            catchability=catchability,
+            catchability=c(0.0004, 0.0002, 0, 0.0004, 0.002, 0.1, 0.002, 0, 0.1),
+            deployments=rep(8,9),
             effort=effort)
-  head(sim_data)
+  head(sim_dat)
   
   
-sim_data$cpue<- sim_data$catch/sim_data$effort
-tmp<- aggregate(cpue~year+segment,sim_data,mean)
+sim_dat$cpue<- sim_dat$catch/sim_dat$effort
+tmp<- aggregate(cpue~year+segment,sim_dat,mean)
 tmp$segment<- as.factor(tmp$segment)
 tmp$lncpue<- log(tmp$cpue)
 library(lattice)
@@ -61,8 +61,8 @@ library(lattice)
 xyplot(cpue~year, tmp, group=segment,type='b')
 xyplot(lncpue~year, tmp, group=segment,type='b')
 
-plot(log(r_abundance)~year,sim_data)
-fit<- lm(log(r_abundance)~year+rpma,sim_data)
+plot(log(r_abundance)~year,sim_dat)
+fit<- lm(log(r_abundance)~year+rpma,sim_dat)
 
 ## TREND ANALYSIS
 ### FIT LINEAR MODEL FOR TREND
