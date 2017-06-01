@@ -100,7 +100,6 @@ get.trnd(segs=segs,
 #### MAKE 100 REPLICATES
 ##### DEFINE FIXED REFERENCE POPULATION
 segs<- c(1,2,3,4,7,8,9,11,10,13,14)
-nyears<- 10
 
 beta0<- 2.9444
 phi<-matrix(plogis(beta0),length(segs),nyears-1)
@@ -124,3 +123,31 @@ mean(result$year)
 power<-sum(result$sig)/n
 power
 
+
+
+### RUN SAME TREND ANALYSIS WITH VARIABLE SIM_POP
+#### DEFINE FIXED VALUES
+segs<- c(1,2,3,4,7,8,9,11,10,13,14)
+
+beta0<- 2.9444
+phi<-matrix(plogis(beta0),length(segs),nyears-1)
+
+#### RUN RANDOM SAMPLING EFFORTS ON RANDOM SIM_POP
+n<-100 #number of replicates
+result <- t(replicate(n, 
+                      {sim_pop<-reference_population(segs=segs,
+                                                      bends=bends,# BENDS DATAFRAME
+                                                      fish_density=10, # FISH DENSITY PER RKM
+                                                      phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+                       get.trnd(segs=segs,
+                                  bends=bends,# BENDS DATAFRAME
+                                  n=sim_pop$out,
+                                  effort=effort)
+                      }
+                ))
+result<-as.data.frame(result)
+result$sig<-ifelse(result$pval<0.05,1,0)
+head(result)
+mean(result$year)
+power<-sum(result$sig)/n
+power
