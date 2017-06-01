@@ -46,6 +46,23 @@ sim_catch<-catch_counts(segs=segs,
             phi=phi,
             effort=effort)
   head(sim_data)
+sim_data$cpue<- sim_data$catch/sim_data$effort
+tmp<- aggregate(cpue~year+segment,sim_data,mean)
+tmp$segment<- as.factor(tmp$segment)
+tmp$lncpue<- log(tmp$cpue)
+library(lattice)
+## PLOT CPUE OVER TIME FOR EACH SEGMENT
+xyplot(cpue~year, tmp, group=segment,type='b')
+xyplot(lncpue~year, tmp, group=segment,type='b')
 
+plot(log(r_abundance)~year,sim_data)
+fit<- lm(log(r_abundance)~year+rpma,sim_data)
 
-
+## TREND ANALYSIS
+### FIT LINEAR MODEL FOR TREND
+fit<- lm(lncpue~segment+year, tmp)
+### THE GOODIES
+#### TREND ESTIMATE
+trnd<- coef(fit)['year']
+#### PVALUE FOR TREND ESTIMATE
+pval<-summary(fit)$coefficients['year',4]
