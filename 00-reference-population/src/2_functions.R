@@ -302,6 +302,8 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   EFFORT<-ifelse(sim_samp$sampled==1,EFFORT,NA)
   CATCH<-unlist(sim_catch$catch, use.names = FALSE)
   CATCH<-ifelse(sim_samp$sampled==1,CATCH,NA)
+  #CATCH<-ifelse(EFFORT==0, NA, CATCH)
+  #EFFORT<-ifelse(EFFORT==0, NA, EFFORT)
   CPUE<- CATCH/EFFORT
   
   out<-data.frame(sim_samp[,1:6], GEAR, EFFORT, CATCH, CPUE, sim_samp[,7:8])
@@ -337,26 +339,57 @@ get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                     effort=effort)
   
   # GET AVERAGE SEGMENT CPUE BY YEAR
-  tmp<- aggregate(cpue~year+segment,sim_dat,mean)
+  tmp<- aggregate(cpue~year+segment+gear,sim_dat,mean)
   tmp$segment<- as.factor(tmp$segment)
   tmp$lncpue<- log(tmp$cpue)
   
-  # FIT LINEAR MODEL FOR TREND
-  fit<- lm(lncpue~segment+year, tmp)
-  
-  # THE GOODIES
-  ## TREND ESTIMATE
-  trnd<- coef(fit)['year']
-  ## STANDARD ERROR FOR TREND ESTIMATE
-  se<-summary(fit)$coefficients['year',2]
-  names(se)<-"se"
-  ## PVALUE FOR TREND ESTIMATE
-  pval<-summary(fit)$coefficients['year',4]
-  names(pval)<-"pval"
-  
+  # FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+  out<-lapply(gears,function(g)
+    {
+      fit<- lm(lncpue~segment+year, tmp, subset=gear==g)
+      tmp2<- data.frame( 
+        # THE GOODIES
+        gear=g,
+        #names(gear)<-"gear"
+        ## TREND ESTIMATE
+        trnd=coef(fit)['year'],
+        ## STANDARD ERROR FOR TREND ESTIMATE
+        se=summary(fit)$coefficients['year',2],
+        #names(se)<-"se"
+        ## PVALUE FOR TREND ESTIMATE
+        pval=summary(fit)$coefficients['year',4]
+        #names(pval)<-"pval"
+        )
+        #out<-c(gear,trnd, se, pval)
+        #out<-c(out, gear, trnd, se, pval)
+      }
+    )
   # OUTPUT THE GOODIES
-  out<-c(trnd, se, pval)
+  #out<-do.call("rbind",out2)
+  #out<-c(trnd, se, pval)
   return(out)
 }
  
+
+## make some fake data
+out<- data.frame(x=runif(1000),
+                 gear=sample(c(1:7),1000,replace=TRUE))
+out$y<- 5+ out$x  
+
+gears<-c(1:7)
+
+out2<- lapply(gears,function(xx)
+{
+  fit<- lm(y~x,out,subset=gear==xx)
+  tmp<- data.frame(
+    gear=xx,
+    est=coef(fit)['x'],
+    ext2=coef(fit)[1])
+  
+})
+
+## make the output useful
+## and not a list
+
+useful<-  do.call("rbind",out2)
  

@@ -51,7 +51,7 @@ sim_catch<-catch_counts(segs=segs,
   sim_dat<-samp_dat(segs=segs,
             bends=bends,# BENDS DATAFRAME
             abund=sim_pop$out,
-            gears=c("GN14", "GN81", "TN", "OT16", "TLC1"),
+            gears=c("GN18", "GN81", "TN", "OT16", "TLC1"),
             catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
             deployments=rep(8,9),
             effort=effort)
@@ -97,7 +97,10 @@ sim_pop<-reference_population(segs=segs,
 
 get.trnd(segs=segs,
          bends=bends,# BENDS DATAFRAME
-         n=sim_pop$out,
+         abund=sim_pop$out,
+         gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
+         catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.002, 0.00004, 0.00004, 0.002), #BY GEAR,
+         deployments=rep(8,9), #BY GEAR
          effort=effort)
 
 #### MAKE 100 REPLICATES
@@ -116,15 +119,22 @@ sim_pop<-reference_population(segs=segs,
 nrep<-100 #number of replicates
 result <- t(replicate(nrep, get.trnd(segs=segs,
                                   bends=bends,# BENDS DATAFRAME
-                                  n=sim_pop$out,
+                                  abund=sim_pop$out,
+                                  gears=c("GN14","GN18","GN41", "GN81", "MF", "OT16","TLC1", "TLC2","TN"),
+                                  catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.002, 0.00004, 0.00004, 0.002), #BY GEAR,
+                                  deployments=rep(8,9), #BY GEAR
                                   effort=effort)
                     ))
-result<-as.data.frame(result)
+result<-do.call("rbind", result)
 result$sig<-ifelse(result$pval<0.05,1,0)
 head(result)
-mean(result$year)
-power<-sum(result$sig)/nrep
-power
+ddply(result, .(gear), summarize,
+      mean_trnd=mean(trnd),
+      mean_se=mean(se),
+      max_se=max(se),
+      mean_pval=mean(pval),
+      max_pval=max(pval),
+      power=sum(sig)/nrep)
 
 
 
