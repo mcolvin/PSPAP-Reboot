@@ -185,9 +185,11 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     out<-list()
     for(k in 1:length(g))
     {
-      out[[g[k]]]$gear<-g[k]
-      out[[g[k]]]$catch<-out_a[,,k,1]
-      out[[g[k]]]$effort<-out_a[,,k,2] 
+      out$effort[[g[k]]]<-out_a[,,k,2]
+      out$catch[[g[k]]]<-out_a[,,k,1]
+      # out[[g[k]]]$gear<-g[k]
+      # out[[g[k]]]$catch<-out_a[,,k,1]
+      # out[[g[k]]]$effort<-out_a[,,k,2] 
     }
     return(out) 
 }
@@ -278,9 +280,15 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    effort=NULL)
 {
   #DETERMINE WHICH BENDS TO SAMPLE
-  sim_samp<-bend_samples(segs=segs,bends=bends,abund=abund) #n=sim_pop$out)
+  sim_samp<-bend_samples(segs=segs,bends=bends,abund=abund)
   
-  #ADD CATCH AND EFFORT FOR TROTLINE TLC1 (k=7)
+  #EXPAND SIM_SAMP TO INCLUDE RESULTS FOR REACH GEAR
+  sim_samp<-rbind(sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp)
+  g<-gears[order(unique(gears))]
+  sim_samp<-sim_samp[1:(length(g)*nrow(abund)*ncol(abund)),]
+  
+  
+  #ADD CATCH AND EFFORT FOR GEARS
   sim_catch<-catch_counts(segs=segs,
                           bends=bends,
                           abund=abund,
@@ -288,18 +296,23 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                           catchability=catchability,
                           deployments=deployments,
                           effort=effort)
-  sim_effort<-sim_catch$effort[,,3]
-  EFFORT<-c(sim_effort[,1:ncol(sim_effort)])
+  
+  GEAR<-unlist(lapply(g,rep,nrow(abund)*ncol(abund)))
+  EFFORT<-unlist(sim_catch$effort, use.names = FALSE)
   EFFORT<-ifelse(sim_samp$sampled==1,EFFORT,NA)
-  sim_catch<-sim_catch$catch[,,3]
-  CATCH<-c(sim_catch[,1:ncol(sim_catch)])
+  CATCH<-unlist(sim_catch$catch, use.names = FALSE)
   CATCH<-ifelse(sim_samp$sampled==1,CATCH,NA)
   CPUE<- CATCH/EFFORT
   
-  out<-data.frame(sim_samp[,1:6], EFFORT, CATCH, CPUE, sim_samp[,7:8])
+  out<-data.frame(sim_samp[,1:6], GEAR, EFFORT, CATCH, CPUE, sim_samp[,7:8])
   names(out)<- tolower(names(out))
   return(out)
 }
+
+
+
+
+
 
 
 
@@ -308,7 +321,8 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
 get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL, #UPLOADED
-                   n=NULL, #RUN REFERENCE_POPULATION FUNCTION TO GET
+                   abund=NULL, #RUN REFERENCE_POPULATION FUNCTION TO GET
+                   gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
                    catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002), #BY GEAR,
                    deployments=rep(8,9), #BY GEAR,
                    effort=NULL) #UPLOADED
@@ -316,7 +330,8 @@ get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   # GET CATCH SIMULATION DATA
   sim_dat<-samp_dat(segs=segs,
                     bends=bends,# BENDS DATAFRAME
-                    n=n,
+                    abund=abund,
+                    gears=gears,
                     catchability=catchability,
                     deployments=deployments,
                     effort=effort)

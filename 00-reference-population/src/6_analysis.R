@@ -21,14 +21,13 @@ sim_catch<-catch_counts(segs=segs,
                         deployments=rep(8,9),
                         effort=effort)
 
-  head(sim_catch$catch)
-  sim_catch$catch[1:6,1,1]
-  dim(sim_catch$catch)
-  head(sim_catch$effort)
-  dim(sim_catch$effort)
-    #NOTE: sim_catch$catch[i,j,k] will give the catch for bend i, in year j, when using gear k.
-    #See function description for list of gears k.
-  names(sim_catch$catch[,,1])<-g[1]
+  names(sim_catch)
+  names(sim_catch$effort)
+  dim(sim_catch$effort$GN14)
+  names(sim_catch$catch)
+  dim(sim_catch$catch$GN14)
+    #NOTE: sim_catch$(gear neame)$catch[i,j] will give the catch for bend i in year j,
+    #      when using the specified gear with effort sim_catch$(gear neame)$effort[i,j].
   
 #Sampling Simulation
   sim_samp<-bend_samples(segs=segs,bends=bends,abund=sim_pop$out)
