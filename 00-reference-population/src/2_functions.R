@@ -349,24 +349,18 @@ get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
       fit<- lm(lncpue~segment+year, tmp, subset=gear==g)
       tmp2<- data.frame( 
         # THE GOODIES
+        ## GEAR
         gear=g,
-        #names(gear)<-"gear"
         ## TREND ESTIMATE
         trnd=coef(fit)['year'],
         ## STANDARD ERROR FOR TREND ESTIMATE
         se=summary(fit)$coefficients['year',2],
-        #names(se)<-"se"
         ## PVALUE FOR TREND ESTIMATE
         pval=summary(fit)$coefficients['year',4]
-        #names(pval)<-"pval"
         )
-        #out<-c(gear,trnd, se, pval)
-        #out<-c(out, gear, trnd, se, pval)
       }
     )
   # OUTPUT THE GOODIES
-  #out<-do.call("rbind",out2)
-  #out<-c(trnd, se, pval)
   return(out)
 }
  

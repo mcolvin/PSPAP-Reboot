@@ -59,66 +59,61 @@ sim_catch<-catch_counts(segs=segs,
   
 
 # CPUE ANALYSIS FOR TREND
-
-tmp<- aggregate(cpue~year+segment,sim_dat,mean)
-tmp$segment<- as.factor(tmp$segment)
-tmp$lncpue<- log(tmp$cpue)
-
+  tmp<- aggregate(cpue~year+segment,sim_dat,mean)
+  tmp$segment<- as.factor(tmp$segment)
+  tmp$lncpue<- log(tmp$cpue)
 
 ## PLOT CPUE OVER TIME FOR EACH SEGMENT
-xyplot(cpue~year, tmp, group=segment,type='b')
-xyplot(lncpue~year, tmp, group=segment,type='b')
+  xyplot(cpue~year, tmp, group=segment,type='b')
+  xyplot(lncpue~year, tmp, group=segment,type='b')
 
-plot(log(r_abundance)~year,sim_dat)
-fit<- lm(log(r_abundance)~year+rpma,sim_dat)
-summary(fit)
+  plot(log(r_abundance)~year,sim_dat)
+  fit<- lm(log(r_abundance)~year+rpma,sim_dat)
+  summary(fit)
 
 ## TREND ANALYSIS
 ### FIT LINEAR MODEL FOR TREND
-fit<- lm(lncpue~segment+year, tmp)
+  fit<- lm(lncpue~segment+year, tmp)
 ### THE GOODIES
 #### TREND ESTIMATE
-trnd<- coef(fit)['year']
+  trnd<- coef(fit)['year']
 #### PVALUE FOR TREND ESTIMATE
-pval<-summary(fit)$coefficients['year',4]
+  pval<-summary(fit)$coefficients['year',4]
 
 
 ### USE THE GET.TRND FUNCTION
-segs<- c(1,2,3,4,7,8,9,11,10,13,14)
-nyears<- 10
+  segs<- c(1,2,3,4,7,8,9,11,10,13,14)
+  nyears<- 10
+  beta0<- 2.9444
+  phi<-matrix(plogis(beta0),length(segs),nyears-1)
 
-beta0<- 2.9444
-phi<-matrix(plogis(beta0),length(segs),nyears-1)
-
-sim_pop<-reference_population(segs=segs,
+  sim_pop<-reference_population(segs=segs,
                               bends=bends,# BENDS DATAFRAME
                               fish_density=10, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
-trnd_dat<-get.trnd(segs=segs,
+  trnd_dat<-get.trnd(segs=segs,
          bends=bends,# BENDS DATAFRAME
          abund=sim_pop$out,
          gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
          catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.002, 0.00004, 0.00004, 0.002), #BY GEAR,
          deployments=rep(8,9), #BY GEAR
          effort=effort)
-trnd_dat<-do.call("rbind",trnd_dat)
+  trnd_dat<-do.call("rbind",trnd_dat)
 
 #### MAKE 100 REPLICATES
 ##### DEFINE FIXED REFERENCE POPULATION
-segs<- c(1,2,3,4,7,8,9,11,10,13,14)
-
-beta0<- 2.9444
-phi<-matrix(plogis(beta0),length(segs),nyears-1)
-
-sim_pop<-reference_population(segs=segs,
+  segs<- c(1,2,3,4,7,8,9,11,10,13,14)
+  beta0<- 2.9444
+  phi<-matrix(plogis(beta0),length(segs),nyears-1)
+  sim_pop<-reference_population(segs=segs,
                               bends=bends,# BENDS DATAFRAME
                               fish_density=10, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 ##### RUN RANDOM SAMPLING EFFORTS AND PULL OUT TREND
-nrep<-100 #number of replicates
-result <- t(replicate(nrep, get.trnd(segs=segs,
+  nrep<-100 #number of replicates
+  result <- t(replicate(nrep, get.trnd(segs=segs,
                                   bends=bends,# BENDS DATAFRAME
                                   abund=sim_pop$out,
                                   gears=c("GN14","GN18","GN41", "GN81", "MF", "OT16","TLC1", "TLC2","TN"),
@@ -126,13 +121,14 @@ result <- t(replicate(nrep, get.trnd(segs=segs,
                                   deployments=rep(8,9), #BY GEAR
                                   effort=effort)
                     ))
-result<-do.call("rbind", result)
-result$sig<-ifelse(result$pval<0.05,1,0)
-head(result)
+  result<-do.call("rbind", result)
+  result$sig<-ifelse(result$pval<0.05,1,0)
+  head(result)
+  dim(result)
 
 
 ##### MAKE A TABLE OF RESULTS
-ddply(result, .(gear), summarize,
+  ddply(result, .(gear), summarize,
       mean_trnd=mean(trnd),
       mean_se=mean(se),
       max_se=max(se),
@@ -153,21 +149,31 @@ beta0<- 2.9444
 phi<-matrix(plogis(beta0),length(segs),nyears-1)
 
 #### RUN RANDOM SAMPLING EFFORTS ON RANDOM SIM_POP
-n<-100 #number of replicates
-result <- t(replicate(n, 
+nrep<-100 #number of replicates
+result <- t(replicate(nrep, 
                       {sim_pop<-reference_population(segs=segs,
                                                       bends=bends,# BENDS DATAFRAME
                                                       fish_density=10, # FISH DENSITY PER RKM
                                                       phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
-                       get.trnd(segs=segs,
-                                  bends=bends,# BENDS DATAFRAME
-                                  n=sim_pop$out,
-                                  effort=effort)
+                      get.trnd(segs=segs,
+                               bends=bends,# BENDS DATAFRAME
+                               abund=sim_pop$out,
+                               gears=c("GN14","GN18","GN41", "GN81", "MF", "OT16","TLC1", "TLC2","TN"),
+                               catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.002, 0.00004, 0.00004, 0.002), #BY GEAR,
+                               deployments=rep(8,9), #BY GEAR
+                               effort=effort)
                       }
                 ))
-result<-as.data.frame(result)
-result$sig<-ifelse(result$pval<0.05,1,0)
-head(result)
-mean(result$year)
-power<-sum(result$sig)/n
-power
+  result<-do.call("rbind", result)
+  result$sig<-ifelse(result$pval<0.05,1,0)
+  head(result)
+  dim(result)
+  
+  ddply(result, .(gear), summarize,
+        mean_trnd=mean(trnd),
+        mean_se=mean(se),
+        max_se=max(se),
+        mean_pval=mean(pval),
+        max_pval=max(pval),
+        power=sum(sig)/nrep)
+
