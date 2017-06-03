@@ -1,3 +1,16 @@
+# FUNCTIONS IN THIS SCRIPT
+##  1. dfitfunLB
+##  2. dfitfunuB
+# RELATIVE ABUNDANCE (CPUE)
+##  3. reference_population
+##  4. catch_counts
+##  5. bend_samples
+##  6. samp_dat
+##  7. get.trnd
+# CAPTURE RECAPTURE FUNCTIONS
+##  8. sim_ch
+##  9. estimate
+## 10. plot_metrics
 
 
 # FIT DISTRIBUTIONS TO DATA  
@@ -20,9 +33,6 @@ dfitfunUB<-function(x)
   r<-as.numeric(unlist(dfit)[2])
   return(c(s,r))
 }
-
-
-
 # FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS AND THEN BENDS
 reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=NULL,
@@ -81,12 +91,6 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     out<-list(out=out, bendMeta=tmp)
     return(out)# return relevant stuff
 }
-
-
-
-
-
-
 # FUNCTION TO DETERMINE CATCH COUNTS IN A BEND FOR ALL STANDARD, COMMON GEARS
 catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                         bends=NULL,
@@ -289,13 +293,6 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   names(out)<- tolower(names(out))
   return(out)
   }
-
-
-
-
-
-
-
 samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL,
                    abund=NULL,

@@ -1,20 +1,12 @@
-<!--
-This takes a while to run, might drop outputs to RDS and then load that 
-rather than running all the source files. 
 
-
--->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
-FP<-ifelse(BUILD==TRUE,# FOR BUILDING REPORT
-    "01-PSPAP-Background/analysis-effort/R/",
-    "R/")
-source(paste(FP,"1_global.R",sep=""))
-source(paste(FP,"2_functions.R",sep=""))
-source(paste(FP,"3_load-and-clean.R",sep=""))
-source(paste(FP,"4_figures.R",sep=""))
-source(paste(FP,"5_tables.R",sep=""))
-source(paste(FP,"6_analysis.R",sep=""))
+source("R/1_global.R")
+source("R/2_functions.R")
+source("R/3_load-and-clean-effort-analysis.R")
+source("R/4_figures.R")
+source("R/5_tables.R")
+source("R/6_analysis.R")
 ``` 
 
 head(dat)
