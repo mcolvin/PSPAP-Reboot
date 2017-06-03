@@ -370,26 +370,4 @@ get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   return(out)
 }
  
-
-## make some fake data
-out<- data.frame(x=runif(1000),
-                 gear=sample(c(1:7),1000,replace=TRUE))
-out$y<- 5+ out$x  
-
-gears<-c(1:7)
-
-out2<- lapply(gears,function(xx)
-{
-  fit<- lm(y~x,out,subset=gear==xx)
-  tmp<- data.frame(
-    gear=xx,
-    est=coef(fit)['x'],
-    ext2=coef(fit)[1])
-  
-})
-
-## make the output useful
-## and not a list
-
-useful<-  do.call("rbind",out2)
  

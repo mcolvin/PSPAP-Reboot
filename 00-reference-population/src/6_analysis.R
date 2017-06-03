@@ -95,13 +95,14 @@ sim_pop<-reference_population(segs=segs,
                               fish_density=10, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
-get.trnd(segs=segs,
+trnd_dat<-get.trnd(segs=segs,
          bends=bends,# BENDS DATAFRAME
          abund=sim_pop$out,
          gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
          catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.002, 0.00004, 0.00004, 0.002), #BY GEAR,
          deployments=rep(8,9), #BY GEAR
          effort=effort)
+trnd_dat<-do.call("rbind",trnd_dat)
 
 #### MAKE 100 REPLICATES
 ##### DEFINE FIXED REFERENCE POPULATION
@@ -128,6 +129,9 @@ result <- t(replicate(nrep, get.trnd(segs=segs,
 result<-do.call("rbind", result)
 result$sig<-ifelse(result$pval<0.05,1,0)
 head(result)
+
+
+##### MAKE A TABLE OF RESULTS
 ddply(result, .(gear), summarize,
       mean_trnd=mean(trnd),
       mean_se=mean(se),
@@ -135,6 +139,9 @@ ddply(result, .(gear), summarize,
       mean_pval=mean(pval),
       max_pval=max(pval),
       power=sum(sig)/nrep)
+
+
+
 
 
 
