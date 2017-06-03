@@ -1,3 +1,28 @@
+
+
+# FIT DISTRIBUTIONS TO DATA  
+dfitfunLB<-function(x)
+{
+  datLBgear<-subset(datLB, gear==LBgears[x])
+  dfit<-fitdistr(datLBgear$effort, "gamma")
+  #Define Shape and Rate Based on Distribution Fitting
+  s<-as.numeric(unlist(dfit)[1])
+  r<-as.numeric(unlist(dfit)[2])
+  return(c(s,r))
+}
+
+dfitfunUB<-function(x)
+{
+  datUBgear<-subset(datUB, gear==UBgears[x])
+  dfit<-fitdistr(datUBgear$effort, "gamma")
+  #Define Shape and Rate Based on Distribution Fitting
+  s<-as.numeric(unlist(dfit)[1])
+  r<-as.numeric(unlist(dfit)[2])
+  return(c(s,r))
+}
+
+
+
 # FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS AND THEN BENDS
 reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=NULL,
