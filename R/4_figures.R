@@ -1,4 +1,4 @@
-figures_study_area<- function(n){
+figures_study_area<- function(n,...){
 
 if(n==1){
     # ENTIRE STUDY AREA

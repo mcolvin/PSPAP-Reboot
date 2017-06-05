@@ -7,9 +7,9 @@ published: false
 <!-- 
 for blog post:
 docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-filename<- "2017-06-30-Estimating-Abundance.md"
-knit("index.Rmd", 
-    output=paste(docs,filename,sep="")
+filename<- "2017-06-30-Catch-and-catchability.md"
+knitr::knit("2017-06-30-Catch-and-catchability.Rmd", 
+    output=paste(docs,filename,sep=""))
 -->
 
 
@@ -71,12 +71,17 @@ specific catchability coefficient $q$ was $0.001^{-minute}$. Further
 suppose that a PSPAP crew fished that gear 50 minutes. We would expect
 the catch to be $Catch = 0.001 \cdot 50 \cdot 100 = a\cdot f \cdot N$
 
-```{r}
+
+```r
 q<- 0.001
 N<- 100
 f<-50
 Catch<- q*f*N
 Catch 
+```
+
+```
+## [1] 5
 ```
 
 The catch was 5 fish, which if we calculate the capture probability as

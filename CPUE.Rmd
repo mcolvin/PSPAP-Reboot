@@ -149,7 +149,8 @@ nrep<-100 #number of replicates
 
 result <- t(replicate(nrep, 
     {
-    sim_pop<-reference_population(segs=segs,
+    sim_pop<-reference_population(
+        segs=segs,
         bends=bends,# BENDS DATAFRAME
         fish_density=10, # FISH DENSITY PER RKM
         phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
@@ -163,9 +164,7 @@ result <- t(replicate(nrep,
     }))
   result<-do.call("rbind", result)
   result$sig<-ifelse(result$pval<0.05,1,0)
-  head(result)
-  dim(result)
-  
+
   ddply(result, .(gear), summarize,
         mean_trnd=mean(trnd),
         mean_se=mean(se),
@@ -174,3 +173,8 @@ result <- t(replicate(nrep,
         max_pval=max(pval),
         power=sum(sig)/nrep)
 
+### bias
+
+hist(result$trnd)
+abline(v=-0.05,lty=2,col='red',lwd=5)
+mean(result$trnd- -0.05)
