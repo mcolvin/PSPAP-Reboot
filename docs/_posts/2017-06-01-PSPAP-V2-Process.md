@@ -1,7 +1,7 @@
 ---
 layout: post
 title: The Missouri River Pallid Sturgeon Population Assessment Project v. 2.0 process
-published: false
+published: true
 ---
 The purpose of this entry is to recap where we have been and to provide a general outline for where we are going. Everyone ending up on this blog page should be aware of the purpose of the PSPAP v. 2.0 project, but to make sure we are all on the same page, here is the objective:
 
