@@ -5,8 +5,6 @@ published: true
 ---
 
 
-## Who was involved
-
 A workshop to discuss the objectives of the PSPAP was held on March 
 21st, 2017 during the MRNRC meeting in Nebraska City, NE. The workshop 
 attendees included representatives and experts from federal and state 
