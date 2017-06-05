@@ -143,6 +143,16 @@ if(effort_data==TRUE)# long time to run, set to true in Rmd to run
 
     ##FIX TYPO IN COLUMN NAME
     colnames(dat)[14]<-"standard_gear"
+
+    dat$gearC<-as.factor(unlist(lapply(dat$gear, function(x) 
+        {
+        ifelse(any(common==x), 
+            x<-paste0(x,"*"),
+            ifelse((dat$basin=="LB" && any(LBcommon==x))||(dat$basin=="UB" && x=="TLO1"),x<-paste0(x,"*"),
+                unlist(levels(dat$gear))[x]))
+        }
+    )))
+    saveRDS(dat,"output/effort-data.Rds")
     }
 
 ######################### STUDY AREA ###########

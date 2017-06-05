@@ -1,28 +1,37 @@
+---
+title: "Quantifying effort and distribution of PSPAP gears"
+output:
+  html_document:
+    toc: true
+    theme: united
+date: "19 May, 2017"
+author: Colvin
+---
 
+<!--
+
+rmarkdown::render("index.Rmd")
+-->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 source("R/1_global.R")
 source("R/2_functions.R")
-effort_data<- TRUE
-source("R/3_load-and-clean.R")
+#effort_data<- FALSE
+#source("R/3_load-and-clean.R")
+dat<- readRDS("output/effort-data.Rds")
+
 source("R/4_figures.R")
 source("R/5_tables.R")
 #source("R/6_analysis-effort.R")
-``` 
-
 common<-UBcommon<-c("GN14","GN41","MF","OT16","TLC1","TLC2","TN")
 LBcommon<-c("GN18","GN81","TLC4","TLS1","TLS2")
+# datS<-subset(dat,standard_gear=="yes")
+``` 
 
 
-dat$gearC<-as.factor(unlist(lapply(dat$gear, function(x) 
-{
-  ifelse(any(common==x), x<-paste0(x,"*"),
-         ifelse((dat$basin=="LB" && any(LBcommon==x))||(dat$basin=="UB" && x=="TLO1"),x<-paste0(x,"*"),
-                unlist(levels(dat$gear))[x])
-  )
-}
-)))
-datS<-subset(dat,standard_gear=="yes")
+
+
+
 
 
 
@@ -172,7 +181,7 @@ As seen in Table 3, several standard gears were deployed only once in a given be
 
 ## Figures
 ```{r,echo=FALSE}
-figures(1)
+figures_effort(1)
 ```
 
 Figure 1. Illustration of gears used since 2003 for Pallid Sturgeon 
@@ -188,7 +197,7 @@ asterisk (*) following a gear name indicates that the data from this
 gear was used in the effort analysis (summarized in Table 4). 
 
 ```{r,echo=FALSE}
-kable(tables(1),
+kable(tables_effort(1,dat=dat),
     col.names=c("Basin","PSPAP gear code", "Gear id",2003:2016),
     row.names=FALSE)
    
@@ -201,7 +210,7 @@ a gear name indicates that the data from this gear was used in the
 effort analysis (summarized in Table 4). 
 
 ```{r,echo=FALSE}
-kable(tables(2),
+kable(tables_effort(2,dat=dat),
     col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id",2003:2016),
     row.names =FALSE)
    
@@ -213,7 +222,7 @@ a gear name indicates that the data from this gear was used in the
 effort analysis (summarized in Table 4). 
 
 ```{r,echo=FALSE}
-kable(tables(3),
+kable(tables_effort(3,dat=dat),
     col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id", "Minimum","Maximum","Mean","Median", "Total Deployments"),
     row.names =FALSE)
    
@@ -223,7 +232,8 @@ Table 4. Summary of effort data (minutes of use per catch trial) for
 each common gear type. 
 
 ```{r,echo=FALSE}
-kable(tables(4),
+effort_summary<- read.table("output/effort_dat.csv",sep=" ") # from table 4
+kable(effort_summary, #tables_effort(4,dat=dat),
     col.names=c("Basin","PSPAP gear code", "Gear id","No. of Obs.","Mean Effort", "Standard Deviation","Minimum","Maximum", "Median", "Gamma_Shape", "Gamma_Rate"),
     row.names =FALSE)
 ```

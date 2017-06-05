@@ -13,7 +13,19 @@
 ## 10. plot_metrics
 
 
-# FIT DISTRIBUTIONS TO DATA  
+# FIT DISTRIBUTIONS TO DATA 
+dfitfun<-function(x,dat,basin,gears)
+{
+  datLBgear<-subset(dat, gear==LBgears[x])
+  dfit<-fitdistr(datLBgear$effort, "gamma")
+  #Define Shape and Rate Based on Distribution Fitting
+  s<-as.numeric(unlist(dfit)[1])
+  r<-as.numeric(unlist(dfit)[2])
+  return(c(s,r))
+}
+
+
+ 
 dfitfunLB<-function(x)
 {
   datLBgear<-subset(datLB, gear==LBgears[x])
@@ -33,7 +45,14 @@ dfitfunUB<-function(x)
   r<-as.numeric(unlist(dfit)[2])
   return(c(s,r))
 }
-# FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS AND THEN BENDS
+
+
+
+
+
+
+# FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
+# AND THEN BENDS
 reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=NULL,
     fish_density=1,

@@ -1,6 +1,7 @@
 
-tables<- function(n)
+tables_effort<- function(n,dat=dat,...)
 {
+## EFFORT ANALYSIS
   if(n=="f1")
   {# TABLE OF GEAR USE OVER TIME BY BASIN FOR FIGURE 1
     dat$tmp<-1 # TO SUM FOR COUNTS
@@ -14,13 +15,15 @@ tables<- function(n)
     return(tmp)      
   }
   if(n==2)
-  {
+    {
+    datS<-subset(dat,standard_gear=="yes")
     datS$tmp<-1 # TO SUM FOR COUNTS
     tmp<-dcast(datS, basin+segment_id+bend+gearC+gear_id~yr,value.var="tmp",sum)
     return(tmp)      
-  }
+    }
   if(n==3)
-  {
+    {
+    datS<-subset(dat,standard_gear=="yes")
     datS$tmp<-1 # TO SUM FOR COUNTS
     tmp<-dcast(datS, basin+segment_id+bend+gearC+gear_id~yr,value.var="tmp",sum)
     tmp$min<-apply(tmp[,6:19], 1, FUN=min)
@@ -30,10 +33,11 @@ tables<- function(n)
     tmp$deployments<-apply(tmp[,6:19], 1, FUN=sum)
     tmp<-tmp[,c(1:5,20:24)]
     return(tmp)      
-  }
+    }
   if(n==4)
-  {
+    {
     #FIND STANDARD LB AND UB DATA
+    datS<-subset(dat,standard_gear=="yes")
     datLB<-subset(datS, basin=="LB")
     datUB<-subset(datS, basin=="UB")
     #BUILD A TABLE OF EFFORT DATA FOR EACH GEAR BY BASIN
@@ -49,7 +53,7 @@ tables<- function(n)
     eft$gamma_rate<-rates
     eft<-subset(eft,observations>=10)
     return(eft)
-  }
+    }
 }
 
 
