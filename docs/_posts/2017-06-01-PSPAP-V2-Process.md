@@ -36,8 +36,6 @@ To accomplish this, we have started on a process that involves soliciting input 
 At this point in time (June 2017) the team is involved in developing and running scenario simulations, and it is likely that workshop participants will be contacted to refine some of the cost estimates. The objective of this blog is to provide another pathway for participants to keep track of team progress and to provide additional input. 
 
 
-![Juvenile Pallid Sturgeon in Palm]({{ site.baseurl }}/images/5882145660_63e7b0df44_o.jpg)
-<a title="Juvenile Pallid Sturgeon in Palm" href="https://flickr.com/photos/usfwsmtnprairie/5882145660">Juvenile Pallid Sturgeon in Palm</a> flickr photo by <a href="https://flickr.com/people/usfwsmtnprairie">USFWS Mountain Prairie</a> shared under a <a href="https://creativecommons.org/licenses/by/2.0/">Creative Commons (BY) license</a> </small>>
 
 
 
