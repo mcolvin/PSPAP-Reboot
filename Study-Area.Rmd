@@ -14,12 +14,12 @@ rmarkdown::render("index.Rmd")
 -->
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+studyArea<-TRUE
 source("./R/1-global.R")
 source("./R/2-functions.R")
 source("./R/3-load-and-clean.R")
 source("./R/4-figures.R")
 source("./R/5-tables.R")
-source("./R/6-analysis.R")
 ```
 
 

@@ -1,3 +1,21 @@
+## SOME CODE IS NOT NECESSARY FOR SPECIFIC 
+## ANALYSES AND THEREFORE IS WRAPPED IN AN 
+## IF STATEMENT SUCH THAT IF AN PARTICULARLY
+## TIME CONSUMING LOAD AND CLEAN IS REQUIRED
+## IT CAN BE CALLED BY SETTING AN OBJECT TO
+## TRUE. IF THE OBJECT DOES NOT EXIST IT 
+## IT THROWS AN ERROR IN THE IF STATEMENT AND 
+## THE CODE BELOW CHECKS TO SEE IF THE OBJECT
+## EXISTS AND IF NOT CREATS IT AND SETS IT TO
+## FALSE SO LONG DATA PROCESSESSING IS NOT 
+## PERFORMED.
+##  1. studyArea-suppresses reading in GIS files
+##  2. effort-suppresses the processing of effort 
+if(exists("studyArea")==FALSE){studyArea<-FALSE}
+if(exists("effort_data")==FALSE){effort_data<-FALSE}
+
+
+
 
 # READ IN BEND DATA FOR RPMA 2 (UPPER) AND 4 (LOWER)
 
@@ -10,8 +28,9 @@ bends<- subset(bends,b_segment %in% c(1,2,3,4,7,8,9,10,13,14))
 
 
 # READ IN EFFORT DATA FROM 01-PSPAP-Background Analysis
-
-effort<- read.table("./dat/effort_dat.csv")
+## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
+## AN OUTPUT FROM THE EFFORT ANALYSIS
+effort<- read.table("output/effort_dat.csv")
 
 #Report Effort for GN14,GN18,GN41, GN81, MF, OT16, TLC1, TLC2, TN for both LB and UB
 effort<-rbind(effort[1:8,],effort[12:13,],effort[2,], effort[14,], effort[4,],effort[15:18,],effort[20,])
@@ -30,100 +49,101 @@ names(dens)<-tolower(names(dens))
 
 
 ############## EFFORT ANALYSIS #####################
+if(effort_data==TRUE)# long time to run, set to true in Rmd to run
+    {
+    ## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
+    #com3<- odbcConnectAccess2007("C:/Users/mcolvin/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+    # com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+    dat<-sqlFetch(com3, "Gear-Specific-Effort")
+    ## CONVERT TO CHARACTER
+    dat$STARTTIME<- as.character(dat$STARTTIME)
+    dat$STOPTIME<- as.character(dat$STOPTIME)
+    ## FILL NON TIME FORMATS WITH NA
+    dat[-(grep(":",dat$STARTTIME)),]$STARTTIME<- NA
+    dat[-(grep(":",dat$STOPTIME)),]$STOPTIME<- NA   
+    ## DROP NAs
+    dat<- subset(dat, !(is.na(STARTTIME)))
+    dat<- subset(dat, !(is.na(STOPTIME)))
+    dat<- subset(dat, !(is.na(SETDATE))) 
+    ## MAKE SURE ALL IS UPPER CASE
+    dat$STARTTIME<- toupper(dat$STARTTIME)
+    dat$STOPTIME<-toupper(dat$STOPTIME)
 
-## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
-#com3<- odbcConnectAccess2007("C:/Users/mcolvin/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
-# com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
-dat<-sqlFetch(com3, "Gear-Specific-Effort")
-## CONVERT TO CHARACTER
-dat$STARTTIME<- as.character(dat$STARTTIME)
-dat$STOPTIME<- as.character(dat$STOPTIME)
-## FILL NON TIME FORMATS WITH NA
-dat[-(grep(":",dat$STARTTIME)),]$STARTTIME<- NA
-dat[-(grep(":",dat$STOPTIME)),]$STOPTIME<- NA   
-## DROP NAs
-dat<- subset(dat, !(is.na(STARTTIME)));dim(dat)
-dat<- subset(dat, !(is.na(STOPTIME)));dim(dat)
-dat<- subset(dat, !(is.na(SETDATE)))   ;dim(dat)
-## MAKE SURE ALL IS UPPER CASE
-dat$STARTTIME<- toupper(dat$STARTTIME)
-dat$STOPTIME<-toupper(dat$STOPTIME)
-
-## LOAD GEAR DATA
-gear_dat<-sqlFetch(com3, "Gear-Meta-Data")
-names(gear_dat)[2]<-"gear_type"
-## SUBSET OUT DUPLICATE GEARS 
-# POT02, HN, SHN,TN11, MOT02, OT04, OT02
-gear_dat<- gear_dat[-which(duplicated(gear_dat$gear_code)==TRUE),]
-## MERGE GEAR TYPE WITH EFFORT DATA   
-dat<- merge(dat,gear_dat[,c(2,3,4,5,7,10)],by.x="GEAR",
-            by.y="gear_code",all.x=TRUE)
+    ## LOAD GEAR DATA
+    gear_dat<-sqlFetch(com3, "Gear-Meta-Data")
+    names(gear_dat)[2]<-"gear_type"
+    ## SUBSET OUT DUPLICATE GEARS 
+    # POT02, HN, SHN,TN11, MOT02, OT04, OT02
+    gear_dat<- gear_dat[-which(duplicated(gear_dat$gear_code)==TRUE),]
+    ## MERGE GEAR TYPE WITH EFFORT DATA   
+    dat<- merge(dat,gear_dat[,c(2,3,4,5,7,10)],by.x="GEAR",
+                by.y="gear_code",all.x=TRUE)
 
 
-### UPDATE STOP DATE FOR OVERNIGHTS
-dat$STOPDATE<- dat$SETDATE+60*60*24*dat$overnight
+    ### UPDATE STOP DATE FOR OVERNIGHTS
+    dat$STOPDATE<- dat$SETDATE+60*60*24*dat$overnight
 
-## CONVERT ALL TO HOUR FRACTION TIME
-## START TIME
-dat$start_time<-unlist(lapply(1:nrow(dat),function(x)
-{
-  pp<- NA
-  xx<-unlist(
-    strsplit(
-      dat[x,]$STARTTIME,":"
-    ))
-  if(length(grep("PM",xx))==0|{length(grep("PM",xx))>0 & xx[1]==12}) # HANDLE AM, NON PM, AND 12PM FORMATS
-  {
-    pp<-paste(as.character(dat[x,]$SETDATE)," ",as.numeric(xx[1]),":", 
-              as.numeric(xx[2]),":00",sep="") 
-    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
-  }
-  if(length(grep("PM",xx))>0 & xx[1]!=12) # HANDLE REMAINING PM FORMATS
-  {
-    pp<-paste(as.character(dat[x,]$SETDATE)," ",as.numeric(xx[1])+12,":", 
-              as.numeric(xx[2]),":00",sep="") 
-    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
-  }
-  return(as.character(pp))
-}))
+    ## CONVERT ALL TO HOUR FRACTION TIME
+    ## START TIME
+    dat$start_time<-unlist(lapply(1:nrow(dat),function(x)
+    {
+      pp<- NA
+      xx<-unlist(
+        strsplit(
+          dat[x,]$STARTTIME,":"
+        ))
+      if(length(grep("PM",xx))==0|{length(grep("PM",xx))>0 & xx[1]==12}) # HANDLE AM, NON PM, AND 12PM FORMATS
+      {
+        pp<-paste(as.character(dat[x,]$SETDATE)," ",as.numeric(xx[1]),":", 
+                  as.numeric(xx[2]),":00",sep="") 
+        pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+      }
+      if(length(grep("PM",xx))>0 & xx[1]!=12) # HANDLE REMAINING PM FORMATS
+      {
+        pp<-paste(as.character(dat[x,]$SETDATE)," ",as.numeric(xx[1])+12,":", 
+                  as.numeric(xx[2]),":00",sep="") 
+        pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+      }
+      return(as.character(pp))
+    }))
 
-## STOP TIME
-# xx<-strsplit(dat$STOPTIME,":")
-# hr<- unlist(lapply(xx, `[[`, 1))
-# mins<- unlist(lapply(xx, `[[`, 2))
-# apply(cbind(hr,mins),1,paste,collapse=":")
-dat$stop_time<-unlist(lapply(1:nrow(dat),function(x)
-{
-  pp<- NA
-  xx<-unlist(
-    strsplit(
-      dat[x,]$STOPTIME,":"
-    ))
-  if(length(grep("PM",xx))==0|{length(grep("PM",xx))>0 & xx[1]==12}) # HANDLE AM, NON PM FORMATS, AND 12PM
-  {
-    pp<-paste(as.character(dat[x,]$STOPDATE)," ",as.numeric(xx[1]),":", 
-              as.numeric(xx[2]),":00",sep="") 
-    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
-  }
-  if(length(grep("PM",xx))>0 & xx[1]!=12) # HANDLE REMAINING PM FORMATS
-  {
-    pp<-paste(as.character(dat[x,]$STOPDATE)," ",as.numeric(xx[1])+12,":", 
-              as.numeric(xx[2]),":00",sep="") 
-    pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
-  }
-  return(as.character(pp))
-})) 
-dat$stop_time<- strptime(dat$stop_time,"%Y-%m-%d %H:%M:%S")
-dat$start_time<- strptime(dat$start_time,"%Y-%m-%d %H:%M:%S")
+    ## STOP TIME
+    # xx<-strsplit(dat$STOPTIME,":")
+    # hr<- unlist(lapply(xx, `[[`, 1))
+    # mins<- unlist(lapply(xx, `[[`, 2))
+    # apply(cbind(hr,mins),1,paste,collapse=":")
+    dat$stop_time<-unlist(lapply(1:nrow(dat),function(x)
+    {
+      pp<- NA
+      xx<-unlist(
+        strsplit(
+          dat[x,]$STOPTIME,":"
+        ))
+      if(length(grep("PM",xx))==0|{length(grep("PM",xx))>0 & xx[1]==12}) # HANDLE AM, NON PM FORMATS, AND 12PM
+      {
+        pp<-paste(as.character(dat[x,]$STOPDATE)," ",as.numeric(xx[1]),":", 
+                  as.numeric(xx[2]),":00",sep="") 
+        pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+      }
+      if(length(grep("PM",xx))>0 & xx[1]!=12) # HANDLE REMAINING PM FORMATS
+      {
+        pp<-paste(as.character(dat[x,]$STOPDATE)," ",as.numeric(xx[1])+12,":", 
+                  as.numeric(xx[2]),":00",sep="") 
+        pp<-strptime(pp, "%Y-%m-%d %H:%M:%S")  
+      }
+      return(as.character(pp))
+    })) 
+    dat$stop_time<- strptime(dat$stop_time,"%Y-%m-%d %H:%M:%S")
+    dat$start_time<- strptime(dat$start_time,"%Y-%m-%d %H:%M:%S")
 
-## CALCULATE EFFORT
-dat$effort<-as.numeric(dat$stop_time-dat$start_time)/60 # EFFORT IN MINUTES
-dat<-subset(dat,effort>0)
-names(dat)<-tolower(names(dat))
+    ## CALCULATE EFFORT
+    dat$effort<-as.numeric(dat$stop_time-dat$start_time)/60 # EFFORT IN MINUTES
+    dat<-subset(dat,effort>0)
+    names(dat)<-tolower(names(dat))
 
-##FIX TYPO IN COLUMN NAME
-colnames(dat)[14]<-"standard_gear"
-
+    ##FIX TYPO IN COLUMN NAME
+    colnames(dat)[14]<-"standard_gear"
+    }
 
 ######################### STUDY AREA ###########
 

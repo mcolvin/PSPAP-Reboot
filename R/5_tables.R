@@ -1,14 +1,3 @@
-common<-UBcommon<-c("GN14","GN41","MF","OT16","TLC1","TLC2","TN")
-LBcommon<-c("GN18","GN81","TLC4","TLS1","TLS2")
-dat$gearC<-as.factor(unlist(lapply(dat$gear, function(x) 
-{
-  ifelse(any(common==x), x<-paste0(x,"*"),
-         ifelse((dat$basin=="LB" && any(LBcommon==x))||(dat$basin=="UB" && x=="TLO1"),x<-paste0(x,"*"),
-                unlist(levels(dat$gear))[x])
-  )
-}
-)))
-datS<-subset(dat,standard_gear=="yes")
 
 tables<- function(n)
 {

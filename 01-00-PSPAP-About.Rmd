@@ -14,8 +14,9 @@ to do:
 library(RODBC)
 library(reshape2)
 library(plyr)
-com<- odbcConnectAccess2007('C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/PDSG-data.accdb')
-bends<- sqlFetch(com, "bend-level-data")
+
+source("R/1_global.R")
+bends<- sqlFetch(com3, "PSPAP-Bends-Meta")
 # SUMMARY TABLE OF THE NUMBER OF BENDS WITHIN SEGMENT
 bends$tmp<- 1
 
