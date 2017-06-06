@@ -46,11 +46,6 @@ dfitfunUB<-function(x)
   return(c(s,r))
 }
 
-
-
-
-
-
 # FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
 # AND THEN BENDS
 reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
@@ -241,11 +236,7 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     }
     return(out) 
 }
-  
-
-
-
-
+ 
 # FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT TO SAMPLE
 bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                        bends=NULL,
@@ -351,13 +342,6 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   names(out)<- tolower(names(out))
   return(out)
 }
-
-
-
-
-
-
-
 
 
 # GETTING TREND
