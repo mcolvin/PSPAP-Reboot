@@ -1,0 +1,73 @@
+---
+layout: post
+title: "Estimation of Initial Pallid Sturgeon Densities"
+output: html_document
+published: false
+bibliography: PSref.bib
+csl: applied-mathematical-modelling.csl
+nocite: | 
+  @J16, @K05, @KB05, @USFWS07, @R15
+---
+
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+source("R/1_global.R")
+#source("R/2_functions.R")
+effort_data<- FALSE
+studyArea<- FALSE
+source("R/3_load-and-clean.R")
+#source("R/4_figures.R")
+source("R/5_tables.R")
+``` 
+
+## Overview
+A reference population of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop.  One method of creating a spatially explicit pallid sturgeon reference population with known bend-level abundances is to use estimated segment-level population densities.  
+
+The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population. 
+
+<!--
+The purpose of this entry is to discuss the process used to determine the initial densities of pallid sturgeon that inform the reference population analyses---analyses computed on simulated populations of known abundance.
+-->
+
+## Spatial Scale & Fish Origin
+Pallid sturgeon (PS) densities (fish per rkm) in Upper Basin RPMA 2 and Lower Basin RPMA 4 are considered separately.  Furthermore, since the upper and lower sections of RPMA 4 were found to differ in PS densities @WS14, RPMA 4 is split into two groups for initial density purposes: segments 7-9 and segments 10, 13, and 14.
+
+Densities for wild and hatchery fish are reported separately, allowing fish origin information to be tracked throughout the reference population analyses, as needed. 
+
+## Process
+For each of the spatial areas discussed, wild and hatchery density estimates are calculated from estimated PS abundances reported in recent literature.  When the length of river was not explicitly reported, we approximate the length of river by matching the authors' description of the included reaches to the lengths reported in @RPMA and @YR, allowing density to be calculated.  
+
+Abundances were often reported as 95% confidence intervals or as a range of estimated mean abundances across a few consecutive years.  From these ranges we use the miniumum and maximum reported abundances to calculate minimum and maximum densities, respectively (Table 1).  In the case of RPMA 4 segments 7-9, minimum and maximum density is estimated from density plots @SPP12.  The Mean Density column in Table 1 is calculated from the most current (of those found in our literature search) mean abundance estimate.  This estimate was calculated for the year given in th Mean Density Year column.
+
+For reference populations with less variation, inital segment-level densities are fixed at the mean density by segment.  To add variation amongst reference populations, initial segment-level densities (or bend-level within segment densities) are randomly drawn from a uniform distribution ranging between the minimum and maximum densities for the appropriate spatial location.  
+
+
+
+<!--
+## Assumptions
+1. 
+-->
+
+<!--
+## Tables
+-->
+
+<br>
+<br>
+
+Table 1. Segment and RPMA densities for wild (W) and hatchery (H) pallid sturgeon.
+
+```{r,warning=FALSE, echo=FALSE}
+tbl2<-tables(2)
+tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
+tbl2[duplicated(tbl2$rpma),]$rpma<-""
+tbl2[duplicated(tbl2$segments),]$segments<-""
+tbl2$ref<-c("[9]", "[5]-[8]","[4]","[4]","[1]","[1]")
+kable(tbl2,row.names=FALSE,
+    col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Maximum Density (fish/rkm)",  "Mean Density (fish/rkm)", "Mean Density Year", "References"),
+    align="llcccccc")
+``` 
+  
+  *Estimated year of data collection based on reference date.  
+
+## References
