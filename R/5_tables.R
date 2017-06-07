@@ -75,8 +75,8 @@ if(n==2)
   {
   tmp<-ddply(dens,.(rpma, segments, fish_type),summarize,
             min_dens=min(d_lower, na.rm=TRUE),
-            mean_dens=density_mean[which.max(as.numeric(year))],
             max_dens=max(d_upper, na.rm=TRUE),
+            mean_dens=density_mean[which.max(as.numeric(year))],
             max_year=max(as.numeric(year)),
             min_mean=min(density_mean, na.rm=TRUE),
             max_mean=max(density_mean, na.rm=TRUE))
@@ -89,6 +89,7 @@ if(n==2)
   tmp$segments<-ifelse(tmp$segments=="1, 2, 3, 4, LY", "1-4", ifelse(tmp$segments=="8", "7-9", "   10, 13, 14"))
   tmp<-tmp[,1:7]
   tmp$ref<-c("[1]", "[2]-[4]", "[5]", "[5]", "[6]", "[6]")
+  #tmp$ref<-c("Rotella 2015", "Klungles & Jordan", "Steffensen et al. 2012", "Steffensen et al. 2012", "Winders & Steffensen 2014", "Winders & Steffensen 2014")
   return(tmp)
   }
 
