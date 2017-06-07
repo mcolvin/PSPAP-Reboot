@@ -1,19 +1,20 @@
 # FUNCTIONS IN THIS SCRIPT
-##  1. dfitfunLB
-##  2. dfitfunuB
-# RELATIVE ABUNDANCE (CPUE)
-##  3. reference_population
-##  4. catch_counts
-##  5. bend_samples
-##  6. samp_dat
-##  7. get.trnd
-# CAPTURE RECAPTURE FUNCTIONS
-##  8. sim_ch
-##  9. estimate
-## 10. plot_metrics
+## EFFORT DISTRIBUTIONS
+###  1. dfitfunLB
+###  2. dfitfunuB
+## RELATIVE ABUNDANCE (CPUE)
+###  3. reference_population
+###  4. catch_counts
+###  5. bend_samples
+###  6. samp_dat
+###  7. get.trnd
+## CAPTURE RECAPTURE FUNCTIONS
+###  8. sim_ch
+###  9. estimate
+### 10. plot_metrics
 
-
-# FIT DISTRIBUTIONS TO DATA 
+# EFFORT DISTRIBUTIONS
+## FIT DISTRIBUTIONS TO EFFORT DATA 
 dfitfun<-function(x,dat,basin,gears)
 {
   datLBgear<-subset(dat, gear==LBgears[x])
@@ -25,7 +26,7 @@ dfitfun<-function(x,dat,basin,gears)
 }
 
 
- 
+## 1. 
 dfitfunLB<-function(x)
 {
   datLBgear<-subset(datLB, gear==LBgears[x])
@@ -36,6 +37,7 @@ dfitfunLB<-function(x)
   return(c(s,r))
 }
 
+## 2.
 dfitfunUB<-function(x)
 {
   datUBgear<-subset(datUB, gear==UBgears[x])
@@ -46,8 +48,13 @@ dfitfunUB<-function(x)
   return(c(s,r))
 }
 
-# FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
-# AND THEN BENDS
+
+
+
+
+# RELATIVE ABUNDANCE (CPUE)
+## 3. FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
+## AND THEN BENDS
 reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=NULL,
     fish_density=1,
@@ -105,7 +112,11 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     out<-list(out=out, bendMeta=tmp)
     return(out)# return relevant stuff
 }
-# FUNCTION TO DETERMINE CATCH COUNTS IN A BEND FOR ALL STANDARD, COMMON GEARS
+
+
+
+## 4. FUNCTION TO DETERMINE CATCH COUNTS IN A BEND FOR ALL 
+## STANDARD, COMMON GEARS
 catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                         bends=NULL,
                         abund=NULL,
@@ -236,8 +247,12 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     }
     return(out) 
 }
- 
-# FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT TO SAMPLE
+
+  
+
+
+## 5. FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT 
+## TO SAMPLE
 bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                        bends=NULL,
                        abund=NULL)
@@ -302,7 +317,12 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   #NAMES TO LOWERCASE
   names(out)<- tolower(names(out))
   return(out)
-  }
+}
+
+
+
+## 6. LOOKING AT CATCH FROM THE SAMPLED AND NON-SAMPLED BENDS
+## IN "LONG FORM"
 samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL,
                    abund=NULL,
@@ -344,8 +364,8 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 }
 
 
-# GETTING TREND
 
+## 7. GETTING TREND
 get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL, #UPLOADED
                    abund=NULL, #RUN REFERENCE_POPULATION FUNCTION TO GET
@@ -388,9 +408,11 @@ get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   # OUTPUT THE GOODIES
   return(out)
 }
+
  
 
-# A FUNCTION TO SIMULATE DATA
+# CAPTURE RECAPTURE FUNCTIONS
+## 8. A FUNCTION TO SIMULATE DATA
 sim_ch<-function(inputs,index)
 	{
 	# SET UP CAPTURE HISTORY MATRIX
@@ -439,9 +461,11 @@ sim_ch<-function(inputs,index)
 	}	
 
 
-# A FUNCTION TO ESTIMATE:
-# 1. ABUNDANCE AND 
-# 2. CAPTURE PROBABILITY
+
+## 9:
+## A FUNCTION TO ESTIMATE:
+## 1. ABUNDANCE AND 
+## 2. CAPTURE PROBABILITY
 estimate<- function(dat,inputs,indx)
 	{
 	# ESTIMATE ABUNDANCE USING ACOUSTIC FISH
@@ -558,11 +582,8 @@ estimate<- function(dat,inputs,indx)
 	}
 	
 	
-	
-	
-	
-	
-	
+
+## 10. 
 plot_metrics<-function(metric,NN,xxt="s",main=FALSE,datt=pdat)
 	{
 	form<- as.formula(paste(metric,"~nocc"))
