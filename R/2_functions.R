@@ -80,29 +80,40 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
     # GET BEND INFORMATION
     tmp<- subset(bends, b_segment %in% segs)
-    tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]
+    tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]## CRITICAL
     bends_in_segs<-aggregate(bend_num~b_segment,tmp,length) 
-    phi_indx<-rep(1:nrow(bends_in_segs),bends_in_segs$bend_num)
-    # MATRIX OF ABUNDANCES TO RETURN
-    out<- matrix(0,nrow(tmp), nyears)
-     
+    bends_in_segs$phi_indx<-1:nrow(bends_in_segs)
+    tmp<-merge(tmp, bends_in_segs[,-2],by="b_segment",all.x=TRUE)
+  
     # INITIAL ABUNDANCES
     ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
     ## DENSITY FOR BEND SIZE
-    out[,1]<- rpois(nrow(out),
+    tmp$N_ini<-rpois(nrow(tmp),
         lambda=fish_density*tmp$length.rkm)
-    # SIMULATE DYNAMICS
-    ## SURVIVAL
-    for(i in 2:nyears)
+    ## EXAPAND BENDS FOR EACH FISH
+    indvidual_meta<- expanded.data<-as.data.frame(lapply(tmp,
+                   function(x) rep(x,tmp$N_ini)))
+    ## SET UP INVIDUAL POPULATION
+    Z<- lapply(1:nrow(tmp),function(x)
         {
-        # SET UP VECTOR OF SEGMENT
-        # SPECIFIC SURVIVALS        
-        phi_t<- phi[phi_indx,i-1]
-        out[,i]<- rbinom(nrow(out),
-            size=out[,i-1],
-            prob=phi_t)
-        }
-    out<-list(out=out, bendMeta=tmp)
+        y<-matrix(0,nrow=tmp$N_ini[x],ncol=nyears)
+        y[,1]<-1
+        for(i in 2:nyears)
+            {
+            y[,i]<- rbinom(tmp$N_ini[x],
+                size=1,
+                prob=phi[tmp$phi_indx[x],i-1])
+            }
+        return(y)
+        })
+    # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
+    out<- lapply(1:nrow(tmp),function(x)
+        {
+        colSums(Z[[x]])
+        })
+    out<- as.matrix(do.call("rbind",out))
+    
+    out<-list(out=out, bendMeta=tmp,Z=Z)
     return(out)# return relevant stuff
 }
 # FUNCTION TO DETERMINE CATCH COUNTS IN A BEND FOR ALL STANDARD, COMMON GEARS
@@ -200,40 +211,95 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     eftUB<-subset(eft,basin=="UB")
     # QUICK ERROR CHECK
     if(nrow(eftLB)!=nrow(eftUB)) 
-      {return(print("LB gears differ from UB gears.  Effort \n
+        {return(print("LB gears differ from UB gears.  Effort \n
                 may not have been cleaned up."))}
   
-  # DETERMINE CATCHABILITY BY GEAR (0<q<1/f)
-    if(length(catchability)==length(gears)) q<-catchability[order(unique(gears))] else q<-catchability[which(effort$gear[1:9] %in% gears)]
-    q<-matrix(unlist(lapply(q, rep, times=nrow(abund))),c(nrow(abund),length(g)))
+  # BEND-SPECIFIC CATCHABILITY BY GEAR (0<q<1/f)
+    ## BEND BY YEAR BY GEAR ARRAY
+    ## ASSUMES GEAR CATCHABILITY DOES NOT VARY AMONG BASINS
+    bend_q_matrix<- matrix(catchability,ncol=length(catchability),
+        nrow=length(abund),
+        byrow=TRUE)
+        
+    ## BEND AND GEAR SPECIFIC NUMBER OF DEPLOYMENTS
+    d<-matrix(deployments,ncol=length(deployments),
+        nrow=length(abund),
+        byrow=TRUE)
+        
+    ## DETERMINE THE AMOUNT OF EFFORT
+    ## FOR EACH BEND, YEAR, AND GEAR
+    f_P<- lapply(1:length(abund),function(x)
+        {
+        bend_f<-list()
+        bend_P<-list()
+        for(k in 1:length(gears))
+            {
+            indx<- which(effort$gear==gears[k] & 
+                effort$rpma==bends$rpma[x])
+            ## ERROR HANDLING FOR GEARS THAT ARE NOT USED 
+            ## RPMAS, THEREFORE NO EFFORT AND f=0
+            if(length(indx)==0)
+                {
+                bend_f[[gears[k]]]<- matrix(0,
+                    nrow=d[x],
+                    ncol=nyears)
+                }asdf
+            if(length(indx)>0)
+                {
+                bend_f[[gears[k]]]<-matrix(
+                    rgamma(n=d[x]*nyears,
+                        shape=effort$gamma_shape[indx], 
+                        rate=effort$gamma_rate[indx]),
+                    nrow=d[x],
+                    ncol=nyears)
+                }
+        bend_P[[gears[k]]]<-colSums(bend_f[[gears[k]]])*bend_q_matrix[x,k]
+        }      
+        return(list(f=bend_f, P=bend_P))
+        })
     
-  # DETERMINE DEPLOYMENTS BY GEAR
-    if(length(deployments)==length(gears)) d<-deployments[order(unique(gears))] else d<-deployments[which(effort$gear[1:9] %in% gears)]
-    d<-matrix(unlist(lapply(d, rep, times=nrow(abund))),c(nrow(abund),length(g)))
-  
-  # DETERMINE CATCH
-    out_a<-array(0,c(dim(abund),length(g),2))
-  
-    C<-function(q,N,f){q*N*f}
+    ## BEND BY YEAR CAPTURE PROBABILITY
+    occasions<- 2
+    
+    x<-1
+
+    ## BEND AND GEAR CAPTURE HISTORY
+    ch<- lapply(1:length(gears),function(xx)
+        {
+        bend_P<-c(unlist(f_P[[x]]$P[gears[x]]))## BEND AND GEAR SPECIFIC CAPTURE PROBABILITIES
+        ch_mat<- matrix(0,nrow=nrow(abund[[x]]),ncol=ncol(abund[[x]]))
+        bend_ch<-list()
+        for(i in 1:ncol(abund[[x]]))
+            {
+            ch_mat[,i]<- rbinom(nrow(abund[[x]]),1, bend_P[i]*abund[[x]][,i])
+            }
+        bend_ch[[gears[xx]]]<-ch_mat
+        return(bend_ch)
+        })
+
+   
+         bend_P<- do.call("rbind",lapply(f,function(x) x$P$TLC2))       
   
     for(j in 1:ncol(abund))
       {
-        fUB<-mapply(rgamma, n=indx,shape=eftUB$gamma_shape, rate=eftUB$gamma_rate)
-        fLB<-mapply(rgamma, n=(nrow(abund)-indx),shape=eftLB$gamma_shape, rate=eftLB$gamma_rate)
+        fUB<-mapply(rgamma, n=indx,
+            shape=eftUB$gamma_shape, 
+            rate=eftUB$gamma_rate)
+        fLB<-mapply(rgamma, 
+            n=(nrow(abund)-indx),
+            shape=eftLB$gamma_shape, 
+            rate=eftLB$gamma_rate)
         f<-rbind(fUB,fLB)
-        f<-d*f
-        out_a[,j,,1]<-round(mapply(C,q=q,N=abund[,j], f=f))
+        f<-d*f ## total effort 
+        out_a[,j,,1]<-round(mapply(Catch,q=q,N=abund[,j], f=f))
         out_a[,j,,2]<-f
     }
     out<-list()
     for(k in 1:length(g))
-    {
-      out$effort[[g[k]]]<-out_a[,,k,2]
-      out$catch[[g[k]]]<-out_a[,,k,1]
-      # out[[g[k]]]$gear<-g[k]
-      # out[[g[k]]]$catch<-out_a[,,k,1]
-      # out[[g[k]]]$effort<-out_a[,,k,2] 
-    }
+        {
+        out$effort[[g[k]]]<-out_a[,,k,2]
+        out$catch[[g[k]]]<-out_a[,,k,1]
+        }
     return(out) 
 }
  
@@ -241,24 +307,25 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                        bends=NULL,
                        abund=NULL)
-{
-  # GET BEND INFORMATION
-  tmp<-subset(bends, b_segment %in% segs)
-  tmp<-tmp[order(tmp$b_segment, tmp$bend_num),]
-  bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
-  bends_in_segs$start<-1
-  for(i in 1:nrow(bends_in_segs)) 
     {
-      bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
-      if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
-    }
+    # GET BEND INFORMATION
+    tmp<-subset(bends, b_segment %in% segs)
+    tmp<-tmp[order(tmp$b_segment, tmp$bend_num),]
+    bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
+    bends_in_segs$start<-1
+    for(i in 1:nrow(bends_in_segs)) 
+        {
+        bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
+        if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
+        }
   # SAMPLE NUMBERS IN TABLE A1 IN 
   #   PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
   bends_in_segs$samp_num<-c(0, 12, 21, 12, 12, 15, 20, 10, 11, 14)
   # SAMPLE SIZE THAT MEETS A MINIMUM OF 25.2% OF BENDS IN SEGMENT
   bends_in_segs$one_fourth<-ceiling(.252*bends_in_segs$bend_num)
   # COMPARISON (STARRED IF PERCENTAGE IS LARGER THAN TABLE VALUE)
-  bends_in_segs$flag<-ifelse(bends_in_segs$one_fourth>bends_in_segs$samp_num, "*", " ")
+  bends_in_segs$flag<-ifelse(bends_in_segs$one_fourth>bends_in_segs$samp_num, 
+    "*", " ")
   
   # DETERMINE WHICH BENDS IN A SEGMENT TO SAMPLE
   sampled<-matrix(0,nrow(abund), ncol(abund))
@@ -274,22 +341,17 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
           sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
         }
     } 
-  
-  #FIND WHERE IN THE DATA THE BASIN CHANGES FROM UB TO LB (FOR RPMA INFO)
-  indx<-min(which(tmp$b_segment %in% c(7,8,9,11,10,13,14)))-1
-  if(indx==Inf) indx<-nrow(abund)
-  
-  # PUT OUTPUT IN LONG FORM
-  RPMA<-rep(c(rep(2,indx),rep(4,nrow(abund)-indx)),ncol(abund))
-  SEGMENT<-rep(tmp$b_segment, ncol(abund))
-  BEND<-rep(tmp$bend_num, ncol(abund))
-  B_ABUNDANCE<-c(abund[,1:ncol(abund)])
-  SAMPLED<-c(sampled[,1:ncol(abund)])
-  YEAR<-c(mapply(rep, 0:(ncol(abund)-1), MoreArgs=list(times=nrow(abund))))
-  out<-data.frame(RPMA, SEGMENT, BEND, YEAR, B_ABUNDANCE, SAMPLED)
-  
+  ## EXPAND TEMP
+  out<- tmp[rep(1:nrow(tmp),nyears),]
+  names(out)<-toupper(names(out))
+  out$SAMPLED<- c(sampled)
+  out$B_ABUNDANCE<- unlist(abund)
+  out$YEAR<- sort(rep(c(1:nyears),nrow(tmp)))
+
   #ADD SEGMENT ABUNDANCE
   s_abund<-aggregate(out$B_ABUNDANCE, by=list(SEGMENT,YEAR),sum)
+  
+  
   s_abund$bend_num<-rep(bends_in_segs$bend_num, nrow(bends_in_segs))
   out$S_ABUNDANCE<-unlist(mapply(rep, x=s_abund$x, times=s_abund$bend_num))
 
