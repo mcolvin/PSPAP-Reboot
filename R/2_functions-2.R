@@ -344,13 +344,15 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     "*", " ")
   
   # DETERMINE WHICH BENDS IN A SEGMENT TO SAMPLE
-  sampled<-matrix(0,nrow(abund), ncol(abund))
+  sampled<-matrix(0,nrow=nrow(abund), ncol=ncol(abund))
   for(j in 1:ncol(abund))
     {
       sample_bends<-NULL
       for(k in 1:nrow(bends_in_segs)) 
         {
-          sample_bends<-c(sample_bends,sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), bends_in_segs$samp_num[k]))
+          sample_bends<-c(sample_bends,
+            sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), 
+            bends_in_segs$samp_num[k]))
         }
       for(i in 1:nrow(abund))
         {
@@ -361,36 +363,34 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   out<- tmp[rep(1:nrow(tmp),nyears),]
   names(out)<-toupper(names(out))
   out$SAMPLED<- c(sampled)
-  out$B_ABUNDANCE<- unlist(abund)
+  out$B_ABUNDANCE<- c(abund)
   out$YEAR<- sort(rep(c(1:nyears),nrow(tmp)))
 
   #ADD SEGMENT ABUNDANCE
-  s_abund<-aggregate(out$B_ABUNDANCE, by=list(SEGMENT,YEAR),sum)
-  
-  
-  s_abund$bend_num<-rep(bends_in_segs$bend_num, nrow(bends_in_segs))
-  out$S_ABUNDANCE<-unlist(mapply(rep, x=s_abund$x, times=s_abund$bend_num))
+  s_abund<-aggregate(B_ABUNDANCE~B_SEGMENT+YEAR,out,sum)
+  names(s_abund)[3]<-"s_abund"
+  out<-merge(out,s_abund,by=c("B_SEGMENT","YEAR"),all.x=TRUE)
 
   #ADD RPMA ABUNDANCE
-  bends_in_segs$RPMA<-ifelse(bends_in_segs$b_segment %in% c(1,2,3,4), 2, 4)
-  r_abund<-aggregate(out$B_ABUNDANCE, by=list(out$RPMA,out$YEAR),sum)
-  r_abund$bend_num<-rep(c(indx,nrow(abund)-indx),nrow(r_abund)/2)
-  out$R_ABUNDANCE<-unlist(mapply(rep, x=r_abund$x, times=r_abund$bend_num))
-  
+  r_abund<-aggregate(B_ABUNDANCE~RPMA+YEAR,out,sum)
+  names(s_abund)[3]<-"r_abund"
+  out<-merge(out,r_abund,by=c("RPMA","YEAR"),all.x=TRUE)
+
   #NAMES TO LOWERCASE
   names(out)<- tolower(names(out))
   return(out)
   }
 samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                    bends=NULL,
-                   abund=NULL,
+                   bend_abund=NULL,
+                   ind_abund=NULL
                    gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
                    catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
                    deployments=rep(8,9),
                    effort=NULL)
 {
   #DETERMINE WHICH BENDS TO SAMPLE
-  sim_samp<-bend_samples(segs=segs,bends=bends,abund=abund)
+  sim_samp<-bend_samples(segs=segs,bends=bends,abund=bend_abund)
   
   #EXPAND SIM_SAMP TO INCLUDE RESULTS FOR REACH GEAR
   sim_samp<-rbind(sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp)
@@ -401,7 +401,7 @@ samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
   #ADD CATCH AND EFFORT FOR GEARS
   sim_catch<-catch_counts(segs=segs,
                           bends=bends,
-                          abund=abund,
+                          abund=ind_abund,
                           gears=gears,
                           catchability=catchability,
                           deployments=deployments,

@@ -57,9 +57,20 @@ yyy<-catch_counts(segs=c(1,2,3,4,7,8,9,10,13,14),
    
 # returns list of vulses    
     
+yyyy<- bend_samples(segs=c(1,2,3,4,7,8,9,10,13,14),
+   bends=bends,
+   abund=sim_pop$out)   
     
-    
-    
+yyyyy<-samp_dat(segs=c(1,2,3,4,7,8,9,10,13,14),
+   bends=bends,
+   bend_abund=sim_pop$out,
+   ind_abund=sim_pop$Z,
+   gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
+        "OT16", "TLC1", "TLC2", "TN"),
+   catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 
+        0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
+   deployments=rep(8,9),
+   effort=effort)   
     
     
     
