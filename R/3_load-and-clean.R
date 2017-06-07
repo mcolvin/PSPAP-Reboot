@@ -31,14 +31,7 @@ bends<- subset(bends,b_segment %in% c(1,2,3,4,7,8,9,10,13,14))
 ## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
 ## AN OUTPUT FROM THE EFFORT ANALYSIS
 effort<- read.table("output/effort_dat.csv")
-
-#Report Effort for GN14,GN18,GN41, GN81, MF, OT16, TLC1, TLC2, TN for both LB and UB
-effort<-rbind(effort[1:8,],effort[12:13,],effort[2,], effort[14,], effort[4,],effort[15:18,],effort[20,])
-effort[11,1]<-"UB"
-effort[13,1]<-"UB"
-effort[11,4:11]<-as.integer(rep(0,8))
-effort[13,4:11]<-as.integer(rep(0,8))
-
+effort$rpma<- ifelse(effort$basin=="UB",2,4)
 
 # READ IN DENSITY DATA
 dens<-read.csv("./dat/fish_density.csv")

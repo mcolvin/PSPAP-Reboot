@@ -34,21 +34,37 @@ nyears<- 10
 beta0<- 2.9444
 phi<-matrix(plogis(beta0),length(segs),nyears-1)
 
-fish_density<- 10
-```
-
-#SAMPLING OUTPUT 
-segs<- c(1,2,3,4,7,8,9,11,10,13,14)
-nyears<- 10
-
-beta0<- 2.9444
-phi<-matrix(plogis(beta0),length(segs),nyears-1)
-
 sim_pop<-reference_population(segs=segs,
     bends=bends,# BENDS DATAFRAME
     fish_density=10, # FISH DENSITY PER RKM
     phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
+
+   sim_pop$Z 
+    
+    
+    
+catch_counts(segs=c(1,2,3,4,7,8,9,10,13,14),
+    bends=sim_pop$bendMeta,
+    abund=sim_pop$Z,
+    gears=c("GN14", "GN18", "GN41", "GN81", 
+        "MF", "OT16", "TLC1", "TLC2", "TN"),
+    catchability=c(0.00004, 0.00004, 0.00004, 
+        0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
+    deployments=rep(8,9),
+    effort=effort)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 # CPUE ANALYSIS FOR TREND
 tmp<- aggregate(cpue~year+segment,sim_dat,mean)
 tmp$segment<- as.factor(tmp$segment)
