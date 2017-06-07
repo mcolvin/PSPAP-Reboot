@@ -137,6 +137,7 @@ tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
 tbl2[duplicated(tbl2$rpma),]$rpma<-""
 tbl2[duplicated(tbl2$segments),]$segments<-""
 kable(tbl2,row.names=FALSE,
+    col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Maximum Density (fish/rkm)", "Mean Density (fish/rkm)", "Mean Density Year", "References"),
     align="llcccccc")
 ```
   
