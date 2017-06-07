@@ -102,7 +102,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
             {
             y[,i]<- rbinom(tmp$N_ini[x],
                 size=1,
-                prob=phi[tmp$phi_indx[x],i-1])
+                prob=phi[tmp$phi_indx[x],i-1]*y[,i-1])
             }
         return(y)
         })
@@ -123,7 +123,8 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
                         gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
                         catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
                         deployments=rep(8,9),
-                        effort=NULL)
+                        effort=NULL,
+                        occasions=3)
 { 
   # this function calculates the number of fish caught in
   # each bend within a segment probabilistically given bend
@@ -201,19 +202,7 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     # ORDER DATA AS IN REFERENCE POPULATION FUNCTION
     tmp<- subset(bends, b_segment %in% segs)
     tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]
-    # FIND WHERE IN THE DATA THE BASIN CHANGES FROM UB TO LB
-    indx<-min(which(tmp$b_segment %in% c(7,8,9,11,10,13,14)))-1
-    if(indx==Inf) indx<-nrow(abund)
-  
-  # DIVIDE UP EFFORT BY BASIN
-    eft<-effort[effort$gear %in% gears,]
-    eftLB<-subset(eft,basin=="LB")
-    eftUB<-subset(eft,basin=="UB")
-    # QUICK ERROR CHECK
-    if(nrow(eftLB)!=nrow(eftUB)) 
-        {return(print("LB gears differ from UB gears.  Effort \n
-                may not have been cleaned up."))}
-  
+
   # BEND-SPECIFIC CATCHABILITY BY GEAR (0<q<1/f)
     ## BEND BY YEAR BY GEAR ARRAY
     ## ASSUMES GEAR CATCHABILITY DOES NOT VARY AMONG BASINS
@@ -225,82 +214,109 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     d<-matrix(deployments,ncol=length(deployments),
         nrow=length(abund),
         byrow=TRUE)
-        
+    
+
+    
+    
     ## DETERMINE THE AMOUNT OF EFFORT
-    ## FOR EACH BEND, YEAR, AND GEAR
+    ## FOR EACH BEND, YEAR, REPLICATE AND GEAR
     f_P<- lapply(1:length(abund),function(x)
         {
-        bend_f<-list()
-        bend_P<-list()
+        bend_f<-list()## TO HOLD OUTPUT OF EFFORTS
+        bend_P<-list()## TO HOLD OUTPUT OF CAPTURE PROBABILITIES
+            
+        ## LOOP OVER OVERS AND GENERATE FOR EACH BEND
+        ## (x) THE AMOUNT OF EFFORT GIVEN THE NUMBER OF 
+        ## OCCASIONS AND THE OCCASION AND BEND SPECIFIC 
+        ## CAPTURE PROBABILITY ACCOUNTING FOR NUMBER OF DEPLOYMENTS
         for(k in 1:length(gears))
             {
             indx<- which(effort$gear==gears[k] & 
                 effort$rpma==bends$rpma[x])
             ## ERROR HANDLING FOR GEARS THAT ARE NOT USED 
             ## RPMAS, THEREFORE NO EFFORT AND f=0
-            if(length(indx)==0)
+            f_reps<-list()
+            for(occ in 1:occasions)
                 {
-                bend_f[[gears[k]]]<- matrix(0,
-                    nrow=d[x],
-                    ncol=nyears)
-                }asdf
-            if(length(indx)>0)
+                if(length(indx)==0)
+                    {
+                    f_reps[[occ]]<- matrix(0,
+                        nrow=d[x],
+                        ncol=nyears)
+                    }
+                if(length(indx)>0)
+                    {
+                    #bend_f[[gears[k]]][[occ]]<-matrix(
+                    f_reps[[occ]]<-matrix(
+                        rgamma(n=d[x]*nyears,
+                            shape=effort$gamma_shape[indx], 
+                            rate=effort$gamma_rate[indx]),
+                        nrow=d[x],
+                        ncol=nyears)
+                    }
+                }# end occ
+            bend_f[[gears[k]]]<-f_reps
+            bend_P[[gears[k]]]<-lapply(f_reps, function(yy)
                 {
-                bend_f[[gears[k]]]<-matrix(
-                    rgamma(n=d[x]*nyears,
-                        shape=effort$gamma_shape[indx], 
-                        rate=effort$gamma_rate[indx]),
-                    nrow=d[x],
-                    ncol=nyears)
-                }
-        bend_P[[gears[k]]]<-colSums(bend_f[[gears[k]]])*bend_q_matrix[x,k]
-        }      
+                colSums(yy)*bend_q_matrix[x,k]          
+                })
+            } # end k (gears)
         return(list(f=bend_f, P=bend_P))
         })
     
-    ## BEND BY YEAR CAPTURE PROBABILITY
-    occasions<- 2
-    
-    x<-1
-
-    ## BEND AND GEAR CAPTURE HISTORY
-    ch<- lapply(1:length(gears),function(xx)
-        {
-        bend_P<-c(unlist(f_P[[x]]$P[gears[x]]))## BEND AND GEAR SPECIFIC CAPTURE PROBABILITIES
-        ch_mat<- matrix(0,nrow=nrow(abund[[x]]),ncol=ncol(abund[[x]]))
-        bend_ch<-list()
-        for(i in 1:ncol(abund[[x]]))
-            {
-            ch_mat[,i]<- rbinom(nrow(abund[[x]]),1, bend_P[i]*abund[[x]][,i])
-            }
-        bend_ch[[gears[xx]]]<-ch_mat
-        return(bend_ch)
-        })
-
    
-         bend_P<- do.call("rbind",lapply(f,function(x) x$P$TLC2))       
-  
-    for(j in 1:ncol(abund))
-      {
-        fUB<-mapply(rgamma, n=indx,
-            shape=eftUB$gamma_shape, 
-            rate=eftUB$gamma_rate)
-        fLB<-mapply(rgamma, 
-            n=(nrow(abund)-indx),
-            shape=eftLB$gamma_shape, 
-            rate=eftLB$gamma_rate)
-        f<-rbind(fUB,fLB)
-        f<-d*f ## total effort 
-        out_a[,j,,1]<-round(mapply(Catch,q=q,N=abund[,j], f=f))
-        out_a[,j,,2]<-f
-    }
-    out<-list()
-    for(k in 1:length(g))
+    ## CAPTURE HISTORY FOR EACH INVIDUAL, BEND,
+    ## GEAR AND OCCASSION 
+    ch<- lapply(1:length(abund),function(x)
         {
-        out$effort[[g[k]]]<-out_a[,,k,2]
-        out$catch[[g[k]]]<-out_a[,,k,1]
+        bend_ch<-list()## TO HOLD OUTPUT OF CAPTURE HISTORIES
+        bend_N<-list()## TO HOLD OUTPUT OF CAPTURE HISTORIES
+        x<-1
+        ZZ<- abund[[x]]
+        ## LOOP OVER OVERS AND GENERATE FOR EACH BEND
+        ## (x) THE AMOUNT OF EFFORT GIVEN THE NUMBER OF 
+        ## OCCASIONS AND THE OCCASION AND BEND SPECIFIC 
+        ## CAPTURE PROBABILITY ACCOUNTING FOR NUMBER OF DEPLOYMENTS
+        for(k in 1:length(gears))
+            {
+            ch_reps<-list()
+            for(occ in 1:occasions)
+                {
+                capture_probability<- ZZ%*%diag(f_P[[x]]$P[[gears[k]]][[occ]])
+                ch_reps[[occ]]<-matrix(
+                    rbinom(length(ZZ), size=1,
+                       prob=c(ZZ)*c(capture_probability)),
+                    nrow=nrow(ZZ),
+                    ncol=ncol(ZZ))
+                }# end occ
+            bend_ch[[gears[k]]]<-ch_reps
+            bend_N[[gears[k]]]<-lapply(ch_reps, function(yy)
+                {
+                colSums(yy)         
+                })
+            } # end k (gears)
+        return(list(ch=bend_ch, N=bend_N))
+        })
+    
+    ### PROCESS UP THE GOODIES
+    bend_effort<-bend_catch<-list()
+    for(ii in 1:length(gears))
+        {
+        outt<-lapply(1:length(abund),function(y)
+            {
+            ch[[y]][['N']] [[gears[ii]]][[1]]
+            })
+        bend_catch[[gears[ii]]]<-do.call("rbind",outt)
+        outt<-lapply(1:length(abund),function(y)
+            {
+            colSums(f_P[[y]][['f']] [[gears[ii]]][[1]])
+            })
+        bend_effort[[gears[ii]]]<-do.call("rbind",outt)
         }
-    return(out) 
+    return(list(catch=bend_catch,
+        f=bend_effort, 
+        ch=lapply(ch, function(x) x$ch),
+        f_occ = lapply(f_P, function(x) x$f))) 
 }
  
 # FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT TO SAMPLE

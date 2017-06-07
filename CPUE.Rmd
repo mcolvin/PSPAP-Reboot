@@ -17,7 +17,7 @@ rmarkdown::render("index.Rmd")
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 source("R/1_global.R")
-source("R/2_functions.R")
+source("R/2_functions-2.R")
 source("R/3_load-and-clean.R")
 source("R/4_figures.R")
 source("R/5_tables.R")
@@ -44,7 +44,7 @@ sim_pop<-reference_population(segs=segs,
     
     
     
-catch_counts(segs=c(1,2,3,4,7,8,9,10,13,14),
+yyy<-catch_counts(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=sim_pop$bendMeta,
     abund=sim_pop$Z,
     gears=c("GN14", "GN18", "GN41", "GN81", 
@@ -52,8 +52,10 @@ catch_counts(segs=c(1,2,3,4,7,8,9,10,13,14),
     catchability=c(0.00004, 0.00004, 0.00004, 
         0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
     deployments=rep(8,9),
-    effort=effort)
-    
+    effort=effort,
+    occasions=3)
+   
+# returns list of vulses    
     
     
     
