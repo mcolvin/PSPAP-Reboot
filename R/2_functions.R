@@ -247,6 +247,7 @@ catch_counts<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
     }
     return(out) 
 }
+
   
 
 
