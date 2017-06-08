@@ -47,15 +47,6 @@ By generating a spatially explicit virtual population of pallid sturgeon we can:
 1. know the 'true' population metrics like abundance and trend and compare estimated values to the 'true' values. 
 
 
-<!--
-## Assumptions
-1. 
--->
-
-<!--
-## Tables
--->
-
 <br>
 <br>
 
