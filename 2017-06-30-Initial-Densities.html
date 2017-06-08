@@ -122,22 +122,32 @@ $(document).ready(function () {
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>A reference population of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop. One method of creating a spatially explicit pallid sturgeon reference population with known bend-level abundances is to use estimated segment-level population densities.</p>
-<p>The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population.</p>
-<!--
-The purpose of this entry is to discuss the process used to determine the initial densities of pallid sturgeon that inform the reference population analyses---analyses computed on simulated populations of known abundance.
--->
+<p>A virtual reference population of known pallid sturgeon abundance is needed to simulate and evaluate the ability of alternative monitoring designs achieve the fundamental objectives identified during the first population assessment program workshop. One component of creating a spatially explicit pallid sturgeon reference population with known bend-level abundances is to use estimated segment-level population densities to generate those bend level abundances.</p>
+<p><strong>The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population. There are additional spatial considerations that will be forth coming (i.e., spatial distribution of fish within segments). Therefore we ask you to limit any comments to the following points:</strong></p>
+<pre><code>* Are the fish density values used reasonable?
+* Are there better abundance estimates or density values we may have missed?
+* Is it reasonable to generalize densities reported in Table 1 to the segments specified in Table 1?
+* Any additional constructive feedback?</code></pre>
 </div>
-<div id="spatial-scale-fish-origin" class="section level2">
-<h2>Spatial Scale &amp; Fish Origin</h2>
-<p>Pallid sturgeon (PS) densities (fish per rkm) in Upper Basin RPMA 2 and Lower Basin RPMA 4 are considered separately. Furthermore, since the upper and lower sections of RPMA 4 were found to differ in PS densities <span class="citation">[1]</span>, RPMA 4 is split into two groups for initial density purposes: segments 7-9 and segments 10, 13, and 14.</p>
-<p>Densities for wild and hatchery fish are reported separately, allowing fish origin information to be tracked throughout the reference population analyses, as needed.</p>
+<div id="process-overview" class="section level2">
+<h2>Process overview</h2>
+<ol style="list-style-type: decimal">
+<li><strong>Spatial Scale</strong>. Pallid sturgeon (PS) densities (fish per rkm) in Upper Basin RPMA 2 and Lower Basin RPMA 4 were considered separately. Furthermore, since the upper and lower sections of RPMA 4 were found to differ in PS densities <span class="citation">[1]</span>, RPMA 4 is split into two groups for initial density purposes: segments 7-9 and segments 10, 13, and 14.</li>
+<li><strong>Fish Origin</strong>. Densities for wild and hatchery fish are reported separately, allowing fish origin information to be tracked throughout the reference population analyses, as needed.</li>
+<li><strong>Pallid sturgeon densities</strong>. Wild and hatchery density estimates are calculated from estimated PS abundances reported in recent literature for RPMA 2 and 4. When the length of river was not explicitly reported, we approximate the length of river by matching the authors’ description of the included reaches to the lengths reported in <span class="citation">[2]</span> and <span class="citation">[3]</span>, allowing density to be calculated.<br />
+</li>
+<li><strong>Dealing with ranges and intervals</strong>. Abundances were often reported as 95% confidence intervals or as a range of estimated mean abundances across a few consecutive years. From these ranges we use the minimum and maximum reported abundances to calculate minimum and maximum densities, respectively (Table 1). In the case of RPMA 4 segments 7-9, minimum and maximum density is estimated from density plots <span class="citation">[4]</span>. The Mean Density column in Table 1 is calculated from the most current (of those found in our literature search) mean abundance estimate. This estimate was calculated for the year given in the Mean Density Year column.</li>
+<li><strong>Segment-level density</strong>. We fixed initial segment-level densities at the mean density by segment for reference populations with less variation. To add variation amongst reference populations, initial segment-level densities (or bend-level within segment densities) were randomly drawn from a uniform distribution ranging between the minimum and maximum densities for the appropriate spatial location.</li>
+</ol>
 </div>
-<div id="process" class="section level2">
-<h2>Process</h2>
-<p>For each of the spatial areas discussed, wild and hatchery density estimates are calculated from estimated PS abundances reported in recent literature. When the length of river was not explicitly reported, we approximate the length of river by matching the authors’ description of the included reaches to the lengths reported in <span class="citation">[2]</span> and <span class="citation">[3]</span>, allowing density to be calculated.</p>
-<p>Abundances were often reported as 95% confidence intervals or as a range of estimated mean abundances across a few consecutive years. From these ranges we use the miniumum and maximum reported abundances to calculate minimum and maximum densities, respectively (Table 1). In the case of RPMA 4 segments 7-9, minimum and maximum density is estimated from density plots <span class="citation">[4]</span>. The Mean Density column in Table 1 is calculated from the most current (of those found in our literature search) mean abundance estimate. This estimate was calculated for the year given in th Mean Density Year column.</p>
-<p>For reference populations with less variation, inital segment-level densities are fixed at the mean density by segment. To add variation amongst reference populations, initial segment-level densities (or bend-level within segment densities) are randomly drawn from a uniform distribution ranging between the minimum and maximum densities for the appropriate spatial location.</p>
+<div id="how-will-we-use-this-information" class="section level2">
+<h2>How will we use this information?</h2>
+<p>By generating a spatially explicit virtual population of pallid sturgeon we can:</p>
+<ol style="list-style-type: decimal">
+<li>simulate a virtual PS population that mimics what is currently understood about numbers and dis</li>
+<li>sample the population using varying monitoring designs</li>
+<li>know the ‘true’ population metrics like abundance and trend and compare estimated values to the ‘true’ values.</li>
+</ol>
 <!--
 ## Assumptions
 1. 

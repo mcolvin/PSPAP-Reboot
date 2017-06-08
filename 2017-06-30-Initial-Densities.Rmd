@@ -23,16 +23,12 @@ source("R/5_tables.R")
 ## Overview
 A virtual reference population of known pallid sturgeon abundance is needed to simulate and evaluate the ability of alternative monitoring designs achieve the fundamental objectives identified during the first population assessment program workshop.  One component of creating a spatially explicit pallid sturgeon reference population with known bend-level abundances is to use estimated segment-level population densities to generate those bend level abundances.  
 
-**The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population. There are additional spatial consideration that will be forth coming (i.e., spatial distribution of fish with segments).  Therefore was ask you to limit any comments to the following points:**
+**The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population. There are additional spatial considerations that will be forth coming (i.e., spatial distribution of fish within segments).  Therefore we ask you to limit any comments to the following points:**
 
     * Are the fish density values used reasonable?
     * Are there better abundance estimates or density values we may have missed?
     * Is it reasonable to generalize densities reported in Table 1 to the segments specified in Table 1?
     * Any additional constructive feedback?
-
-<!--
-The purpose of this entry is to discuss the process used to determine the initial densities of pallid sturgeon that inform the reference population analyses---analyses computed on simulated populations of known abundance.
--->
 
 ## Process overview
 
@@ -71,7 +67,7 @@ tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
 tbl2[duplicated(tbl2$rpma),]$rpma<-""
 tbl2[duplicated(tbl2$segments),]$segments<-""
 tbl2$ref<-c("[9]", "[5]-[8]","[4]","[4]","[1]","[1]")
-pander::kable(tbl2,row.names=FALSE,
+kable(tbl2,row.names=FALSE,
     col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Maximum Density (fish/rkm)",  "Mean Density (fish/rkm)", "Mean Density Year", "References"),
     align="llcccccc")
 ``` 
