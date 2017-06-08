@@ -359,7 +359,7 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
           sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
         }
     } 
-  ## EXPAND TEMP
+  ## EXPAND TMP
   out<- tmp[rep(1:nrow(tmp),nyears),]
   names(out)<-toupper(names(out))
   out$SAMPLED<- c(sampled)
@@ -378,48 +378,78 @@ bend_samples<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
   #NAMES TO LOWERCASE
   names(out)<- tolower(names(out))
-  return(out)
+  return(list(out=out,sampled=sampled))
   }
+  
+  
+  
 samp_dat<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
-                   bends=NULL,
-                   bend_abund=NULL,
-                   ind_abund=NULL
-                   gears=c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN"),
-                   catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
-                   deployments=rep(8,9),
-                   effort=NULL)
-{
-  #DETERMINE WHICH BENDS TO SAMPLE
-  sim_samp<-bend_samples(segs=segs,bends=bends,abund=bend_abund)
+    bends=NULL,
+    bend_abund=NULL,
+    ind_abund=NULL,
+    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
+        "OT16", "TLC1", "TLC2", "TN"),
+    catchability=c(0.00004, 0.00004, 0.00004, 
+            0.00004, 0.00004, 0.0002, 0.00004, 
+            0.00004, 0.0002),
+    deployments=rep(8,9),
+    effort=NULL,
+    occasions=1)
+    {
+    #DETERMINE WHICH BENDS TO SAMPLE
+    sim_samp<-bend_samples(segs=segs,bends=bends,abund=bend_abund)
   
-  #EXPAND SIM_SAMP TO INCLUDE RESULTS FOR REACH GEAR
-  sim_samp<-rbind(sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp,sim_samp)
-  g<-gears[order(unique(gears))]
-  sim_samp<-sim_samp[1:(length(g)*nrow(abund)*ncol(abund)),]
-  
-  
-  #ADD CATCH AND EFFORT FOR GEARS
-  sim_catch<-catch_counts(segs=segs,
-                          bends=bends,
-                          abund=ind_abund,
-                          gears=gears,
-                          catchability=catchability,
-                          deployments=deployments,
-                          effort=effort)
-  
-  GEAR<-unlist(lapply(g,rep,nrow(abund)*ncol(abund)))
-  EFFORT<-unlist(sim_catch$effort, use.names = FALSE)
-  EFFORT<-ifelse(sim_samp$sampled==1,EFFORT,NA)
-  CATCH<-unlist(sim_catch$catch, use.names = FALSE)
-  CATCH<-ifelse(sim_samp$sampled==1,CATCH,NA)
-  #CATCH<-ifelse(EFFORT==0, NA, CATCH)
-  #EFFORT<-ifelse(EFFORT==0, NA, EFFORT)
-  CPUE<- CATCH/EFFORT
-  
-  out<-data.frame(sim_samp[,1:6], GEAR, EFFORT, CATCH, CPUE, sim_samp[,7:8])
-  names(out)<- tolower(names(out))
-  return(out)
-}
+    #ADD CATCH AND EFFORT FOR GEARS
+    ## NOT SLOW BUT ABOUT 4 SECONDS TO 
+    ## RUN. MIGHT BE A PLACE TO COME BACK 
+    ## TO FOR PERFORMANCE ENHANCMENT
+    sim_catch<-catch_counts(segs=segs,
+        bends=bends,
+        abund=ind_abund,
+        gears=gears,
+        catchability=catchability,
+        deployments=deployments,
+        effort=effort,
+        occasions=occasions)
+
+    catch<- sim_catch$catch
+    effort<- sim_catch$f
+
+    ## CONVERT CPUE TO LONG FORMAT
+    xxx<- lapply(1:length(gears),function(x)
+        {
+        bend_data<-do.call("rbind", 
+            replicate(nyears, 
+                bends, 
+                simplify = FALSE))
+        bend_data$year<- sort(rep(1:nyears,nrow(bends)))
+        bend_data$sampled<-c(sampled)        
+        bend_data$effort<-c(effort[[gears[x]]])        
+        bend_data$catch<-c(catch[[gears[x]]]) 
+        bend_data$gear<-gears[x] 
+        return(as.data.frame(bend_data))
+        })
+    cpue_long<- do.call("rbind",xxx)
+    cpue_long$cpue<- cpue_long$catch/cpue_long$effort
+    
+    ## STILL NEED TO WORK OUT SENSORING THE CAPTURE HISTORIES
+    ## SOMETHING TO MULL OVER, MAYBE GO TO REALLY LONG...
+        
+    ## BUNDLE UP THE GOODIES TO RETURN
+    out<-list(
+        # SAMPLED
+        sampled=sampled, # BEND SAMPLING MATRIX
+        # CPUE
+        catch=catch, ## BEND, YEAR, GEAR
+        effort=effort,## BEND, YEAR, GEAR
+        cpue=cpue,## BEND, YEAR, GEAR
+        cpue_long=cpue_long,## LONG FORMAT
+        # CAPTURE-RECAPTURE
+        ch=sim_catch$ch, ## IND,YEAR, BEND, GEAR
+        f_occ=sim_catch$f_occ) ## IND,YEAR, BEND, GEAR
+    
+    return(out)
+    }
 
 
 # GETTING TREND
@@ -468,6 +498,17 @@ get.trnd<-function(segs=c(1,2,3,4,7,8,9,10,13,14),
 }
  
 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 # A FUNCTION TO SIMULATE DATA
 sim_ch<-function(inputs,index)
 	{
