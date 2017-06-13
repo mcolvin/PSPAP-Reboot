@@ -4,13 +4,18 @@ title: Post PSPAP Workshop Literature Suggestions
 published: false
 ---
 
+Several folks contributed literature citations to the EA team during the PSPAP workshop.  Those suggestions were appreciated and citations and links to those reports are below. 
+
+
+* 
 From Tim W.
-Large-River-Community-Sampling.pdf
+[PDF]({{ site.url }}/pdfs/Large-River-Community-Sampling.pdf)
 
 Heist Effective population size Equations 4. 5 and 6.
 SaltzgiverCaptiveBroodstock2012.pdf
 Wildhaber
 Pallid-reproductive-evaluation.pdf
+[PDF]({{ site.url }}/pdfs/Pallid-reproductive-evaluation.pdf)
 
 
 A couple of quick excerpts of note: 
