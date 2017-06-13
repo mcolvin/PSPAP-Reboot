@@ -8,7 +8,10 @@ csl: applied-mathematical-modelling.csl
 nocite: | 
   @J16, @K05, @KB05, @USFWS07, @R15
 ---
-
+<!--
+knitr::knit("2017-06-30-Initial-Densities.Rmd")
+rmarkdown::render("2017-06-30-Initial-Densities.Rmd")
+-->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 source("R/1_global.R")
@@ -25,10 +28,10 @@ A virtual reference population of known pallid sturgeon abundance is needed to s
 
 **The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population. There are additional spatial considerations that will be forth coming (i.e., spatial distribution of fish within segments).  Therefore we ask you to limit any comments to the following points:**
 
-    * Are the fish density values used reasonable?
-    * Are there better abundance estimates or density values we may have missed?
-    * Is it reasonable to generalize densities reported in Table 1 to the segments specified in Table 1?
-    * Any additional constructive feedback?
+* Are the fish density values used reasonable?
+* Are there better abundance estimates or density values we may have missed?
+* Is it reasonable to generalize densities reported in Table 1 to the segments specified in Table 1?
+* Any additional constructive feedback?
 
 ## Process overview
 
