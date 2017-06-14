@@ -50,8 +50,6 @@ dfitfunUB<-function(x)
 
 
 
-
-
 # RELATIVE ABUNDANCE (CPUE)
 ## 3. FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
 ## AND THEN BENDS
@@ -62,17 +60,28 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     phi=0.95)
     {
     # this function allocates fish to bends within a segment
-    # probabilistically given bend weights
-    
+    # probabilistically given bend weights and determines the survival
+    # of fish within bend over nyears given survival probabilities
+  
     # inputs
     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
-    ##     fish_density: density of fish within segment; fish/rkm
+    ## fish_density: density of fish within segment; fish/rkm
     ## type: input for fish type [hatchery, natural]
-    
+    ## bends: bend data from load-and-clean
+    ## nyears: number of years to simulate the population for
+    ## phi: a matrix of survival probabilities by segment (rows) and 
+    ##  year (cols)
+  
     # outputs
-    ## out: a matrix where each row is a bend and 
-    ##   each column represents a year; number
-    
+    ## out: a list of 3 objects:
+    ##  $out: a matrix where each row is a bend and 
+    ##    each column represents a year; number
+    ##  $bendMeta: a dataframe including the information in "bends"
+    ##    with bend abundance and segment index columns added
+    ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
+    ##    fish status (0=Dead, 1=Alive) where each row represents a fish
+    ##    living in bend i and each column represents a year  
+  
     # assumptions
     ## no movement
     ## no recruitment
@@ -103,6 +112,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## SET UP INVIDUAL POPULATION
     Z<- lapply(1:nrow(tmp),function(x)
         {
+        ### y: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
+        ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive) 
         y<-matrix(0,nrow=tmp$N_ini[x],ncol=nyears)
         y[,1]<-1
         for(i in 2:nyears)
