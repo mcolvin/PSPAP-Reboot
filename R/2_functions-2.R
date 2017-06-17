@@ -529,39 +529,6 @@ samp_dat<-function(sim_pop=NULL,
   }
 
 
-write.csv(sim_dat$sampled, 
-    file=paste("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_samp_q",
-    catchability[1], "_sd", q_sd[1], ".csv", sep=""))
-
-
-write.csv(sim_dat$catch, 
-  file=paste("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_catch_q",
-  catchability[1], "_sd", q_sd[1], ".csv", sep=""))
-write.csv(sim_dat$effort, 
-  file=paste("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_effort_q",
-  catchability[1], "_sd", q_sd[1], ".csv", sep=""))
-write.csv(sim_dat$cpue, 
-  file=paste("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_cpue_q",
-  catchability[1], "_sd", q_sd[1], ".csv", sep=""))
-
-
-write.csv(sim_dat$cpue_long, 
-    file=paste("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_df_q",
-    catchability[1], "_sd", q_sd[1], ".csv", sep=""))
-
-write.csv(sim_dat$f_occ, 
-    file=paste("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_focc_q",
-    catchability[1], "_sd", q_sd[1], ".csv", sep=""))
-
-
-
-save_reps<-function(nreps, ...)
-  {
-  
-  }
-
-
-
 ## 7. GETTING TREND
 get.trnd<-function(sim_dat=NULL,
                    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
