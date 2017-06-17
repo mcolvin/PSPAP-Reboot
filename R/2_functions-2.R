@@ -461,6 +461,7 @@ samp_dat<-function(sim_pop=NULL,
     catchability=c(0.00004, 0.00004, 0.00004, 
             0.00004, 0.00004, 0.0002, 0.00004, 
             0.00004, 0.0002),
+    q_sd=NULL,#c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
     deployments=rep(8,9),
     effort=NULL,
     occasions=1)
