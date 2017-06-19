@@ -115,7 +115,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
     ## DENSITY FOR BEND SIZE
     tmp$N_ini<-rpois(nrow(tmp),
-        lambda=tmp$mean_dens*tmp$length.rkm)
+        lambda=tmp$expected_dens*tmp$length.rkm)
     ## EXAPAND BENDS FOR EACH FISH
     indvidual_meta<- expanded.data<-as.data.frame(lapply(tmp,
                    function(x) rep(x,tmp$N_ini)))
