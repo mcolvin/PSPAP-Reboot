@@ -3,7 +3,7 @@
 #####################
 
 ## GENERATE THE REFERENCE POPULATION
-segs<- c(1,2,3,4,7,8,9,11,10,13,14)
+segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
 
 beta0<- 2.9444
@@ -11,7 +11,7 @@ phi<-matrix(plogis(beta0),length(segs),nyears-1)
 
 sim_pop<-reference_population(segs=segs,
                               bends=bends,# BENDS DATAFRAME
-                              fish_density=15, # FISH DENSITY PER RKM
+                              fish_density=init_dens, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 ## SIMULATE THE SAMPLING EFFORT AND CATCH DATA FOR SEVERAL REPLICATES
