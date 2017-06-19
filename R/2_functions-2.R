@@ -55,7 +55,7 @@ dfitfunUB<-function(x)
 ## AND THEN BENDS
 reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=NULL,
-    fish_density=1,
+    fish_density=NULL,
     nyears=10,
     phi=0.95)
     {
@@ -65,7 +65,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     
     # inputs
     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
-    ## fish_density: density of fish within segment; fish/rkm
+    ## fish_density: initial density data from load-and-clean; fish/rkm
     ## type: input for fish type [hatchery, natural]
     ## bends: bend data from load-and-clean
     ## nyears: number of years to simulate the population for
@@ -77,7 +77,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ##  $out: a matrix where each row is a bend and 
     ##    each column represents a year; number
     ##  $bendMeta: a dataframe including the information in "bends"
-    ##    with bend abundance and segment index columns added
+    ##    with expected segment density (from init_dens), bend abundance,
+    ##    and segment index columns added
     ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
     ##    fish status (0=Dead, 1=Alive) where each row represents a fish
     ##    living in bend i and each column represents a year  
@@ -88,11 +89,17 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## survival homogenous for individuals
     
     ## ERROR HANDLING
+    ### PHI
     if(dim(phi)[1]!=length(segs) |
         dim(phi)[2]!=nyears-1)
         {return(print("Survival(phi) needs to be a matrix \n
         with rows equal to the number of segments \n
         and the same number of columns as years-1 to simulate"))}
+    ### INITIAL FISH DENSITY
+    if(nrow(fish_density)!=length(segs))
+      {return(print("Initial fish density (fish_density) needs to be \n
+        a dataframe of densities by segment with number of \n
+        rows equal to the number of segments."))}
 
     # GET BEND INFORMATION
     tmp<- subset(bends, b_segment %in% segs)
@@ -100,12 +107,15 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends_in_segs<-aggregate(bend_num~b_segment,tmp,length) 
     bends_in_segs$phi_indx<-1:nrow(bends_in_segs)
     tmp<-merge(tmp, bends_in_segs[,-2],by="b_segment",all.x=TRUE)
+    
+    # ADD INITIAL DENSITIES TO TMP
+    tmp<-merge(tmp, fish_density,by=c("rpma", "b_segment"),all.x=TRUE)
   
     # INITIAL ABUNDANCES
     ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
     ## DENSITY FOR BEND SIZE
     tmp$N_ini<-rpois(nrow(tmp),
-        lambda=fish_density*tmp$length.rkm)
+        lambda=tmp$mean_dens*tmp$length.rkm)
     ## EXAPAND BENDS FOR EACH FISH
     indvidual_meta<- expanded.data<-as.data.frame(lapply(tmp,
                    function(x) rep(x,tmp$N_ini)))

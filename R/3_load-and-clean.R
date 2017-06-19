@@ -39,6 +39,16 @@ dens<-read.csv("./dat/fish_density.csv")
 dens<-rbind(dens[1:4,],dens[7:nrow(dens),])
 # MAKE COLUMN NAMES LOWER CASE
 names(dens)<-tolower(names(dens))
+# GENERATE INITIAL DENSITY DATA BY SEGMENT
+## FIND THE MOST CURRENT MEAN DENSITY BY SEGMENT
+init_dens<-ddply(dens, .(rpma,segments,fish_type), summarize,
+                 expected_dens=density_mean[which.max(as.numeric(year))])
+## COMBINE HATCHERY AND WILD DENSITIES TO GET OVERALL SEGMENT DENSITY
+init_dens<-aggregate(expected_dens~rpma+segments, init_dens, sum)
+## EXPAND TO HAVE ONE ROW FOR EACH SEGMENT
+init_dens<-init_dens[rep(seq_len(nrow(init_dens)), times=c(4,3,3)),]
+init_dens$segments<-c(1:4, 7:9, 10, 13, 14)
+colnames(init_dens)[2]<-"b_segment"
 
 
 ############## EFFORT ANALYSIS #####################

@@ -73,15 +73,16 @@ if(n==1)
     }
 if(n==2)
   {
-  tmp<-ddply(dens,.(rpma, segments, fish_type),summarize,
-            min_dens=min(d_lower, na.rm=TRUE),
-            max_dens=max(d_upper, na.rm=TRUE),
-            mean_dens=density_mean[which.max(as.numeric(year))],
-            max_year=max(as.numeric(year)),
-            min_mean=min(density_mean, na.rm=TRUE),
-            max_mean=max(density_mean, na.rm=TRUE))
-  tmp$min_dens<-mapply(min, tmp$min_dens, tmp$min_mean, na.rm=TRUE)
-  tmp$max_dens<-mapply(max, tmp$max_dens, tmp$max_mean, na.rm=TRUE)
+  tmp<-ddply(dens,.(rpma, segments, fish_type), 
+    summarize,
+    #min_dens=min(d_lower, na.rm=TRUE),
+    #max_dens=max(d_upper, na.rm=TRUE),
+    mean_dens=density_mean[which.max(as.numeric(year))],
+    max_year=max(as.numeric(year)),
+    min_mean=min(density_mean, na.rm=TRUE),
+    max_mean=max(density_mean, na.rm=TRUE))
+  #tmp$min_dens<-mapply(min, tmp$min_dens, tmp$min_mean, na.rm=TRUE)
+  #tmp$max_dens<-mapply(max, tmp$max_dens, tmp$max_mean, na.rm=TRUE)
   tmp$segs<-1
   tmp$segs[which(tmp$segments=="8")]<-8
   tmp$segs[which(tmp$segments=="10")]<-10
