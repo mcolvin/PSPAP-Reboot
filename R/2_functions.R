@@ -115,7 +115,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
     ## DENSITY FOR BEND SIZE
     tmp$N_ini<-rpois(nrow(tmp),
-        lambda=tmp$mean_dens*tmp$length.rkm)
+        lambda=tmp$expected_dens*tmp$length.rkm)
     ## EXAPAND BENDS FOR EACH FISH
     indvidual_meta<- expanded.data<-as.data.frame(lapply(tmp,
                    function(x) rep(x,tmp$N_ini)))
@@ -165,10 +165,6 @@ catch_counts<-function(sim_pop=NULL,
   # segment probabilistically given a gamma distribution for effort
   # and the individual survival status of each fish within a bend
   
-  # a formula for catchability (q) still needs to be worked in
-  # currently q is a vector of catchabilities by gear
-  # Is the environment different enough that we need by basin as well?
-  
   # inputs
   ## sim_pop: a simulated population using the reference_populations function
   ##  having components:
@@ -177,26 +173,37 @@ catch_counts<-function(sim_pop=NULL,
   ##      fish status (0=Dead, 1=Alive) where each row represents a fish
   ##      living in bend i and each column represents a year    
   ## gears: a vector of sampling gears
-  ## q: a vector of catchabilities by gear
-  ##    must either match the vector of gears given or be of 
-  ##    length 9 with q[k] equaling catchability of gear k where
-  ##        k=1 GN14
-  ##        k=2 GN18
-  ##        k=3 GN41
-  ##        k=4 GN81
-  ##        k=5 MF
-  ##        k=6 OT16
-  ##        k=7 TLC1
-  ##        k=8 TLC2
-  ##        k=9 TN
-  ## d: a vector of the number of deployments by gear
-  ##    must either match the vector of gears given or be of
-  ##    length 9 where d[k] is the number of deployments for 
-  ##    gear k, as indicated above
+  ## catchability: a vector of mean catchabilities by gear with length
+  ##    equal to the length of the gears vector
+  ## q_sd: a vector of standard deviations for the log-odds of catchability
+  ##    by gear with length equal to the length of gears; realized 
+  ##    catchability q is given by:  log(q/(1-q))~B0+N(0,sd) where 
+  ##    B0=(catchability/(1-catchability))
+  ## d: a vector of the number of deployments by gear, matching the 
+  ##    vector of gears given
   ## effort: a dataframe summarizing effort (in minutes) for 
   ##    standard gears over the duration of the PSPAP 
+  ## occassions: the number of sampling days in a year
   
   # outputs
+  ## out a list of 472 objects (one for each bend)out[[bend]] is a list of objects:
+  ##  $catch: a matrix where each row is a bend and 
+  ##    each column represents a year; number
+  ##  $f: a dataframe including the information in "bends"
+  ##    with expected segment density (from init_dens), bend abundance,
+  ##    and segment index columns added
+  ##  $ch: a list of 472 matrices; each matrix, Z[[i]], gives individual 
+  ##    fish status (0=Dead, 1=Alive) where each row represents a fish
+  ##    living in bend i and each column represents a year  
+  ##  $f_occ: a matrix where each row is a bend and 
+  ##    each column represents a year; number
+  ##  $q_occ: a dataframe including the information in "bends"
+  ##    with expected segment density (from init_dens), bend abundance,
+  ##    and segment index columns added
+  ##  $flags: a list of 472 matrices; each matrix, Z[[i]], gives individual 
+  ##    fish status (0=Dead, 1=Alive) where each row represents a fish
+  ##    living in bend i and each column represents a year  
+
   ## out: an array of numerical values representing catch
   ##    out[i,j,k] is the catch for bend i in year j with gear k
   ##    k=1 GN14
@@ -209,11 +216,25 @@ catch_counts<-function(sim_pop=NULL,
   ##    k=8 TLC2
   ##    k=9 TN
   
-  # assumptions--unless these are somehow factored into q, we have:
+  # assumptions:
   ## no movement
   ## no recruitment
-  ## no mortality throughout the year;
-  ##  this occurs at very end when moving to the next year
+  ## no mortality during a year;
+  ##  mortality occurs after the last sampling day of the year and
+  ##  before the first sampling day of the next year
+  ## SHOULD ADD ASSUMPTIONS ON CAPTURE PROBABILITIES (WHICH INCLUDES 
+  ## ASSUMPTIONS ON CATCHABILITY)
+  ## catchability is the same within bends (and years) as it is amongst 
+  ##  bends (and years)
+  ## number of deployments does not vary by occassion, year, or bend
+  ## number of occassions does not vary by year or bend
+  ## all gears are used for sampling during every occassion in all sampled bends
+    ### THIS LAST POINT LIKELY SHOULD BE MOVED INTO A DIFFERENT FUNCTION AS WE 
+    ###   COULD FACTOR CERTAIN GEARS OUT LATER IF NEEDED BUT DON'T IN THE LATER
+    ###   FUNCTIONS
+  
+
+  
   # ERROR HANDLING
   if(any(!(gears %in% effort$gear)))
   {return(print("Gears not found in the effort analysis will have \n 
