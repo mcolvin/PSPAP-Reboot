@@ -179,42 +179,42 @@ catch_counts<-function(sim_pop=NULL,
   ##    by gear with length equal to the length of gears; realized 
   ##    catchability q is given by:  log(q/(1-q))~B0+N(0,sd) where 
   ##    B0=(catchability/(1-catchability))
-  ## d: a vector of the number of deployments by gear, matching the 
-  ##    vector of gears given
+  ## deployments: a vector of the number of deployments by gear, matching 
+  ##    the vector of gears given
   ## effort: a dataframe summarizing effort (in minutes) for 
   ##    standard gears over the duration of the PSPAP 
   ## occassions: the number of sampling days in a year
   
   # outputs
-  ## out a list of 472 objects (one for each bend)out[[bend]] is a list of objects:
-  ##  $catch: a matrix where each row is a bend and 
+  ## list of 6 objects:
+  ##  $catch: a list of matrices (one matrix for each gear)
+  ##    matrices are catch counts where each row is a bend and 
   ##    each column represents a year; number
-  ##  $f: a dataframe including the information in "bends"
-  ##    with expected segment density (from init_dens), bend abundance,
-  ##    and segment index columns added
-  ##  $ch: a list of 472 matrices; each matrix, Z[[i]], gives individual 
-  ##    fish status (0=Dead, 1=Alive) where each row represents a fish
-  ##    living in bend i and each column represents a year  
-  ##  $f_occ: a matrix where each row is a bend and 
+  ##  $f: a list of matrices (one matrix for each gear)
+  ##    matrices are total effort where each row is a bend and 
   ##    each column represents a year; number
-  ##  $q_occ: a dataframe including the information in "bends"
-  ##    with expected segment density (from init_dens), bend abundance,
-  ##    and segment index columns added
-  ##  $flags: a list of 472 matrices; each matrix, Z[[i]], gives individual 
-  ##    fish status (0=Dead, 1=Alive) where each row represents a fish
-  ##    living in bend i and each column represents a year  
-
-  ## out: an array of numerical values representing catch
-  ##    out[i,j,k] is the catch for bend i in year j with gear k
-  ##    k=1 GN14
-  ##    k=2 GN18
-  ##    k=3 GN41
-  ##    k=4 GN81
-  ##    k=5 MF
-  ##    k=6 OT16
-  ##    k=7 TLC1
-  ##    k=8 TLC2
-  ##    k=9 TN
+  ##  $ch: a list of 472 lists (one for each bend)
+  ##    $ch[[#]]: a list of lists (one for each gear)
+  ##      $ch[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are capture histories (1=capture, 0=not 
+  ##          captured) where each row is an individual fish and
+  ##          each column is a year
+  ##  $f_occ: a list of 472 lists (one for each bend)
+  ##    $f_occ[[#]]:a list of lists (one for each gear)
+  ##      $f_occ[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are efforts where each row is a deployment 
+  ##          and each column is a year; number
+  ##  $q_occ: a list of 472 lists (one for each bend)
+  ##    $q_occ[[#]]:a list of lists (one for each gear)
+  ##      $q_occ[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are catchabilities where each row is a 
+  ##          deployment and each column is a year; number
+  ##  $flags: a dataframe that gives the number of times the capture 
+  ##    probability for an occassion was greater than 0.4, for each
+  ##    bend within segment, gear, and year 
   
   # assumptions:
   ## no movement
