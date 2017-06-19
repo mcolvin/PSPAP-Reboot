@@ -42,9 +42,9 @@ names(dens)<-tolower(names(dens))
 # GENERATE INITIAL DENSITY DATA BY SEGMENT
 ## FIND THE MOST CURRENT MEAN DENSITY BY SEGMENT
 init_dens<-ddply(dens, .(rpma,segments,fish_type), summarize,
-                 mean_dens=density_mean[which.max(as.numeric(year))])
+                 expected_dens=density_mean[which.max(as.numeric(year))])
 ## COMBINE HATCHERY AND WILD DENSITIES TO GET OVERALL SEGMENT DENSITY
-init_dens<-aggregate(mean_dens~rpma+segments, init_dens, sum)
+init_dens<-aggregate(expected_dens~rpma+segments, init_dens, sum)
 ## EXPAND TO HAVE ONE ROW FOR EACH SEGMENT
 init_dens<-init_dens[rep(seq_len(nrow(init_dens)), times=c(4,3,3)),]
 init_dens$segments<-c(1:4, 7:9, 10, 13, 14)

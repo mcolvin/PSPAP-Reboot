@@ -65,7 +65,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     
     # inputs
     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
-    ## fish_density: density of fish within segment; fish/rkm
+    ## fish_density: initial density data from load-and-clean; fish/rkm
     ## type: input for fish type [hatchery, natural]
     ## bends: bend data from load-and-clean
     ## nyears: number of years to simulate the population for
@@ -77,7 +77,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ##  $out: a matrix where each row is a bend and 
     ##    each column represents a year; number
     ##  $bendMeta: a dataframe including the information in "bends"
-    ##    with bend abundance and segment index columns added
+    ##    with expected segment density (from init_dens), bend abundance,
+    ##    and segment index columns added
     ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
     ##    fish status (0=Dead, 1=Alive) where each row represents a fish
     ##    living in bend i and each column represents a year  
