@@ -466,78 +466,132 @@ bend_samples<-function(sim_pop=NULL)
 ## 6. LOOKING AT CATCH FROM THE SAMPLED AND NON-SAMPLED BENDS
 ## IN "LONG FORM" 
 samp_dat<-function(sim_pop=NULL,
-    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
-        "OT16", "TLC1", "TLC2", "TN"),
-    catchability=c(0.00004, 0.00004, 0.00004, 
-            0.00004, 0.00004, 0.0002, 0.00004, 
-            0.00004, 0.0002),
-    q_sd=NULL,#c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
-    deployments=rep(8,9),
-    effort=NULL,
-    occasions=1)
-    {
-    #DETERMINE WHICH BENDS TO SAMPLE
-    sim_samp<-bend_samples(sim_pop=sim_pop)
-    
-    sampled<-sim_samp$sampled
+                   gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
+                           "OT16", "TLC1", "TLC2", "TN"),
+                   catchability=c(0.00004, 0.00004, 0.00004, 
+                                  0.00004, 0.00004, 0.0002, 0.00004, 
+                                  0.00004, 0.0002),
+                   q_sd=NULL,#c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
+                   deployments=rep(8,9),
+                   effort=NULL,
+                   occasions=1)
+{
+  # this function combines the catch data with the sampling data, allowing
+  # for CPUE to be calculated for the sampled bends
   
-    #ADD CATCH AND EFFORT FOR GEARS
-    ## NOT SLOW BUT ABOUT 4 SECONDS TO 
-    ## RUN. MIGHT BE A PLACE TO COME BACK 
-    ## TO FOR PERFORMANCE ENHANCMENT
-    sim_catch<-catch_counts(sim_pop=sim_pop,
-        gears=gears,
-        catchability=catchability,
-        deployments=deployments,
-        effort=effort,
-        occasions=occasions)
-
-    catch<- sim_catch$catch
-    effort2<- sim_catch$f
+  # inputs
+  ## sim_pop: a simulated population using the reference_populations 
+  ##  function having components:
+  ##    $out: a matrix of bend abundance data (rows=bends; cols=years)
+  ##    $bendMeta: a dataframe of bend info (including the RPMA for each bend)
+  ##    $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
+  ##      fish status (0=Dead, 1=Alive) where each row represents a fish
+  ##      living in bend i and each column represents a year 
   
-    ## CALCULATE CPUE
-    cpue<-list()
-    for(k in 1:length(gears))
-      {
-      cpue[[gears[k]]]<-catch[[gears[k]]]/effort2[[gears[k]]]
-      }
-    
-    ## CONVERT CPUE TO LONG FORMAT
-    xxx<- lapply(1:length(gears),function(x)
-        {
-        bend_data<-sim_samp$bendLong
-        bend_data$year<- sort(rep(1:nyears,nrow(bends)))
-        bend_data$sampled<-c(sampled)        
-        bend_data$effort<-ifelse(c(sampled)==1, c(effort2[[gears[k]]]), NA)       
-        bend_data$catch<-ifelse(c(sampled)==1, c(catch[[gears[k]]]), NA)
-        bend_data$gear<-gears[x] 
-        return(as.data.frame(bend_data))
-        })
-    cpue_long<- do.call("rbind",xxx)
-    cpue_long$cpue<-cpue_long$catch/cpue_long$effort
-    cpue_long<-unique(merge(cpue_long,sim_catch$flags))
-    cpue_long$flags<-ifelse(cpue_long$sampled==1,cpue_long$flags, NA)
-    
-    ## STILL NEED TO WORK OUT SENSORING THE CAPTURE HISTORIES
-    ## SOMETHING TO MULL OVER, MAYBE GO TO REALLY LONG...
-     
-    ## DO WE WANT PHI_INDX????
-        
-    ## BUNDLE UP THE GOODIES TO RETURN
-    out<-list(
-        # SAMPLED
-        sampled=sampled, ## BEND SAMPLING MATRIX (BEND, YEAR)
-        # CPUE
-        catch=catch, ## GEAR, BEND, YEAR
-        effort=effort2,## GEAR, BEND, YEAR
-        cpue=cpue,## GEAR, BEND, YEAR
-        cpue_long=cpue_long,## LONG FORMAT
-        # CAPTURE-RECAPTURE
-        ch=sim_catch$ch, ## BEND, GEAR, OCC, IND, YEAR
-        f_occ=sim_catch$f_occ, ## BEND, GEAR, OCC, YEAR
-        q_occ=sim_catch$q_occ) ## BEND, GEAR, OCC, YEAR
-    return(out)
+  # outputs
+  ## a list of 8 objects:
+  ##  $sampled: a matrix of 0's (not sampled) and 1's (sampled) where
+  ##    each row is a bend and each column is a year
+  ##  $catch: a list of matrices (one matrix for each gear)
+  ##    matrices are catch counts where each row is a bend and 
+  ##    each column represents a year; number
+  ##  $effort: a list of matrices (one matrix for each gear)
+  ##    matrices are total effort where each row is a bend and 
+  ##    each column represents a year; number
+  ##  $cpue: a list of matrices (one matrix for each gear)
+  ##    matrices are catch per unit effort where each row is a bend
+  ##    and each column represents a year; number
+  ##  $cpue_long: a data.frame expanded from $bendLong (from bend_samples)
+  ##    to include one observation per gear per bend per year; new columns
+  ##    include:
+  ##      $effort: total effort for the given gear, bend, and year
+  ##      $catch: total catch for the given gear, bend, and year
+  ##      $gear
+  ##      $cpue: total CPUE for the given gear, bend, and year
+  ##  $ch: a list of 472 lists (one for each bend)
+  ##    $ch[[#]]: a list of lists (one for each gear)
+  ##      $ch[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are capture histories (1=capture, 0=not 
+  ##          captured) where each row is an individual fish and
+  ##          each column is a year
+  ##  $f_occ: a list of 472 lists (one for each bend)
+  ##    $f_occ[[#]]:a list of lists (one for each gear)
+  ##      $f_occ[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are efforts where each row is a deployment 
+  ##          and each column is a year; number
+  ##  $q_occ: a list of 472 lists (one for each bend)
+  ##    $q_occ[[#]]:a list of lists (one for each gear)
+  ##      $q_occ[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are catchabilities where each row is a 
+  ##          deployment and each column is a year; number
+  
+  #DETERMINE WHICH BENDS TO SAMPLE
+  sim_samp<-bend_samples(sim_pop=sim_pop)
+  
+  sampled<-sim_samp$sampled
+  data<-sim_samp$bendLong
+  
+  #ADD CATCH AND EFFORT FOR GEARS
+  ## NOT SLOW BUT ABOUT 4 SECONDS TO 
+  ## RUN. MIGHT BE A PLACE TO COME BACK 
+  ## TO FOR PERFORMANCE ENHANCMENT
+  sim_catch<-catch_counts(sim_pop=sim_pop,
+                          gears=gears,
+                          catchability=catchability,
+                          deployments=deployments,
+                          effort=effort,
+                          occasions=occasions)
+  
+  catch<- sim_catch$catch
+  effort2<- sim_catch$f
+  
+  ## CALCULATE CPUE
+  cpue<-list()
+  for(k in 1:length(gears))
+  {
+    cpue[[gears[k]]]<-catch[[gears[k]]]/effort2[[gears[k]]]
   }
+  
+  ## CONVERT CPUE TO LONG FORMAT
+  xxx<- lapply(1:length(gears),function(x)
+  {
+    bend_data<-data
+    bend_data$effort<-ifelse(data$sampled==1, c(effort2[[gears[x]]]), NA)       
+    bend_data$catch<-ifelse(data$sampled==1, c(catch[[gears[x]]]), NA)
+    bend_data$gear<-gears[x] 
+    return(as.data.frame(bend_data))
+  })
+  cpue_long<- do.call("rbind",xxx)
+  cpue_long$cpue<-cpue_long$catch/cpue_long$effort
+  cpue_long<-unique(merge(cpue_long,sim_catch$flags))
+  cpue_long$flags<-ifelse(cpue_long$sampled==1,cpue_long$flags, NA)
+  cpue_long<-cpue_long[order(cpue_long$year, cpue_long$gear,
+                             cpue_long$b_segment, cpue_long$bend_num),]
+  cpue_long<-cpue_long[,c(1,5,2:4,6:18,20:22,19,23:26)]
+  
+  ## STILL NEED TO WORK OUT SENSORING THE CAPTURE HISTORIES
+  ## SOMETHING TO MULL OVER, MAYBE GO TO REALLY LONG...
+  
+  ## DO WE WANT PHI_INDX????
+  
+  ## BUNDLE UP THE GOODIES TO RETURN
+  out<-list(
+    # SAMPLED
+    sampled=sampled, ## BEND SAMPLING MATRIX (BEND, YEAR)
+    # CPUE
+    catch=catch, ## GEAR, BEND, YEAR
+    effort=effort2,## GEAR, BEND, YEAR
+    cpue=cpue,## GEAR, BEND, YEAR
+    cpue_long=cpue_long,## LONG FORMAT
+    # CAPTURE-RECAPTURE
+    ch=sim_catch$ch, ## BEND, GEAR, OCC, IND, YEAR
+    f_occ=sim_catch$f_occ, ## BEND, GEAR, OCC, YEAR
+    q_occ=sim_catch$q_occ) ## BEND, GEAR, OCC, YEAR
+  return(out)
+}
 
 
 ## 7. GETTING TREND
