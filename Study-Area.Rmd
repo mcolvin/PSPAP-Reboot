@@ -15,16 +15,22 @@ rmarkdown::render("index.Rmd")
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 studyArea<-TRUE
-source("./R/1-global.R")
-source("./R/2-functions.R")
-source("./R/3-load-and-clean.R")
-source("./R/4-figures.R")
-source("./R/5-tables.R")
+source("R/1_global.R")
+source("R/2_functions.R")
+source("R/3_load-and-clean.R")
+source("R/4_figures.R")
+source("R/5_tables.R")
 ```
 
 
 ```{r,echo=FALSE}
-figures(1)
+figures_study_area(1)
+fn<-"study-area-1.png"
+savePlot(paste0(getwd(),"/figures/",fn),type='png')
+```
+
+```{r,echo=FALSE}
+figures_study_area(3)
 fn<-"study-area-1.png"
 savePlot(paste0(getwd(),"/figures/",fn),type='png')
 ```
@@ -32,7 +38,7 @@ savePlot(paste0(getwd(),"/figures/",fn),type='png')
 
 ```{r,echo=FALSE}
 # HATCHERIES
-figures(3);fn<-"study-area-hatcheries.png"
+figures_study_area(3);fn<-"study-area-hatcheries.png"
 savePlot(paste0(getwd(),"/figures/",fn),type='png')
 ```
 
