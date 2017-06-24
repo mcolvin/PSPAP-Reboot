@@ -15,13 +15,38 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 
+# CALCULATING SD_MAX ASSUMING KNOWN MEAN CATCHABILITY AND MEAN EFFORT
+## MEAN CATCHABILITY
+q_mean<-rep(0.00001,9)
+B0=log(q_mean/(1-q_mean))
+
+## MEAN EFFORT
+tmp<-effort[which(effort$gear %in% c("GN14", "GN18", "GN41", "GN81", 
+                                     "MF", "OT16", "TLC1", "TLC2", "TN")),]
+mean_effort<-tmp$gamma_shape/tmp$gamma_rate
+### TAKE AVERAGE FOR EACH BASIN
+mean_effort_avg<-(mean_effort[1:9]+mean_effort[c(10,2,11,4,12:16)])/2
+
+## LOOK AT 3 SD's of EFFORT TO FIND ROUGH EFFORT UPPER BOUND
+three_sig<-3*sqrt(tmp$gamma_shape)/tmp$gamma_rate
+UB<-mean_effort+three_sig
+UB_avg<-(UB[1:9]+UB[c(10,2,11,4,12:16)])/2
+
+## FIND ROUGH CATCHABILITY UPPER BOUND 
+### WHEN SUMMING Q*F's TO GET P, ON AVERAGE WE WANT, FOR 8 DEPLOYMENTS,
+### 8*Q*F<0.4 SO Q<0.4/(8*F)
+UBq<-.4/(8*UB_avg)
+### CHECK THAT 1/UBq-1>0
+which(1/UBq-1<0)
+
+## USE B0 and UBq TO CALCULATE ROUGH UPPER BOUND for SD
+sd_max<-(log(1/UBq-1)+B0)/(-3)
 
 # CONSTRUCT MATRIX OF SDs
 gears<-c("GN14", "GN18", "GN41", "GN81",
          "MF", "OT16", "TLC1", "TLC2", "TN")
 
-sd_max<-c(1:9)
-Nstep<-50
+Nstep<-15
 step<-sd_max/Nstep
 
 B0_sd_matrix<-matrix(0,nrow=Nstep+1,ncol=length(gears))
@@ -29,9 +54,6 @@ for(i in 1:Nstep)
 {
   B0_sd_matrix[i+1,]<-i*step
 }
-
-# CONSTRUCT MEAN CATCHABILITY
-q_mean<-rep(0.00001,length(gears))
 
 # MAKE REPLICATES
 nreps=2
