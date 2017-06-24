@@ -152,13 +152,13 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
 catch_counts<-function(sim_pop=NULL,
                        gears=c("GN14", "GN18", "GN41", "GN81",
                                "MF", "OT16", "TLC1", "TLC2", "TN"),
-                        catchability=c(0.00002, 0.00004, 0.00002, 0.00004,
-                                       0.00004, 0.0002, 0.00002, 0.00004,
-                                       0.0002),
-                        q_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
-                        deployments=rep(8,9),
-                        effort=NULL,
-                        occasions=3)
+                       catchability=c(0.00002, 0.00004, 0.00002, 0.00004,
+                                      0.00004, 0.0002, 0.00002, 0.00004,
+                                      0.0002),
+                       q_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
+                       deployments=rep(8,9),
+                       effort=NULL,
+                       occasions=3)
 { 
   # this function calculates the realized effort, capture history, 
   # and number of fish caught by each gear in each bend within a 
@@ -186,13 +186,16 @@ catch_counts<-function(sim_pop=NULL,
   ## occassions: the number of sampling days in a year
   
   # outputs
-  ## list of 6 objects:
+  ## list of 7 objects:
   ##  $catch: a list of matrices (one matrix for each gear)
   ##    matrices are catch counts where each row is a bend and 
   ##    each column represents a year; number
   ##  $f: a list of matrices (one matrix for each gear)
   ##    matrices are total effort where each row is a bend and 
   ##    each column represents a year; number
+  ##  $P_flags: a list of matrices (one matrix for each gear)
+  ##    matrices have elements 0 (P<0.4), 1 (0.4<=P<1), or 500 (P=1),
+  ##    where each row is a bend and each column represents a year; number
   ##  $ch: a list of 472 lists (one for each bend)
   ##    $ch[[#]]: a list of lists (one for each gear)
   ##      $ch[[#]][[gear]]: a list of matrices (one matrix for
@@ -212,9 +215,12 @@ catch_counts<-function(sim_pop=NULL,
   ##        each occassion) 
   ##          matrices are catchabilities where each row is a 
   ##          deployment and each column is a year; number
-  ##  $flags: a dataframe that gives the number of times the capture 
-  ##    probability for an occassion was greater than 0.4, for each
-  ##    bend within segment, gear, and year 
+  ##  $flag_occ: a list of 472 lists (one for each bend)
+  ##    $flag_occ[[#]]:a list of lists (one for each gear)
+  ##      $flag_occ[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are 0 (pi<=1) or 1 (pi>1) where each row
+  ##          is a deployment and each column is a year; number 
   
   # assumptions:
   ## no movement
@@ -236,168 +242,166 @@ catch_counts<-function(sim_pop=NULL,
   # ERROR HANDLING
   if(any(!(gears %in% effort$gear)))
   {return(print("Gears not found in the effort analysis will have \n 
-                 no catch and cpue will be NaN."))}
+                no catch and cpue will be NaN."))}
   if(length(catchability)!=length(gears))
   {return(print("Catchability needs to be a vector with length equal \n
-                  to the length of the vector of gears (catchabilities \n
-                  for each given gear in the same order given)."))}
+                to the length of the vector of gears (catchabilities \n
+                for each given gear in the same order given)."))}
   if(length(deployments)!=length(gears))
   {return(print("Deployments needs to be a vector with length equal \n
-                  to the length of the vector of gears (deployment \n 
-                  numbers for each given gear in the same order given)."))}
+                to the length of the vector of gears (deployment \n 
+                numbers for each given gear in the same order given)."))}
   # USE SIM_POP TO DEFINE VARIABLES
   tmp<-sim_pop$bendMeta
   Z_abund<-sim_pop$Z
-
+  
   # BEND-SPECIFIC CATCHABILITY BY GEAR
-    ## BEND BY YEAR BY GEAR ARRAY
-    ## ASSUMES GEAR CATCHABILITY DOES NOT VARY AMONG BASINS
-    B0<- log(catchability/(1-catchability))
-    ## COULD MAKE A MATRIX TO VARY 'MEAN' q BY BEND
-    #bend_B0_matrix<- matrix(rnorm(n=length(B0),
-    #      mean=B0,sd2),ncol=length(catchability),
-    #   nrow=length(Z_abund),
-    #   byrow=TRUE)
-        
-    ## BEND AND GEAR SPECIFIC NUMBER OF DEPLOYMENTS
-    ## CURRENTLY NO DIFFERENCE IN THIS BY BEND (OR YEAR)
-    d<-matrix(deployments,ncol=length(deployments),
-        nrow=length(Z_abund),
-        byrow=TRUE)
+  ## BEND BY YEAR BY GEAR ARRAY
+  ## ASSUMES GEAR CATCHABILITY DOES NOT VARY AMONG BASINS
+  B0<- log(catchability/(1-catchability))
+  ## COULD MAKE A MATRIX TO VARY 'MEAN' q BY BEND
+  #bend_B0_matrix<- matrix(rnorm(n=length(B0),
+  #      mean=B0,sd2),ncol=length(catchability),
+  #   nrow=length(Z_abund),
+  #   byrow=TRUE)
+  
+  ## BEND AND GEAR SPECIFIC NUMBER OF DEPLOYMENTS
+  ## CURRENTLY NO DIFFERENCE IN THIS BY BEND (OR YEAR)
+  d<-matrix(deployments,ncol=length(deployments),
+            nrow=length(Z_abund),
+            byrow=TRUE)
+  
+  ## DETERMINE THE AMOUNT OF EFFORT
+  ## FOR EACH BEND, YEAR, REPLICATE AND GEAR
+  f_P<- lapply(1:length(Z_abund),function(x)
+  {
+    bend_f<-list()## TO HOLD OUTPUT OF EFFORTS
+    bend_q<-list()## TO HOLD OUTPUT OF CATCHABILITY
+    bend_P<-list()## TO HOLD OUTPUT OF CAPTURE PROBABILITIES
+    bend_pi_flags<-list()## TO HOLD HIGH INDIVIDUAL CAPTURE PROBABILITY FLAG OUTPUT
+    bend_P_flags<-list()## TO HOLD HIGH OVERALL CAPTURE PROBABILITY FLAG OUTPUT
     
-    ## DETERMINE THE AMOUNT OF EFFORT
-    ## FOR EACH BEND, YEAR, REPLICATE AND GEAR
-    f_P<- lapply(1:length(Z_abund),function(x)
-        {
-        bend_f<-list()## TO HOLD OUTPUT OF EFFORTS
-        bend_q<-list()## TO HOLD OUTPUT OF CATCHABILITY
-        bend_P<-list()## TO HOLD OUTPUT OF CAPTURE PROBABILITIES
-        bend_P_flags<-list()## TO HOLD HIGH CAPTURE PROBABILITY FLAG OUTPUT
-            
-        ## LOOP OVER GEARS AND GENERATE FOR EACH BEND
-        ## (x) THE AMOUNT OF EFFORT GIVEN THE NUMBER OF 
-        ## OCCASIONS AND THE OCCASION AND BEND SPECIFIC 
-        ## CAPTURE PROBABILITY ACCOUNTING FOR NUMBER OF DEPLOYMENTS
-        for(k in 1:length(gears))
-            {
-            indx<- which(effort$gear==gears[k] & 
-                effort$rpma==tmp$rpma[x])
-            ## ERROR HANDLING FOR GEARS THAT ARE NOT USED 
-            ## RPMAS, THEREFORE NO EFFORT AND f=0
-            f_reps<-list()
-            q_reps<-list()
-            p_reps<-list()
-            p_flags<-list()
-            for(occ in 1:occasions)
-                {
-                if(length(indx)==0)
-                    {
-                    f_reps[[occ]]<- matrix(0,
-                        nrow=d[x],
-                        ncol=nyears)
-                    }
-                if(length(indx)>0)
-                    {
-                    #bend_f[[gears[k]]][[occ]]<-matrix(
-                    f_reps[[occ]]<-matrix(
-                        rgamma(n=d[x,k]*nyears,
-                            shape=effort$gamma_shape[indx], 
-                            rate=effort$gamma_rate[indx]),
-                        nrow=d[x,k],
-                        ncol=nyears)
-                    }
-                q_reps[[occ]]<-matrix(plogis(B0[k]+rnorm(n=d[x,k]*nyears,mean=0,sd=q_sd[k])),
-                  nrow=d[x,k],
-                  ncol=nyears)
-                np<-1-f_reps[[occ]]*q_reps[[occ]]
-                p_reps[[occ]]<-unlist(lapply(1:nyears, function(yy)
-                  {
-                    return(1-prod(np[,yy]))
-                  }))
-                #HIGH CAPTURE PROBABILITY FLAG
-                p_flags[[occ]]<-ifelse(p_reps[[occ]]>0.4,1,0)
-                }# end occ
-            p_flags<-colSums(do.call("rbind", p_flags))
-            bend_f[[gears[k]]]<-f_reps
-            bend_q[[gears[k]]]<-q_reps
-            bend_P[[gears[k]]]<-p_reps
-            bend_P_flags[[gears[k]]]<-p_flags
-            } # end k (gears)
-            bend_P_flags<-do.call("rbind",bend_P_flags)
-        return(list(f=bend_f, q=bend_q, P=bend_P, P_flag=bend_P_flags))
-        })
-    pull_flags<-do.call(rbind, sapply(f_P, "[[", "P_flag", simplify=FALSE))
-    tmp<-data.frame(
-      year=rep(1:nyears, each=length(f_P)*length(gears)), 
-      bend_indx=rep(1:length(f_P), each=length(gears), times=nyears),
-      gear=rep(gears, times=length(f_P)*nyears), 
-      flags=c(pull_flags))
-    tmp$b_segment=as.numeric(sim_pop$bendMeta$b_segment[tmp$bend_indx])
-    tmp$bend_num=as.numeric(sim_pop$bendMeta$bend_num[tmp$bend_indx])
-    tmp<-tmp[,colnames(tmp)!="bend_indx"]
-   
-    ## CAPTURE HISTORY FOR EACH INVIDUAL, BEND,
-    ## GEAR AND OCCASSION 
-    ch<- lapply(1:length(Z_abund),function(x)
+    ## LOOP OVER GEARS AND GENERATE FOR EACH BEND
+    ## (x) THE AMOUNT OF EFFORT GIVEN THE NUMBER OF 
+    ## OCCASIONS AND THE OCCASION AND BEND SPECIFIC 
+    ## CAPTURE PROBABILITY ACCOUNTING FOR NUMBER OF DEPLOYMENTS
+    for(k in 1:length(gears))
+    {
+      indx<- which(effort$gear==gears[k] & 
+                     effort$rpma==tmp$rpma[x])
+      ## ERROR HANDLING FOR GEARS THAT ARE NOT USED 
+      ## RPMAS, THEREFORE NO EFFORT AND f=0
+      f_reps<-list()
+      q_reps<-list()
+      P_reps<-list()
+      pi_flags<-list()
+      P_flags<-list()
+      for(occ in 1:occasions)
       {
-        bend_ch<-list()## TO HOLD OUTPUT OF CAPTURE HISTORIES
-        bend_N<-list()## TO HOLD OUTPUT OF CAPTURE HISTORIES
-        ZZ<- Z_abund[[x]]
-        ## LOOP OVER GEARS AND GENERATE FOR EACH BEND
-        ## (x) THE AMOUNT OF EFFORT GIVEN THE NUMBER OF 
-        ## OCCASIONS AND THE OCCASION AND BEND SPECIFIC 
-        ## CAPTURE PROBABILITY ACCOUNTING FOR NUMBER OF DEPLOYMENTS
-        for(k in 1:length(gears))
-            {
-            ch_reps<-list()
-            for(occ in 1:occasions)
-                {
-                capture_probability<- ZZ%*%diag(f_P[[x]]$P[[gears[k]]][[occ]])
-                ch_reps[[occ]]<-matrix(
-                    rbinom(length(ZZ), size=1,
-                       prob=c(capture_probability)),
-                    nrow=nrow(ZZ),
-                    ncol=ncol(ZZ))
-                }# end occ
-            bend_ch[[gears[k]]]<-ch_reps
-            bend_N[[gears[k]]]<-lapply(ch_reps, function(yy)
-                {
-                colSums(yy)         
-                })
-            } # end k (gears)
-        return(list(ch=bend_ch, N=bend_N))
-        })
-    
-    ### PROCESS UP THE GOODIES
-    bend_effort<-bend_catch<-list()
-    for(ii in 1:length(gears))
+        if(length(indx)==0)
         {
-        outt<-lapply(1:length(Z_abund),function(y)
-            {
-            ch[[y]][['N']] [[gears[ii]]][[1]]
-            })
-        bend_catch[[gears[ii]]]<-do.call("rbind",outt)
-        outt<-lapply(1:length(Z_abund),function(y)
-            {
-            colSums(f_P[[y]][['f']] [[gears[ii]]][[1]])
-            #TOTAL EFFORT OVER ALL DEPLOYMENTS IN A YEAR
-            })
-        bend_effort[[gears[ii]]]<-do.call("rbind",outt)
+          f_reps[[occ]]<- matrix(0,
+                                 nrow=d[x],
+                                 ncol=nyears)
         }
-    return(list(catch=bend_catch,
-        f=bend_effort, 
-        ch=lapply(ch, function(x) x$ch),
-        f_occ = lapply(f_P, function(x) x$f),
-        q_occ = lapply(f_P, function(x) x$q),
-        flags=tmp)) 
-}
+        if(length(indx)>0)
+        {
+          #bend_f[[gears[k]]][[occ]]<-matrix(
+          f_reps[[occ]]<-matrix(
+            rgamma(n=d[x,k]*nyears,
+                   shape=effort$gamma_shape[indx], 
+                   rate=effort$gamma_rate[indx]),
+            nrow=d[x,k],
+            ncol=nyears)
+        }
+        q_reps[[occ]]<-matrix(plogis(B0[k]+rnorm(n=d[x,k]*nyears,mean=0,sd=q_sd[k])),
+                              nrow=d[x,k],
+                              ncol=nyears)
+        pi_flags[[occ]]<-ifelse(f_reps[[occ]]*q_reps[[occ]]>1,1,0)
+        P_reps[[occ]]<-colSums(f_reps[[occ]]*q_reps[[occ]])
+        #HIGH CAPTURE PROBABILITY FLAG
+        P_flags[[occ]]<-ifelse(P_reps[[occ]]<0.4,0,ifelse(P_reps[[occ]]<1,1,500))
+        #CAP P AT 1
+        P_reps[[occ]]<-ifelse(P_reps[[occ]]>1, 1, P_reps[[occ]])
+      }# end occ
+      bend_f[[gears[k]]]<-f_reps
+      bend_q[[gears[k]]]<-q_reps
+      bend_P[[gears[k]]]<-P_reps
+      bend_pi_flags[[gears[k]]]<-pi_flags
+      bend_P_flags[[gears[k]]]<-P_flags
+    } # end k (gears)
+    return(list(f=bend_f, q=bend_q, pi_flag=bend_pi_flags, P=bend_P, P_flag=bend_P_flags))
+  })
+  
+  ## CAPTURE HISTORY FOR EACH INVIDUAL, BEND,
+  ## GEAR AND OCCASSION 
+  ch<- lapply(1:length(Z_abund),function(x)
+  {
+    bend_ch<-list()## TO HOLD OUTPUT OF CAPTURE HISTORIES
+    bend_N<-list()## TO HOLD OUTPUT OF CAPTURE HISTORIES
+    ZZ<- Z_abund[[x]]
+    ## LOOP OVER GEARS AND GENERATE FOR EACH BEND
+    ## (x) THE AMOUNT OF EFFORT GIVEN THE NUMBER OF 
+    ## OCCASIONS AND THE OCCASION AND BEND SPECIFIC 
+    ## CAPTURE PROBABILITY ACCOUNTING FOR NUMBER OF DEPLOYMENTS
+    for(k in 1:length(gears))
+    {
+      ch_reps<-list()
+      for(occ in 1:occasions)
+      {
+        capture_probability<- ZZ%*%diag(f_P[[x]]$P[[gears[k]]][[occ]])
+        ch_reps[[occ]]<-matrix(
+          rbinom(length(ZZ), size=1,
+                 prob=c(capture_probability)),
+          nrow=nrow(ZZ),
+          ncol=ncol(ZZ))
+      }# end occ
+      bend_ch[[gears[k]]]<-ch_reps
+      bend_N[[gears[k]]]<-lapply(ch_reps, function(yy)
+      {
+        colSums(yy)         
+      })
+    } # end k (gears)
+    return(list(ch=bend_ch, N=bend_N))
+  })
+  
+  ### PROCESS UP THE GOODIES
+  bend_effort<-bend_catch<-bend_flags<-list()
+  for(ii in 1:length(gears))
+  {
+    outt<-lapply(1:length(Z_abund),function(y)
+    {
+      ch[[y]][['N']] [[gears[ii]]][[1]]
+    })
+    bend_catch[[gears[ii]]]<-do.call("rbind",outt)
+    outp<-lapply(1:length(Z_abund),function(y)
+    {
+      f_P[[y]][['P_flag']] [[gears[ii]]][[1]]
+    })
+    bend_flags[[gears[ii]]]<-do.call("rbind",outp)
+    outt<-lapply(1:length(Z_abund),function(y)
+    {
+      colSums(f_P[[y]][['f']] [[gears[ii]]][[1]])
+      #TOTAL EFFORT OVER ALL DEPLOYMENTS IN A YEAR
+    })
+    bend_effort[[gears[ii]]]<-do.call("rbind",outt)
+  }
+  return(list(catch=bend_catch,
+              f=bend_effort, 
+              P_flags=bend_flags,
+              ch=lapply(ch, function(x) x$ch),
+              f_occ = lapply(f_P, function(x) x$f),
+              q_occ = lapply(f_P, function(x) x$q),
+              flag_occ=lapply(f_P, function(x) x$pi_flag))) 
+  }
 
 
- 
+
+
 ## 5. FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT 
 ## TO SAMPLE
 bend_samples<-function(sim_pop=NULL)
-  {
+{
   # this function determines which bends within segments are to be
   # sampled each year with the number of bends sampled within a segment
   # given by Table A1 in PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
@@ -424,10 +428,10 @@ bend_samples<-function(sim_pop=NULL)
   bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
   bends_in_segs$start<-1
   for(i in 1:nrow(bends_in_segs)) 
-      {
-      bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
-      if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
-      }
+  {
+    bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
+    if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
+  }
   
   # SAMPLE NUMBERS IN TABLE A1 IN 
   #   PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
@@ -437,49 +441,51 @@ bend_samples<-function(sim_pop=NULL)
   abund<-sim_pop$out
   sampled<-matrix(0,nrow=nrow(abund), ncol=ncol(abund))
   for(j in 1:ncol(abund))
+  {
+    sample_bends<-NULL
+    for(k in 1:nrow(bends_in_segs)) 
     {
-      sample_bends<-NULL
-      for(k in 1:nrow(bends_in_segs)) 
-        {
-          sample_bends<-c(sample_bends,
-            sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), 
-            bends_in_segs$samp_num[k], replace=FALSE))
-        }
-      for(i in 1:nrow(abund))
-        {
-          sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
-        }
-    } 
+      sample_bends<-c(sample_bends,
+                      sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), 
+                             bends_in_segs$samp_num[k], replace=FALSE))
+    }
+    for(i in 1:nrow(abund))
+    {
+      sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
+    }
+  } 
   
   # EXPAND TMP (BEND METADATA)
   tmp<-tmp[,!names(tmp) %in% c("N_ini")]
   out<- tmp[rep(1:nrow(tmp),nyears),]
   names(out)<-toupper(names(out))
-  out$SAMPLED<- c(sampled)
   out$B_ABUNDANCE<- c(abund)
   out$YEAR<- sort(rep(c(1:nyears),nrow(tmp)))
-
+  
   ## ADD SEGMENT ABUNDANCE
   s_abund<-aggregate(B_ABUNDANCE~B_SEGMENT+YEAR,out,sum)
   names(s_abund)[3]<-"s_abund"
   out<-merge(out,s_abund,by=c("B_SEGMENT","YEAR"),all.x=TRUE)
-
+  
   ## ADD RPMA ABUNDANCE
   r_abund<-aggregate(B_ABUNDANCE~RPMA+YEAR,out,sum)
   names(r_abund)[3]<-"r_abund"
   out<-merge(out,r_abund,by=c("RPMA","YEAR"),all.x=TRUE)
   
+  ## ADD SAMPLED DATA
+  out$SAMPLED<- c(sampled)
+  
   ## SORT
   out<-out[order(out$YEAR, out$B_SEGMENT, out$BEND_NUM),]
-
+  
   ## NAMES TO LOWERCASE
   names(out)<- tolower(names(out))
   
   # RETURN LONG FORM DATA AND MATRIX FORM BENDS TO SAMPLE
   return(list(bendLong=out,sampled=sampled))
-  }
-  
-  
+}
+
+
 ## 6. LOOKING AT CATCH FROM THE SAMPLED AND NON-SAMPLED BENDS
 ## IN "LONG FORM" 
 samp_dat<-function(sim_pop=NULL,
@@ -506,7 +512,7 @@ samp_dat<-function(sim_pop=NULL,
   ##      living in bend i and each column represents a year 
   
   # outputs
-  ## a list of 8 objects:
+  ## a list of 9 objects:
   ##  $sampled: a matrix of 0's (not sampled) and 1's (sampled) where
   ##    each row is a bend and each column is a year
   ##  $catch: a list of matrices (one matrix for each gear)
@@ -515,9 +521,9 @@ samp_dat<-function(sim_pop=NULL,
   ##  $effort: a list of matrices (one matrix for each gear)
   ##    matrices are total effort where each row is a bend and 
   ##    each column represents a year; number
-  ##  $cpue: a list of matrices (one matrix for each gear)
-  ##    matrices are catch per unit effort where each row is a bend
-  ##    and each column represents a year; number
+  ##  $flags: a list of matrices (one matrix for each gear)
+  ##    matrices have elements 0 (P<0.4), 1 (0.4<=P<1), or 500 (P=1)
+  ##    where each row is a bend and each column represents a year; number
   ##  $cpue_long: a data.frame expanded from $bendLong (from bend_samples)
   ##    to include one observation per gear per bend per year; new columns
   ##    include:
@@ -544,6 +550,12 @@ samp_dat<-function(sim_pop=NULL,
   ##        each occassion) 
   ##          matrices are catchabilities where each row is a 
   ##          deployment and each column is a year; number
+  ##  $flag_occ: a list of 472 lists (one for each bend)
+  ##    $flag_occ[[#]]:a list of lists (one for each gear)
+  ##      $flag_occ[[#]][[gear]]: a list of matrices (one matrix for
+  ##        each occassion) 
+  ##          matrices are 0 (pi<=1) or 1 (pi>1) where each row
+  ##          is a deployment and each column is a year; number
   
   #DETERMINE WHICH BENDS TO SAMPLE
   sim_samp<-bend_samples(sim_pop=sim_pop)
@@ -564,13 +576,7 @@ samp_dat<-function(sim_pop=NULL,
   
   catch<- sim_catch$catch
   effort2<- sim_catch$f
-  
-  ## CALCULATE CPUE
-  cpue<-list()
-  for(k in 1:length(gears))
-  {
-    cpue[[gears[k]]]<-catch[[gears[k]]]/effort2[[gears[k]]]
-  }
+  flags<-sim_catch$P_flags
   
   ## CONVERT CPUE TO LONG FORMAT
   xxx<- lapply(1:length(gears),function(x)
@@ -578,21 +584,12 @@ samp_dat<-function(sim_pop=NULL,
     bend_data<-data
     bend_data$effort<-ifelse(data$sampled==1, c(effort2[[gears[x]]]), NA)       
     bend_data$catch<-ifelse(data$sampled==1, c(catch[[gears[x]]]), NA)
+    bend_data$flag<-ifelse(data$sampled==1, c(flags[[gears[x]]]), NA)
     bend_data$gear<-gears[x] 
     return(as.data.frame(bend_data))
   })
   cpue_long<- do.call("rbind",xxx)
   cpue_long$cpue<-cpue_long$catch/cpue_long$effort
-  cpue_long<-unique(merge(cpue_long,sim_catch$flags))
-  cpue_long$flags<-ifelse(cpue_long$sampled==1,cpue_long$flags, NA)
-  cpue_long<-cpue_long[order(cpue_long$year, cpue_long$gear,
-                             cpue_long$b_segment, cpue_long$bend_num),]
-  cpue_long<-cpue_long[,c(1,5,2:4,6:18,20:22,19,23:26)]
-  
-  ## STILL NEED TO WORK OUT SENSORING THE CAPTURE HISTORIES
-  ## SOMETHING TO MULL OVER, MAYBE GO TO REALLY LONG...
-  
-  ## DO WE WANT PHI_INDX????
   
   ## BUNDLE UP THE GOODIES TO RETURN
   out<-list(
@@ -601,14 +598,16 @@ samp_dat<-function(sim_pop=NULL,
     # CPUE
     catch=catch, ## GEAR, BEND, YEAR
     effort=effort2,## GEAR, BEND, YEAR
-    cpue=cpue,## GEAR, BEND, YEAR
+    flags=flags,## GEAR, BEND, YEAR
     cpue_long=cpue_long,## LONG FORMAT
     # CAPTURE-RECAPTURE
     ch=sim_catch$ch, ## BEND, GEAR, OCC, IND, YEAR
     f_occ=sim_catch$f_occ, ## BEND, GEAR, OCC, YEAR
-    q_occ=sim_catch$q_occ) ## BEND, GEAR, OCC, YEAR
+    q_occ=sim_catch$q_occ, ## BEND, GEAR, OCC, YEAR
+    flag_occ=sim_catch$flag_occ) ## BEND, GEAR, OCC, YEAR
   return(out)
 }
+
 
 
 ## 7. GETTING TREND
