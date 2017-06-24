@@ -15,6 +15,50 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 
+
+################
+#  FIXED GRID  #
+################
+
+# MEAN CATCHABILITY
+q_mean<-rep(0.00001,9)
+
+# CONSTRUCT MATRIX OF SDs  
+gears<-c("GN14", "GN18", "GN41", "GN81",
+         "MF", "OT16", "TLC1", "TLC2", "TN")
+B0_sd<-seq(0,1.5, by=0.1)
+
+# MAKE REPLICATES
+nreps=2
+
+for(count in 1:2)#length(sd))
+{
+  replicate(nreps,
+            {
+              dat<-samp_dat(sim_pop=sim_pop,
+                            gears=gears,
+                            catchability=q_mean,
+                            q_sd=rep(B0_sd[count],length(gears)),
+                            deployments=rep(8,9),
+                            effort=effort,
+                            occasions=3)
+              saveRDS(dat,
+                      file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability",q_mean[1],"_sdrow",count,"_rep",gsub(":", "_", Sys.time()),".rds"))  
+            })
+}
+
+
+## BE SURE WE CAN LOAD AND SORT THESE
+dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern="sdrow2_")
+check<-readRDS("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability1e-05_sdrow2_rep2017-06-23 00_20_01.rds")
+
+
+
+
+#################
+#  SD MAX GRID  #
+#################
+
 # CALCULATING SD_MAX ASSUMING KNOWN MEAN CATCHABILITY AND MEAN EFFORT
 ## MEAN CATCHABILITY
 q_mean<-rep(0.00001,9)
