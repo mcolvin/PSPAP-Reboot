@@ -1,0 +1,41 @@
+---
+title: "Update"
+output: html_document
+---
+
+<!--
+rmarkdown::render("update.Rmd")
+-->
+
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+source("R/1_global.R")
+cpue_trnd<- readRDS("output/cpue_trnd_catchability1e-05_B0sd_fixed_grid.Rds")
+summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
+``` 
+
+
+## Figures
+```{r,echo=FALSE}
+gears<-c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN")
+par(mfrow=c(3,3))
+for(j in 1:length(gears))
+{
+  plot(power~B0_sd, data=subset(summary, gear==gears[j]),main=paste(gears[j]), ylim=c(0,1.2))
+}
+```
+
+Figure 1. Power of detecting a significant CPUE trend based on 100 replicates for each level of B0_sd.  Power is not decreasing with increasing B0_sd as expected. 
+
+
+
+## Tables
+
+Table 1. Trend data of 100 replicates by gear for B0_sd=0.  The coefficient column looks larger (or smaller in absolute value) than expected. 
+
+```{r,echo=FALSE}
+kable(cpue_trnd[[1]]$trnd_dat,
+    col.names=c("Gear","Coefficient", "SE", "P-value", "Flag", "Significant"),
+    row.names=FALSE)
+   
+```
