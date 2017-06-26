@@ -169,7 +169,7 @@ yyy<-catch_counts(sim_pop=sim_pop,
                   catchability=c(0.00002, 0.00004, 0.00002, 0.00004,
                                  0.00004, 0.0002, 0.00002, 0.00004,
                                  0.0002),
-                  q_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
+                  B0_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
                   deployments=rep(8,9),
                   effort=effort,
                   occasions=3)
@@ -197,6 +197,33 @@ trnd_dat<-get.trnd(sim_dat=yyyyy,
                            "MF", "OT16", "TLC1", "TLC2", "TN"))
 
 trnd_dat<-do.call("rbind",trnd_dat)
+
+# CPUE ANALYSIS FOR TREND
+tmp<- aggregate(cpue~year+b_segment,yyyyy$cpue_long,mean)
+tmp$b_segment<- as.factor(tmp$b_segment)
+tmp$lncpue<- log(tmp$cpue+1)
+
+## PLOT CPUE OVER TIME FOR EACH SEGMENT
+xyplot(cpue~year, tmp, group=b_segment,type='b')
+xyplot(lncpue~year, tmp, group=b_segment,type='b')
+
+plot(log(r_abund)~year,data=yyyyy$cpue_long,type='n')
+points(log(r_abund)~year,yyyyy$cpue_long,subset=rpma==2)
+points(log(r_abund)~year,yyyyy$cpue_long,subset=rpma==4)
+
+## TRUE TREND
+fit<- lm(log(r_abund)~year+rpma,yyyyy$cpue_long)
+summary(fit)
+
+tmp2<- aggregate(s_abund~year+b_segment,yyyyy$cpue_long,mean)
+tmp2$b_segment<- as.factor(tmp2$b_segment)
+fit1<- lm(log(s_abund+1)~b_segment+year,tmp2)
+summary(fit1)
+
+### FIT LINEAR MODEL FOR TREND
+fit2<- lm(lncpue~b_segment+year, tmp)
+summary(fit2)
+
 
 
 get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)

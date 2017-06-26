@@ -155,7 +155,7 @@ catch_counts<-function(sim_pop=NULL,
                        catchability=c(0.00002, 0.00004, 0.00002, 0.00004,
                                       0.00004, 0.0002, 0.00002, 0.00004,
                                       0.0002),
-                       q_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
+                       B0_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
                        deployments=rep(8,9),
                        effort=NULL,
                        occasions=3)
@@ -175,7 +175,7 @@ catch_counts<-function(sim_pop=NULL,
   ## gears: a vector of sampling gears
   ## catchability: a vector of mean catchabilities by gear with length
   ##    equal to the length of the gears vector
-  ## q_sd: a vector of standard deviations for the log-odds of catchability
+  ## B0_sd: a vector of standard deviations for the log-odds of catchability
   ##    by gear with length equal to the length of gears; realized 
   ##    catchability q is given by:  log(q/(1-q))~B0+N(0,sd) where 
   ##    B0=(catchability/(1-catchability))
@@ -194,8 +194,9 @@ catch_counts<-function(sim_pop=NULL,
   ##    matrices are total effort where each row is a bend and 
   ##    each column represents a year; number
   ##  $P_flags: a list of matrices (one matrix for each gear)
-  ##    matrices have elements 0 (P<0.4), 1 (0.4<=P<1), or 500 (P=1),
-  ##    where each row is a bend and each column represents a year; number
+  ##    matrices have elements 0 (P<0.4), 1 (0.4<=P<=1), or 500 (P>1, 
+  ##    but then capped to P=1), where each row is a bend and each column
+  ##    represents a year; number
   ##  $ch: a list of 472 lists (one for each bend)
   ##    $ch[[#]]: a list of lists (one for each gear)
   ##      $ch[[#]][[gear]]: a list of matrices (one matrix for
@@ -314,13 +315,13 @@ catch_counts<-function(sim_pop=NULL,
             nrow=d[x,k],
             ncol=nyears)
         }
-        q_reps[[occ]]<-matrix(plogis(B0[k]+rnorm(n=d[x,k]*nyears,mean=0,sd=q_sd[k])),
+        q_reps[[occ]]<-matrix(plogis(B0[k]+rnorm(n=d[x,k]*nyears,mean=0,sd=B0_sd[k])),
                               nrow=d[x,k],
                               ncol=nyears)
         pi_flags[[occ]]<-ifelse(f_reps[[occ]]*q_reps[[occ]]>1,1,0)
         P_reps[[occ]]<-colSums(f_reps[[occ]]*q_reps[[occ]])
         #HIGH CAPTURE PROBABILITY FLAG
-        P_flags[[occ]]<-ifelse(P_reps[[occ]]<0.4,0,ifelse(P_reps[[occ]]<1,1,500))
+        P_flags[[occ]]<-ifelse(P_reps[[occ]]<0.4,0,ifelse(P_reps[[occ]]<=1,1,500))
         #CAP P AT 1
         P_reps[[occ]]<-ifelse(P_reps[[occ]]>1, 1, P_reps[[occ]])
       }# end occ
@@ -568,6 +569,7 @@ samp_dat<-function(sim_pop=NULL,
   sim_catch<-catch_counts(sim_pop=sim_pop,
                           gears=gears,
                           catchability=catchability,
+                          B0_sd=B0_sd,
                           deployments=deployments,
                           effort=effort,
                           occasions=occasions)
