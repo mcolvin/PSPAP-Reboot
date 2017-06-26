@@ -89,6 +89,7 @@ saveRDS(cpue_trnd,file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/
 summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
 head(summary)
 
+gears<-c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN")
 par(mfrow=c(3,3))
 for(j in 1:length(gears))
 {
