@@ -100,6 +100,40 @@ for(j in 1:length(gears))
 which(summary$flags!=0)
 
 
+# CPUE ANALYSIS FOR TREND
+dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/",
+                  dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid",
+                      pattern=paste0(q,"_B0sd_",0.5, "_")))
+dat<-readRDS(dat_files[1])
+tmp<- aggregate(cpue~year+b_segment,dat$cpue_long,mean)
+tmp$b_segment<- as.factor(tmp$b_segment)
+tmp$lncpue<- log(tmp$cpue+1)
+
+## PLOT CPUE OVER TIME FOR EACH SEGMENT
+xyplot(cpue~year, tmp, group=b_segment,type='b')
+xyplot(lncpue~year, tmp, group=b_segment,type='b')
+
+head(dat$cpue_long)
+
+plot(log(r_abund)~year,data=dat$cpue_long,type='n')
+points(log(r_abund)~year,dat$cpue_long,subset=rpma==2)
+points(log(r_abund)~year,dat$cpue_long,subset=rpma==4)
+
+head(dat$sampled)
+
+
+
+## TRUE TREND
+fit<- lm(log(r_abund)~year+rpma,dat$cpue_long)
+summary(fit)
+fit1a<- lm(log(s_abund)~year+b_segment,dat$cpue_long)
+summary(fit1a)
+fit1b<- lm(log(b_abundance+1)~year+b_segment+rpma,dat$cpue_long)
+summary(fit1b)
+
+### FIT LINEAR MODEL FOR TREND
+fit2a<- lm(lncpue~b_segment+year, tmp)
+summary(fit2a)
 
 
 # LOG(CPUE+1) CHECK

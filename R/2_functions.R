@@ -460,6 +460,7 @@ bend_samples<-function(sim_pop=NULL)
   out<- tmp[rep(1:nrow(tmp),nyears),]
   names(out)<-toupper(names(out))
   out$B_ABUNDANCE<- c(abund)
+  out$SAMPLED<- c(sampled)
   out$YEAR<- sort(rep(c(1:nyears),nrow(tmp)))
   
   ## ADD SEGMENT ABUNDANCE
@@ -471,9 +472,6 @@ bend_samples<-function(sim_pop=NULL)
   r_abund<-aggregate(B_ABUNDANCE~RPMA+YEAR,out,sum)
   names(r_abund)[3]<-"r_abund"
   out<-merge(out,r_abund,by=c("RPMA","YEAR"),all.x=TRUE)
-  
-  ## ADD SAMPLED DATA
-  out$SAMPLED<- c(sampled)
   
   ## SORT
   out<-out[order(out$YEAR, out$B_SEGMENT, out$BEND_NUM),]
