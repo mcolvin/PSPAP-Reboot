@@ -15,114 +15,101 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 
-
-################
-#  FIXED GRID  #
-################
-
-# MEAN CATCHABILITY
+# SIMULATE EFFORT & CATCH DATA FOR A FIXED B0_SD GRID
+## MEAN CATCHABILITY
 q_mean<-rep(0.00001,9)
 
-# CONSTRUCT MATRIX OF SDs  
-gears<-c("GN14", "GN18", "GN41", "GN81",
-         "MF", "OT16", "TLC1", "TLC2", "TN")
+## B0_SD GRID  
 B0_sd<-seq(0,1.5, by=0.1)
 
-# MAKE REPLICATES
-nreps=2
+## MAKE REPLICATES
+ptm<-proc.time()
+nreps=100
 
-for(count in 1:2)#length(sd))
+for(count in 1:length(sd))
 {
   replicate(nreps,
             {
               dat<-samp_dat(sim_pop=sim_pop,
-                            gears=gears,
                             catchability=q_mean,
-                            q_sd=rep(B0_sd[count],length(gears)),
-                            deployments=rep(8,9),
+                            B0_sd=rep(B0_sd[count],length(gears)),
                             effort=effort,
                             occasions=3)
               saveRDS(dat,
                       file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability",q_mean[1],"_sdrow",count,"_rep",gsub(":", "_", Sys.time()),".rds"))  
             })
 }
+proc.time()-ptm
+#user       system    elapsed 
+#15795.57   68.90     15988.57
 
 
-## BE SURE WE CAN LOAD AND SORT THESE
-dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern="sdrow2_")
-check<-readRDS("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability1e-05_sdrow2_rep2017-06-23 00_20_01.rds")
-
-
-
-
-#################
-#  SD MAX GRID  #
-#################
-
-# CALCULATING SD_MAX ASSUMING KNOWN MEAN CATCHABILITY AND MEAN EFFORT
-## MEAN CATCHABILITY
-q_mean<-rep(0.00001,9)
-B0=log(q_mean/(1-q_mean))
-
-## MEAN EFFORT
-tmp<-effort[which(effort$gear %in% c("GN14", "GN18", "GN41", "GN81", 
-                                     "MF", "OT16", "TLC1", "TLC2", "TN")),]
-mean_effort<-tmp$gamma_shape/tmp$gamma_rate
-### TAKE AVERAGE FOR EACH BASIN
-mean_effort_avg<-(mean_effort[1:9]+mean_effort[c(10,2,11,4,12:16)])/2
-
-## LOOK AT 3 SD's of EFFORT TO FIND ROUGH EFFORT UPPER BOUND
-three_sig<-3*sqrt(tmp$gamma_shape)/tmp$gamma_rate
-UB<-mean_effort+three_sig
-UB_avg<-(UB[1:9]+UB[c(10,2,11,4,12:16)])/2
-
-## FIND ROUGH CATCHABILITY UPPER BOUND 
-### WHEN SUMMING Q*F's TO GET P, ON AVERAGE WE WANT, FOR 8 DEPLOYMENTS,
-### 8*Q*F<0.4 SO Q<0.4/(8*F)
-UBq<-.4/(8*UB_avg)
-### CHECK THAT 1/UBq-1>0
-which(1/UBq-1<0)
-
-## USE B0 and UBq TO CALCULATE ROUGH UPPER BOUND for SD
-sd_max<-(log(1/UBq-1)+B0)/(-3)
-
-# CONSTRUCT MATRIX OF SDs
-gears<-c("GN14", "GN18", "GN41", "GN81",
-         "MF", "OT16", "TLC1", "TLC2", "TN")
-
-Nstep<-15
-step<-sd_max/Nstep
-
-B0_sd_matrix<-matrix(0,nrow=Nstep+1,ncol=length(gears))
-for(i in 1:Nstep)
+## CPUE ANALYSIS
+q<-1e-5
+cpue_trnd<-lapply(B0_sd, function(x)
 {
-  B0_sd_matrix[i+1,]<-i*step
+  ### PULL THE DATA
+  dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/", dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid", pattern=paste0(q,"_B0sd_",x, "_")))
+
+  ### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
+  get_trnd<-lapply(1:length(dat_files), function(i)
+  {
+    dat<-readRDS(dat_files[i])
+    out<-get.trnd(sim_dat=dat)
+    out<-do.call(rbind, out)
+    out<-merge(out, aggregate(flag~gear,dat$cpue_long, sum),by="gear")
+    return(out)
+  })
+
+  #### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+  get_trnd<-do.call(rbind, get_trnd)
+  get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+
+  ### MAKE A SUMMARY TABLE OF RESULTS
+  df<-ddply(get_trnd, .(gear), summarize,
+      mean_trnd=mean(trnd),
+      mean_se=mean(se),
+      max_se=max(se),
+      mean_pval=mean(pval),
+      max_pval=max(pval),
+      flags=sum(flag),
+      power=sum(sig)/length(dat_files))
+  df$q<-rep(q,nrow(df))
+  df$B0_sd<-x
+
+  ### OUTPUT THE TREND AND SUMMARY TABLE FOR EACH B0_SD
+  return(list(trnd_dat=get_trnd, summary=df))
+})
+
+
+## SAVE TREND INFORMATION
+saveRDS(cpue_trnd,file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/cpue_trnd_catchability",q,"_B0sd_fixed_grid.rds"))
+
+## LOOK AT POWER PLOTS
+summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
+head(summary)
+
+par(mfrow=c(3,3))
+for(j in 1:length(gears))
+{
+  plot(power~B0_sd, data=subset(summary, gear==gears[j]),main=paste(gears[j]))
 }
 
-# MAKE REPLICATES
-nreps=2
-
-for(count in 1:nrow(B0_sd_matrix))
-  {
-    replicate(nreps,
-              {
-                dat<-samp_dat(sim_pop=sim_pop,
-                              gears=gears,
-                              catchability=q_mean,
-                              q_sd=B0_sd_matrix[count,],
-                              deployments=rep(8,9),
-                              effort=effort,
-                              occasions=3)
-                saveRDS(dat,
-                        file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability",q_mean[1],"_sdrow",count,"_rep",gsub(":", "_", Sys.time()),".rds"))  
-              })
-  }
+## LOOK AT FLAGS
+which(summary$flags!=0)
 
 
-## BE SURE WE CAN LOAD AND SORT THESE
-dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern="sdrow2_")
-check<-readRDS("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability1e-05_sdrow2_rep2017-06-23 00_20_01.rds")
 
+
+# LOG(CPUE+1) CHECK
+N0<-colSums(sim_pop$out)[1]
+dat<-readRDS(dat_files[1])
+sum(subset(dat$cpue_long,year==1)$catch,na.rm=TRUE)/N0
+alpha<-0.2
+#alpha<-0.0000004
+t<-c(1:10)
+y<-log(alpha*N0*(0.95)^t+1)
+lm(y~t)
 
 
 ###########################
@@ -131,7 +118,7 @@ check<-readRDS("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_cat
 
 ## Population Simulations
 
-segs<- c(1,2,3,4,7,8,9,11,10,13,14)
+segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
 
 beta0<- 2.9444
@@ -139,7 +126,7 @@ phi<-matrix(plogis(beta0),length(segs),nyears-1)
 
 sim_pop<-reference_population(segs=segs,
                               bends=bends,# BENDS DATAFRAME
-                              fish_density=10, # FISH DENSITY PER RKM
+                              fish_density=init_dens, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 
@@ -165,9 +152,10 @@ yyyyy<-samp_dat(sim_pop=sim_pop,
                         "OT16", "TLC1", "TLC2", "TN"),
                 catchability=c(0.00004, 0.00004, 0.00004, 0.00004, 
                                0.00004, 0.0002, 0.00004, 0.00004, 0.0002),
+                B0_sd=rep(0,9),
                 deployments=rep(8,9),
                 effort=effort,
-                occasions=3)   
+                occasions=1)  
 names(yyyyy)  
 
 # yyyyy$cpue_long this can feed the beast below
@@ -178,3 +166,14 @@ trnd_dat<-get.trnd(sim_dat=yyyyy,
                            "MF", "OT16", "TLC1", "TLC2", "TN"))
 
 trnd_dat<-do.call("rbind",trnd_dat)
+
+
+get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+ddply(trnd_dat, .(gear), summarize,
+      mean_trnd=mean(trnd),
+      mean_se=mean(se),
+      max_se=max(se),
+      mean_pval=mean(pval),
+      max_pval=max(pval),
+      flags=sum(flag),
+      power=sum(sig)/length(dat_files))

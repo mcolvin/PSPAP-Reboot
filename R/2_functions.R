@@ -494,7 +494,7 @@ samp_dat<-function(sim_pop=NULL,
                    catchability=c(0.00004, 0.00004, 0.00004, 
                                   0.00004, 0.00004, 0.0002, 0.00004, 
                                   0.00004, 0.0002),
-                   q_sd=NULL,#c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
+                   B0_sd=NULL,#c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
                    deployments=rep(8,9),
                    effort=NULL,
                    occasions=1)
@@ -619,12 +619,12 @@ get.trnd<-function(sim_dat=NULL,
   # GET AVERAGE SEGMENT CPUE BY YEAR
   tmp<- aggregate(cpue~year+b_segment+gear,sim_dat$cpue_long,mean)
   tmp$b_segment<- as.factor(tmp$b_segment)
-  tmp$lncpue<- log(tmp$cpue)
+  tmp$lncpue_1<- log(tmp$cpue+1)
   
   # FIT LINEAR MODEL FOR TREND FOR EACH GEAR
   out<-lapply(gears,function(g)
     {
-      fit<- lm(lncpue~b_segment+year, tmp, subset=gear==g)
+      fit<- lm(lncpue_1~b_segment+year, tmp, subset=gear==g)
       tmp2<- data.frame( 
         # THE GOODIES
         ## GEAR
