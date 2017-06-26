@@ -50,44 +50,42 @@ for(count in 1:2)#length(sd))
 
 ## CPUE ANALYSIS
 q<-1e-5
-sd<-0.8
-
+cpue_trnd<-lapply(B0_sd, function(x)
+{
 ## PULL THE DATA
-dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/", dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid", pattern=paste0(q,"_B0sd_",sd, "_")))
+dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/", dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid", pattern=paste0(q,"_B0sd_",x, "_")))
 
 ## FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
 ### INITIALIZE
-get_trnd<-list() #TO HOLD CPUE TREND
+#get_trnd<-list() #TO HOLD CPUE TREND
 
-### GET TREND FOR ALL REPLICATES
-for(i in 1:length(dat_files))
-{
-  dat<-readRDS(dat_files[i])
-  get_trnd[[i]]<-get.trnd(sim_dat=dat)
-  get_trnd[[i]]<-do.call(rbind, get_trnd[[i]])
-  get_trnd[[i]]<-merge(get_trnd,
-                       aggregate(flag~gear,dat$cpue_long, sum),by="gear")
-      # Merge flags by gear (sum includes any 500's for capping cp)
-} 
+# ### GET TREND FOR ALL REPLICATES
+# for(i in 1:length(dat_files))
+# {
+#   dat<-readRDS(dat_files[i])
+#   get_trnd[[i]]<-get.trnd(sim_dat=dat)
+#   get_trnd[[i]]<-do.call(rbind, get_trnd[[i]])
+#   get_trnd[[i]]<-merge(get_trnd,
+#                        aggregate(flag~gear,dat$cpue_long, sum),by="gear")
+#       # Merge flags by gear (sum includes any 500's for capping cp)
+# } 
 
-trial<-lapply(1:length(dat_files), function(i)
+get_trnd<-lapply(1:length(dat_files), function(i)
   {
   dat<-readRDS(dat_files[i])
-  get_trnd2<-get.trnd(sim_dat=dat)
-  get_trnd2<-do.call(rbind, get_trnd2)
-  get_trnd2<-merge(get_trnd2,
-                       aggregate(flag~gear,dat$cpue_long, sum),by="gear")
-  return(get_trnd2)
+  out<-get.trnd(sim_dat=dat)
+  out<-do.call(rbind, out)
+  out<-merge(out, aggregate(flag~gear,dat$cpue_long, sum),by="gear")
+  return(out)
   })
 
 ### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
 get_trnd<-do.call(rbind, get_trnd)
 get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
-head(get_trnd)
-dim(get_trnd)
+#head(get_trnd)
+#dim(get_trnd)
 
-write.csv(get_trnd, file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/cpue_reps_catchability_",q,"_B0sd_",sd, ".csv"))
-
+#write.csv(get_trnd, file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/cpue_reps_catchability_",q,"_B0sd_",sd, ".csv"))
 
 ##### MAKE A TABLE OF RESULTS
 df<-ddply(get_trnd, .(gear), summarize,
@@ -98,12 +96,23 @@ df<-ddply(get_trnd, .(gear), summarize,
       max_pval=max(pval),
       flags=sum(flag),
       power=sum(sig)/length(dat_files))
+df$q<-rep(q,nrow(df))
+df$B0_sd<-x
 
-write.csv(df, file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/cpue_summary_catchability_",q,"_B0sd_",sd, ".csv"))
+#write.csv(df, file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/cpue_summary_catchability_",q,"_B0sd_",sd, ".csv"))
 
-boxplot(trnd~gear,data=get_trnd)
-boxplot(trnd~gear,data=subset(get_trnd, gear!="OT16" & gear!="TN"))
+#boxplot(trnd~gear,data=get_trnd)
+#boxplot(trnd~gear,data=subset(get_trnd, gear!="OT16" & gear!="TN"))
+return(list(trnd_dat=get_trnd, summary=df))
+})
 
+summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
+
+par(mfrow=c(3,3))
+for(j in 1:length(gears))
+{
+  plot(power~B0_sd, data=subset(summary, gear==gears[j]))
+}
 
 # PULL DF's
 # RBIND
