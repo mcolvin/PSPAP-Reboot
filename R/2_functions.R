@@ -619,7 +619,7 @@ get.trnd<-function(sim_dat=NULL,
   # GET AVERAGE SEGMENT CPUE BY YEAR
   tmp<- aggregate(cpue~year+b_segment+gear,sim_dat$cpue_long,mean)
   tmp$b_segment<- as.factor(tmp$b_segment)
-  tmp$lncpue<- log(tmp$cpue)
+  tmp$lncpue<- log(tmp$cpue+1)
   
   # FIT LINEAR MODEL FOR TREND FOR EACH GEAR
   out<-lapply(gears,function(g)

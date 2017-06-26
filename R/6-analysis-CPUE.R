@@ -48,11 +48,67 @@ for(count in 1:2)#length(sd))
 }
 
 
-## BE SURE WE CAN LOAD AND SORT THESE
-dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern="sdrow2_")
-check<-readRDS("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability1e-05_sdrow2_rep2017-06-23 00_20_01.rds")
+## CPUE ANALYSIS
+q<-1e-5
+sd<-0.8
+
+## PULL THE DATA
+dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/", dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid", pattern=paste0(q,"_B0sd_",sd, "_")))
+
+## FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
+### INITIALIZE
+get_trnd<-list() #TO HOLD CPUE TREND
+
+### GET TREND FOR ALL REPLICATES
+for(i in 1:length(dat_files))
+{
+  dat<-readRDS(dat_files[i])
+  get_trnd[[i]]<-get.trnd(sim_dat=dat)
+  get_trnd[[i]]<-do.call(rbind, get_trnd[[i]])
+  get_trnd[[i]]<-merge(get_trnd,
+                       aggregate(flag~gear,dat$cpue_long, sum),by="gear")
+      # Merge flags by gear (sum includes any 500's for capping cp)
+} 
+
+trial<-lapply(1:length(dat_files), function(i)
+  {
+  dat<-readRDS(dat_files[i])
+  get_trnd2<-get.trnd(sim_dat=dat)
+  get_trnd2<-do.call(rbind, get_trnd2)
+  get_trnd2<-merge(get_trnd2,
+                       aggregate(flag~gear,dat$cpue_long, sum),by="gear")
+  return(get_trnd2)
+  })
+
+### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+get_trnd<-do.call(rbind, get_trnd)
+get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+head(get_trnd)
+dim(get_trnd)
+
+write.csv(get_trnd, file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/cpue_reps_catchability_",q,"_B0sd_",sd, ".csv"))
 
 
+##### MAKE A TABLE OF RESULTS
+df<-ddply(get_trnd, .(gear), summarize,
+      mean_trnd=mean(trnd),
+      mean_se=mean(se),
+      max_se=max(se),
+      mean_pval=mean(pval),
+      max_pval=max(pval),
+      flags=sum(flag),
+      power=sum(sig)/length(dat_files))
+
+write.csv(df, file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/cpue_summary_catchability_",q,"_B0sd_",sd, ".csv"))
+
+boxplot(trnd~gear,data=get_trnd)
+boxplot(trnd~gear,data=subset(get_trnd, gear!="OT16" & gear!="TN"))
+
+
+# PULL DF's
+# RBIND
+# OR CAN DO ABOVE IN A LOOP
+# PLOT POWER VS. B0SD BY GEAR
 
 
 #################
@@ -122,6 +178,13 @@ for(count in 1:nrow(B0_sd_matrix))
 ## BE SURE WE CAN LOAD AND SORT THESE
 dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern="sdrow2_")
 check<-readRDS("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability1e-05_sdrow2_rep2017-06-23 00_20_01.rds")
+
+
+
+
+
+
+
 
 
 
