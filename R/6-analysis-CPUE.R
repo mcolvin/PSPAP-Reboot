@@ -155,7 +155,7 @@ yyyyy<-samp_dat(sim_pop=sim_pop,
                 B0_sd=rep(0,9),
                 deployments=rep(8,9),
                 effort=effort,
-                occasions=1))  
+                occasions=1)  
 names(yyyyy)  
 
 # yyyyy$cpue_long this can feed the beast below
