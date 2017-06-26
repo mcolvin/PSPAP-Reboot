@@ -126,14 +126,10 @@ head(dat$sampled)
 ## TRUE TREND
 fit<- lm(log(r_abund)~year+rpma,dat$cpue_long)
 summary(fit)
-fit1a<- lm(log(s_abund)~year+b_segment,dat$cpue_long)
-summary(fit1a)
-fit1b<- lm(log(b_abundance+1)~year+b_segment+rpma,dat$cpue_long)
-summary(fit1b)
 
 ### FIT LINEAR MODEL FOR TREND
-fit2a<- lm(lncpue~b_segment+year, tmp)
-summary(fit2a)
+fit2<- lm(lncpue~b_segment+year, tmp)
+summary(fit2)
 
 
 # LOG(CPUE+1) CHECK
