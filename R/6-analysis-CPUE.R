@@ -132,16 +132,6 @@ fit2<- lm(lncpue~b_segment+year, tmp)
 summary(fit2)
 
 
-# LOG(CPUE+1) CHECK
-N0<-colSums(sim_pop$out)[1]
-dat<-readRDS(dat_files[1])
-sum(subset(dat$cpue_long,year==1)$catch,na.rm=TRUE)/N0
-alpha<-0.2
-#alpha<-0.0000004
-t<-c(1:10)
-y<-log(alpha*N0*(0.95)^t+1)
-lm(y~t)
-
 
 ###########################
 ##  INDIVIDUAL FUNCTIONS ##
@@ -192,20 +182,18 @@ names(yyyyy)
 # yyyyy$cpue_long this can feed the beast below
 head(yyyyy$cpue_long)
 
-trnd_dat<-get.trnd(sim_dat=yyyyy,
-                   gears=c("GN14", "GN18", "GN41", "GN81",
-                           "MF", "OT16", "TLC1", "TLC2", "TN"))
-
-trnd_dat<-do.call("rbind",trnd_dat)
+# CATCH +1
+yyyyy$cpue_long$catch1<-ifelse(yyyyy$cpue_long$effort==0,0,yyyyy$cpue$catch+1)
+yyyyy$cpue_long$cpue1<-yyyyy$cpue_long$catch1/yyyyy$cpue$effort
 
 # CPUE ANALYSIS FOR TREND
-tmp<- aggregate(cpue~year+b_segment,yyyyy$cpue_long,mean)
+tmp<- aggregate(cpue1~year+b_segment,yyyyy$cpue_long,mean)
 tmp$b_segment<- as.factor(tmp$b_segment)
-tmp$lncpue<- log(tmp$cpue+1)
+tmp$lncpue1<- log(tmp$cpue1)
 
 ## PLOT CPUE OVER TIME FOR EACH SEGMENT
-xyplot(cpue~year, tmp, group=b_segment,type='b')
-xyplot(lncpue~year, tmp, group=b_segment,type='b')
+xyplot(cpue1~year, tmp, group=b_segment,type='b')
+xyplot(lncpue1~year, tmp, group=b_segment,type='b')
 
 plot(log(r_abund)~year,data=yyyyy$cpue_long,type='n')
 points(log(r_abund)~year,yyyyy$cpue_long,subset=rpma==2)
@@ -217,16 +205,23 @@ summary(fit)
 
 tmp2<- aggregate(s_abund~year+b_segment,yyyyy$cpue_long,mean)
 tmp2$b_segment<- as.factor(tmp2$b_segment)
-fit1<- lm(log(s_abund+1)~b_segment+year,tmp2)
-summary(fit1)
-
-### FIT LINEAR MODEL FOR TREND
-fit2<- lm(lncpue~b_segment+year, tmp)
+fit2<- lm(log(s_abund)~b_segment+year,tmp2)
 summary(fit2)
 
+### FIT LINEAR MODEL FOR TREND
+fit1<- lm(lncpue1~b_segment+year, tmp)
+summary(fit1)
 
 
-get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+### USE GET.TRND
+trnd_dat<-get.trnd(sim_dat=yyyyy,
+                   gears=c("GN14", "GN18", "GN41", "GN81",
+                           "MF", "OT16", "TLC1", "TLC2", "TN"))
+
+trnd_dat<-do.call("rbind",trnd_dat)
+trnd_dat$sig<-ifelse(trnd_dat$pval<0.05,1,0)
+
+
 ddply(trnd_dat, .(gear), summarize,
       mean_trnd=mean(trnd),
       mean_se=mean(se),
