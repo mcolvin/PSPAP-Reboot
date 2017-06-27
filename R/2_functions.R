@@ -155,7 +155,7 @@ catch_counts<-function(sim_pop=NULL,
                        catchability=c(0.00002, 0.00004, 0.00002, 0.00004,
                                       0.00004, 0.0002, 0.00002, 0.00004,
                                       0.0002),
-                       B0_sd=c(0.08, 0.1, 0.08, 0.1, 0.07, 1.2, 0.08, 0.1, 1.2),
+                       B0_sd=NULL,
                        deployments=rep(8,9),
                        effort=NULL,
                        occasions=3)
@@ -370,22 +370,25 @@ catch_counts<-function(sim_pop=NULL,
   bend_effort<-bend_catch<-bend_flags<-list()
   for(ii in 1:length(gears))
   {
-    outt<-lapply(1:length(Z_abund),function(y)
+    for(jj in 1:occasions)
     {
-      ch[[y]][['N']] [[gears[ii]]][[1]]
-    })
-    bend_catch[[gears[ii]]]<-do.call("rbind",outt)
-    outp<-lapply(1:length(Z_abund),function(y)
-    {
-      f_P[[y]][['P_flag']] [[gears[ii]]][[1]]
-    })
-    bend_flags[[gears[ii]]]<-do.call("rbind",outp)
-    outt<-lapply(1:length(Z_abund),function(y)
-    {
-      colSums(f_P[[y]][['f']] [[gears[ii]]][[1]])
-      #TOTAL EFFORT OVER ALL DEPLOYMENTS IN A YEAR
-    })
-    bend_effort[[gears[ii]]]<-do.call("rbind",outt)
+      outt<-lapply(1:length(Z_abund),function(y)
+      {
+        ch[[y]][['N']] [[gears[ii]]][[jj]]
+      })
+      bend_catch[[gears[ii]]][[jj]]<-do.call("rbind",outt)
+      outp<-lapply(1:length(Z_abund),function(y)
+      {
+        f_P[[y]][['P_flag']] [[gears[ii]]][[jj]]
+      })
+      bend_flags[[gears[ii]]][[jj]]<-do.call("rbind",outp)
+      outt<-lapply(1:length(Z_abund),function(y)
+      {
+        colSums(f_P[[y]][['f']] [[gears[ii]]][[jj]])
+        #TOTAL EFFORT OVER ALL DEPLOYMENTS IN A YEAR
+      })
+      bend_effort[[gears[ii]]][[jj]]<-do.call("rbind",outt)
+    }
   }
   return(list(catch=bend_catch,
               f=bend_effort, 
@@ -579,16 +582,21 @@ samp_dat<-function(sim_pop=NULL,
   flags<-sim_catch$P_flags
   
   ## CONVERT CPUE TO LONG FORMAT
-  xxx<- lapply(1:length(gears),function(x)
+  yyy<-lapply(1:occasions,function(y)
   {
-    bend_data<-data
-    bend_data$effort<-ifelse(data$sampled==1, c(effort2[[gears[x]]]), NA)       
-    bend_data$catch<-ifelse(data$sampled==1, c(catch[[gears[x]]]), NA)
-    bend_data$flag<-ifelse(data$sampled==1, c(flags[[gears[x]]]), NA)
-    bend_data$gear<-gears[x] 
-    return(as.data.frame(bend_data))
+    xxx<- lapply(1:length(gears),function(x)
+    {
+      bend_data<-data
+      bend_data$effort<-ifelse(data$sampled==1, c(effort2[[gears[x]]][[y]]), NA)       
+      bend_data$catch<-ifelse(data$sampled==1, c(catch[[gears[x]]][[y]]), NA)
+      bend_data$flag<-ifelse(data$sampled==1, c(flags[[gears[x]]][[y]]), NA)
+      bend_data$gear<-gears[x]
+      bend_data$occasion<-y
+      return(as.data.frame(bend_data))
+    })
+    return(do.call("rbind",xxx))
   })
-  cpue_long<- do.call("rbind",xxx)
+  cpue_long<- do.call("rbind",yyy)
   cpue_long$cpue<-cpue_long$catch/cpue_long$effort
   
   ## BUNDLE UP THE GOODIES TO RETURN
@@ -620,6 +628,8 @@ get.trnd<-function(sim_dat=NULL,
   sim_dat$cpue_long$cpue1<-sim_dat$cpue_long$catch1/sim_dat$cpue$effort
   
   # GET AVERAGE SEGMENT CPUE BY YEAR
+  #dat_occ1<-subset(sim_dat$cpue_long,occasion==1)
+  #tmp<- aggregate(cpue1~year+b_segment+gear,dat_occ1,mean)
   tmp<- aggregate(cpue1~year+b_segment+gear,sim_dat$cpue_long,mean)
   tmp$b_segment<- as.factor(tmp$b_segment)
   tmp$lncpue1<- log(tmp$cpue1)
