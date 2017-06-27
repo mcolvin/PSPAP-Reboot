@@ -15,7 +15,7 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 saveRDS(sim_pop,
-        file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_pop_version",gsub(":", "_", Sys.time()),".rds"))
+        file=paste0("E:/DataDump/sim_pop_version",gsub(":", "_", Sys.time()),".rds"))
 
 
 # SIMULATE EFFORT & CATCH DATA FOR A FIXED B0_SD GRID
@@ -29,7 +29,7 @@ B0_sd<-seq(0,1.5, by=0.1)
 ptm<-proc.time()
 nreps=100
 
-for(count in 1:length(sd))
+for(count in 1:length(B0_sd))
 {
   replicate(nreps,
             {
@@ -39,7 +39,7 @@ for(count in 1:length(sd))
                             effort=effort,
                             occasions=3)
               saveRDS(dat,
-                      file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_catchability",q_mean[1],"_sdrow",count,"_rep",gsub(":", "_", Sys.time()),".rds"))  
+                      file=paste0("E:/DataDump/data_catchability_",q_mean[1],"_B0sd_",B0_sd[count],"_rep",gsub(":", "_", Sys.time()),".rds"))  
             })
 }
 proc.time()-ptm
