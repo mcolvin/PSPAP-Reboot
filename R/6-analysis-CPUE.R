@@ -14,6 +14,9 @@ sim_pop<-reference_population(segs=segs,
                               fish_density=init_dens, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
+saveRDS(sim_pop,
+        file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/sim_pop_version",gsub(":", "_", Sys.time()),".rds"))
+
 
 # SIMULATE EFFORT & CATCH DATA FOR A FIXED B0_SD GRID
 ## MEAN CATCHABILITY
@@ -49,7 +52,7 @@ q<-1e-5
 cpue_trnd<-lapply(B0_sd, function(x)
 {
   ### PULL THE DATA
-  dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/", dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid", pattern=paste0(q,"_B0sd_",x, "_")))
+  dat_files<-paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/", dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern=paste0(q,"_B0sd_",x, "_")))
 
   ### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
   get_trnd<-lapply(1:length(dat_files), function(i)
@@ -57,7 +60,7 @@ cpue_trnd<-lapply(B0_sd, function(x)
     dat<-readRDS(dat_files[i])
     out<-get.trnd(sim_dat=dat)
     out<-do.call(rbind, out)
-    out<-merge(out, aggregate(flag~gear,dat$cpue_long, sum),by="gear")
+    merge(out, aggregate(flag~gear,subset(dat$cpue_long, flag!=0), length),by="gear",all.x=TRUE)
     return(out)
   })
 
@@ -72,8 +75,9 @@ cpue_trnd<-lapply(B0_sd, function(x)
       max_se=max(se),
       mean_pval=mean(pval),
       max_pval=max(pval),
-      flags=sum(flag),
+      mean_flags=mean(flag),
       power=sum(sig)/length(dat_files))
+  df$mean_flags<-ifelse(df$mean_flags=="NaN",0,df$mean_flags)
   df$q<-rep(q,nrow(df))
   df$B0_sd<-x
 
@@ -99,37 +103,6 @@ for(j in 1:length(gears))
 ## LOOK AT FLAGS
 which(summary$flags!=0)
 
-
-# CPUE ANALYSIS FOR TREND
-dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/",
-                  dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid",
-                      pattern=paste0(q,"_B0sd_",0.5, "_")))
-dat<-readRDS(dat_files[1])
-tmp<- aggregate(cpue~year+b_segment,dat$cpue_long,mean)
-tmp$b_segment<- as.factor(tmp$b_segment)
-tmp$lncpue<- log(tmp$cpue+1)
-
-## PLOT CPUE OVER TIME FOR EACH SEGMENT
-xyplot(cpue~year, tmp, group=b_segment,type='b')
-xyplot(lncpue~year, tmp, group=b_segment,type='b')
-
-head(dat$cpue_long)
-
-plot(log(r_abund)~year,data=dat$cpue_long,type='n')
-points(log(r_abund)~year,dat$cpue_long,subset=rpma==2)
-points(log(r_abund)~year,dat$cpue_long,subset=rpma==4)
-
-head(dat$sampled)
-
-
-
-## TRUE TREND
-fit<- lm(log(r_abund)~year+rpma,dat$cpue_long)
-summary(fit)
-
-### FIT LINEAR MODEL FOR TREND
-fit2<- lm(lncpue~b_segment+year, tmp)
-summary(fit2)
 
 
 
@@ -176,7 +149,7 @@ yyyyy<-samp_dat(sim_pop=sim_pop,
                 B0_sd=rep(0,9),
                 deployments=rep(8,9),
                 effort=effort,
-                occasions=1)  
+                occasions=3)  
 names(yyyyy)  
 
 # yyyyy$cpue_long this can feed the beast below
@@ -187,7 +160,7 @@ yyyyy$cpue_long$catch1<-ifelse(yyyyy$cpue_long$effort==0,0,yyyyy$cpue$catch+1)
 yyyyy$cpue_long$cpue1<-yyyyy$cpue_long$catch1/yyyyy$cpue$effort
 
 # CPUE ANALYSIS FOR TREND
-tmp<- aggregate(cpue1~year+b_segment,yyyyy$cpue_long,mean)
+tmp<- aggregate(cpue1~year+b_segment,subset(yyyyy$cpue_long,gear=="GN14"),mean)
 tmp$b_segment<- as.factor(tmp$b_segment)
 tmp$lncpue1<- log(tmp$cpue1)
 
@@ -220,13 +193,48 @@ trnd_dat<-get.trnd(sim_dat=yyyyy,
 
 trnd_dat<-do.call("rbind",trnd_dat)
 trnd_dat$sig<-ifelse(trnd_dat$pval<0.05,1,0)
+trnd_dat
 
 
-ddply(trnd_dat, .(gear), summarize,
-      mean_trnd=mean(trnd),
-      mean_se=mean(se),
-      max_se=max(se),
-      mean_pval=mean(pval),
-      max_pval=max(pval),
-      flags=sum(flag),
-      power=sum(sig)/length(dat_files))
+#### REPLICATES
+nreps=100
+replicate(nreps,
+          {
+            dat<-samp_dat(sim_pop=sim_pop,
+                          B0_sd=rep(0,9),
+                          effort=effort,
+                          occasions=3)
+            saveRDS(dat,
+                    file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/data_default_q_B0sd_0_rep",gsub(":", "_", Sys.time()),".rds"))  
+          })
+
+#### PULL THE DATA
+  dat_files<-paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/", dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern="default_q"))
+  
+  ### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
+  get_trnd<-lapply(1:length(dat_files), function(i)
+  {
+    dat<-readRDS(dat_files[i])
+    out<-get.trnd(sim_dat=dat)
+    out<-do.call(rbind, out)
+    out<-merge(out, aggregate(flag~gear,subset(dat$cpue_long, flag!=0), length),by="gear",all.x=TRUE)
+    return(out)
+  })
+  
+  #### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+  get_trnd<-do.call(rbind, get_trnd)
+  get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+  get_trnd[1:20,]
+  
+  ### MAKE A SUMMARY TABLE OF RESULTS
+  df<-ddply(get_trnd, .(gear), summarize,
+            mean_trnd=mean(trnd),
+            mean_se=mean(se),
+            max_se=max(se),
+            mean_pval=mean(pval),
+            max_pval=max(pval),
+            mean_flags=mean(flag, na.rm=TRUE),
+            power=sum(sig)/length(dat_files))
+  df$mean_flags<-ifelse(df$mean_flags=="NaN",0,df$mean_flags)
+  df
+
