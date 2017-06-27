@@ -222,11 +222,45 @@ trnd_dat<-do.call("rbind",trnd_dat)
 trnd_dat$sig<-ifelse(trnd_dat$pval<0.05,1,0)
 
 
-ddply(trnd_dat, .(gear), summarize,
-      mean_trnd=mean(trnd),
-      mean_se=mean(se),
-      max_se=max(se),
-      mean_pval=mean(pval),
-      max_pval=max(pval),
-      flags=sum(flag),
-      power=sum(sig)/length(dat_files))
+#### REPLICATES
+nreps=100
+replicate(nreps,
+          {
+            dat<-samp_dat(sim_pop=sim_pop,
+                          B0_sd=rep(0,9),
+                          effort=effort,
+                          occasions=3)
+            saveRDS(dat,
+                    file=paste0("C:/Users/sreynolds/Desktop/DataDump/Default_q/data_default_q_B0sd_0_rep",gsub(":", "_", Sys.time()),".rds"))  
+          })
+
+#### PULL THE DATA
+  dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/Default_q/", dir("C:/Users/sreynolds/Desktop/DataDump/Default_q", pattern="default_q"))
+  
+  ### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
+  get_trnd<-lapply(1:length(dat_files), function(i)
+  {
+    dat<-readRDS(dat_files[i])
+    out<-get.trnd(sim_dat=dat)
+    out<-do.call(rbind, out)
+    out<-merge(out, aggregate(flag~gear,subset(dat$cpue_long, flag!=0), length),by="gear",all.x=TRUE)
+    return(out)
+  })
+  
+  #### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+  get_trnd<-do.call(rbind, get_trnd)
+  get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+  get_trnd[1:20,]
+  
+  ### MAKE A SUMMARY TABLE OF RESULTS
+  df<-ddply(get_trnd, .(gear), summarize,
+            mean_trnd=mean(trnd),
+            mean_se=mean(se),
+            max_se=max(se),
+            mean_pval=mean(pval),
+            max_pval=max(pval),
+            mean_flags=mean(flag, na.rm=TRUE),
+            power=sum(sig)/length(dat_files))
+  df$mean_flags<-ifelse(df$mean_flags=="NaN",0,df$mean_flags)
+  df
+
