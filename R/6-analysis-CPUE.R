@@ -49,18 +49,27 @@ proc.time()-ptm
 
 ## CPUE ANALYSIS
 q<-1e-5
+
+ptm<-proc.time()
 cpue_trnd<-lapply(B0_sd, function(x)
 {
   ### PULL THE DATA
   dat_files<-paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/", dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern=paste0(q,"_B0sd_",x, "_")))
-
+  
   ### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
-  get_trnd<-lapply(1:length(dat_files), function(i)
+  get_trnd<-lapply(dat_files, function(i)
   {
-    dat<-readRDS(dat_files[i])
+    dat<-readRDS(i)
     out<-get.trnd(sim_dat=dat)
     out<-do.call(rbind, out)
-    merge(out, aggregate(flag~gear,subset(dat$cpue_long, flag!=0), length),by="gear",all.x=TRUE)
+    if(nrow(subset(dat$cpue_long, flag!=0))==0) {out$flag=0}
+    if(nrow(subset(dat$cpue_long, flag!=0))!=0)
+       {
+          out<-merge(out,
+                aggregate(flag~gear,subset(dat$cpue_long, flag!=0), length),
+                by="gear",all.x=TRUE)
+          out$flag<-ifelse(is.na(out$flag),0,out$flag)
+        }
     return(out)
   })
 
@@ -75,10 +84,10 @@ cpue_trnd<-lapply(B0_sd, function(x)
       max_se=max(se),
       mean_pval=mean(pval),
       max_pval=max(pval),
-      mean_flags=mean(flag),
-      power=sum(sig)/length(dat_files))
-  df$mean_flags<-ifelse(df$mean_flags=="NaN",0,df$mean_flags)
-  df$q<-rep(q,nrow(df))
+      mean_flags=mean(flag,na.rm=TRUE),
+      power=sum(sig))
+  df$power<-df$power/length(dat_files)
+  df$q<-q
   df$B0_sd<-x
 
   ### OUTPUT THE TREND AND SUMMARY TABLE FOR EACH B0_SD
@@ -88,6 +97,12 @@ cpue_trnd<-lapply(B0_sd, function(x)
 
 ## SAVE TREND INFORMATION
 saveRDS(cpue_trnd,file=paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/cpue_trnd_catchability",q,"_B0sd_fixed_grid.rds"))
+
+proc.time()-ptm
+#user       system    elapsed 
+#1279.74    11.02     1325.69 
+#1462.69    9.49      1541.73
+
 
 ## LOOK AT POWER PLOTS
 summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
@@ -101,7 +116,7 @@ for(j in 1:length(gears))
 }
 
 ## LOOK AT FLAGS
-which(summary$flags!=0)
+summary[which(summary$mean_flags!=0),]
 
 
 

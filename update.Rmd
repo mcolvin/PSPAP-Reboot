@@ -10,8 +10,10 @@ rmarkdown::render("update.Rmd")
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 source("R/1_global.R")
-cpue_trnd<- readRDS("output/cpue_trnd_catchability1e-05_B0sd_fixed_grid.Rds")
-summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
+cpue_trnd1<- readRDS("output/cpue_trnd_catchability1e-05_B0sd_fixed_grid.Rds")
+summary1<-do.call(rbind, sapply(cpue_trnd1, "[[", "summary", simplify=FALSE))
+cpue_trnd4<- readRDS("output/cpue_trnd_catchability4e-05_B0sd_fixed_grid.Rds")
+summary4<-do.call(rbind, sapply(cpue_trnd4, "[[", "summary", simplify=FALSE))
 ``` 
 
 
@@ -21,21 +23,32 @@ gears<-c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN")
 par(mfrow=c(3,3))
 for(j in 1:length(gears))
 {
-  plot(power~B0_sd, data=subset(summary, gear==gears[j]),main=paste(gears[j]), ylim=c(0,1.2))
+  plot(power~B0_sd, data=subset(summary1, gear==gears[j]),main=paste(gears[j]), ylim=c(0,1.2))
 }
 ```
 
-Figure 1. Power of detecting a significant CPUE trend based on 100 replicates for each level of B0_sd.  Power is not decreasing with increasing B0_sd as expected. 
+Figure 1. Power of detecting a significant CPUE trend based on 100 replicates for each level of B0_sd with mean catchability set to 0.00001. 
+
+```{r,echo=FALSE}
+gears<-c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN")
+par(mfrow=c(3,3))
+for(j in 1:length(gears))
+{
+  plot(power~B0_sd, data=subset(summary4, gear==gears[j]),main=paste(gears[j]), ylim=c(0,1.2))
+}
+```
+
+Figure 2. Power of detecting a significant CPUE trend based on 100 replicates for each level of B0_sd with mean catchability set to 0.00004. 
 
 
 
 ## Tables
 
-Table 1. Trend data of 100 replicates by gear for B0_sd=0.  The coefficient column looks larger (or smaller in absolute value) than expected. 
+Table 1. Summary of trend data of 100 replicates by gear for B0_sd=0.5 and mean q=0.00001.
 
 ```{r,echo=FALSE}
-kable(cpue_trnd[[1]]$trnd_dat,
-    col.names=c("Gear","Coefficient", "SE", "P-value", "Flag", "Significant"),
+kable(cpue_trnd1[[6]]$summary,
+    col.names=c("Gear","Mean Trend", "Mean SE", "Max SE", "Mean P-value","Max P-value", "Mean Flag Count", "Power", "Mean q", "B0 SD"),
     row.names=FALSE)
    
 ```
