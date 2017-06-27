@@ -35,7 +35,7 @@ for(count in 1:length(B0_sd))
             {
               dat<-samp_dat(sim_pop=sim_pop,
                             catchability=q_mean,
-                            B0_sd=rep(B0_sd[count],length(gears)),
+                            B0_sd=rep(B0_sd[count],9),
                             effort=effort,
                             occasions=3)
               saveRDS(dat,
