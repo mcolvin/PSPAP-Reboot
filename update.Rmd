@@ -40,6 +40,17 @@ for(j in 1:length(gears))
 
 Figure 2. Power of detecting a significant CPUE trend based on 100 replicates for each level of B0_sd with mean catchability set to 0.00004. 
 
+```{r,echo=FALSE}
+gears<-c("GN14", "GN18", "GN41", "GN81", "MF", "OT16", "TLC1", "TLC2", "TN")
+par(mfrow=c(3,3))
+for(j in 1:length(gears))
+{
+  plot(bias~B0_sd, data=subset(summary1, gear==gears[j]),main=paste(gears[j]))
+}
+```
+
+Figure 3. CPUE trend bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001. 
+
 
 
 ## Tables
@@ -47,8 +58,8 @@ Figure 2. Power of detecting a significant CPUE trend based on 100 replicates fo
 Table 1. Summary of trend data of 100 replicates by gear for B0_sd=0.5 and mean q=0.00001.
 
 ```{r,echo=FALSE}
-kable(cpue_trnd1[[6]]$summary,
-    col.names=c("Gear","Mean Trend", "Mean SE", "Max SE", "Mean P-value","Max P-value", "Mean Flag Count", "Power", "Mean q", "B0 SD"),
+kable(cpue_trnd1[[6]]$summary[c(1:8,11,9,10)],
+    col.names=c("Gear","Mean Trend", "Mean SE", "Max SE", "Mean P-value","Max P-value", "Mean Flag Count", "Power", "Bias", "Mean q", "B0 SD"),
     row.names=FALSE)
    
 ```

@@ -48,13 +48,21 @@ proc.time()-ptm
 
 
 ## CPUE ANALYSIS
+### ACTUAL TREND
+sim_dat<-readRDS("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/data_catchability_1e-05_B0sd_0_rep2017-06-26 23_25_06.rds")
+tmp<- aggregate(s_abund~year+b_segment,sim_dat$cpue_long,mean)
+tmp$b_segment<- as.factor(tmp$b_segment)
+fit<- lm(log(s_abund)~b_segment+year,tmp)
+trnd<-unname(coef(fit)['year'])
+
+### CPUE TREND
 q<-1e-5
 
 ptm<-proc.time()
 cpue_trnd<-lapply(B0_sd, function(x)
 {
   ### PULL THE DATA
-  dat_files<-paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/", dir("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output", pattern=paste0(q,"_B0sd_",x, "_")))
+  dat_files<-paste0("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid/", dir("C:/Users/sreynolds/Desktop/DataDump/sd_fixed_grid", pattern=paste0(q,"_B0sd_",x, "_")))
   
   ### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
   get_trnd<-lapply(dat_files, function(i)
@@ -87,9 +95,10 @@ cpue_trnd<-lapply(B0_sd, function(x)
       mean_flags=mean(flag,na.rm=TRUE),
       power=sum(sig))
   df$power<-df$power/length(dat_files)
+  df$bias<-df$mean_trnd-trnd
   df$q<-q
   df$B0_sd<-x
-
+  
   ### OUTPUT THE TREND AND SUMMARY TABLE FOR EACH B0_SD
   return(list(trnd_dat=get_trnd, summary=df))
 })
@@ -104,6 +113,10 @@ proc.time()-ptm
 #1462.69    9.49      1541.73
 
 
+## READ IN DATA
+cpue_trnd<-readRDS(paste0("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/output/cpue_trnd_catchability",q,"_B0sd_fixed_grid.rds"))
+
+
 ## LOOK AT POWER PLOTS
 summary<-do.call(rbind, sapply(cpue_trnd, "[[", "summary", simplify=FALSE))
 head(summary)
@@ -113,6 +126,11 @@ par(mfrow=c(3,3))
 for(j in 1:length(gears))
 {
   plot(power~B0_sd, data=subset(summary, gear==gears[j]),main=paste(gears[j]))
+}
+
+for(j in 1:length(gears))
+{
+  plot(bias~B0_sd, data=subset(summary, gear==gears[j]),main=paste(gears[j]))
 }
 
 ## LOOK AT FLAGS
