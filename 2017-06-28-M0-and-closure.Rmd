@@ -31,7 +31,7 @@ Pallid Sturgeon move around from 1 day to the next, a least in the spring.
 a robust design estimator and the consequences of violating this assumption
 are not transparent. 
 3. To evaluate the effect of movement on abundance estimates we used a
-simulation study to fish a closed population capture recapture abundance
+simulation study to fit a closed population capture recapture abundance
 estimator to a virtual population with known population size and capture
 probability. 
 4. We then allowed Pallid Sturgeon to move in and out of the study area with
@@ -53,8 +53,7 @@ a Robust Design. One plan is to continue to use bends as the sampling unit
 and revisit them over the course of a couple of days. However to estimate
 the abundance at the bend level we need to assume closure for capture
 recapture estimates, which might be violated as fish move around from 
-day to day.  To address the potential consequence of Pallid Sturgeon moving
-in and out of a study bend on a daily basis.
+day to day.  
 
 ## Approach
 
@@ -199,7 +198,8 @@ Pallid Sturgeon in the bend to leave. There also needs to be Pallid
 Sturgeon to move into the bend. In this simulation there are 75 Pallid 
 Sturgeon that can potentially immigrate into the bend. Given an 
 emigration rate of 0.1 we can expect 7.5 Pallid Sturgeon to move into 
-the bend Lets set the daily emigration and immigration rate to 0.1 and 
+the bend.  Let's set the daily emigration and immigration rate from 0 to 0.35 
+in increments of 0.05 and 
 allow random movement in and out of the bend each day. 
 
 ```{r,eval=FALSE,echo=FALSE}
