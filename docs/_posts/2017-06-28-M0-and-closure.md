@@ -6,7 +6,6 @@ bibliography: PSref.bib
 csl: ecology.csl
 ---
   
-## In a nutshell
 
 Here are the highlights for those that do not want to read the post
 in its entirety.
