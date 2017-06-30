@@ -45,7 +45,7 @@ in and out of a study bend on a daily basis.
 
 We will simulate a virtual population and capture process to evaluate 
 the potential consequences of Pallid Sturgeon using a closed population 
-estimator, the M0 model [@RN1409]. The M0 model is one of the simplest 
+estimator, the M0 model (Otis 1978). The M0 model is one of the simplest 
 capture recapture estimators and it assumes that capture probability is 
 the same among all capture occasions. 
 
@@ -170,4 +170,4 @@ Stay tuned.
 
 # References
 
-
+Otis, D. L., K. P. Burnham, G. C. White, and D. R. Anderson. 1978. Statistical-inference from capture data on closed animal populations. Wildlife Monographs:7–135.
