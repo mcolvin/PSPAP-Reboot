@@ -5,22 +5,8 @@ published: TRUE
 bibliography: PSref.bib
 csl: ecology.csl
 ---
-<!-- Knit to HTML or MD
-rmarkdown::render("2017-06-28-M0-and-closure.Rmd")
 
-filename0<- "2017-06-28-M0-and-closure.Rmd"
-filename<- "2017-06-28-M0-and-closure.md"
 
-# Draft blog post:
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_drafts/"
-knitr::knit(filename,output=paste(docs,filename,sep=""))
-
-# Final blog post
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-knitr::knit(filename0,output=paste(docs,filename,sep=""))
--->  
-  
-## In a nutshell
 
 Here are the highlights for those that do not want to read the post
 in its entirety.
