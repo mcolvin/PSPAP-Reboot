@@ -121,7 +121,7 @@ simulation as above but with many replicate datasets, 1000 for this simulation.
 
 
 
-<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
+<img src="{{ site.baseurl }} figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
 
 The plot above illustrates the distribution of estimates and the red 
 vertical line denotes the true abundance.  We need to look at this plot
@@ -151,7 +151,7 @@ bend.
 
 
 
-<img src="figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
+<img src="{{ site.baseurl }} figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
 
 
 The overestimate of abundance is because the capture probability is 
