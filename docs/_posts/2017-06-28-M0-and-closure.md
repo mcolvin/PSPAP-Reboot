@@ -9,7 +9,8 @@ csl: ecology.csl
 knitr::knit2html("2017-06-XX-M0-and-closure.Rmd")
 rmarkdown::render("2017-06-XX-M0-and-closure.Rmd")
 
-filename<- "2017-06-28-M0-closure.md"
+filename0<- "2017-06-28-M0-and-closure.Rmd"
+filename<- "2017-06-28-M0-and-closure.md"
 
 # Draft blog post:
 docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_drafts/"
@@ -17,7 +18,7 @@ knitr::knit(filename,output=paste(docs,filename,sep=""))
 
 # Final blog post
 docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-knitr::knit(filename,output=paste(docs,filename,sep=""))
+knitr::knit(filename0,output=paste(docs,filename,sep=""))
 -->  
   
 ## In a nutshell
@@ -75,12 +76,6 @@ into the bend during the 3 days it takes to achieve the 3 capture
 occasions. 
 
  
-
-
-```
-## Warning: package 'Rcapture' was built under R version 3.1.3
-```
-
 
 
 | Capture history | Relative frequency | Expected frequency |
