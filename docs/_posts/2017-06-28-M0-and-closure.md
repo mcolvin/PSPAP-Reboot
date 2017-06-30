@@ -5,21 +5,6 @@ published: TRUE
 bibliography: PSref.bib
 csl: ecology.csl
 ---
-<!-- Knit to HTML or MD
-knitr::knit2html("2017-06-XX-M0-and-closure.Rmd")
-rmarkdown::render("2017-06-XX-M0-and-closure.Rmd")
-
-filename0<- "2017-06-28-M0-and-closure.Rmd"
-filename<- "2017-06-28-M0-and-closure.md"
-
-# Draft blog post:
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_drafts/"
-knitr::knit(filename,output=paste(docs,filename,sep=""))
-
-# Final blog post
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-knitr::knit(filename0,output=paste(docs,filename,sep=""))
--->  
   
 ## In a nutshell
 
@@ -128,7 +113,7 @@ like the table below if the assumptions were not violated.
 
 
 The population estimate from the M0 model given those capture frequencies
-was 75.4341967 and the 95% confidence interval of 54.9-121.3.
+was 75.43 and the 95% confidence interval of 54.9-121.3.
 Not too bad, the estimate was a bit lower than 100, but estimates are expected to b
 be above and below the true value. Let's demonstrate this by running the same
 simulation as above but with many replicate datasets, 1000 for this simulation. 
