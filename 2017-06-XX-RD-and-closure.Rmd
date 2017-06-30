@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Effect of violating closure in a Robust Design
+title: Effect of violating closure in a closed population
 published: false
 ---
 
@@ -8,7 +8,7 @@ published: false
    
 for blog post:
 docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-filename<- "2017-06-30-Estimating-Abundance.md"
+filename<- "2017-06-30-M0-closure.md"
 knitr::knit("index.Rmd", 
     output=paste(docs,filename,sep=""))
 -->
