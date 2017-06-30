@@ -5,7 +5,22 @@ published: TRUE
 bibliography: PSref.bib
 csl: ecology.csl
 ---
+<!-- Knit to HTML or MD
+rmarkdown::render("2017-06-28-M0-and-closure.Rmd")
+
+filename0<- "2017-06-28-M0-and-closure.Rmd"
+filename<- "2017-06-28-M0-and-closure.md"
+
+# Draft blog post:
+docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_drafts/"
+knitr::knit(filename,output=paste(docs,filename,sep=""))
+
+# Final blog post
+docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
+knitr::knit(filename0,output=paste(docs,filename,sep=""))
+-->  
   
+## In a nutshell
 
 Here are the highlights for those that do not want to read the post
 in its entirety.
@@ -16,7 +31,7 @@ Pallid Sturgeon move around from 1 day to the next, a least in the spring.
 a robust design estimator and the consequences of violating this assumption
 are not transparent. 
 3. To evaluate the effect of movement on abundance estimates we used a
-simulation study to fish a closed population capture recapture abundance
+simulation study to fit a closed population capture recapture abundance
 estimator to a virtual population with known population size and capture
 probability. 
 4. We then allowed Pallid Sturgeon to move in and out of the study area with
@@ -38,8 +53,7 @@ a Robust Design. One plan is to continue to use bends as the sampling unit
 and revisit them over the course of a couple of days. However to estimate
 the abundance at the bend level we need to assume closure for capture
 recapture estimates, which might be violated as fish move around from 
-day to day.  To address the potential consequence of Pallid Sturgeon moving
-in and out of a study bend on a daily basis.
+day to day.  
 
 ## Approach
 
@@ -60,6 +74,7 @@ into the bend during the 3 days it takes to achieve the 3 capture
 occasions. 
 
  
+
 
 
 | Capture history | Relative frequency | Expected frequency |
@@ -112,15 +127,15 @@ like the table below if the assumptions were not violated.
 
 
 The population estimate from the M0 model given those capture frequencies
-was 75.43 and the 95% confidence interval of 54.9-121.3.
+was 75.4 and the 95% confidence interval of 54.9-121.3.
 Not too bad, the estimate was a bit lower than 100, but estimates are expected to b
 be above and below the true value. Let's demonstrate this by running the same
 simulation as above but with many replicate datasets, 1000 for this simulation. 
 
 
 
-![]({{ site.baseurl }}/images/figure/unnamed-chunk-5-1.png)
 
+![]({{ site.baseurl }}/images/figure/unnamed-chunk-5-1.png)
 
 The plot above illustrates the distribution of estimates and the red 
 vertical line denotes the true abundance.  We need to look at this plot
@@ -137,7 +152,8 @@ Pallid Sturgeon in the bend to leave. There also needs to be Pallid
 Sturgeon to move into the bend. In this simulation there are 75 Pallid 
 Sturgeon that can potentially immigrate into the bend. Given an 
 emigration rate of 0.1 we can expect 7.5 Pallid Sturgeon to move into 
-the bend Lets set the daily emigration and immigration rate to 0.1 and 
+the bend.  Let's set the daily emigration and immigration rate from 0 to 0.35 
+in increments of 0.05 and 
 allow random movement in and out of the bend each day. 
 
 
@@ -171,3 +187,4 @@ Stay tuned.
 # References
 
 Otis, D. L., K. P. Burnham, G. C. White, and D. R. Anderson. 1978. Statistical-inference from capture data on closed animal populations. Wildlife Monographs:7–135.
+
