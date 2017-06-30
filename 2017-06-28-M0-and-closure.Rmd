@@ -6,8 +6,7 @@ bibliography: PSref.bib
 csl: ecology.csl
 ---
 <!-- Knit to HTML or MD
-knitr::knit2html("2017-06-XX-M0-and-closure.Rmd")
-rmarkdown::render("2017-06-XX-M0-and-closure.Rmd")
+rmarkdown::render("2017-06-28-M0-and-closure.Rmd")
 
 filename0<- "2017-06-28-M0-and-closure.Rmd"
 filename<- "2017-06-28-M0-and-closure.md"
