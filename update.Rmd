@@ -53,7 +53,63 @@ for(j in 1:length(gears))
 
 Figure 3. CPUE trend bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001. 
 
+```{r,echo=FALSE}
+segs<- c(2,3,4,7,8,9,10,13,14)
+par(mfrow=c(3,3))
+for(i in 1:length(segs))
+{
+  plot(mean_bias_min_alive~B0_sd, data=subset(summary, b_segment==segs[i]),main=paste("Segment",segs[i]))#, "Minimum Alive Bias"))
+}
+```
 
+Figure 4. Minimum Alive bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001. 
+
+
+```{r,echo=FALSE}
+segs<- c(2,3,4,7,8,9,10,13,14)
+par(mfrow=c(3,3))
+for(i in 1:length(segs))
+{
+  plot(mean_bias_N~B0_sd, data=subset(summary, b_segment==segs[i]),main=paste("Segment",segs[i]))#, "Catch Abundance Bias"))
+}
+```
+
+Figure 5. Catch abundance bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001. 
+
+
+```{r,echo=FALSE}
+segs<- c(2,3,4,7,8,9,10,13,14)
+par(mfrow=c(3,3))
+for(i in 1:length(segs))
+{
+  plot(mean_bias_N_max~B0_sd, data=subset(summary, b_segment==segs[i]),main=paste("Segment",segs[i]))#, "Upper Catch Abundance Bias"))
+}
+```
+
+Figure 6. Upper catch abundance bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001. 
+
+
+```{r,echo=FALSE}
+segs<- c(2,3,4,7,8,9,10,13,14)
+par(mfrow=c(3,3))
+for(i in 1:length(segs))
+{
+  plot(mean_bias_D~B0_sd, data=subset(summary, b_segment==segs[i]),main=paste("Segment",segs[i]))#, "Catch Density Abundance Bias"))
+}
+```
+
+Figure 7. Catch density abundance bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001.
+
+```{r,echo=FALSE}
+segs<- c(2,3,4,7,8,9,10,13,14)
+par(mfrow=c(3,3))
+for(i in 1:length(segs))
+{
+  plot(mean_bias_D_max~B0_sd, data=subset(summary, b_segment==segs[i]),main=paste("Segment",segs[i]))#, "Upper Catch Density Abundance Bias"))
+}
+```
+
+Figure 8. Upper catch density abundance bias from 100 replicates for each level of B0_sd with mean catchability set to 0.00001.
 
 ## Tables
 
@@ -70,8 +126,22 @@ kable(cpue_trnd1[[6]]$summary[c(1:8,11,9,10)],
 Table 2. Summary of abundance estimates of 100 replicates by gear for B0_sd=0.5 and mean q=0.00001.
 
 ```{r,echo=FALSE}
-kable(catch_abund_est[[6]]$summary,
-    col.names=c("Gear","Mean Trend", "Mean SE", "Max SE", "Mean P-value","Max P-value", "Mean Flag Count", "Power", "Bias", "Mean q", "B0 SD"),
+kable(catch_abund_est[[6]]$summary[,c(1:7,17,18)],
+    col.names=c("Segment","Minimum Alive Mean", "Minimum Alive SD", "Minimum Alive Mean Bias", "Mean Abundance_N","Abundance_N SD", "Abundance_N Mean Bias","Mean q", "B0 SD"),
     row.names=FALSE)
-   
 ```
+
+
+```{r,echo=FALSE}
+kable(catch_abund_est[[6]]$summary[,c(1,8:13,17,18)],
+    col.names=c("Segment","Mean Abundance_Nmax","Abundance_Nmax SD", "Abundance_Nmax Mean Bias", "Mean Abundance_D","Abundance_D SD", "Abundance_D Mean Bias","Mean q", "B0 SD"),
+    row.names=FALSE)
+```
+   
+```{r,echo=FALSE}
+kable(catch_abund_est[[6]]$summary[,c(1,14:18)],
+    col.names=c("Segment","Mean Abundance_Dmax","Abundance_Dmax SD", "Abundance_Dmax Mean Bias","Mean q", "B0 SD"),
+    row.names=FALSE)
+```
+
+               
