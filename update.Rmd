@@ -12,6 +12,8 @@ rmarkdown::render("update.Rmd")
 source("R/1_global.R")
 cpue_trnd1<- readRDS("output/cpue_trnd_catchability1e-05_B0sd_fixed_grid.Rds")
 summary1<-do.call(rbind, sapply(cpue_trnd1, "[[", "summary", simplify=FALSE))
+catch_abund_est<-readRDS("output/catch_abund_catchability_1e-05_B0sd_fixed_grid.Rds")
+summary<-do.call(rbind, sapply(catch_abund_est, "[[", "summary", simplify=FALSE))
 cpue_trnd4<- readRDS("output/cpue_trnd_catchability4e-05_B0sd_fixed_grid.Rds")
 summary4<-do.call(rbind, sapply(cpue_trnd4, "[[", "summary", simplify=FALSE))
 ``` 
@@ -59,6 +61,16 @@ Table 1. Summary of trend data of 100 replicates by gear for B0_sd=0.5 and mean 
 
 ```{r,echo=FALSE}
 kable(cpue_trnd1[[6]]$summary[c(1:8,11,9,10)],
+    col.names=c("Gear","Mean Trend", "Mean SE", "Max SE", "Mean P-value","Max P-value", "Mean Flag Count", "Power", "Bias", "Mean q", "B0 SD"),
+    row.names=FALSE)
+   
+```
+
+
+Table 2. Summary of abundance estimates of 100 replicates by gear for B0_sd=0.5 and mean q=0.00001.
+
+```{r,echo=FALSE}
+kable(catch_abund_est[[6]]$summary,
     col.names=c("Gear","Mean Trend", "Mean SE", "Max SE", "Mean P-value","Max P-value", "Mean Flag Count", "Power", "Bias", "Mean q", "B0 SD"),
     row.names=FALSE)
    
