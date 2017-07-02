@@ -1,10 +1,17 @@
 ---
-layout: post
-title: What happens when a population is not closed? Part I
-published: TRUE
+title: "What happens when a population is not closed? Part I"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
 bibliography: PSref.bib
-csl: ecology.csl
+csl: ecology.csl  
 ---
+
+<!---
+rmarkdown::render_site("2017-06-28-M0-and-closure.Rmd")# build website
+--->
+
 <!-- Knit to HTML or MD
 rmarkdown::render("2017-06-28-M0-and-closure.Rmd")
 
@@ -75,7 +82,7 @@ occasions.
 
  
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE}
 library(Rcapture)
 p<-0.2
 N<-100
@@ -311,9 +318,9 @@ pdat<- ddply(combos,.(gamma_dblprime,n_unobservable),summarize,
     n=length(Nhat),
     sd=sd(Nhat),
     se=sd(Nhat)/sqrt(length(Nhat)))
-plot(mn~gamma_dblprime,pdat, xlab="Migration rate",
+plot(mn~gamma_dblprime,pdat, xlab="Movement rate",
     ylab="Estimated abundance",las=1,
-    main="Effects migration on abundance estimates",type='n',
+    main="Effects movement on abundance estimates",type='n',
     subset=n_unobservable==75,ylim=c(50,230))  
 abline(h=100,col="red",lwd=3,lty=2)
 points(mn~gamma_dblprime,pdat,type='b',

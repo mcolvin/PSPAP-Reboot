@@ -1,11 +1,12 @@
 ---
-layout: post
-title: What happens when a population is not closed? Part I
-published: TRUE
+title: "What happens when a population is not closed? Part I"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
 bibliography: PSref.bib
-csl: ecology.csl
+csl: ecology.csl  
 ---
-
 
 
 Here are the highlights for those that do not want to read the post
