@@ -30,6 +30,19 @@ comes at a trade off of potentially losing bend-level information. But the
 trade offs can be formally evaluated using objectives network we put together
 and the utilities used to value the fundamental objectives.
 
+Keep reading if you want more details. 
+
+Want to engage in the process? Please let us know what you think
+in the comments. Specifically we are interested in your 
+thoughts about small-scale Pallid Sturgeon movements 
+(day to day, bend to bend).
+
+* At the bend level, do you think Pallid Sturgeon stay put
+from one day to the next or do they move from bend to bend?
+* How do small scale movements (day to day, bend to bend)
+vary over the year? 
+* Is there as time of year that scale movements 
+(day to day, bend to bend) are minimized?
 
 ## Background
 

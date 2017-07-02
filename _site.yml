@@ -1,0 +1,22 @@
+name: "PSPAP-V2"
+navbar:
+  title: "PSPAP-V2"
+  left:
+    - text: "Home"
+      icon: fa-home  # handy way to use FontAwesome icons in nav!
+      href: index.html      
+    - text: "Posts"
+      icon": fa-pencil-square-o
+      href: "posts.html"
+output_dir: "_site"
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    includes:
+      in_header: NULL
+      before_body: NULL
+      after_body: include_footer.html    
+    
+
+    

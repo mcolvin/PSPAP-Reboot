@@ -1,0 +1,46 @@
+---
+title: "BLOG"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+---
+
+```{r,eval=FALSE, echo=FALSE, out.width="95%"}
+include_graphics("images/20170321_180723.jpg")
+```
+
+
+<!---
+entries will follow this format:
+<article>
+<h3><a href=""> </a></h3>
+<div class="summary">
+<span><i class="fa fa-calendar"></i> _date_</span>
+<p> ...</p>
+<a class="btn btn-outline-primary btn-sm" href="">Full Post</a>
+</div>
+</article>
+--->
+
+<article>
+<h3><a href="blog-vaccine-heatmap.html">RECREATING THE VACCINE HEATMAP IN PLOTLY WITH R</a></h3>
+<div class="summary">
+<span><i class="fa fa-calendar"></i> _2016-10-14_</span>
+<p>In order to get the data for this visualization you will need to create a free account over at [Project Tyco](www.website.com).  You can download all the datasets if you like but I'm just going to use the Polio data set.  These are the packages that I'm using:...</p>
+<a class="btn btn-outline-primary btn-sm" href="">Full Post</a>
+</div>
+</article>
+
+<hr>
+
+<article>
+<h3><a href="blog-building-site-with-rmarkdown.html">BUILDING THIS SITE WITH RSTUDIO AND RMARKDOWN</a></h3>
+<div class="summary">
+<span><i class="fa fa-calendar"></i> _2016-09-01_</span>
+<p>There _may_ be a special place in hell for blog posts like this that document how someone put together their static site website and hosted it on GitHub.  Especially when there is really great [documentation](rmarkdown.rstudio.com/rmarkdown_websites.html) availible that has been put together by really smart people.  You can even look at Rmarkdown's website source code on [GitHub](https://github.com/rstudio/rmarkdown/tree/gh-pages) to see...</p>
+<a class="btn btn-outline-primary btn-sm" href="">Full Post</a>
+</div>
+</article>
+
+<hr>
