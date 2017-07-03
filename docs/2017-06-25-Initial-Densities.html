@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Estimation of Initial Pallid Sturgeon Densities</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Estimation of Initial Pallid Sturgeon Densities</h1>
+
+</div>
+
+
+<!--
+knitr::knit("2017-06-30-Initial-Densities.Rmd")
+rmarkdown::render("2017-06-30-Initial-Densities.Rmd")
+-->
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>A virtual reference population of known pallid sturgeon abundance is needed to simulate and evaluate the ability of alternative monitoring designs to achieve the fundamental objectives identified during the first population assessment program workshop. One component of creating a spatially explicit pallid sturgeon reference population with known bend-level abundances is to use estimated segment-level population densities to generate those bend level abundances.</p>
+<p><strong>The purpose of this entry is to discuss the process of determining the initial segment-level pallid sturgeon densities utilized in generating a reference population. There are additional spatial considerations that will be forth coming (i.e., spatial distribution of fish within segments). Therefore we ask you to limit any comments to the following points:</strong></p>
+<ul>
+<li>Are the fish density values used reasonable?</li>
+<li>Are there better abundance estimates or density values we may have missed?</li>
+<li>Is it reasonable to generalize densities reported in Table 1 to the segments specified in Table 1?</li>
+<li>Any additional constructive feedback?</li>
+</ul>
+</div>
+<div id="process-overview" class="section level2">
+<h2>Process overview</h2>
+<ol style="list-style-type: decimal">
+<li><strong>Spatial Scale</strong>. Pallid sturgeon (PS) densities (fish per rkm) in Upper Basin RPMA 2 and Lower Basin RPMA 4 were considered separately. Furthermore, since the upper and lower sections of RPMA 4 were found to differ in PS densities <span class="citation">[1]</span>, RPMA 4 is split into two groups for initial density purposes: segments 7-9 and segments 10, 13, and 14.</li>
+<li><strong>Fish Origin</strong>. Densities for wild and hatchery fish are reported separately, allowing fish origin information to be tracked throughout the reference population analyses, as needed.</li>
+<li><strong>Pallid sturgeon densities</strong>. Wild and hatchery density estimates are calculated from estimated PS abundances reported in recent literature for RPMA 2 and 4. When the length of river was not explicitly reported, we approximate the length of river by matching the authors’ description of the included reaches to the lengths reported in <span class="citation">[2]</span> and <span class="citation">[3]</span>, allowing density to be calculated.<br />
+</li>
+<li><strong>Dealing with ranges and intervals</strong>. Abundances were often reported as 95% confidence intervals or as a range of estimated mean abundances across a few consecutive years. From these ranges we use the minimum and maximum reported abundances to calculate minimum and maximum densities, respectively (Table 1). In the case of RPMA 4 segments 7-9, minimum and maximum density are estimated from density plots <span class="citation">[4]</span>. The Mean Density column in Table 1 is calculated from the most current (of those found in our literature search) mean abundance estimate. This estimate was calculated for the year given in the Mean Density Year column.</li>
+<li><strong>Segment-level density</strong>. By relating segment-level density to segment-level abundance, we allow initial segment-level densities to vary (amongst reference populations) in a Poisson fashion with mean segment-level densities equal to the mean densities reported in Table 1.</li>
+</ol>
+</div>
+<div id="how-will-we-use-this-information" class="section level2">
+<h2>How will we use this information?</h2>
+<p>By generating a spatially explicit virtual population of pallid sturgeon we can:</p>
+<ol style="list-style-type: decimal">
+<li>simulate a virtual PS population that mimics what is currently understood about numbers</li>
+<li>sample the population using varying monitoring designs</li>
+<li>know the ‘true’ population metrics like abundance and trend and compare estimated values to the ‘true’ values.</li>
+</ol>
+<p><br> <br></p>
+<p>Table 1. Segment and RPMA densities for wild (W) and hatchery (H) pallid sturgeon.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">RPMA</th>
+<th align="left">Segments</th>
+<th align="center">Fish Type</th>
+<th align="center">Minimum Density (fish/rkm)</th>
+<th align="center">Maximum Density (fish/rkm)</th>
+<th align="center">Mean Density (fish/rkm)</th>
+<th align="center">Mean Density Year</th>
+<th align="center">References</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">1-4</td>
+<td align="center">H</td>
+<td align="center">91.57</td>
+<td align="center">2013</td>
+<td align="center">91.57</td>
+<td align="center">91.57</td>
+<td align="center">[9]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">0.28</td>
+<td align="center">2008*</td>
+<td align="center">0.28</td>
+<td align="center">0.37</td>
+<td align="center">[5]-[8]</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">7-9</td>
+<td align="center">H</td>
+<td align="center">32.30</td>
+<td align="center">2010</td>
+<td align="center">28.62</td>
+<td align="center">32.30</td>
+<td align="center">[4]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">5.70</td>
+<td align="center">2010</td>
+<td align="center">5.43</td>
+<td align="center">8.88</td>
+<td align="center">[4]</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">10, 13, 14</td>
+<td align="center">H</td>
+<td align="center">5.53</td>
+<td align="center">2013</td>
+<td align="center">5.53</td>
+<td align="center">10.17</td>
+<td align="center">[1]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">0.93</td>
+<td align="center">2013</td>
+<td align="center">0.56</td>
+<td align="center">0.93</td>
+<td align="center">[1]</td>
+</tr>
+</tbody>
+</table>
+<p>*Estimated year of data collection based on reference date.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-WS14">
+<p>[1] K.R. Winders, K.D. Steffensen, Population size of pallid sturgeon, <em>Scaphirhynchus albus</em> (Forbes &amp; Richardson, 1905), in the lower Missouri River near Kansas City, Missouri, USA, Journal of Applied Ichthyology. 30 (2014) 1356–1361. doi:<a href="https://doi.org/10.1111/jai.12558">10.1111/jai.12558</a>.</p>
+</div>
+<div id="ref-RPMA">
+<p>[2] RPMAs-and-Segments.pdf, (2017).</p>
+</div>
+<div id="ref-YR">
+<p>[3] O. Ferris, ed., River mile index of the Yellowstone River, Water Resources Divison, Montana Department of Natural Resources and Conservation, Helena, MT, 1976. <a href="https://archive.org/stream/9AEFC9A8-5274-4D3A-AFFA-FAC86CB879E6#page/n1/mode/2up" class="uri">https://archive.org/stream/9AEFC9A8-5274-4D3A-AFFA-FAC86CB879E6#page/n1/mode/2up</a>.</p>
+</div>
+<div id="ref-SPP12">
+<p>[4] K.D. Steffensen, L.A. Powell, M.A. Pegg, Population size of hatchery-reared and wild pallid sturgeon in the lower Missouri River, North American Journal of Fish Management. 32 (2012) 159–166. doi:<a href="https://doi.org/10.1080/02755947.2012.661388">10.1080/02755947.2012.661388</a>.</p>
+</div>
+<div id="ref-J16">
+<p>[5] G.R. Jordan, E.J. Heist, P.J. Braaten, A.J. DeLonay, P. Hartfield, D.P. Herzog, K.M. Kappenman, M.A.H. Webb, Status of knowledge of the pallid sturgeon (<em>Scaphirhynchus albus</em> Forbes and Richardson, 1905), Journal of Applied Ichthyology. 32 (2016) 191–207. doi:<a href="https://doi.org/10.1111/jai.13239">10.1111/jai.13239</a>.</p>
+</div>
+<div id="ref-K05">
+<p>[6] M. Klungle, Field accomplishments/agency reports (RPMA 2), in: K. McDonald (Ed.), Upper Basin Pallid Sturgeon Recovery Workgroup 2004 Annual Report, Montana Fish, Wildlife and Parks, Helena, MT, 2005: p. 7. <a href="http://fwp.mt.gov/fwpDoc.html?id=10699" class="uri">http://fwp.mt.gov/fwpDoc.html?id=10699</a>.</p>
+</div>
+<div id="ref-KB05">
+<p>[7] M.M. Klungle, M.W. Baxter, Lower Missouri and Yellowstone rivers pallid sturgeon study, in: K. McDonald (Ed.), Upper Basin Pallid Sturgeon Recovery Workgroup 2004 Annual Report, Montana Fish, Wildlife and Parks, Helena, MT, 2005: pp. 69–91. <a href="http://fwp.mt.gov/fwpDoc.html?id=10699" class="uri">http://fwp.mt.gov/fwpDoc.html?id=10699</a>.</p>
+</div>
+<div id="ref-USFWS07">
+<p>[8] U.S. Fish and Wildlife Service Pallid Sturgeon Recovery Coordinator, 5-year review: Summary and evaluation of pallid sturgeon (<em>Scaphirhynchus albus</em>), Endangered Species Bulletins and Technical Reports (USFWS), Paper 33, Billings, MT, 2007. <a href="http://digitalcommons.unl.edu/endangeredspeciesbull/33" class="uri">http://digitalcommons.unl.edu/endangeredspeciesbull/33</a>.</p>
+</div>
+<div id="ref-R15">
+<p>[9] J. Rotella, Upper basin pallid sturgeon survival estimation project 2015 update, Upper Basin Pallid Sturgeon Workgroup, 2015. <a href="http://www.pallidsturgeon.org/wp-content/uploads/2015/06/2015-ANNUAL-Missouri-River-UPPER-BASIN-WORKGROUP-REPORT-Pallid-Sturgeon-Recovery.pdf" class="uri">http://www.pallidsturgeon.org/wp-content/uploads/2015/06/2015-ANNUAL-Missouri-River-UPPER-BASIN-WORKGROUP-REPORT-Pallid-Sturgeon-Recovery.pdf</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

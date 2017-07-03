@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Estimating abundance using capture-recapture</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Estimating abundance using capture-recapture</h1>
+
+</div>
+
+
+<!-- 
+   
+for blog post:
+docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
+filename<- "2017-06-30-Estimating-Abundance.md"
+knitr::knit("index.Rmd", 
+    output=paste(docs,filename,sep=""))
+
+To do:
+1. set up rep tracking, sim returns 2 outputs, pit and pit+acoustic for bdn
+
+rmarkdown::render("index.Rmd")# render index for this analysis
+# the results of this analysis (i.e., figures, tables) are sourced by the gitbook
+
+-->
+<div id="set-up-simulation-combinations" class="section level1">
+<h1>SET UP SIMULATION COMBINATIONS</h1>
+<p>ntrack&lt;-c(2,5,10,20,30) N&lt;- round(seq(25,5000,length.out=10)) nocc&lt;-c(2:5) p&lt;-seq(0.05,0.5, 0.075) combos&lt;- expand.grid(N=N,nocc=nocc,p=p) nreps&lt;- c(1:100) if(exists(‘out’)==FALSE){out&lt;-list()}</p>
+</div>
+<div id="simulation-to-get-at-ses-and-estimates" class="section level1">
+<h1>SIMULATION TO GET AT SEs AND ESTIMATES</h1>
+<p>inputs&lt;- expand.grid(N=N,nocc=nocc, p=p,reps=nreps,ntrack=ntrack) inputs<span class="math inline">\(id&lt;- paste(inputs\)</span>N,inputs<span class="math inline">\(p,  inputs\)</span>reps,inputs<span class="math inline">\(ntrack,inputs\)</span>nocc, sep=‘-’) done_ids&lt;- paste(out<span class="math inline">\(N,out\)</span>p,out<span class="math inline">\(reps,out\)</span>ntrack,out$nocc,sep=‘-’)</p>
+</div>
+<div id="check-to-see-if-any-simulations-still" class="section level1">
+<h1>CHECK TO SEE IF ANY SIMULATIONS STILL</h1>
+</div>
+<div id="need-to-be-done" class="section level1">
+<h1>NEED TO BE DONE</h1>
+<p>done&lt;-unique(done_ids) inputs&lt;- subset(inputs,!(id %in% done)) out[out==-99]&lt;-NA</p>
+</div>
+<div id="set-up-grid-for-parameterizing-a-cpt" class="section level1">
+<h1>SET UP GRID FOR PARAMETERIZING A CPT</h1>
+<p>if(exists(‘out_bdn’)==FALSE) { out_bdn&lt;-data.frame() }# data.frame to hold output</p>
+</div>
+<div id="set-up-grid-to-parameterize-a-bdn" class="section level1">
+<h1>SET UP GRID TO PARAMETERIZE A BDN</h1>
+<p>nreps&lt;-300000 # NUMBER OF STOCHASTIC REPS,RETURNS 2 SIMS PER REP (ACOUSTIC, NO ACOUSTIC) n_to_do&lt;- nreps-max(out_bdn$reps)# CHECK TO SEE HOW MANY REPS ARE DONE if(n_to_do&gt;0){ bdn_inputs&lt;- data.frame( N=round(runif(n_to_do,5,200),0), nocc=round(runif(n_to_do,1,5),0), p=runif(n_to_do,0.005,0.3), reps=c((nreps-n_to_do+1):nreps), # set this up to track in output ntrack=round(runif(n_to_do,1,30),0)) }</p>
+<p>tables&lt;-function(n) { if(n==“f1”)# reliability, accuracy, and precision { out<span class="math inline">\(N_hat&lt;- ifelse(out\)</span>N_hat&gt; 100<em>out<span class="math inline">\(N,NA,out\)</span>N_hat) out<span class="math inline">\(p_hat&lt;- ifelse(out\)</span>p_hat&gt; 100</em>out<span class="math inline">\(p,NA,out\)</span>p_hat) tmp&lt;-ddply(out,.(type,ntrack,p,N,nocc),summarize, reliability=length(na.omit(N_hat))/length(N_hat), accuracy_N = mean(abs(N_hat-N),na.rm=TRUE)/max(N), accuracy_p = mean(abs(p_hat-p),na.rm=TRUE)/max(p), precision_N = mean(N_hat_se/N_hat,na.rm=TRUE), precision_p = mean(p_hat_se/p_hat,na.rm=TRUE)) return(tmp) } }</p>
+<p>figures&lt;-function(n,…) { add&lt;- list(…) if(n==1) { pdat&lt;-tables(“f1”)</p>
+<pre><code>    par(mfrow=c(5,6),mar=c(0,0,0,0),oma=c(3,5,3,1),las=1,cex.axis=0.8)
+    plot_metrics(metric=&quot;reliability&quot;,NN=add$NN,xxt=&quot;n&quot;,main=TRUE,dat=pdat)
+    plot_metrics(metric=&quot;accuracy_N&quot;,NN=add$NN,xxt=&quot;n&quot;,dat=pdat)
+    plot_metrics(metric=&quot; precision_N&quot;,NN=add$NN,xxt=&quot;n&quot;,dat=pdat)
+    plot_metrics(metric=&quot; accuracy_p&quot;,NN=add$NN,xxt=&quot;n&quot;,dat=pdat)
+    plot_metrics(metric=&quot; precision_p&quot;,NN=add$NN,xxt=&quot;s&quot;,dat=pdat)
+    mtext(side=1, &quot;Occasions&quot;,outer=TRUE,line=2)
+    mtext(side=2, &quot;Metric&quot;,outer=TRUE,line=2,las=3) 
+    }
+
+    
+    
+
+}</code></pre>
+<p>if(nrow(inputs)&gt;0){ # RUN SIMULATION OF VARING INPUTS for(i in 1:nrow(inputs)) { tmp&lt;-sim_ch(inputs=inputs,index=i) tmpp&lt;-estimate(dat=tmp,indx=i) out&lt;-rbind(out,tmpp) cleanup(ask=FALSE) print(round(1/nrow(inputs),4)) } # SAVE SIMULATION RESULTS saveRDS(out,“./output/simulation-results.RDS”) }</p>
+<div id="simulations-to-parameterize-a-bdn" class="section level2">
+<h2>SIMULATIONS TO PARAMETERIZE A BDN</h2>
+<div id="run-simulation-of-varing-inputs" class="section level3">
+<h3>RUN SIMULATION OF VARING INPUTS</h3>
+<p>if(exists(‘bdn_inputs’)==TRUE) { for(kk in 1:nrow(bdn_inputs)) { # SIMULATE DATASET tmp&lt;-sim_ch(inputs=bdn_inputs,index=kk) if(is.null(tmp)==FALSE) { # ESTIMATE tmpp&lt;-estimate(dat=tmp, inputs=bdn_inputs,indx=kk) out_bdn&lt;-rbind(out_bdn,tmpp) cleanup(ask=FALSE) print(round(kk/nrow(bdn_inputs)*100,3))<br />
+} # SAVE SIMULATION RESULTS saveRDS(out_bdn,“./output/BDN-results.RDS”) } }</p>
+<pre><code># SIMULATION CODE TO ESTIMATE THE NUMBER OF PALLID STURGEON </code></pre>
+</div>
+</div>
+</div>
+<div id="in-missouri-river-segments-using-capture-recapture" class="section level1">
+<h1>IN MISSOURI RIVER SEGMENTS USING CAPTURE-RECAPTURE</h1>
+<div id="simulate-capture-recapture-data" class="section level2">
+<h2>SIMULATE CAPTURE-RECAPTURE DATA</h2>
+</div>
+<div id="assumes-m_0" class="section level2">
+<h2>ASSUMES M_0</h2>
+<p>N_reps&lt;- 50 N_fish&lt;- 5000 N_reaches&lt;- 300 p&lt;-runif(N_reaches) N_bend&lt;- rmultinom(N_reps,N_fish,p=p/sum(p)) N_occ&lt;- 4 S_bends&lt;- 10 indx&lt;- matrix(0,nrow=S_bends,ncol=N_reps)</p>
+<p>for(i in 1:N_reps) { indx[,i]&lt;- sample(1:N_reaches, S_bends, replace=FALSE) }</p>
+<p>aa&lt;- matrix(runif(S_bends*N_reps, -3.5,-2),S_bends,N_reps) p_cap&lt;- array(0,c(S_bends,N_occ,N_reps)) for(i in 1:N_reps) { for(j in 1:S_bends) { for(k in 1:N_occ) { p_cap[j,k,i]&lt;- plogis(aa[j,i]) } } }</p>
+<p>ch_out&lt;- list() # capture history of untagged fish ch&lt;- array(0,c(S_bends,N_occ,N_reps))<br />
+for(i in 1:N_reps) { ch_rep&lt;- list() for(j in 1:S_bends) { ch&lt;- matrix(0,N_bend[indx[j,i]] ,N_occ) for(k in 1:N_occ) { ch[,k]&lt;- rbinom(N_bend[indx[j,i]],1,p_cap[j,k,i]) } ch&lt;- ch[which(apply(ch,1,sum)&gt;0),] ch_rep[[j]]&lt;-ch } ch_out[[i]]&lt;- ch_rep }</p>
+<p>library(R2jags) mod&lt;- function() { for(ind in 1:N_inds) { for(bend in 1:S_bends) { z[ind,bend]~dbern(omega[bend]) # LATENT VARIABLE, DATA AUGMENTATION for(occ in 1:N_occ) { logit(p_cap[ind,occ,bend])&lt;- a[bend] p_eff[ind,occ,bend]&lt;- z[ind,bend]*p_cap[ind,occ,bend] # CONDITIONAL CAPTURE PROBABILITY ch[ind,occ,bend]~dbern(p_eff[ind,occ,bend])<br />
+}# j }# } # ind</p>
+<pre><code># DERIVED PARAMETERS
+for(bend in 1:S_bends)
+    {
+    Fish_bend[bend]&lt;-sum(z[,bend]) 
+    }
+N_hat&lt;- N_bends*(sum(Fish_bend[])/S_bends) # ESTIMATED TOTAL
+    
+# PRIORS
+for(bend in 1:S_bends)
+    {
+    omega[bend]~dunif(0,1)
+    a[bend]~dnorm(0,0.37)
+    #for(occ in 1:N_occ)
+    #   {
+    ##  a[occ,bend]~dnorm(0,0.37)
+    #   }
+    }
+}</code></pre>
+<p>outp&lt;- data.frame() for(kk in 1:N_reps) { ch&lt;- ch_out[[kk]] ## INDICES S_bends&lt;- length(ch) N_occ&lt;- max(unlist(sapply(1:length(ch),function(x){ if(length(ch[[x]])&gt;N_occ){N&lt;- ncol(ch[[x]])} if(length(ch[[x]])==N_occ){N&lt;- 1} if(length(ch[[x]])==0){N&lt;- 0} return(N) }))) maxFish&lt;- unlist(sapply(1:length(ch),function(x){ if(length(ch[[x]])&gt;N_occ){N&lt;- nrow(ch[[x]])} if(length(ch[[x]])==N_occ){N&lt;- 1} if(length(ch[[x]])==0){N&lt;- 0} return(N) })) dat_aug&lt;- ifelse(100-max(maxFish)&gt;50,100,250) N_inds&lt;- dat_aug ch_inn&lt;- array(0,c(dat_aug,N_occ,S_bends)) for(i in 1:S_bends) { indxx&lt;- 1:maxFish[i] if(maxFish[i]&gt;0){ch_inn[indxx,,i]&lt;- ch[[i]] } }</p>
+<pre><code>dat&lt;- list(S_bends=S_bends,
+    N_inds=N_inds,
+    N_occ=N_occ,
+    ch=ch_inn,
+    N_bends=300)
+
+## vectors of 0s and 1s indicating whether fish is 
+## present or not
+Z&lt;- matrix(0,dat_aug,length(ch))
+Z[1:(max(maxFish)+10),]&lt;- 1
+
+
+## initial values
+## set for each chain
+inits&lt;- function()
+    {
+    list(a=runif(length(ch),-4,-1),omega=runif(length(ch)),z=Z)
+    }
+    
+## WHAT PARAMTERS TO KEEP TRACK OF DURING ESTIMATION
+params&lt;-c(&quot;a&quot;,&quot;N_hat&quot;,&quot;omega&quot;)  
+
+# THIS WILL ONLY RUN IF YOU HAVE JAGS INSTALLED 
+# AND THE R2jags PACKAGE
+out &lt;- jags(data=dat,
+    inits=inits,
+    parameters=params,  
+    model.file=mod,
+    n.chains = 3,   
+    n.iter = 15000, 
+    n.burnin = 6000, 
+    n.thin=2,
+    working.directory=getwd())
+
+out$BUGSoutput$mean$N_hat # ESTIMATED NUMBER OF FISH IN POOL
+xx&lt;-as.data.frame(out$BUGSoutput$summary)
+xx$true&lt;- c(N_fish,unlist(aa[,kk]),NA, N_bend[indx[,kk],kk]/dat_aug )
+xx$r&lt;-kk
+outp&lt;-rbind(outp,xx)
+}</code></pre>
+</div>
+<div id="site-level" class="section level2">
+<h2>Site-level</h2>
+<ul>
+<li>How many replicates are needed to estimate abundance reliably? What is reliable?
+<ul>
+<li>Constant p</li>
+<li>Heterogeneous capture probability</li>
+<li>Some movement in and out</li>
+</ul></li>
+<li>Benefit of using tagged critters?</li>
+</ul>
+</div>
+<div id="segment-level" class="section level2">
+<h2>Segment-level</h2>
+<ul>
+<li>Estimates from 25% of bends in segment per year?</li>
+<li>Dependent on bend size</li>
+<li>Relate to density?</li>
+<li>Consequences of some movement?</li>
+</ul>
+</div>
+<div id="major-questions" class="section level2">
+<h2>Major questions</h2>
+<p>Each major question corresponds to a chapter in this report.</p>
+<p>Chapter 3. How many occasions are needed to estimate abundance at the bend-level and segment level? Chapter 4.. How should segment estimates be aggregated? 1. Derived from average bend estimates? 2. Estimated at the segment level from bend-level data? 3. Do acoustic tags help in reducing the number of occasions? 1. If so how many tags are needed? 2. Can segment sweeps help in estimating segment level abundance? 4. What is the value of using shovelnose to estimate a common capture probabilities?</p>
+<div id="analysis-objectives" class="section level3">
+<h3>Analysis objectives</h3>
+<p>The objectives of this analysis were to:</p>
+<ol style="list-style-type: decimal">
+<li>evaluate the benefit of using telemetry information in abundance estimates</li>
+<li>if so, then how many telemetry fish and occasions are needed to estimate abundance given accurancy and precision criteria.</li>
+</ol>
+<p>Randomly get fish within segment probably better to just break out to bends and run that way.</p>
+</div>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div id="simulated-population" class="section level3">
+<h3>Simulated population</h3>
+<ul>
+<li>Segment assigned 25 578 1131 1683 2236 2789 3342 3894 4447 5000</li>
+<li>Number of telemetry fish was c(2,5,10,20,30)</li>
+<li>Number of occasions was 2,3,4, or 5</li>
+<li>Detection probabilities were 0.050, 0.125, 0.200, 0.275, 0.350, 0.425, and 0.500</li>
+<li>All possible combinations: 280</li>
+<li>100 replicates of each combination</li>
+</ul>
+</div>
+<div id="abundance-estimator" class="section level3">
+<h3>Abundance estimator</h3>
+<div id="model" class="section level4">
+<h4>Model</h4>
+</div>
+<div id="using-telemetry-fish" class="section level4">
+<h4>Using telemetry fish</h4>
+</div>
+<div id="assumptions" class="section level4">
+<h4>Assumptions</h4>
+<ul>
+<li>No movement</li>
+<li>No mortality</li>
+<li>No tag loss</li>
+<li>Equally vulnerable to capture</li>
+</ul>
+</div>
+</div>
+<div id="design-criteria" class="section level3">
+<h3>Design criteria</h3>
+<p>The design should meet the following criteria: 1. Be estimable for 100% of simulations 2. Estimates mean absolute deviation (MAD) within 20% of true value 3. Mean relative standard error (RSE) of estimate less than or equal to 20% 1. Abundance</p>
+<p>Segment level estimate 1. closed w/in bend (rd) N = sum(N_bend/bend length) 2. closed w/in segment<br />
+3.</p>
+</div>
+<div id="decision-model" class="section level3">
+<h3>Decision model</h3>
+<div id="parameterization" class="section level4">
+<h4>Parameterization</h4>
+</div>
+<div id="effort-and-cost" class="section level4">
+<h4>Effort and Cost</h4>
+<ul>
+<li>Trotlining (3 person crew)
+<ul>
+<li>1 lead; 35 to 50 k/year</li>
+<li>2 technicians ; 22 to 35 k/year</li>
+<li>35% fringe</li>
+</ul></li>
+<li>VR100 @ 2000 x 2</li>
+<li>Telemetry Tags @ 200 to 300 $/tag</li>
+<li>PIT Tags @ 1 $/tag</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p>Rules of thumb, N recaptures? number of fish? use shovelnose for capture probabilities?</p>
+<!--NN: 25 578 1131 1683 2236 2789 3342 3894 4447 5000 -->
+<p><em>Figure 1.</em> Figure of reliability, accuracy, and precision for abundance and detection probability estimates. Abundance estimate reliability (top), accuracy (2nd from top), precision (middle row). Bottom 2 rows present accuracy and precision for detection probability estimates.</p>
+</div>
+</div>
+<div id="analysis-objectives-1" class="section level1">
+<h1>Analysis objectives</h1>
+<ol style="list-style-type: decimal">
+<li>Evaluate the number of recapture occasions need to estimate capture probability(<span class="math inline">\(p\)</span>) and abundance (<span class="math inline">\(N\)</span>) for varying population and capture probabilities</li>
+<li>Evaluate the use of tagged telemetry fish to reduce effort</li>
+</ol>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

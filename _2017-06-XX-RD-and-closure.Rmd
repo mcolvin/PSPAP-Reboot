@@ -1,0 +1,397 @@
+---
+layout: post
+title: Effect of violating closure in a closed population
+published: false
+---
+
+<!-- 
+   
+for blog post:
+docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
+filename<- "2017-06-30-M0-closure.md"
+knitr::knit("index.Rmd", 
+    output=paste(docs,filename,sep=""))
+-->
+## make a ZZ nrow=inds, ncol=nprim*nsec
+
+robustDesign<-function(
+    ## PRIMARY OCCASIONS
+    nprim = 10,
+
+    ## SURVIVAL
+    phi=0.8,
+    # FECUNDITY
+    f=0.1,
+    n=1000, # initial population size
+    n_inn=300, # initial number in study area
+    ## RANDOM MOVEMENT
+    gam_prime=0.3, # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+    gam_d_prime=0.3, # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+    ## SECONDARY OCCASIONS
+    nsec=4,
+    ## CAPTURE PROBABILITY
+    p=0.3,...)
+    {
+    ## SUPER POPULATION
+    Z<- matrix(0,n,nprim)
+    Z_inn<-Z
+    Z_out<-Z
+
+    Z[,1]<-1
+    Z_inn[1:n_inn,1]<-1
+    Z_out[,1]<- 1*(1-Z_inn[,1])
+
+    ## SIMULATE POPULATION DYNAMICS
+    for(i in 2:nprim)
+        {
+        ## SURVIVAL
+        Z[,i]<- rbinom(n=nrow(Z),
+            size=1,
+            prob=phi[i-1]*Z[,i-1])
+        
+        ## MOVEMENT OUT OF STUDY AREA
+        innToOut<- rbinom(n=nrow(Z),
+            size=1,
+            prob=gam_d_prime*Z[,i]*Z_inn[,i-1])
+        innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i-1])
+        
+        ## REMAINING OUT OF STUDY AREA
+        outToOut<- rbinom(n=nrow(Z),
+            size=1,
+            prob=gam_prime*Z[,i]*Z_out[,i-1])
+        outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i-1])
+        Z_inn[which(innToInn+outToInn>0),i]<- 1
+        Z_out[which(outToOut+innToOut>0),i]<- 1
+
+        ## RECRUITMENT
+        ## ASSUME RECRUITS SETTLE OUTSIDE OF 
+        ## STUDY AREA
+        R<-rpois(1,sum(Z[,i])*f)
+        app<- matrix(0,R,nprim)
+        app[,i]<-1
+        Z<- rbind(Z,app)
+        Z_out<- rbind(Z_out,app)
+        app[]<-0
+        Z_inn<- rbind(Z_inn,app)
+        }
+        
+    # SIMULATE CAPTURE HISTORY
+    ## MORE THAN 1 CAPTURE OCCASIONS
+    ch<- matrix(0,nrow(Z),sum(nsec))
+
+    ## LINK SECONDARY OCCASION TO PRIMARY OCCASION
+    primsec<- matrix(cbind(rep(1:nprim,nsec),
+        c(1:sum(nsec))), ncol=2)
+        
+    ## CAPTURE HISTORY CONDITIONAL ON 
+    ## BEING PRESENT (I.E., NOT EMIGRATED)
+    for(j in 1:nrow(primsec))
+        {
+        primocc<- primsec[j,1]
+        ch[,j]<- rbinom(n=nrow(Z),
+            size=1,
+            prob=p[j]*Z[,primocc]*Z_inn[,primocc])
+        }
+
+    ## SUBSET OUT FISH THAT ARE NEVER CAPTURED
+    ch<- ch[which(apply(ch,1,sum)!=0),]
+    ## NEED THIS FOR RMARK
+    # prep data for processing
+    ch<- data.frame(ch=apply(ch,1,paste0,collapse=""),
+        freq=1,stringsAsFactors=FALSE)
+        
+    ## SET UP TIME INTERRVALS
+    ends<-cumsum(nsec) # last sampling occasion
+    occs<- rep(0,sum(nsec))
+    occs[ends]<-1# last occasion in primary
+    occs<- occs[-length(occs)]# drop last 1 for processing 
+    return(list(ch=ch,occs=occs,Z=Z,Z_inn=Z_inn,
+        Z_out=Z_out))}
+
+nprim<-10
+nsec<-c(3,4,5,3,4,5,4,5,6,3)
+out<-robustDesign(
+    nprim = nprim,
+    phi=rep(0.8,nprim-1),
+    f=0.4,
+    n=1000, # initial population size
+    n_inn=300, # initial number in study area
+    gam_prime=0.3, 
+    gam_d_prime=0.3,
+    nsec=nsec,
+    p=rep(0.3,sum(nsec)))
+    
+    
+    
+rd<-process.data(data=out$ch, 
+    model="Robust", 
+    time.intervals=out$occs)
+S=list(formula=~1)# SURVIVAL
+# SHARE = TRUE TO SET C = P
+p=list(formula=~1,share=TRUE)# CAPTURE PROBABILITY
+f0<- list(formula=~time) # NUMBER NOT ENCOUNTERED
+GammaDoublePrime=list(formula=~1,share=TRUE)
+GammaPrime=list(formula=~1)
+fit<-mark(data = rd, 
+	model = "Robust", 
+    time.intervals=time.intervals,
+	model.parameters=list(
+		S=S,
+		GammaDoublePrime=GammaDoublePrime,
+		# GammaPrime=GammaPrime, # not needed when share=TRUE
+		p=p),
+	threads=2,
+	brief=TRUE)
+derived<- fit$results$derived$`N Population Size`
+matplot(cbind(colSums(out$Z_inn),derived$estimate),type='b')
+
+#RDPdfClosed
+
+plogis(summary(fit)$beta$estimate)[1:3]
+#f0 = beta[1] + effect of session then exp
+#exp(summary(fit)$beta$estimate)[-c(1:3)]
+#unlist(summary(fit)$real$f0)
+
+
+
+## Notes
+* Recruitment does not effect estimates of phi, gamma,
+and p
+
+
+
+
+
+
+
+
+
+
+
+
+## Introduction
+
+Relevant assumptions 
+
+1. Fish do not migrate into or out of the study area
+2. Fish vulnerable to capture over the study period
+
+### Objectives
+
+1. Evaluate use of Robust Design in broodstock abundance estimates
+2. Quantify effects of violating the assumption that the population
+is closed to emigration.
+
+## Methods
+
+### Simulating a virtual population
+
+#### Initial abundance
+
+```{r}
+n<- 1000
+n_unobservable=2000
+nprim=5
+nsec=3
+phi=0.8
+gamma_prime=0.3
+gamma_dblprime=0.3
+p=0.3
+
+    
+super_n<- n+n_unobservable # SUPER POPULATION (ONSITE + OFFSITE)
+Z<- matrix(0,super_n,nprim)
+Z_observable<- matrix(0,super_n,nprim)
+Z_unobservable<- matrix(0,super_n,nprim)
+Z[1:super_n,1]<-1
+Z_observable[1:n,1]<-1
+Z_unobservable[(n+1):(n+n_unobservable),1]<-1
+
+
+# SURVIVAL, EMIGRATION, AND MIGRATION
+for(i in 1:super_n) # FOR EACH INDIVIDUAL IN THE SUPER POPULATION
+    {
+    for(j in 2:(nprim)) # FOR PRIMARY OCCASIONS 2:NPRIM
+        {
+        # DOES A FISH SURVIVE, IF IT WAS PREVIOUSLY ALIVE?
+        Z[i,j]<- rbinom(1,1,phi[j-1])*Z[i,j-1]
+
+        prs<-c(
+            # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+            (1-Z_unobservable[i,j-1])*(gamma_dblprime[j-1]),
+            
+            # OBSERVABLE[t-1] --> OBSERVABLE[t]
+            (1-Z_unobservable[i,j-1])*(1-gamma_dblprime[j-1]),
+            
+            # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+            Z_unobservable[i,j-1]*gamma_prime[j-1],
+            
+            # UNOBSERVABLE[t-1]--> 	OBSERVABLE[t]
+            Z_unobservable[i,j-1]*(1-gamma_prime[j-1]))
+
+        state<-sample(1:4,1,prs,replace=FALSE)
+        if(state==1 & Z[i,j]==1){Z_unobservable[i,j]<- 1}
+        if(state==2 & Z[i,j]==1){Z_observable[i,j]<-1}
+        if(state==3 & Z[i,j]==1){Z_unobservable[i,j]<-1}
+        if(state==4 & Z[i,j]==1){Z_observable[i,j]<-1}
+        }
+    }
+    
+    
+    
+        
+    # SIMULATE CAPTURE HISTORY
+    ## MORE THAN 1 CAPTURE OCCASIONS
+    ch<- matrix(0,nrow(Z),sum(nsec))
+    avail2Capture<-ch
+    ## LINK SECONDARY OCCASION TO PRIMARY OCCASION
+    primsec<- matrix(cbind(rep(1:nprim,nsec),
+        c(1:sum(nsec))), ncol=2)
+    ## CAPTURE HISTORY CONDITIONAL ON BEING PRESENT (I.E., NOT EMIGRATED)
+    for(i in 1:super_n)
+        {
+        for(j in 1:sum(nsec))
+            {
+            primocc<- primsec[j,1]
+            avail2Capture[i,j]<-Z_observable[i,primsec[j,1]]
+            ch[i,j]<- rbinom(1,1,p[primocc]*avail2Capture[i,j])
+            }
+        }
+        
+    ## SUBSET OUT FISH THAT ARE NEVER CAPTURED
+    ch<- ch[which(apply(ch,1,sum)!=0),]
+
+    ## NEED THIS FOR RMARK
+    ch2<- data.frame(ch=apply(ch,1,paste0,collapse=""),freq=1,stringsAsFactors=FALSE)# prep data for processing
+
+    # NEED TO MAKE A MATRIX OF THAT INDICATES THE FIRST OCCASION
+    ends<-cumsum(nsec) # last sampling occasion
+    occs<- rep(0,sum(nsec))
+    occs[ends]<-1# last occasion in primary
+    occs<- occs[-length(occs)]# drop last 1 for processing 
+
+
+    return(list(ch=ch2,occs=occs))        
+    }
+
+    
+    
+nprim<- 10
+nsec<- floor(runif(nprim,5,10))
+phi	<- rep(0.8,nprim-1)
+
+# CAPTURE PROBABILITY
+p	<- rep(0.3,nprim)
+
+gamma_prime	<- rep(0.3, nprim-1) # pr(unobservable @ t-1  --> unobservable @ t )
+gamma_dblprime<- rep(0.4, nprim-1) # pr(observable @ t-1 --> unobservable  @ t   )
+
+n<- 175 # initial population size
+n_unobservable<- 200 # UNOBSERVABLE
+
+out<-sim_rd_ch(n=n, 
+    n_unobservable=n_unobservable, 
+    nprim=nprim,
+    nsec=nsec,
+    phi=phi,
+    gamma_prime=gamma_prime,
+    gamma_dblprime=gamma_dblprime,
+    p=p) 
+
+
+rd<-process.data(data=out$ch, model="Robust", time.intervals=out$occs)
+rd_ddl<-make.design.data(rd)
+
+S=list(formula=~1)# SURVIVAL
+# SHARE = TRUE TO SET C = P
+p=list(formula=~1,share=TRUE)# CAPTURE PROBABILITY
+f0<- list(formula=~1) # NUMBER NOT ENCOUNTERED
+GammaDoublePrime=list(formula=~1)
+GammaPrime=list(formula=~1)
+fit<-mark(data = rd, 
+	model = "Robust", 
+    time.intervals=time.intervals,
+	model.parameters=list(
+		S=S,
+		GammaDoublePrime=GammaDoublePrime,
+		GammaPrime=GammaPrime,
+		p=p),
+	threads=2,
+	brief=TRUE)
+derived<- fit$results$derived$`N Population Size`
+saveRDS(derived,"./output/derived.RDS")
+
+cleanup(ask=FALSE)
+
+
+
+
+
+#### Recruitment
+
+
+
+#### Survival
+
+#### Migration rates
+
+Assumes random movement where $\gamma^{\prime}=\gamma^{\prime\prime}.
+
+see http://www.montana.edu/rotella/documents/502/lab09Robust.Rmd
+to specify gamma parameters
+
+Process the data for estimation
+
+```{r}
+time.intervals=c(0,0,1,0,0,1,0,0,1,0,0,1,0,0)
+
+rd=process.data(data=rd.inp, model="Robust", time.intervals=time.intervals)
+
+names(rd)
+
+# take a look at the data
+head(rd$data)
+
+# check the number of primary occasions 
+rd$nocc
+
+# check the number of secondary occasions 
+rd$nocc.secondary
+```
+
+
+Set up Gamma'' to vary among primary occasions?
+Then specify the Gammas to be shared (random movement)
+```{r}
+GammaDoublePrime.random=list(formula=~time,share=TRUE)
+```
+
+Now we can set up the design matrix to be estimated by Program Mark.
+
+```{r}
+fit_random=mark(data=rd, design.parameters=
+    list(GammaDoublePrime=list(time.bins=c(1,2,3,5)),
+         GammaPrime=list(time.bins=c(2,3,5))),
+    right=FALSE, 
+    model.parameters=list(S=S.time,
+        p=p.session,
+        GammaDoublePrime=GammaDoublePrime.random))
+```
+
+### Catch process
+
+
+### Estimating abundance and demographic rates
+
+### Consequence of removing fish on estimates
+
+### Consequences of violating closure assumption
+
+
+
+## Results
+
+
+## Discussion
+
+

@@ -8,7 +8,9 @@ navbar:
     - text: "Posts"
       icon": fa-pencil-square-o
       href: "posts.html"
-output_dir: "_site"
+output_dir: "docs"
+exclude: ["include_header.html","include_head.html","include_footer.html","header_banner.html","*.bib","*.csv", "*.csl","*.R"]    
+include: [".nojekyll"]    
 output:
   html_document:
     theme: cosmo
@@ -17,6 +19,5 @@ output:
       in_header: NULL
       before_body: NULL
       after_body: include_footer.html    
-    
 
     

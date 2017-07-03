@@ -1,0 +1,400 @@
+
+<!--
+# Missouri River pallid sturgeon declines and recovery program
+censored to keep index file
+Chapter 2
+
+to do:
+* add a figure of Proportion sampled for each year
+* add a figure of year and each bend with 0---0 for each sampling occasion.
+-->
+
+ 
+```{r,echo=TRUE}
+library(RODBC)
+library(reshape2)
+library(plyr)
+
+source("R/1_global.R")
+bends<- sqlFetch(com3, "PSPAP-Bends-Meta")
+# SUMMARY TABLE OF THE NUMBER OF BENDS WITHIN SEGMENT
+bends$tmp<- 1
+
+# BEND SUMMARY TABLE
+xx<- plyr::ddply(bends,.(B_SEGMENT),summarize,
+    seglength = sum(LENGTHRKM),
+    N=sum(tmp),
+    minRKM = min(LENGTHRKM),
+    mnRKM = mean(LENGTHRKM),
+    maxRKM = max(LENGTHRKM))
+ ```   
+
+# Missouri River pallid sturgeon declines and recovery program
+
+## About the PSPAP
+
+The Pallid Sturgeon Population Assessment Program (PSAPS) began in 2003. 
+
+Current population assessment overview
+Background and implementation
+The PSPAP program began in 2003 
+Ramped up in xxx The Pallid Sturgeon
+
+
+## Spatial extent, grain, organization, and sampling 
+
+The spatial grain of the monitoring program is the river bend, defined 
+as {welker and drobish}. Within each segment, 25% of bends are randomly 
+sampled annually. Bends may be sampled the following year if selected 
+and there are no fixed reaches that are sampled each year. 
+
+figure \@ref(fig:xxxx) and stuff
+\@ref(study-area)
+
+
+Missouri River pallid sturgeon recovery is limited to the upper and 
+lower Missouri. River segments, Recovery Priority Management Areas 
+(RPMA) 2 and 4 respectively (Figure 1.1). As part of the Effects 
+Analysis (EA), RPMA 2 and 4 are referred to as the upper and lower 
+basins respectively. 
+
+
+
+
+
+```{r xxxx, echo=FALSE, out.width="95%",fig.cap="Major Missouri River pallid sturgeon management units considered as part of the ongoing EA and adaptive management planning. The Pallid Sturgeon Population Assessment Program is implemented in the upper, segmented, and lower Missouri River."} 
+include_graphics("analyses/01-Study-Area/figures/study-area-1.png")
+```
+    
+
+The objectives of the Pallid Sturgeon Population Assessment Program are:
+
+Objectives
+1. Evaluate annual results and long-term trends in pallid sturgeon 
+population abundance and geographic distribution throughout the Missouri 
+River System. 
+2. Evaluate annual results and long-term trends of habitat usage of 
+pallid sturgeon and hatchery-stocked pallid sturgeon by season and life 
+stage. 
+3. Evaluate population structure and dynamics of pallid sturgeon in the 
+Missouri River system. 
+4. Evaluate annual results and long-term trends in the population 
+abundance of native target species and geographic distribution 
+throughout the Missouri River system. These target species include: 
+shovelnose sturgeon (_Scaphirhynchus platorynchus_), blue sucker 
+(_Cycleptus elongates_), sauger (_Zander canadense_), plains and Western 
+silvery minnows (_Hybognathus_ spp.), sand shiner (_Notropis stramineus_), 
+and three main channel inhabiting cyprinids in the genus _Macrhybopsis_. 
+These three species, sturgeon chub (_M. gelida_), sicklefin chub (_M. 
+meeki_), and speckled chub (_M. aestivalis_), are the main forage for 
+piscivorous pallid sturgeon and are rare themselves in some sections of 
+the Missouri River. 
+5. Evaluate annual results and long-term trends of habitat usage of the 
+target native species by season and life stage. 
+6. Evaluate annual results and long-term trends in all remaining 
+species (minimum of 50 fish collected/species) population abundance and 
+geographic distribution throughout the Missouri River system. 
+
+
+
+
+RPMA 2 (RM 1771.5-1568)
+
+* Segment 1 (RM 1771.5-1760) Fort Peck Dam to Confluence of Milk River
+* Segment 2 (RM 1760-1701) Milk River to Wolf Point
+* Segment 3 (RM 1701-1582) Wolf Point to Yellowstone River Confluence
+* Segment 4 (RM 1582-1568) Yellowstone to headwaters of Lake Sakakawea
+
+
+RPMA 4 (lower basin; Gavins Point to Mississippi River)
+
+* Segment 7 (RM 881-750) Gavins Point to Ponca Bend
+* Segment 8 (RM 750-595.5) Lower Ponca Bend to Platte River
+* Segment 9 (RM 595.5-367.5) Platte River to Kansas River
+* Segment 10 (RM 367.5-250) Kansas River to Grand River
+* Segment 11 (RM 0-20) Kansas River Segment
+* Segment 13 (RM 250-130) Grand River to Osage River
+* Segment 14 (RM 130-0) Osage River to Mississippi River
+
+Note that segment 12 was merged into segment 13 in 2005.
+
+Sampling is required in the segments defined above as part of the PSPAP. 
+Additional segments are identified for major tributaries of the RPMA 2 
+and 4 and can be sampled as needed. These segments can also specify 
+reservoirs (i.e., segments 51 to 56). 
+
+<!--
+make this inline a bit more readable by making assignments above.
+-->
+The upper basin contains `r sum(xx[xx$B_SEGMENT %in% c(1:4),]$N)` bends 
+and `r round(sum(xx[xx$B_SEGMENT %in% c(1:4),]$seglength),0)` km of 
+river. The lower basin is longer than the upper basin covering `r 
+round(sum(xx[xx$B_SEGMENT %in% c(7:11,13,14),]$seglength),0)` rkm and `r 
+sum(xx[xx$B_SEGMENT %in% c(7:11,13,14),]$N)` bends. Bends in the upper 
+and lower basin vary in length and average `r 
+round(mean(bends[bends$B_SEGMENT %in% c(1:4),]$LENGTHRKM),1)` and `r 
+round(mean(bends[bends$B_SEGMENT %in% c(7:11,13,14),]$LENGTHRKM),1)` rkm 
+respectively. 
+
+
+The approach evaluated here was designed to inform pallid sturgeon 
+monitoring and assessment objectives and integrate with the Pallid 
+Sturgeon population model. The core of sampling effort is based on a 
+robust design and an integrative population model proposed to serve as 
+the population inventory framework assimilating data needed to estimate 
+parameters for the population model, calibrate catch data, and to 
+provide a check on population estimate trends. The objectives of the 
+population assessment approach described here is to develop and approach 
+that: 
+
+
+## Capture-recapture of marked Individuals
+
+Historically, individual Pallid Sturgeon were marked with passive 
+integrated transponder (PIT), radio or acoustic tag. PIT tags provide a 
+way to uniquely identify fish when they are captured, but the amount of 
+information provided by PIT tags is constrained by recapture of the 
+fish. However if a PIT tagged fish is recaptured, it can inform 
+estimates of survival, origin (i.e., natural, hatchery), and growth. 
+Alternatively, fish that are tagged with an acoustic or radio tags can 
+be actively tracked or passively detected, informing migration rates, 
+habitat use, and survival. Using marked fish within a robust design will 
+likely be limited to PIT tagged fish; however use of acoustic or radio 
+tagged fish is discussed below. Design and Understanding from 
+Simulations A preliminary simulation was performed as a proof of concept 
+to evaluate whether a capture-recapture study of individual fish using a 
+robust design would be feasible on a river the size of the Missouri 
+River. First a geographic template was used based on the current PSPAP 
+river bend sampling units, where a river bends are defined as a three 
+continuous habitats (channel cross-over, inside bend, outside bend) and 
+vary in number and size from for the lower and upper basin (Lower: 
+N=317, mean=4 rkm, min=0.2, max=19; Upper: N=157, mean=2.3, min=0.6, 
+max=8). 
+
+Simulations were performed using the lower basin sampling units 
+as templates. Population dynamics were simulated given known 
+recruitment, survival, and abundance. Given the population dynamics, 
+capture histories were simulated for two levels of capture probability 
+0.1 and 0.4. These values were selected based on capture probability 
+estimates (Rotella and Hadley 2010, Steffensen et al. 2015). These 
+simulated capture histories were then used to estimate population 
+abundance, survival, and recruitment. The robust design estimator used 
+was the simplest case, assuming homogenous capture probabilities among 
+secondary sampling units and that capture probability was homogenous 
+among bends. The simulation used 5 primary sampling periods and varying 
+secondary sampling occasions (2 through 10) to evaluate estimator 
+performance, reliability, and effort levels. Within a primary sampling 
+occasion at least 2 secondary capture occasions are required to estimate 
+the population using capture-recapture of marked individuals and more 
+are likely needed if heterogeneous capture probabilities are present. 
+Over a spatial extent, sampling at least 20% of the river bends was 
+necessary in preliminary simulations. While this preliminary simulation 
+does not address specific gears, selecting gears and sampling occasions 
+that maximize catch will likely result in reduced effort. Based on 
+preliminary analyses, the population abundance could be estimated 
+(Figure 2). With the exception of a capture probability of 0.1 
+reasonable abundance estimates were achieve by sampling 20% of the bends 
+if capture probability was 0.4 (Figure 2). If capture probability was 
+0.1 either more bends needed to be sampled or 6 or greater sampling 
+occasions. There was no appreciable effect of increased secondary 
+occasions to estimate population abundance if capture probability was 
+0.4. It should be recognized these simulations were conducted under the 
+best case scenario (i.e., homogeneous survival and capture probability) 
+and therefore may not reflect the challenges to sampling a large turbid 
+river like the Missouri River and additional study is required to 
+evaluate 'worst case' scenarios. Additional Information to Complete 
+Design This simulation study is preliminary and suggests that a robust 
+design mark recapture approach may be a useful monitoring approach. To 
+fully complete the robust design, a level 1 study should be implemented 
+to evaluate spatial and temporal configurations required to achieve 
+acceptable population and demographic rate estimates. Additionally, if 
+the monitoring program will be used to detect the effect of management 
+actions, a power analysis must be completed. The amount of effort 
+required to provide reasonable estimates should be considered. Lastly, 
+including auxiliary information such as data from tagging arrays or 
+river tracking in an integrated population model will provide a unifying 
+framework incorporating system level monitoring and providing estimates 
+and feedback necessary to parameterize and calibrate the population 
+model. Caveats and considerations There are many assumptions required to 
+estimate population abundance and demographic rates. For example, in 
+this preliminary analysis survival and detection probability was 
+constant among primary and secondary occasions, which is likely a poor 
+assumption. Additionally, factors affecting Pallid Sturgeon survival, 
+such as age, growth, condition were not evaluated and should be 
+accounted for to improve estimates and also capture the effect of these 
+variables on survival such that they can then be potentially linked to 
+management actions. Additional research will be required to evaluate the 
+trade-offs of efforts with estimate bias and precision. Also, evaluation 
+of how sensitive estimates are to violation of assumption will be 
+necessary prior to implementation of monitoring programs. Lastly, the 
+monitoring design will have to be optimized within the constraints of 
+the finite resources available to monitor Pallid Sturgeon on an annual 
+basis, which is not a trivial task in a large turbid system like the 
+Missouri River. 
+
+             
+
+
+
+Figure 1.2. Upper and lower Missouri River segments establishing the 
+spatial extent of Missouri River pallid sturgeon recovery. Alternating 
+gray and black line segments denote river bends that serve as the 
+spatial grain and sampling unit for population and demographic 
+estimates. 
+
+
+
+
+
+
+
+Table 1.1. Summary of bends within PSPAP Missouri and Kansas River (11) 
+segments. 
+
+
+```{r,echo=FALSE}
+kable(xx, col.names=c("Segment", "Segment length  (KM)",
+    "Number of bends", "Minimum bend length (KM)",
+    "Mean bend length (KM)", "Maximum bend length (KM)"),
+    align='lccccc',digits=1)
+```
+
+
+<!--
+add a figure of Proportion sampled for each year
+add a figure of year and each bend with 0---0 for each sampling 
+occasion.  ------0---0---0
+-->
+
+
+
+
+## About this report {#study-area}
+
+This report steps through simulations to evaluate potential PSPAP 
+designs that align with the the fundamental objectives outlined by the 
+XXXXXX and described above. There are 3 major sections providing the 
+results of simulations to evaluate estimating 1) abundance, 2) 
+demographic rates, and 3) abundance and demographic rates. Within each 
+section the results of analysis are provided with increasing complexity. 
+The results of simple analyses provide the foundation for more complex 
+analyses that may be robust to violation of assumptions, which is likely 
+in the Missouri River. Therefore analyses can be viewed as an iterative 
+process and early iterations are retained in this document for 
+foundation and transparency. 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+Existing evaluations
+Other considerations
+Length, weight,
+Current assessment and AM
+
+The objectives are:
+Fundamental Objective: Avoid jeopardizing the continued existence of 
+the pallid sturgeon from the US Army Corps of Engineers actions on the 
+Missouri River. 
+
+1. Sub-objective 1: Increase pallid sturgeon recruitment to age 1. 
+    * Metrics: primary metric is catch rates of age 0 and age 1 pallid 
+    sturgeon; 
+    * Secondary metrics include model-based estimates of 
+    abundance of age 0 and age 1 pallid sturgeon, and the survival of 
+    hatchery and naturally reproducing fish to age 1. 
+2. Sub-objective 2: Maintain or increase numbers of pallid sturgeon as an 
+interim measure until sufficient and sustained natural recruitment 
+occurs. 
+
+
+Study objectives
+Pallid Sturgeon only...
+
+The objectives of this study are to:
+
+* provide potential approaches that will meet population objective
+* feed into ongoing adaptive management
+* build on or cross walk
+
+
+
+
+
+
+## Tables
+
+Table 1. Estimator types
+
+
+| Type              	| Estimator           	| Abundance 	| Demographic rates 	|
+|-------------------	|---------------------	|:---------:	|:-----------------:	|
+| Capture-recapture 	| Closed population   	|     X     	|                   	|
+|                   	| Cormack-Jolly-Seber 	|           	|         X         	|
+|                   	| Jolly-Seber         	|     X     	|         X         	|
+|                   	| Robust-design       	|     X     	|         X         	|
+|                   	| Pradel              	|           	|         X         	|
+| Unmarked          	| Relative abundance  	|     X     	|                   	|
+|                   	| Occupancy           	|     X     	|                   	|
+|                   	| N-mixture           	|     X     	|                   	|
+|                   	| Dail-Madsen         	|     X     	|         X         	|
+
+
+
+| Level    	| Data     	| Description                                	| Movement 	| Growth 	| Survival 	| Recruitment 	| Abundance 	|
+|----------	|----------	|--------------------------------------------	|:--------:	|:------:	|:--------:	|:-----------:	|:---------:	|
+| Segment 	| Sweep    	| Sweep of river segment for telemetry fish  	|     x    	|        	|     x    	|             	|     a     	|
+|          	| Receiver 	| Sentinel receivers placed between segments 	|     x    	|        	|          	|             	|           	|
+| Bend     	| Sweep    	| Sweep of bend for telemetry fish           	|     x    	|        	|     x    	|             	|     a     	|
+|          	| Trot line	|                                            	|          	|        	|          	|             	|           	|
+|          	| Trawl    	|                                            	|          	|        	|          	|             	|           	|
+|          	| Trawl 2  	|                                            	|          	|        	|          	|             	|           	|
+|          	| Gill net 	|                                            	|          	|        	|          	|             	|           	|
+|          	| Seine    	|                                            	|          	|        	|          	|             	|           	|
+
+
+
+
+S=Denotes the Standard (required) gear type for a given habitat
+E=Denotes a gear that is undergoing an experimental evaluation proposal.
+All other Applications are wild (W)
+Applicable to all gear types and habitats: Deploy gear within a habitat 
+type where conditions (depth, width, velocity) allow proper deployment 
+
+* Island Tips are only associated with Secondary Connected, Deranged, 
+Braided and Dendritic Channels 
+
+* Excludes non-flowing pools
+
+## Habitat Assessment and Monitoring Project (HAMP) 
+
+The HAMP focuses on assessing the physical and biological responses of 
+habitat creation efforts in the channelized Missouri River. Physical 
+responses are characterized by diversity of depth, velocity, slope, 
+substrate, etc., while biological responses are characterized by various 
+metrics related to pallid sturgeon and a series of native target species 
+(i.e., sicklefin chubs, sturgeon chubs, speckled chubs, plains and 
+western silvery minnow, young of the year blue sucker and sauger). 
+
+
+### Objectives of the Project
+
+1. Evaluate annual and multi-year trends in physical diversity (i.e., 
+depth, velocity, substrate) and change in modified sites relative to 
+control sites over time (a control site is a site that remains as 
+unmodified from its current status). 
+2. Evaluate annual and multi-year trends of fish metrics (i.e., catch 
+per unit effort, presence/absence) of pallid sturgeon and target species 
+between modified and control sites. 
+
+

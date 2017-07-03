@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Creating a reference population</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Creating a reference population</h1>
+<h4 class="date"><em>02 July, 2017</em></h4>
+
+</div>
+
+
+<!--
+rmarkdown::render("index.Rmd",output_format='html_document')# build page
+
+??? 
+* How static are habitats within bend... markov matrices of units
+* Don't actually measure habitat dimensions? WTF?
+-->
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>A reference population of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop.</p>
+</div>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
+<p>The objectives of this analysis were to:</p>
+<ol style="list-style-type: decimal">
+<li>Create a spatially explicit pallid sturgeon population with known bend-level abundances, and</li>
+<li>Simulate the reference population for 20 years with varying but known survival and recruitment</li>
+</ol>
+</div>
+<div id="methods" class="section level1">
+<h1>Methods</h1>
+<div id="spatial-extent-and-grain" class="section level2">
+<h2>Spatial extent and grain</h2>
+<p>This analysis was constrained to generate reference pallid sturgeon populations for segments and bend within Missouri River RPMAs 2 and 4. Bends of varying length were used to generate the spatial distribution of pallid sturgeon (Table 1).</p>
+</div>
+<div id="creating-a-reference-population" class="section level2">
+<h2>Creating a reference population</h2>
+<div id="density-formulation" class="section level3">
+<h3>Density formulation</h3>
+<p>We randomly assigned the number of pallid sturgeon occupying each bend given reported segment level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density accounting for bend length as:</p>
+<p><span class="math display">\[N_{segment,bend}\sim Poisson(\lambda_{segment,origin}\cdot Length_{segment,bend}) \text{(1)}\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(N\)</span> is the number of pallid sturgeon within each bend,</li>
+<li><span class="math inline">\(\lambda\)</span> is the segment and origin specific density in fish per RKM,</li>
+<li><span class="math inline">\(Length\)</span> is bend length in RKM,</li>
+<li><span class="math inline">\(segment\)</span> indexes segment within RPMA,</li>
+<li><span class="math inline">\(bend\)</span> indexes bend with segment,</li>
+<li><span class="math inline">\(origin\)</span> indexes whether pallid sturgeon were hatchery or natural origin, and</li>
+<li><span class="math inline">\(bend\)</span> indexes bend within segment.</li>
+</ul>
+</div>
+</div>
+<div id="abundance-formulation" class="section level2">
+<h2>Abundance formulation</h2>
+<p>We also used an abundance formulation to provide additional analysis flexibility. This approach required an segment and origin specific abundance as a vector of bend-specific probabilities</p>
+<p><span class="math display">\[N_{segment,bend}\sim Multinomial(Abundance_{segment,origin}, p_{segment,bend}) \text{(2)}\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(N\)</span> is the number of pallid sturgeon within each bend,</li>
+<li><span class="math inline">\(Abundance\)</span> is the segment and origin specific total pallid sturgeon abundance,</li>
+<li><span class="math inline">\(p\)</span> is the bend specific location probability,</li>
+<li><span class="math inline">\(segment\)</span> indexes segment within RPMA,</li>
+<li><span class="math inline">\(bend\)</span> indexes bend with segment,</li>
+<li><span class="math inline">\(origin\)</span> indexes whether pallid sturgeon were hatchery or natural origin, and</li>
+<li><span class="math inline">\(bend\)</span> indexes bend within segment.</li>
+</ul>
+</div>
+<div id="assumptions" class="section level2">
+<h2>Assumptions</h2>
+<ol style="list-style-type: decimal">
+<li>No movement</li>
+<li>No recruitment</li>
+<li>Survival homogenous among individuals</li>
+</ol>
+</div>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
+<ul>
+<li>Number of bends for each RPMA</li>
+</ul>
+</div>
+<div id="discussion" class="section level1">
+<h1>Discussion</h1>
+<ul>
+<li>Virtual versus power analysis of a post-hoc glm to get trend</li>
+</ul>
+<p>How did wildhaber and adam do it did they do virtual or just trend.</p>
+</div>
+<div id="figures" class="section level1">
+<h1>Figures</h1>
+</div>
+<div id="tables" class="section level1">
+<h1>Tables</h1>
+<p>Table 1. Summary of bends within PSPAP Missouri river segments.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">RPMA</th>
+<th align="center">Segment</th>
+<th align="center">Number of bends</th>
+<th align="center">Minimum length (km)</th>
+<th align="center">Mean length (km)</th>
+<th align="center">Maximum length (km)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">7.89</td>
+<td align="center">7.89</td>
+<td align="center">7.89</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">2</td>
+<td align="center">40</td>
+<td align="center">0.64</td>
+<td align="center">0.64</td>
+<td align="center">0.64</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">3</td>
+<td align="center">91</td>
+<td align="center">0.64</td>
+<td align="center">0.64</td>
+<td align="center">0.64</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">4</td>
+<td align="center">24</td>
+<td align="center">0.97</td>
+<td align="center">0.97</td>
+<td align="center">0.97</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="center">7</td>
+<td align="center">34</td>
+<td align="center">0.16</td>
+<td align="center">0.16</td>
+<td align="center">0.16</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">8</td>
+<td align="center">61</td>
+<td align="center">1.13</td>
+<td align="center">1.13</td>
+<td align="center">1.13</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">9</td>
+<td align="center">81</td>
+<td align="center">1.13</td>
+<td align="center">1.13</td>
+<td align="center">1.13</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">10</td>
+<td align="center">39</td>
+<td align="center">1.61</td>
+<td align="center">1.61</td>
+<td align="center">1.61</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">13</td>
+<td align="center">45</td>
+<td align="center">1.77</td>
+<td align="center">1.77</td>
+<td align="center">1.77</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">14</td>
+<td align="center">56</td>
+<td align="center">1.45</td>
+<td align="center">1.45</td>
+<td align="center">1.45</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2. Segment and river level densities by origin.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">RPMA</th>
+<th align="left">Segments</th>
+<th align="center">Fish Type</th>
+<th align="center">Minimum Density (fish/rkm)</th>
+<th align="center">Maximum Density (fish/rkm)</th>
+<th align="center">Mean Density (fish/rkm)</th>
+<th align="center">Mean Density Year</th>
+<th align="center">References</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">1-4</td>
+<td align="center">H</td>
+<td align="center">91.57</td>
+<td align="center">2013</td>
+<td align="center">91.57</td>
+<td align="center">91.57</td>
+<td align="center">[1]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">0.28</td>
+<td align="center">2008*</td>
+<td align="center">0.28</td>
+<td align="center">0.37</td>
+<td align="center">[2]-[4]</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">7-9</td>
+<td align="center">H</td>
+<td align="center">32.30</td>
+<td align="center">2010</td>
+<td align="center">28.62</td>
+<td align="center">32.30</td>
+<td align="center">[5]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">5.70</td>
+<td align="center">2010</td>
+<td align="center">5.43</td>
+<td align="center">8.88</td>
+<td align="center">[5]</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">10, 13, 14</td>
+<td align="center">H</td>
+<td align="center">5.53</td>
+<td align="center">2013</td>
+<td align="center">5.53</td>
+<td align="center">10.17</td>
+<td align="center">[6]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">0.93</td>
+<td align="center">2013</td>
+<td align="center">0.56</td>
+<td align="center">0.93</td>
+<td align="center">[6]</td>
+</tr>
+</tbody>
+</table>
+<p>*Estimated year of data collection based on reference date.</p>
+</div>
+<div id="code" class="section level1">
+<h1>Code</h1>
+<p>Box 1. Function used to simulate reference populations given pallid sturgeon density, survival, and spatial structure.</p>
+<pre><code>## function(segs=c(1,2,3,4,7,8,9,10,13,14),
+##     bends=NULL,
+##     fish_density=NULL,
+##     nyears=10,
+##     phi=0.95)
+##     {
+##     # this function allocates fish to bends within a segment
+##     # probabilistically given bend weights and determines the survival
+##     # of fish within bend over nyears given survival probabilities
+##     
+##     # inputs
+##     ## segment: segment [1,2,3,4,7,8,9,10,13,14]
+##     ## fish_density: initial density data from load-and-clean; fish/rkm
+##     ## type: input for fish type [hatchery, natural]
+##     ## bends: bend data from load-and-clean
+##     ## nyears: number of years to simulate the population for
+##     ## phi: a matrix of survival probabilities by segment (rows) and 
+##     ##  year (cols)
+##     
+##     # outputs
+##     ## out: a list of 3 objects:
+##     ##  $out: a matrix where each row is a bend and 
+##     ##    each column represents a year; number
+##     ##  $bendMeta: a dataframe including the information in &quot;bends&quot;
+##     ##    with expected segment density (from init_dens), bend abundance,
+##     ##    and segment index columns added
+##     ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
+##     ##    fish status (0=Dead, 1=Alive) where each row represents a fish
+##     ##    living in bend i and each column represents a year  
+##     
+##     # assumptions
+##     ## no movement
+##     ## no recruitment
+##     ## survival homogenous for individuals
+##     
+##     ## ERROR HANDLING
+##     ### PHI
+##     if(dim(phi)[1]!=length(segs) |
+##         dim(phi)[2]!=nyears-1)
+##         {return(print(&quot;Survival(phi) needs to be a matrix \n
+##         with rows equal to the number of segments \n
+##         and the same number of columns as years-1 to simulate&quot;))}
+##     ### INITIAL FISH DENSITY
+##     if(nrow(fish_density)!=length(segs))
+##       {return(print(&quot;Initial fish density (fish_density) needs to be \n
+##         a dataframe of densities by segment with number of \n
+##         rows equal to the number of segments.&quot;))}
+## 
+##     # GET BEND INFORMATION
+##     tmp&lt;- subset(bends, b_segment %in% segs)
+##     tmp&lt;- tmp[order(tmp$b_segment, tmp$bend_num),]## CRITICAL
+##     bends_in_segs&lt;-aggregate(bend_num~b_segment,tmp,length) 
+##     bends_in_segs$phi_indx&lt;-1:nrow(bends_in_segs)
+##     tmp&lt;-merge(tmp, bends_in_segs[,-2],by=&quot;b_segment&quot;,all.x=TRUE)
+##     
+##     # ADD INITIAL DENSITIES TO TMP
+##     tmp&lt;-merge(tmp, fish_density,by=c(&quot;rpma&quot;, &quot;b_segment&quot;),all.x=TRUE)
+##   
+##     # INITIAL ABUNDANCES
+##     ## PULL NUMBER FROM A POISSON AFTER ADJUSTING
+##     ## DENSITY FOR BEND SIZE
+##     tmp$N_ini&lt;-rpois(nrow(tmp),
+##         lambda=tmp$expected_dens*tmp$length.rkm)
+##     ## EXAPAND BENDS FOR EACH FISH
+##     indvidual_meta&lt;- expanded.data&lt;-as.data.frame(lapply(tmp,
+##                    function(x) rep(x,tmp$N_ini)))
+##     ## SET UP INVIDUAL POPULATION
+##     Z&lt;- lapply(1:nrow(tmp),function(x)
+##         {
+##         ### y: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
+##         ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive) 
+##         y&lt;-matrix(0,nrow=tmp$N_ini[x],ncol=nyears) 
+##         y[,1]&lt;-1
+##         for(i in 2:nyears)
+##             {
+##             y[,i]&lt;- rbinom(tmp$N_ini[x],
+##                 size=1,
+##                 prob=phi[tmp$phi_indx[x],i-1]*y[,i-1])
+##             }
+##         return(y)
+##         })
+##     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
+##     out&lt;- lapply(1:nrow(tmp),function(x)
+##         {
+##         colSums(Z[[x]])
+##         })
+##     out&lt;- as.matrix(do.call(&quot;rbind&quot;,out))
+##     
+##     out&lt;-list(out=out, bendMeta=tmp,Z=Z)
+##     return(out)# return relevant stuff
+## }</code></pre>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
