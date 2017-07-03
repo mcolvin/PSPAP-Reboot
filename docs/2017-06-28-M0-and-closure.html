@@ -211,40 +211,36 @@ $(document).ready(function () {
 <!---
 rmarkdown::render_site("2017-06-28-M0-and-closure.Rmd")# build website
 --->
-<!-- Knit to HTML or MD
-rmarkdown::render("2017-06-28-M0-and-closure.Rmd")
-
-filename0<- "2017-06-28-M0-and-closure.Rmd"
-filename<- "2017-06-28-M0-and-closure.md"
-
-# Draft blog post:
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_drafts/"
-knitr::knit(filename,output=paste(docs,filename,sep=""))
-
-# Final blog post
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-knitr::knit(filename0,output=paste(docs,filename,sep=""))
--->
-<div id="in-a-nutshell" class="section level2">
-<h2>In a nutshell</h2>
+<div id="in-a-nutshell" class="section level3">
+<h3>In a nutshell</h3>
 <p>Here are the highlights for those that do not want to read the post in its entirety.</p>
 <ol style="list-style-type: decimal">
 <li>Looking at some recent telemetry data it was apparent that Pallid Sturgeon move around from 1 day to the next, a least in the spring.</li>
 <li>This violates the assumption of closure during secondary periods in a robust design estimator and the consequences of violating this assumption are not transparent.</li>
-<li>To evaluate the effect of movement on abundance estimates we used a simulation study to fit a closed population capture recapture abundance estimator to a virtual population with known population size and capture probability.</li>
+<li>To evaluate the effect of movement on abundance estimates we used a simulation study to fit a closed population capture-recapture abundance estimator to a virtual population with known population size and capture probability.</li>
 <li>We then allowed Pallid Sturgeon to move in and out of the study area with a rates of 0 to 0.35 by increments of 0.05.</li>
 <li>Turns out that with movement in and out of the study area results has a positive bias on abundance estimates.</li>
-<li>This raises some implications for the PSPAP V2.0 as sampling at larger spatial scales (e.g., segment level) minimizes the effect of movement but comes at a trade off of potentially losing bend-level information. But the trade offs can be formally evaluated using objectives network we put together and the utilities used to value the fundamental objectives.</li>
+<li>The bias raises some implications for the PSPAP V2.0 as sampling at larger spatial scales (e.g., segment level) minimizes the effect of movement but comes at a trade-off of potentially losing bend-level information. But the trade-offs can be formally evaluated using objectives network we put together and the utilities used to value the fundamental objectives.</li>
 </ol>
 </div>
-<div id="background" class="section level2">
-<h2>Background</h2>
-<p>In thinking about the bend level as the sampling unit for the PSPAP one of the designs, as well as a design that has been used in the past was a Robust Design. One plan is to continue to use bends as the sampling unit and revisit them over the course of a couple of days. However to estimate the abundance at the bend level we need to assume closure for capture recapture estimates, which might be violated as fish move around from day to day.</p>
+<div id="engage-in-the-process" class="section level3">
+<h3>Engage in the process</h3>
+<p>Want to engage in the process? Please let us know what you think in the comments or email mike.colvin [at] msstate.edu. Specifically, we are interested in your thoughts about small time scale Pallid Sturgeon movements (day to day, week to week).</p>
+<ul>
+<li>At the bend level, do you think Pallid Sturgeon stay put from one day to the next or do they move from bend to bend?</li>
+<li>How do small-scale movements (day to day, bend to bend) vary over the year?</li>
+<li>Is there a time of year that scale movements (day to day, bend to bend) are minimized?</li>
+<li>Are there telemetry datasets that can help evaluate movement at time scales of days to 1-2 weeks for varying seasons?</li>
+</ul>
 </div>
-<div id="approach" class="section level2">
-<h2>Approach</h2>
-<p>We will simulate a virtual population and capture process to evaluate the potential consequences of Pallid Sturgeon using a closed population estimator, the M0 model <span class="citation">(Otis et al. 1978)</span>. The M0 model is one of the simplest capture recapture estimators and it assumes that capture probability is the same among all capture occasions.</p>
-<p>There needs to be 2 or more capture occasions for this estimator to work. Suppose for this evaluation we use 3 occasions and that a sampling crew is using trotlines set overnight. So this effort would consist of a crew setting trotlines, checking gear after 24 hours and marking fish (occasion 1), reseting the lines, returning after 24 hours to check gear and mark fish (occasion 2) and this process continues until 3 occasions are reached. With a capture probability of 0.3 and no fish moving out or into the bend during the 3 days it takes to achieve the 3 capture occasions.</p>
+<div id="background" class="section level3">
+<h3>Background</h3>
+<p>In thinking about the bend level as the sampling unit for potential PSPAP monitoring designs. Recall that maintaining compatibility with legacy data was one of the fundamental objectives. One potential design that meets that objective is to continue to use bends as the sampling unit. If those bends are revisited them over the course of a couple of days, an abundance estimate can be generated using capture-mark-recapture (CMR) estimators. However to estimate the abundance at the bend level we need to assume closure for CMR estimates, which might be violated as fish move around from day to day.</p>
+</div>
+<div id="approach" class="section level3">
+<h3>Approach</h3>
+<p>We simulated a virtual population and capture process to evaluate the potential effects of Pallid Sturgeon movement using a closed population CMR estimator, the M0 model <span class="citation">(Otis et al. 1978)</span>. The M0 model, relative to other CMR closed population estimators is one of the simplest CMR estimators, and it assumes that capture probability is the same among all capture occasions.</p>
+<p>There needs to be 2 or more capture occasions for this estimator to work. Suppose for this evaluation we use 3 occasions and that a sampling crew is using trotlines set overnight. So this effort would consist of a crew setting trotlines, checking gear after 24 hours and marking fish (occasion 1), resetting the lines, returning after 24 hours to check gear and mark fish (occasion 2) and this process continues until 3 occasions are reached. With a capture probability of 0.3 and no fish moving out or into the bend during the 3 days it takes to achieve the 3 capture occasions.</p>
 <table>
 <thead>
 <tr class="header">
@@ -296,7 +292,7 @@ knitr::knit(filename0,output=paste(docs,filename,sep=""))
 </tr>
 </tbody>
 </table>
-<p>Given the capture probability (<span class="math inline">\(p=0.2\)</span>), 3 capture occasions, and that there are 100 Pallid Sturgeon on the bend we would expect not to capture 51 fish (i.e., capture history = 000). If we are lucky we may capture 1 fish all 3 times, the probability of this is 0.008 in the table above (<span class="math inline">\(p\cdot p \cdot p\)</span>).</p>
+<p>Given the capture probability (<span class="math inline">\(p=0.2\)</span>), 3 capture occasions, and that there are 100 Pallid Sturgeon on the bend we would expect not to capture 51 fish (i.e., capture history = 000). If we are lucky we may capture 1 fish all 3 times, the probability of this outcome is 0.008 from the table above and is calculated as the (<span class="math inline">\(0.008=0.2^3=p^3\)</span>).</p>
 <p>The expected captures make several assumptions about population closure. Specifically, the fish contained in the study area:</p>
 <ol style="list-style-type: decimal">
 <li>Stay put (Emigration = 0),</li>
@@ -310,7 +306,7 @@ knitr::knit(filename0,output=paste(docs,filename,sep=""))
 <li>We detect tags perfectly, and</li>
 <li>Capture probability is equal among fish.</li>
 </ol>
-<p>In real life the outcome of sampling a bend over 3 occasions, would look like the table below if the assumptions were not violated.</p>
+<p>In real life, the outcome of sampling a bend over 3 occasions, would look like the table below if the assumptions hold.</p>
 <table>
 <thead>
 <tr class="header">
@@ -345,17 +341,17 @@ knitr::knit(filename0,output=paste(docs,filename,sep=""))
 </tr>
 </tbody>
 </table>
-<p>The population estimate from the M0 model given those capture frequencies was 75.4341967 and the 95% confidence interval of 54.9-121.3. Not too bad, the estimate was a bit lower than 100, but estimates are expected to b be above and below the true value. Let’s demonstrate this by running the same simulation as above but with many replicate datasets, 1000 for this simulation.</p>
+<p>The abundance estimated from the M0 model given those capture frequencies was 75.4341967 and the 95% confidence interval of 54.9-121.3. Not too bad, the estimate was a bit lower than 100, but estimates are expected to b be above and below the true value. Let’s demonstrate this by running the same simulation as above but with many replicate datasets, 1000 for this simulation.</p>
 <p><img src="2017-06-28-M0-and-closure_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>The plot above illustrates the distribution of estimates and the red vertical line denotes the true abundance. We need to look at this plot on log scale because estimates are lognormally distributed. Ok, we have some confidence that our estimator works. Now we can build on this approach to evaluate what happens if Pallid Sturgeon are moving in and out of a bend.</p>
-<p>We can specify random movement as the immigration rate being equal to the emigration rate. Emigration works by moving fish out of the bend but we need a population of fish to immigrate into the population. For example, if the emigration rate was 0.1 we would expect 10 of the 100 Pallid Sturgeon in the bend to leave. There also needs to be Pallid Sturgeon to move into the bend. In this simulation there are 75 Pallid Sturgeon that can potentially immigrate into the bend. Given an emigration rate of 0.1 we can expect 7.5 Pallid Sturgeon to move into the bend. Let’s set the daily emigration and immigration rate from 0 to 0.35 in increments of 0.05 and allow random movement in and out of the bend each day.</p>
+<p>The plot above illustrates the distribution of estimates and the red vertical line denotes the true abundance. We need to look at this plot on log scale because estimates are lognormally distributed. Ok, we have confidence that the estimator works. Now we can build on this approach to evaluate what happens if Pallid Sturgeon are moving in and out of a bend, thereby violating the closure assumption.</p>
+<p>We can specify random movement as the immigration rate being equal to the emigration rate. Emigration works by moving fish out of the bend, but we need a population of fish to immigrate into the population. For example, if the emigration rate was 0.1 we would expect 10 of the 100 Pallid Sturgeon in the bend to leave. There also needs to be Pallid Sturgeon to move into the bend. In this simulation, there are 75 Pallid Sturgeon that can potentially immigrate into the bend. Given an emigration rate of 0.1, we can expect 7.5 Pallid Sturgeon to move into the bend. Let’s set the daily emigration and immigration rate from 0 to 0.35 in increments of 0.05 and allow random movement in and out of the bend each day.</p>
 <p>The figure below illustrates the effect of movement of fish in and out of the bend between occasions on abundance estimates. Specifically, we see that with no migration, abundance estimates were unbiased. Abundance estimates increase with increasing movement of fish in and out of the bend.</p>
 <p><img src="2017-06-28-M0-and-closure_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>The overestimate of abundance is because the capture probability is underestimated. Why is that? Well, consider instances where a marked fish moved out of the bend and was not available for recapture or an unmarked fish moves into the bend after occasion 1. The estimator assumes these fish were in the bend for every sampling occasion and vulnerable to capture. Since that is not the case but the model assumes it is, the capture probability estimate is negatively biased as you can see below and therefore the abundance estimates are positively biased.</p>
+<p>The overestimate of abundance is because the capture probability is underestimated. Why is that? Well, consider instances where a marked fish moved out of the bend and was not available for recapture or an unmarked fish moves into the bend after occasion 1. The estimator assumes these fish were in the bend for every sampling occasion and vulnerable to capture. Since that is not the case, but the model assumes it is, the capture probability estimates end up being negatively biased.</p>
 </div>
 <div id="coming-up" class="section level2">
 <h2>Coming up</h2>
-<p>Next we will look at how the Robust Design fares to violoating this assumption. Stay tuned.</p>
+<p>Coming up we will look at how the Robust Design fares to violating this assumption and other related design questions. Stay tuned.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1>References</h1>
