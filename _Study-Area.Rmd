@@ -42,5 +42,8 @@ figures_study_area(3);fn<-"study-area-hatcheries.png"
 savePlot(paste0(getwd(),"/figures/",fn),type='png')
 ```
 
+```{r}
+#figures_study_area(5)
+```
 
        

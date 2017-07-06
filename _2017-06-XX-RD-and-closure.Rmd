@@ -1,128 +1,196 @@
 ---
-layout: post
 title: Effect of violating closure in a closed population
-published: false
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+bibliography: PSref.bib
+csl: ecology.csl  
 ---
 
-<!-- 
-   
-for blog post:
-docs<- "C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot/docs/_posts/"
-filename<- "2017-06-30-M0-closure.md"
-knitr::knit("index.Rmd", 
-    output=paste(docs,filename,sep=""))
--->
+<!---
+rmarkdown::render_site("2017-06-XX-RD-and-closure.Rmd")# build website
+--->
+
+
+### In a nutshell
+
+### Engage in the process
+
+### Background
+
+
+
+
+```{r}
+library(rowr)
 ## make a ZZ nrow=inds, ncol=nprim*nsec
+## PRIMARY OCCASIONS
+nprim = 10
 
-robustDesign<-function(
-    ## PRIMARY OCCASIONS
-    nprim = 10,
+## SURVIVAL
+phi=rep(0.8,nprim)
+# FECUNDITY
+f=rep(0.1,nprim)
+n=1000 # initial population size
+n_inn=300 # initial number in study area
 
-    ## SURVIVAL
-    phi=0.8,
-    # FECUNDITY
-    f=0.1,
-    n=1000, # initial population size
-    n_inn=300, # initial number in study area
-    ## RANDOM MOVEMENT
-    gam_prime=0.3, # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
-    gam_d_prime=0.3, # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
-    ## SECONDARY OCCASIONS
-    nsec=4,
-    ## CAPTURE PROBABILITY
-    p=0.3,...)
+
+## RANDOM MOVEMENT PRIMARY
+gam_prime=rep(0.7,nprim) # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+gam_d_prime=1-gam_prime # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+
+
+## SECONDARY OCCASIONS
+nsec=rep(4,nprim)
+## RANDOM MOVEMENT SECONDARY
+
+gam_d_prime2<-rep(0.1,nprim) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+gam_prime2<- 1-gam_d_prime2# UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+
+## CAPTURE PROBABILITY
+p=rep(0.3,nprim)
+    
+    
+## SUPER POPULATION
+Z<- matrix(0,n,nprim)
+Z_inn<-Z
+Z_out<-Z
+
+Z[,1]<-1
+Z_inn[1:n_inn,1]<-1
+Z_out[,1]<- 1*(1-Z_inn[,1])
+
+# SIMULATE CAPTURE HISTORY
+## MORE THAN 1 CAPTURE OCCASIONS
+ch<- matrix(0,nrow(Z),sum(nsec))
+
+## LINK SECONDARY OCCASION TO PRIMARY OCCASION
+primsec<- matrix(
+    cbind(rep(1:nprim,nsec),
+    c(1:sum(nsec))), ncol=2)
+
+ 
+## CAPTURE HISTORY FOR T=1    
+## UPDATE WHO IS IN AND OUT
+## AFTER DAY TO DAY MOVEMENT
+i<-1       
+ch<-Z_inn2<-Z_out2<- c()
+for(k in 1:nsec[i])
     {
-    ## SUPER POPULATION
-    Z<- matrix(0,n,nprim)
-    Z_inn<-Z
-    Z_out<-Z
+    ch<- cbind(ch,rbinom(nrow(Z_inn),1,p[i]*Z_inn[,i]*Z[,i]))    
+    ## MOVEMENT OUT OF STUDY AREA
+    innToOut<- rbinom(n=nrow(Z),
+        size=1,
+        prob=gam_d_prime2[i]*Z[,i]*Z_inn[,i])
+    innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i])
+    ## REMAINING OUT OF STUDY AREA
+    outToOut<- rbinom(n=nrow(Z),
+        size=1,
+        prob=gam_prime2[i]*Z[,i]*Z_out[,i])
+    outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i])
+    Z_inn[,i]<-0 
+    Z_inn[which(innToInn==1 | outToInn==1),i]<- 1
+    Z_out[,i]<-0 
+    Z_out[which(outToOut==1 | innToOut==1),i]<- 1
+    Z_inn2<- cbind(Z_inn2,Z_inn[,i])
+    Z_out2<- cbind(Z_out2,Z_out[,i])
+    }    
 
-    Z[,1]<-1
-    Z_inn[1:n_inn,1]<-1
-    Z_out[,1]<- 1*(1-Z_inn[,1])
+ 
 
-    ## SIMULATE POPULATION DYNAMICS
-    for(i in 2:nprim)
+## SIMULATE POPULATION DYNAMICS
+for(i in 2:nprim)
+    {
+    ## SURVIVAL
+    Z[,i]<- rbinom(n=nrow(Z),
+        size=1,
+        prob=phi[i-1]*Z[,i-1])
+    
+    ## MOVEMENT OUT OF STUDY AREA
+    innToOut<- rbinom(n=nrow(Z),
+        size=1,
+        prob=gam_d_prime[i-1]*Z[,i]*Z_inn[,i-1])
+    innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i-1])
+    
+    ## REMAINING OUT OF STUDY AREA
+    outToOut<- rbinom(n=nrow(Z),
+        size=1,
+        prob=gam_prime[i-1]*Z[,i]*Z_out[,i-1])
+    outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i-1])
+    Z_inn[,i]<-0 
+    Z_inn[which(innToInn==1 | outToInn==1),i]<- 1
+    Z_out[,i]<-0 
+    Z_out[which(outToOut==1 | innToOut==1),i]<- 1
+
+   
+    ## SIMULATE DAY TO DAY MOVEMENT AND
+    ## CAPTURE HISTORY    
+    for(k in 1:nsec[i])
         {
-        ## SURVIVAL
-        Z[,i]<- rbinom(n=nrow(Z),
-            size=1,
-            prob=phi[i-1]*Z[,i-1])
-        
+        ch<- cbind.fill(ch,rbinom(nrow(Z_inn),1,p[i]*Z_inn[,i]*Z[,i]))        
         ## MOVEMENT OUT OF STUDY AREA
         innToOut<- rbinom(n=nrow(Z),
             size=1,
-            prob=gam_d_prime*Z[,i]*Z_inn[,i-1])
-        innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i-1])
-        
+            prob=gam_d_prime2[i]*Z[,i]*Z_inn[,i])
+        innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i])
         ## REMAINING OUT OF STUDY AREA
         outToOut<- rbinom(n=nrow(Z),
             size=1,
-            prob=gam_prime*Z[,i]*Z_out[,i-1])
-        outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i-1])
-        Z_inn[which(innToInn+outToInn>0),i]<- 1
-        Z_out[which(outToOut+innToOut>0),i]<- 1
+            prob=gam_prime2[i]*Z[,i]*Z_out[,i])
+        outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i])
+        Z_inn[,i]<-0 
+        Z_inn[which(innToInn==1 | outToInn==1),i]<- 1
+        Z_out[,i]<-0 
+        Z_out[which(outToOut==1 | innToOut==1),i]<- 1
+        Z_inn2<- cbind.fill(Z_inn2,Z_inn[,i])
+        Z_out2<- cbind.fill(Z_out2,Z_out[,i])
+        }  
+    
+    ## RECRUITMENT
+    ## ASSUME RECRUITS SETTLE OUTSIDE OF 
+    ## STUDY AREA
+    R<-rpois(1,sum(Z[,i])*f[i-1])
+    app<- matrix(0,R,nprim)
+    app[,i]<-1
+    Z<- rbind(Z,app)
+    Z_out<- rbind(Z_out,app)
+    app[]<-0
+    Z_inn<- rbind(Z_inn,app)
+    }
 
-        ## RECRUITMENT
-        ## ASSUME RECRUITS SETTLE OUTSIDE OF 
-        ## STUDY AREA
-        R<-rpois(1,sum(Z[,i])*f)
-        app<- matrix(0,R,nprim)
-        app[,i]<-1
-        Z<- rbind(Z,app)
-        Z_out<- rbind(Z_out,app)
-        app[]<-0
-        Z_inn<- rbind(Z_inn,app)
-        }
-        
-    # SIMULATE CAPTURE HISTORY
-    ## MORE THAN 1 CAPTURE OCCASIONS
-    ch<- matrix(0,nrow(Z),sum(nsec))
 
-    ## LINK SECONDARY OCCASION TO PRIMARY OCCASION
-    primsec<- matrix(cbind(rep(1:nprim,nsec),
-        c(1:sum(nsec))), ncol=2)
-        
-    ## CAPTURE HISTORY CONDITIONAL ON 
-    ## BEING PRESENT (I.E., NOT EMIGRATED)
-    for(j in 1:nrow(primsec))
-        {
-        primocc<- primsec[j,1]
-        ch[,j]<- rbinom(n=nrow(Z),
-            size=1,
-            prob=p[j]*Z[,primocc]*Z_inn[,primocc])
-        }
+    
+    
 
-    ## SUBSET OUT FISH THAT ARE NEVER CAPTURED
-    ch<- ch[which(apply(ch,1,sum)!=0),]
-    ## NEED THIS FOR RMARK
-    # prep data for processing
-    ch<- data.frame(ch=apply(ch,1,paste0,collapse=""),
-        freq=1,stringsAsFactors=FALSE)
-        
-    ## SET UP TIME INTERRVALS
-    ends<-cumsum(nsec) # last sampling occasion
-    occs<- rep(0,sum(nsec))
-    occs[ends]<-1# last occasion in primary
-    occs<- occs[-length(occs)]# drop last 1 for processing 
-    return(list(ch=ch,occs=occs,Z=Z,Z_inn=Z_inn,
-        Z_out=Z_out))}
+    
+## SUBSET OUT FISH THAT ARE NEVER CAPTURED
+ch<- ch[which(apply(ch,1,sum)!=0),]
+## NEED THIS FOR RMARK
+# prep data for processing
+ch<- data.frame(ch=apply(ch,1,paste0,collapse=""),
+    freq=1,stringsAsFactors=FALSE)
+    
+## SET UP TIME INTERRVALS
+## FOR PROGRAM MARK
+ends<-cumsum(nsec) # last sampling occasion
+occs<- rep(0,sum(nsec))
+occs[ends]<-1# last occasion in primary
+occs<- occs[-length(occs)]# drop last 1 for processing 
 
-nprim<-10
-nsec<-c(3,4,5,3,4,5,4,5,6,3)
-out<-robustDesign(
-    nprim = nprim,
-    phi=rep(0.8,nprim-1),
-    f=0.4,
-    n=1000, # initial population size
-    n_inn=300, # initial number in study area
-    gam_prime=0.3, 
-    gam_d_prime=0.3,
+
+out<-(list(ch=ch,
+    occs=occs,
+    nprim=nprim,
     nsec=nsec,
-    p=rep(0.3,sum(nsec)))
+    Z=Z,
+    Z_inn=Z_inn,
+    Z_out=Z_out))
+
     
+
     
-    
+    library(RMark)
 rd<-process.data(data=out$ch, 
     model="Robust", 
     time.intervals=out$occs)
@@ -143,7 +211,7 @@ fit<-mark(data = rd,
 	threads=2,
 	brief=TRUE)
 derived<- fit$results$derived$`N Population Size`
-matplot(cbind(colSums(out$Z_inn),derived$estimate),type='b')
+matplot((cbind(colSums(out$Z_inn),derived$estimate)),type='b')
 
 #RDPdfClosed
 
