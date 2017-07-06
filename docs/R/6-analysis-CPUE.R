@@ -2,6 +2,8 @@
 ## SIMULATING DATA ##
 #####################
 
+
+
 # GENERATE THE REFERENCE POPULATION
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
@@ -15,7 +17,7 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 saveRDS(sim_pop,
-        file=paste0("E:/DataDump/sim_pop_version",gsub(":", "_", Sys.time()),".rds"))
+        file=paste0("output/sim_pop_version",gsub(":", "_", Sys.time()),".rds"))
 
 
 # SIMULATE EFFORT & CATCH DATA FOR A FIXED B0_SD GRID
