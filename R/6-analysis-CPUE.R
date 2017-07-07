@@ -42,20 +42,77 @@ replicate(nreps,
                             effort=effort,
                             occasions=3)
               saveRDS(dat,
-                      file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".rds"))  
+                      file=paste0("output/catch_dat_catchability_random_rep",gsub(":", "_", Sys.time()),".rds"))  
             })
 proc.time()-ptm
 
-## LOOK AT TEST OUTPUT
-sim_dat<-readRDS("output/catch_dat_rep2017-07-07 11_43_38.rds")
-sim_dat$true_vals
-head(sim_dat$samp_dat)
-head(sim_dat$catch_dat)
+###################
+#  CPUE ANALYSIS  #
+###################
 
-## TEST NEW GET.TRND
-get_trnd<-get.trnd(sim_dat)
-get_trnd<-do.call(rbind,get_trnd)
-get_trnd
+# ACTUAL TREND
+sim_dat<-readRDS("output/catch_dat_rep2017-07-07 11_43_38.rds")
+  ## NEED TO PICK ANY OUTPUT ASSOCIATED WITH THE SIM_POP USED
+sim_dat$true_vals$b_segment<- as.factor(sim_dat$true_vals$b_segment)
+fit<-lm(log(abundance)~b_segment+year,sim_dat$true_vals)
+trnd<-unname(coef(fit)['year'])
+
+## PULL THE DATA TO BE ANALYZED
+dat_files<-dir("output", pattern="catchability_random")
+
+## FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
+get_trnd<-lapply(dat_files, function(i)
+  {
+    # TREND
+    dat<-readRDS(i)
+    out<-get.trnd(sim_dat=dat)
+    out<-do.call(rbind, out)
+    # FLAGS
+    samp<-dat$samp_dat
+    samp$p<-samp$q*samp$f
+    P<-aggregate(p~b_segment+bend_num+year+gear, samp, sum, subset=occasion==1)
+    P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))  
+    if(nrow(subset(P, flag!=0))==0) {out$flag=0}
+    if(nrow(subset(P, flag!=0))!=0)
+      {
+        out<-merge(out,
+                   aggregate(flag~gear, P, length, subset=flag!=0),
+                   by="gear",all.x=TRUE)
+        out$flag<-ifelse(is.na(out$flag),0,out$flag)
+      }
+    return(out)
+  })
+  
+  #### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+  get_trnd<-do.call(rbind, get_trnd)
+  get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+  #########################################################
+  #### REMOVE RUNS WITH A CERTAIN NUMBER OF FLAGS HERE??? #
+  #########################################################
+  #### BIN CATCHABILITY AND B0_SD HERE IN ORDER  #
+  ####  TO GET A SUMMARY FOR EACH GROUP          #
+  ################################################
+  
+  ### MAKE A SUMMARY TABLE OF RESULTS
+  df<-ddply(get_trnd, .(gear), summarize,
+            mean_trnd=mean(trnd),
+            mean_se=mean(se),
+            max_se=max(se),
+            mean_pval=mean(pval),
+            max_pval=max(pval),
+            mean_flags=mean(flag,na.rm=TRUE),
+            power=sum(sig))
+  df$power<-df$power/length(dat_files)
+  df$bias<-df$mean_trnd-trnd
+
+cpue_trnd<-list(trnd_dat=get_trnd, summary=df)
+
+## SAVE TREND INFORMATION
+### CAN ADD INDICATORS ON SAVE FOR DIFFERENT BINS
+saveRDS(cpue_trnd,file=paste0("output/cpue_trnd_catchability_random.rds"))
+
+proc.time()-ptm
+
 
 ###################################
 ##  TESTING INDIVIDUAL FUNCTIONS  #
@@ -81,9 +138,9 @@ dat_trial<-catch_data(sim_pop=sim_pop,
                       effort=effort)
 
 saveRDS(dat_trial,
-        file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".rds"))
+        file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".rds"))
 save(dat_trial,
-     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".RData"))
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".RData"))
 proc.time()-ptm
 # user      system    elapsed 
 # 68.59     0.28      68.94 
@@ -91,7 +148,7 @@ proc.time()-ptm
 
 ptm<-proc.time()
 save(dat_trial,
-     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".gzip"),
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".gzip"),
      compress="gzip")
 proc.time()-ptm
 # user    system    elapsed 
@@ -100,7 +157,7 @@ proc.time()-ptm
 
 ptm<-proc.time()
 save(dat_trial,
-     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".bzip2"),
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".bzip2"),
      compress="bzip2")
 proc.time()-ptm
 # user    system    elapsed 
@@ -110,14 +167,23 @@ proc.time()-ptm
 
 ptm<-proc.time()
 save(dat_trial,
-     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".xz"),
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".xz"),
      compress="xz")
 proc.time()-ptm
 # user    system    elapsed 
 # 15.78   0.14      16.01
 ## RECUCED TO ~5MB
 
+## LOOK AT TEST OUTPUT
+sim_dat<-readRDS("output/catch_dat_rep2017-07-07 11_43_38.rds")
+sim_dat$true_vals
+head(sim_dat$samp_dat)
+head(sim_dat$catch_dat)
 
+## TEST NEW GET.TRND
+get_trnd<-get.trnd(sim_dat)
+get_trnd<-do.call(rbind,get_trnd)
+get_trnd
 
 
 

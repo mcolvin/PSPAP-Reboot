@@ -335,8 +335,6 @@ catch_data<-function(sim_pop=NULL,
             dat<-subset(b_samp, year==yr & b_segment==tmp$b_segment[x] 
                         & bend_num==tmp$bend_num[x] & occasion==occ)
             P<-aggregate(p~gear,dat,sum)
-            ### FLAG HIGH CPs
-            P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
             ### CAP CPs AT 1
             P$p<-ifelse(P$p>1,1,P$p)
             capture_probability<- ZZ%*%diag(P$p)
