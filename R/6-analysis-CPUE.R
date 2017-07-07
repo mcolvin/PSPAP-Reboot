@@ -55,17 +55,24 @@ proc.time()-ptm
 #  CPUE ANALYSIS  #
 ###################
 
-# ACTUAL TREND
+# ACTUAL POPULATION TREND
 sim_dat<-readRDS("output/catch_dat_rep2017-07-07 11_43_38.rds")
   ## NEED TO PICK ANY OUTPUT ASSOCIATED WITH THE SIM_POP USED
 sim_dat$true_vals$b_segment<- as.factor(sim_dat$true_vals$b_segment)
 fit<-lm(log(abundance)~b_segment+year,sim_dat$true_vals)
 trnd<-unname(coef(fit)['year'])
 
-## PULL THE DATA TO BE ANALYZED
+# CPUE TREND
+## RANDOM DRAWS
+    ########################################################
+    #### NEED TO DECIDE HOW TO HANDLE BINNED CATCHABILITY  #
+    ####  AND B0_SD; CAN LOOP THROUGH HERE OR LOOP THROUGH #
+    ####  FOR THE SUMMARY SECTION                          #
+    ########################################################
+### PULL THE DATA TO BE ANALYZED
 dat_files<-dir("output", pattern="catchability_random")
 
-## FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
+### FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
 get_trnd<-lapply(dat_files, function(i)
   {
     # TREND
@@ -88,35 +95,31 @@ get_trnd<-lapply(dat_files, function(i)
     return(out)
   })
   
-  #### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
-  get_trnd<-do.call(rbind, get_trnd)
-  get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
+### PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+get_trnd<-do.call(rbind, get_trnd)
+get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
   #########################################################
   #### REMOVE RUNS WITH A CERTAIN NUMBER OF FLAGS HERE??? #
   #########################################################
-  #### BIN CATCHABILITY AND B0_SD HERE IN ORDER  #
-  ####  TO GET A SUMMARY FOR EACH GROUP          #
-  ################################################
   
-  ### MAKE A SUMMARY TABLE OF RESULTS
-  df<-ddply(get_trnd, .(gear), summarize,
-            mean_trnd=mean(trnd),
-            mean_se=mean(se),
-            max_se=max(se),
-            mean_pval=mean(pval),
-            max_pval=max(pval),
-            mean_flags=mean(flag,na.rm=TRUE),
-            power=sum(sig))
-  df$power<-df$power/length(dat_files)
-  df$bias<-df$mean_trnd-trnd
+### MAKE A SUMMARY TABLE OF RESULTS
+df<-ddply(get_trnd, .(gear), summarize,
+          mean_trnd=mean(trnd),
+          mean_se=mean(se),
+          max_se=max(se),
+          mean_pval=mean(pval),
+          max_pval=max(pval),
+          mean_flags=mean(flag,na.rm=TRUE),
+          power=sum(sig))
+df$power<-df$power/length(dat_files)
+df$bias<-df$mean_trnd-trnd
 
-cpue_trnd<-list(trnd_dat=get_trnd, summary=df)
-
-## SAVE TREND INFORMATION
-### CAN ADD INDICATORS ON SAVE FOR DIFFERENT BINS
+### STORE AND SAVE TREND INFORMATION
 saveRDS(cpue_trnd,file=paste0("output/cpue_trnd_catchability_random.rds"))
 
 proc.time()-ptm
+
+
 
 
 ###################################
