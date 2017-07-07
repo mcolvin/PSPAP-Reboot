@@ -212,6 +212,7 @@ bend_samples<-function(sim_pop=NULL)
 
 ## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
 ##    RESULTING CAPTURE HISTORIES OF FISH IN SAMPLED BENDS
+catch_dat<-function(sim_pop=NULL,
                      gears=c("GN14", "GN18", "GN41", "GN81",
                              "MF", "OT16", "TLC1", "TLC2", "TN"),
                      catchability=NULL,
