@@ -14,6 +14,7 @@ analyses/_site/
 analyses/_data/
 PSPAP-Population-Assessment-Robust-Design/
 _data/
+_ouput
 
 *.neta
 
@@ -32,6 +33,7 @@ _data/
 # DATA FILES
 
 *.rdata
+*.rds
 
 # NPP FILES
 *.SESSION
