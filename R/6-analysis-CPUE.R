@@ -1,3 +1,55 @@
+#####################
+## SIMULATING DATA ##
+#####################
+
+# GENERATE THE REFERENCE POPULATION
+segs<- c(1,2,3,4,7,8,9,10,13,14)
+nyears<- 10
+
+beta0<- 2.9444
+phi<-matrix(plogis(beta0),length(segs),nyears-1)
+
+sim_pop<-reference_population(segs=segs,
+                              bends=bends,# BENDS DATAFRAME
+                              fish_density=init_dens, # FISH DENSITY PER RKM
+                              phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+
+saveRDS(sim_pop,
+        file=paste0("output/sim_pop_version",gsub(":", "_", Sys.time()),".rds"))
+
+# MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
+ptm<-proc.time()
+nreps=500
+
+replicate(nreps,
+            {
+              ## MEAN CATCHABILITY
+              #q_mean<-runif(9,0.000000, 0.001)
+              #q_mean<-10^(-runif(9,3,6))
+              q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.00005, 0.001),
+                        runif(2,0.000000, 0.00005),runif(1,0.00005, 0.001))
+              ## B0_SD  
+              B0_sd<-runif(9,0,1.5)
+              ## SAMPLING & CATCH DATA
+              dat<-catch_data(sim_pop=sim_pop,
+                            catchability=q_mean,
+                            B0_sd=B0_sd,
+                            effort=effort,
+                            occasions=3)
+              saveRDS(dat,
+                      file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".rds"))  
+            })
+proc.time()-ptm
+
+## LOOK AT TEST OUTPUT
+sim_dat<-readRDS("output/catch_dat_rep2017-07-07 11_43_38.rds")
+sim_dat$true_vals
+head(sim_dat$samp_dat)
+head(sim_dat$catch_dat)
+
+
+
+
 #########################
 ##  TESTING CATCH_DATA  #
 #########################
@@ -16,8 +68,8 @@ sim_pop<-reference_population(segs=segs,
 
 ptm<-proc.time()
 dat_trial<-catch_data(sim_pop=sim_pop,
-                     catchability=rep(0.00002,9),
-                     B0_sd=rep(0.1,9),
+                     catchability=rep(0.000005,9),
+                     B0_sd=rep(0.5,9),
                      effort=effort)
 
 saveRDS(dat_trial,
@@ -58,9 +110,9 @@ proc.time()-ptm
 ## RECUCED TO ~5MB
 
 
-#####################
-## SIMULATING DATA ##
-#####################
+#######################################
+## SIMULATING DATA (EARLIER VERSION) ##
+#######################################
 
 
 
