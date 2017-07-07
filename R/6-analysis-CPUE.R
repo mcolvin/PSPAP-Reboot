@@ -48,7 +48,9 @@ sim_dat$true_vals
 head(sim_dat$samp_dat)
 head(sim_dat$catch_dat)
 
-
+get_trnd<-get.trnd(sim_dat)
+get_trnd<-do.call(rbind,get_trnd)
+get_trnd
 
 
 #########################

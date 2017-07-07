@@ -620,37 +620,38 @@ samp_dat<-function(sim_pop=NULL,
 
 ## 7. GETTING TREND
 get.trnd<-function(sim_dat=NULL,
-                   gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
-                           "OT16", "TLC1", "TLC2", "TN")) 
+                    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
+                            "OT16", "TLC1", "TLC2", "TN")) 
 {
   # USE CATCH +1 TO AVOID CPUE=0
   sim_dat$cpue_long$catch1<-ifelse(sim_dat$cpue_long$effort==0,0,sim_dat$cpue$catch+1)
-  sim_dat$cpue_long$cpue1<-sim_dat$cpue_long$catch1/sim_dat$cpue$effort
   
-  # GET AVERAGE SEGMENT CPUE BY YEAR
-  #dat_occ1<-subset(sim_dat$cpue_long,occasion==1)
-  #tmp<- aggregate(cpue1~year+b_segment+gear,dat_occ1,mean)
-  tmp<- aggregate(cpue1~year+b_segment+gear,sim_dat$cpue_long,mean)
-  tmp$b_segment<- as.factor(tmp$b_segment)
+  # GET SEGMENT CPUE BY YEAR AND GEAR FOR OCCASION 1
+  dat_occ1<-subset(sim_dat$cpue_long,occasion==1)
+  tmp<- aggregate(catch1~year+b_segment+gear,dat_occ1,sum)
+  tmp<- merge(tmp,aggregate(effort~year+b_segment+gear,dat_occ1,sum))
+  tmp$cpue1<-tmp$catch1/tmp$effort
   tmp$lncpue1<- log(tmp$cpue1)
+  tmp$b_segment<- as.factor(tmp$b_segment)
+  
   
   # FIT LINEAR MODEL FOR TREND FOR EACH GEAR
   out<-lapply(gears,function(g)
-    {
-      fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)
-      tmp2<- data.frame( 
-        # THE GOODIES
-        ## GEAR
-        gear=g,
-        ## TREND ESTIMATE
-        trnd=coef(fit)['year'],
-        ## STANDARD ERROR FOR TREND ESTIMATE
-        se=summary(fit)$coefficients['year',2],
-        ## PVALUE FOR TREND ESTIMATE
-        pval=summary(fit)$coefficients['year',4]
-        )
-      }
+  {
+    fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)
+    tmp2<- data.frame( 
+      # THE GOODIES
+      ## GEAR
+      gear=g,
+      ## TREND ESTIMATE
+      trnd=coef(fit)['year'],
+      ## STANDARD ERROR FOR TREND ESTIMATE
+      se=summary(fit)$coefficients['year',2],
+      ## PVALUE FOR TREND ESTIMATE
+      pval=summary(fit)$coefficients['year',4]
     )
+  }
+  )
   # OUTPUT THE GOODIES
   return(out)
 }
