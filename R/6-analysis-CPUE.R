@@ -24,10 +24,11 @@ nreps=500
 replicate(nreps,
             {
               ## MEAN CATCHABILITY
-              #q_mean<-runif(9,0.000000, 0.001)
-              #q_mean<-10^(-runif(9,3,6))
+              #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
+              #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
               q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.00005, 0.001),
                         runif(2,0.000000, 0.00005),runif(1,0.00005, 0.001))
+                        # Accounts for differences in "OT16" and "TN" efforts.
               ## B0_SD  
               B0_sd<-runif(9,0,1.5)
               ## SAMPLING & CATCH DATA
