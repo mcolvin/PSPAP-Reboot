@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Gear Timing Summary</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<div><img src="images/20170321_180723.jpg" width="100%" align="right"></div>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Gear Timing Summary</h1>
+
+</div>
+
+
+<!---
+rmarkdown::render_site("_Gear-Timing-Summary.Rmd")# build website
+--->
+<p>Sturgeon sampling starts October 31 of the preceeding year and goes until October 30 of the current calendar year. Sturgeon season starts in the fall when water temperatures fall below 55F the maximum for gill nets and trotlines and then goes until June 30.</p>
+<p>From Integrative Science Report Sampling occurs from October 31 of the preceding calendar year to October 30 of the current calendar year. Each year includes two sampling seasons: sturgeon-focused (Sturgeon Season; ST) and native fish community-focused (Fish Community Season; FC) season. Sturgeon season runs from fall when water temperatures are first below the maximum set for gill nets and trotline deployment to June 30; however, in attempts to minimize Pallid Sturgeon stress during collection, the sampling year was further defined by the restriction that gill nets and trammel nets could not be used above a water temperature of 12.8C (55F). Fish community season runs from July 1 to October 31, overlapping ST for water temperatures below 12.8C (55F) prior to October 31.</p>
+<div id="when-does-gear-specific-sampling-typically-occur-in-a-year." class="section level2">
+<h2>When does gear specific sampling typically occur in a year.</h2>
+<p>For the upper basin we will look at</p>
+<ol style="list-style-type: decimal">
+<li>GN14 and GN41</li>
+<li>MF</li>
+<li>OT16</li>
+<li>TLC1 and TLC2</li>
+<li>TN</li>
+</ol>
+<p>For the lower basin we will look at</p>
+<ol style="list-style-type: decimal">
+<li>GN18 and 81</li>
+<li>GLC4</li>
+<li>TLS1 and TLS2</li>
+</ol>
+<p><img src="_Gear-Timing-Summary_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>The upper basin fishes more gears for shorter durations. The effort is dominated by trotlines, trammel nets, and otter trawls. Gill newts were used early on but are used during a short window of for the past 5-10 years.</p>
+<p><img src="_Gear-Timing-Summary_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="are-gears-fished-at-the-same-spot-at-the-same-time" class="section level2">
+<h2>Are gears fished at the same spot at the same time?</h2>
+<div id="lower-basin" class="section level3">
+<h3>Lower Basin</h3>
+<p>Some active gears like otter trawls may be fished on the same day as passive gears are set. In the lower basin there were 54 instances of gears being fished on the same day and bend. In all cases combinations were limited to 2 gears.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Gear combination</th>
+<th align="center">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">GN14 &amp; TLC1</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">MF &amp; OT16</td>
+<td align="center">5</td>
+</tr>
+<tr class="odd">
+<td align="center">MF &amp; TLC1</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">MF &amp; TN</td>
+<td align="center">42</td>
+</tr>
+<tr class="odd">
+<td align="center">OT16 &amp; TN</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">TLC1 &amp; TN</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="upper-basin" class="section level3">
+<h3>Upper Basin</h3>
+<p>More gears were fished at the same place and time in the upper basin. There were 549 instances of gears being fished on the same day and bend. The number of gears fished varied from 2 to 4. The combinations of gears set in the same bend on the same day are summarized below.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Gear combination</th>
+<th align="center">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">MF &amp; OT16</td>
+<td align="center">65</td>
+</tr>
+<tr class="even">
+<td align="center">MF &amp; OT16 &amp; TLC1</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">MF &amp; OT16 &amp; TLC1 &amp; TN</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">MF &amp; OT16 &amp; TN</td>
+<td align="center">106</td>
+</tr>
+<tr class="odd">
+<td align="center">MF &amp; TLC1</td>
+<td align="center">14</td>
+</tr>
+<tr class="even">
+<td align="center">MF &amp; TLC1 &amp; TN</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">MF &amp; TN</td>
+<td align="center">109</td>
+</tr>
+<tr class="even">
+<td align="center">OT16 &amp; TLC1</td>
+<td align="center">13</td>
+</tr>
+<tr class="odd">
+<td align="center">OT16 &amp; TLC1 &amp; TN</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">OT16 &amp; TN</td>
+<td align="center">213</td>
+</tr>
+<tr class="odd">
+<td align="center">TLC1 &amp; TN</td>
+<td align="center">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
