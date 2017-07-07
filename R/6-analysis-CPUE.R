@@ -1,3 +1,7 @@
+        #################################
+        ###         NEW OUTPUT        ###
+        #################################
+
 #####################
 ## SIMULATING DATA ##
 #####################
@@ -48,14 +52,14 @@ sim_dat$true_vals
 head(sim_dat$samp_dat)
 head(sim_dat$catch_dat)
 
+## TEST NEW GET.TRND
 get_trnd<-get.trnd(sim_dat)
 get_trnd<-do.call(rbind,get_trnd)
 get_trnd
 
-
-#########################
-##  TESTING CATCH_DATA  #
-#########################
+###################################
+##  TESTING INDIVIDUAL FUNCTIONS  #
+###################################
 
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
@@ -68,17 +72,18 @@ sim_pop<-reference_population(segs=segs,
                               fish_density=init_dens, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
+yy<- bend_samples(sim_pop=sim_pop)
 
 ptm<-proc.time()
 dat_trial<-catch_data(sim_pop=sim_pop,
-                     catchability=rep(0.000005,9),
-                     B0_sd=rep(0.5,9),
-                     effort=effort)
+                      catchability=rep(0.000005,9),
+                      B0_sd=rep(0.5,9),
+                      effort=effort)
 
 saveRDS(dat_trial,
         file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".rds"))
 save(dat_trial,
-        file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".RData"))
+     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".RData"))
 proc.time()-ptm
 # user      system    elapsed 
 # 68.59     0.28      68.94 
@@ -113,12 +118,17 @@ proc.time()-ptm
 ## RECUCED TO ~5MB
 
 
-#######################################
-## SIMULATING DATA (EARLIER VERSION) ##
-#######################################
 
 
 
+
+        #################################
+        ###         OLD OUTPUT        ###
+        #################################
+
+#####################
+## SIMULATING DATA ##
+#####################
 # GENERATE THE REFERENCE POPULATION
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
@@ -259,7 +269,6 @@ summary[which(summary$mean_flags!=0),]
 ###########################
 ##  INDIVIDUAL FUNCTIONS ##
 ###########################
-
 ## Population Simulations
 
 segs<- c(1,2,3,4,7,8,9,10,13,14)
