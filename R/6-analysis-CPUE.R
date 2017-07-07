@@ -1,3 +1,63 @@
+#########################
+##  TESTING CATCH_DATA  #
+#########################
+
+segs<- c(1,2,3,4,7,8,9,10,13,14)
+nyears<- 10
+
+beta0<- 2.9444
+phi<-matrix(plogis(beta0),length(segs),nyears-1)
+
+sim_pop<-reference_population(segs=segs,
+                              bends=bends,# BENDS DATAFRAME
+                              fish_density=init_dens, # FISH DENSITY PER RKM
+                              phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+
+
+ptm<-proc.time()
+dat_trial<-catch_data(sim_pop=sim_pop,
+                     catchability=rep(0.00002,9),
+                     B0_sd=rep(0.1,9),
+                     effort=effort)
+
+saveRDS(dat_trial,
+        file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".rds"))
+save(dat_trial,
+        file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".RData"))
+proc.time()-ptm
+# user      system    elapsed 
+# 68.59     0.28      68.94 
+## BOTH ~6.8MB
+
+ptm<-proc.time()
+save(dat_trial,
+     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".gzip"),
+     compress="gzip")
+proc.time()-ptm
+# user    system    elapsed 
+# 1.69    0.04      1.72 
+## STILL ~6.8MB
+
+ptm<-proc.time()
+save(dat_trial,
+     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".bzip2"),
+     compress="bzip2")
+proc.time()-ptm
+# user    system    elapsed 
+# 10.11   0.01      10.20 
+## REDUCED SLIGHTLY ~6.2MB
+
+
+ptm<-proc.time()
+save(dat_trial,
+     file=paste0("output/trial_catchability_0.00002_B0sd_0.1_rep",gsub(":", "_", Sys.time()),".xz"),
+     compress="xz")
+proc.time()-ptm
+# user    system    elapsed 
+# 15.78   0.14      16.01
+## RECUCED TO ~5MB
+
+
 #####################
 ## SIMULATING DATA ##
 #####################
