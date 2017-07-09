@@ -5,7 +5,12 @@
 #####################
 ## SIMULATING DATA ##
 #####################
-
+source("R/1_global.R")
+source("R/2_functions.R")
+source("R/2_functions-2.R")
+source("R/3_load-and-clean.R")
+source("R/4_figures.R")
+source("R/5_tables.R")
 # GENERATE THE REFERENCE POPULATION
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
