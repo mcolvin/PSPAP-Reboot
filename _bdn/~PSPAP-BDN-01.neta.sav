@@ -1,0 +1,306 @@
+// ~->[DNET-1]->~
+
+// File created by ColvinM at MSStateU using Netica 6.02 on Jul 10, 2017 at 22:49:51 UTC.
+
+bnet PSPAP_BDN_01 {
+autoupdate = TRUE;
+whenchanged = 1499726991;
+
+visual V1 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	ShowLinkStrengths = 1;
+	windowposn = (25, 25, 905, 338);
+	resolution = 72;
+	magnification = 0.707107;
+	drawingbounds = (3189, 1467);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00e1e1e1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00f8eed2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00d3caa6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00c8c8c8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00ffffb4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00ffbdbd;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00dee8ff;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00f0fafa;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet USACE_Core {Color = 0x0000ff00;};
+	NodeSet USFWS_core {Color = 0x00ff0000;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node D {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Model-based estimates of \nsurvival of hatchery and naturally\nreproducing PS to age 1\n";
+	whenchanged = 1499052355;
+	visual V1 {
+		center = (186, 420);
+		dispform = LABELBOX;
+		height = 14;
+		};
+	};
+
+node K {
+	discrete = FALSE;
+	levels = (0, 25, 50, 75, 100);
+	kind = NATURE;
+	parents = (D);
+	title = "Inputs provided (%)";
+	comment = "Provide estimates with associated\nuncertainty needed to run the PS population model";
+	whenchanged = 1499720533;
+	visual V1 {
+		center = (786, 222);
+		dispform = BELIEFBARS;
+		height = 6;
+		link 1 {
+			path = ((291, 385), (687, 254));
+			};
+		};
+	};
+
+node A {
+	discrete = FALSE;
+	levels = (0, 0);
+	kind = NATURE;
+	parents = (D);
+	title = "Quantify PS recruitment\nto age 1.\n";
+	whenchanged = 1499719014;
+	visual V1 {
+		center = (504, 186);
+		dispform = LABELBOX;
+		height = 9;
+		};
+	};
+
+node B {
+	discrete = TRUE;
+	StateComments = ("2\n3\n4", );
+	levels = (2, 4);
+	kind = NATURE;
+	parents = ();
+	title = "RPMA";
+	whenchanged = 1499051672;
+	visual V1 {
+		center = (1284, 822);
+		height = 13;
+		};
+	};
+
+node M {
+	discrete = TRUE;
+	statetitles = ("Trotlines", "Gill nets", "Trammel nets", "Otter Trawls", "Add other combos");
+	kind = DECISION;
+	parents = ();
+	title = "Gear combinations";
+	whenchanged = 1499052476;
+	visual V1 {
+		center = (1362, 942);
+		height = 12;
+		};
+	};
+
+node C {
+	discrete = FALSE;
+	levels = (0, 0.125, 0.25, 0.375, 0.5);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = (M);
+	ExperBase = 1;
+	title = "Catchability";
+	whenchanged = 1499719789;
+	visual V1 {
+		center = (954, 930);
+		height = 16;
+		};
+	};
+
+node E {
+	discrete = FALSE;
+	levels = (0, 0.125, 0.25, 0.375, 0.5);
+	kind = NATURE;
+	parents = (M);
+	title = "Variability in catchability";
+	whenchanged = 1499719783;
+	visual V1 {
+		center = (1674, 768);
+		height = 3;
+		};
+	};
+
+node L {
+	discrete = TRUE;
+	statetitles = ("Catch Effort", "Close cmr", "Open cmr", "Robust design cmr ");
+	kind = DECISION;
+	parents = ();
+	title = "Monitoring Design";
+	whenchanged = 1499052328;
+	visual V1 {
+		center = (576, 936);
+		height = 11;
+		};
+	};
+
+node G {
+	discrete = FALSE;
+	levels = (-50, 20, 90, 160, 230, 300);
+	kind = NATURE;
+	parents = (B, C, E, L);
+	title = "Segement abundance \nbias  (all fish)";
+	comment = "Quantify PS numbers \nas an interim measure until \nsufficient and sustained natural";
+	whenchanged = 1499720179;
+	visual V1 {
+		center = (1284, 456);
+		dispform = BELIEFBARS;
+		height = 2;
+		link 4 {
+			path = ((643, 890), (1188, 521));
+			};
+		};
+	};
+
+node G1 {
+	discrete = FALSE;
+	levels = (0, 25, 50, 75, 100);
+	kind = NATURE;
+	parents = (B, E, C, L);
+	title = "Segement abundance \nprecision (all fish)";
+	comment = "Quantify PS numbers \nas an interim measure until \nsufficient and sustained natural";
+	whenchanged = 1499720975;
+	visual V1 {
+		center = (1674, 450);
+		dispform = BELIEFBARS;
+		height = 1;
+		link 1 {
+			path = ((1327, 781), (1615, 507));
+			};
+		link 4 {
+			path = ((680, 890), (1546, 507));
+			};
+		};
+	};
+
+node G3 {
+	discrete = FALSE;
+	levels = (-50, 20, 90, 160, 230, 300);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = (C, B, E, L);
+	ExperBase = 1;
+	title = "Segement abundance \nprecision (age 2 & 3)";
+	comment = "Quantify PS numbers \nas an interim measure until \nsufficient and sustained natural";
+	whenchanged = 1499720971;
+	visual V1 {
+		center = (954, 456);
+		dispform = BELIEFBARS;
+		height = 15;
+		link 2 {
+			path = ((1247, 781), (1012, 521));
+			};
+		link 3 {
+			path = ((1563, 720), (1103, 521));
+			};
+		};
+	};
+
+node G2 {
+	discrete = FALSE;
+	levels = (-50, 20, 90, 160, 230, 300);
+	kind = NATURE;
+	chance = CHANCE;
+	parents = (C, B, E, L);
+	ExperBase = 1;
+	title = "Segement abundance \nbias  (age 2 & 3)";
+	comment = "Quantify PS numbers \nas an interim measure until \nsufficient and sustained natural";
+	whenchanged = 1499720968;
+	visual V1 {
+		center = (576, 456);
+		dispform = BELIEFBARS;
+		height = 10;
+		};
+	};
+
+node K2 {
+	discrete = FALSE;
+	levels = (0, 0.25, 0.5, 0.75, 1);
+	kind = NATURE;
+	parents = (G, G1, G3, G2);
+	title = "Quantify PS population trend\n";
+	whenchanged = 1499720689;
+	visual V1 {
+		center = (1074, 222);
+		dispform = BELIEFBARS;
+		height = 5;
+		link 2 {
+			path = ((1525, 393), (1193, 267));
+			};
+		link 4 {
+			path = ((713, 391), (955, 277));
+			};
+		};
+	};
+
+node J {
+	discrete = FALSE;
+	levels = (0, 5, 10, 15, 20);
+	kind = NATURE;
+	parents = ();
+	title = "% randomly selected reaches";
+	comment = "Maintain compatiblity \nwith legacy data";
+	whenchanged = 1499719178;
+	visual V1 {
+		center = (1398, 222);
+		dispform = BELIEFBARS;
+		height = 7;
+		};
+	};
+
+node H {
+	discrete = FALSE;
+	levels = (0, 1, 2, 3, 4);
+	kind = NATURE;
+	parents = ();
+	title = "Cost per year (millions)";
+	whenchanged = 1499719362;
+	visual V1 {
+		center = (1656, 222);
+		dispform = BELIEFBARS;
+		height = 8;
+		};
+	};
+
+node U {
+	discrete = FALSE;
+	measure = RATIO;
+	kind = UTILITY;
+	chance = DETERMIN;
+	parents = (A, K, K2, J, H);
+	title = "Utility";
+	whenchanged = 1499720732;
+	visual V1 {
+		center = (1074, 48);
+		height = 4;
+		link 2 {
+			path = ((881, 165), (1058, 59));
+			};
+		link 4 {
+			path = ((1291, 165), (1092, 59));
+			};
+		link 5 {
+			path = ((1583, 165), (1494, 96), (1110, 52));
+			};
+		};
+	};
+NodeSet USACE_Core {Nodes = (D, A);};
+NodeSet USFWS_core {Nodes = (A, D);};
+};
