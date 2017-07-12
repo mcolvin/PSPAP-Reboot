@@ -17,6 +17,7 @@ _data/
 _ouput
 
 *.neta
+*.sav
 
 # Windows Installer files
 *.cab
