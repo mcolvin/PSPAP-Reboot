@@ -14,11 +14,15 @@ analyses/_site/
 analyses/_data/
 PSPAP-Population-Assessment-Robust-Design/
 _data/
-_ouput
+_ouput/
+_photos/
 
 *.neta
 *.sav
-
+*.jpg
+*.JPG
+*.mov
+*.mp4
 # Windows Installer files
 *.cab
 *.msi
