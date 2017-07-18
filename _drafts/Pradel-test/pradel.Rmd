@@ -1,0 +1,320 @@
+---
+title: "Sampling, modeling, experiments that might get at age-0 and age-1 survival-Pradel Model"
+author: Michael E. Colvin
+date: 14 July 2016
+output:
+  html_document:
+    theme: flatly
+    highlight: espresso
+    toc: TRUE
+---
+
+```{r,echo=FALSE}
+options(scipen=15)
+```
+
+
+## Background
+
+The information contained in capture histories informs the survival from 
+one time interval to the next. This informaion when viewed in reverse 
+order contains information on entry into the population. Specifically, 
+prior to being captured a critter is either at large (present but not 
+captured) or not present (i.e., unborn). Therefore looking at capture 
+histories in reverse order estimtates 'recruitment'. Typical with 
+capture-mark-recapture approaches estimated parameters can be estimated 
+and related to covariates. 
+
+
+
+The Pradel model originally developed by Pradel back in the 70s 
+estimates survival and recruitment using this reversal symmetry. 
+Essentially, when looking at a capture history of a fish in reverse with 
+particular examination of the preceeding 0s. Suppose a capture history 
+of a fish is 00010101, on the first 3 occassions a fish could be alive 
+and uncaptured or waiting to be born. Using this information a cmr 
+program may be able to simulaneously model survival and recruitment. 
+This is appealing because recruitment can be thought of simply surviving 
+age-0 or age-1 which can be related to covariates. Thinking outside of 
+the box on this one might be able to model the effect of environmental 
+covariates hypothesized to influence recruitment. 
+
+
+
+The objective of this brief is to explore whether this might make sense. 
+It is not a full proof of concept but a simple what if. Therefore the 
+usual caveats are at work here, specifically this might work well on a 
+computer but may fail miserably in the field. 
+
+
+## Simulating some known data.
+
+To test the approach we need to simulate some data from some known parameters.  
+The Pradel model estimates $\phi$, $p$, and $f$, where these values represent survival, capture probability, and recruitment rate.
+
+For the simualion I simulated 10 occasions, coudld be 10 years, 10 months, so on.
+
+* Survival $\phi$ was set at 0.8
+* Capture probability $p$ was set at 0.3
+* Recruitment rate $f$ was set at 0.195 (i.e., Recruits = $f$*Abundance)
+* Intial population was set to be 2000 critters
+
+```{r}
+# SIMULATE POPULATION AND CAPTURE HISTORIES
+n_occ<- 10
+phi<- rep(0.8,n_occ-1)
+p<- rep(0.3,n_occ)
+f<- 0.195
+n<- 2000 # initial population size
+R<- c(n)
+for(i in 2:n_occ)
+	{
+	R<- c(R,rpois(1,n[i-1]*f))
+	n<- c(n, rbinom(1,n[i-1],phi)+R[i])	
+	}
+super_n<- sum(R) # total population
+# WHEN DO CRITTERS RECRUIT TO THE POPULATION?
+ent<-rep(c(1:length(R)),R)
+ch<-Z<- matrix(0,super_n,n_occ)
+for(i in 1:super_n)
+	{
+	Z[i,ent[i]]<-1
+	indx<- ent[i]+1
+	if(indx<=n_occ)
+		{
+		for(j in indx:n_occ)
+			{
+			Z[i,j]<- rbinom(1,1,phi[j-1]*Z[i,j-1])
+			}
+		}		
+	}
+```
+
+The code above simulates a population of indviduals given a recruitment 
+rate where the number of recruits is a function of the population in 
+this case. It may not be in some cases and this can be account for in 
+the Pradel formulation. Now we can look at the 'true' population 
+dynamics. 
+
+
+```{r}
+plot(colSums(Z),type='b',ylab="Abundance",xlab="Years")
+```
+
+Now we can use the 'true' population dynamics to simulate the capture process and make some capture histories.
+
+```{r}	
+# SIMULATE CAPTURE HISTORY
+for(i in 1:super_n)
+	{
+	for(j in 1:n_occ)
+		{
+		ch[i,j]<- rbinom(1,1,p[j]*Z[i,j])
+		}
+	}
+```
+
+In the capture histories there are fish that were present but not 
+captured, we need to drop those from the histories. 
+
+
+```{r}
+ch<- ch[which(apply(ch,1,sum)!=0),]
+```
+
+The library 'Rmark' gets us access to program mark through R which we can we to set up the capture histories and design matrices.
+
+```{r}
+library(RMark)
+# PROCESS CPATURE HISTORIES INTO A DATA.FRAME
+ch<- data.frame(ch=apply(ch,1, paste,collapse=""),stringsAsFactors = FALSE)
+# PROCESS CPATURE HISTORIES INTO A LIST FOR MARK
+ch_proc<- process.data(ch,model="Pradrec", begin.time=2005)
+# MAKE THE DESIGN MATRIX FOR THE CMR DATA
+ddl<-make.design.data(ch_proc)
+```
+
+Now that the data is all set up we can feed some formulas for $\phi$, $p$, and $f$ to MARK for estimation.
+These are all time invariant formulations (i.e.,$\phi$, $p$, and $f$ are constant over time). 
+
+```{r}
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+f.dot=list(formula=~1)
+m1<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot))
+```
+
+You can also recast the model to estimate lambda. 
+
+
+```{r}
+ch_proc<- process.data(ch,model="Pradlambda", begin.time=2005)
+ddl<-make.design.data(ch_proc)
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+Lambda.dot=list(formula=~1)
+m1<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.dot))
+```
+
+Neat, the lambdas for each year are `r round(exp(coef(m1)[3,1]),5)` with 
+a 95% CIs of `r round(exp(coef(m1)[3,2:3]),5)`. That seems reasonable 
+the population looks to be decreasing over time and hence lambda < 1. 
+
+
+
+## Application to AM and the big picture
+
+The potential application of this is linking managment actions to 
+demographic rates. For example suppose over the 10 years IRC habitat was 
+constructed and hypothesized to influence recruitment. Well in this case 
+we can simulate that is in fact the case. First we need to set up the 
+relation between IRC and recruitment rate. The effect is modeled using a 
+log link. For this example the baseline recruitment rate is 0.26 (the 
+log of that is -1.33) and is the intercept of the equation. The effect 
+of IRC, which might be measured in area is 0.003. Putting those together 
+the equation to predict recruitment rate is $f= exp(\beta_{0} + 
+\beta_{1} \cdot IRC)$ The code below implents this for some IRC values. 
+
+
+```{r}
+irc<- c(37,31,24,27,6,32,10,26,6)
+# EFFECT OF IRC
+B_irc<- 0.008
+B_0<- -1.33
+f<- exp(B_0 + B_irc*irc)
+```
+
+The predicted recruitment as a function of IRC looks like the figure below.
+
+```{r}
+plot(f~irc, ylab="Recruitment rate", xlab="IRC")
+```
+
+### Fitting a covariate to recruitment
+
+Using the same code to simulate a population with constant $\phi$ as above but now allowing $f$ to vary over time as a function of IRC we can simulate the population data.
+
+
+```{r}
+# MODEL AS A FUNCTION OF IRC
+n_occ<- 10
+phi<- rep(0.8,n_occ-1)
+p<- rep(0.3,n_occ)
+n<- 2000 # initial population size
+R<- c(n)
+for(i in 2:n_occ)
+	{
+	R<- c(R,rpois(1,n[i-1]*f[i-1]))
+	n<- c(n, rbinom(1,n[i-1],phi)+R[i])	
+	}
+super_n<- sum(R) # total population
+# WHEN DO CRITTERS RECRUIT TO THE POPULATION?
+ent<-rep(c(1:length(R)),R)
+ch<-Z<- matrix(0,super_n,n_occ)
+for(i in 1:super_n)
+	{
+	Z[i,ent[i]]<-1
+	indx<- ent[i]+1
+	if(indx<=n_occ)
+		{
+		for(j in indx:n_occ)
+			{
+			Z[i,j]<- rbinom(1,1,phi[j-1]*Z[i,j-1])
+			}
+		}		
+	}
+```
+The population dynamics are plotted below.
+
+```{r}
+plot(colSums(Z),type='b',ylab="Abundance", xlab="Occasion")
+```
+
+
+
+Now that we have the true population data we can simulate the capture histories given $p$
+
+```{r}
+# SIMULATE CAPTURE HISTORY
+for(i in 1:super_n)
+	{
+	for(j in 1:n_occ)
+		{
+		ch[i,j]<- rbinom(1,1,p[j]*Z[i,j])
+		}
+	}
+ch<- ch[which(apply(ch,1,sum)!=0),]
+
+```
+Some processing of the simulated data to feed to MARK. 
+
+
+```{r}
+ch<- data.frame(ch=apply(ch,1, paste,collapse=""),stringsAsFactors = FALSE)
+ch_proc<- process.data(ch,model="Pradrec", begin.time=2005)
+ddl<-make.design.data(ch_proc)
+ddl$f$irc<- irc # ADD AMOUNT OF IRC TO USE AS A COVARIATE
+```
+
+Now we can do as we did previously but now there is a new bit relating 
+$f$ to IRC `f.irc=list(formula=~irc+1)`. 
+
+
+```{r}
+# FIT PRADEL RECRUITMENT MODEL WITH F A FUNCTION OF IRC
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+f.irc=list(formula=~irc+1)
+m1<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.irc))
+```
+Well the estimates look good, I fed the simulation a $\beta_{0} = `r 
+B_0`$ and got back `r coef(m1)[3,1]`. For the effect of IRC I used a 
+$\beta_{1} = `r B_irc`$ and got back `r coef(m1)[4,1]`. 
+
+
+  
+**Estimates and true values will not exactly match but will improve with 
+more occasions, recaptures, and so on.** 
+
+
+A information theoretic appraoch could be used to evalaute the effect of 
+IRC versus no effect of IRC. 
+
+
+```{r}
+f.dot=list(formula=~1)
+f.irc=list(formula=~irc+1)
+m1<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot))
+m2<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.irc))
+
+summary(m1)$AICc # AICc value for m1
+summary(m2)$AICc # AICc value for m2
+```
+With AICc values of `r round(summary(m1)$AICc,2)` and `r round(summary(m2)$AICc,2)` for m1 and m2 respectively there might be some weak evidence for an effect of IRC.
+
+
+
+### Fitting a covariate to lambda
+
+Using the same approach we can fit a covariate to lamba. This is not as 
+directly interpretable but simply illustrates the approach. 
+
+
+```{r}
+ch_proc<- process.data(ch,model="Pradlambda", begin.time=2005)
+ddl<-make.design.data(ch_proc)
+ddl$Lambda$irc<- irc # ADD AMOUNT OF IRC TO USE AS A COVARIATE
+Phi.dot=list(formula=~1)
+p.dot=list(formula=~1)
+Lambda.irc=list(formula=~irc+1)
+m1<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.irc))
+```
+
+## Caveats
+
+1. This approach may be useful, or not, but may warrant consideration.
+1. The approach will not get at abundance and therefor will not be useful for getting at some objectives.
+2. It is dependent on many assumptions and conditions and as we all know working on a big river throws some big monkey wrenches.
+3. This simulation made a number of simplifying assumptions, constant $\phi$, constant $p$ which may be relaxed to a degree.
+5. The consequence of violating the assumptions is always problematic.  
+

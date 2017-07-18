@@ -335,8 +335,6 @@ catch_data<-function(sim_pop=NULL,
             dat<-subset(b_samp, year==yr & b_segment==tmp$b_segment[x] 
                         & bend_num==tmp$bend_num[x] & occasion==occ)
             P<-aggregate(p~gear,dat,sum)
-            ### FLAG HIGH CPs
-            P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
             ### CAP CPs AT 1
             P$p<-ifelse(P$p>1,1,P$p)
             capture_probability<- ZZ%*%diag(P$p)
@@ -391,22 +389,28 @@ catch_data<-function(sim_pop=NULL,
 
 
 ## 6. GETTING TREND
+### CURRENTLY CALCULATING TREND FOR OCCASION 1 DATA ONLY
 get.trnd<-function(sim_dat=NULL,
                    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
                            "OT16", "TLC1", "TLC2", "TN")) 
 {
-  # USE CATCH +1 TO AVOID CPUE=0
-  sim_dat$cpue_long$catch1<-ifelse(sim_dat$cpue_long$effort==0,0,sim_dat$cpue$catch+1)
-  sim_dat$cpue_long$cpue1<-sim_dat$cpue_long$catch1/sim_dat$cpue$effort
-  
-  # GET AVERAGE SEGMENT CPUE BY YEAR
-  #dat_occ1<-subset(sim_dat$cpue_long,occasion==1)
-  #tmp<- aggregate(cpue1~year+b_segment+gear,dat_occ1,mean)
-  tmp<- aggregate(cpue1~year+b_segment+gear,sim_dat$cpue_long,mean)
-  tmp$b_segment<- as.factor(tmp$b_segment)
-  tmp$lncpue1<- log(tmp$cpue1)
+  # GET CATCH AND EFFORT DATA
+  ## CATCH
+  tmp<-aggregate(fish_id~b_segment+year+gear,
+                 sim_dat$catch_dat, length, subset=occasion==1)
+  names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
+  ## EFFORT
+  tmp2<-aggregate(f~b_segment+year+gear,
+                 sim_dat$samp_dat, sum, subset=occasion==1)
+  tmp<-merge(tmp2, tmp, all.x=TRUE)
+  # CALCULATE SEGMENT-LEVEL CPUE AND LN(CPUE)
+  ## USE CATCH +1 TO AVOID CPUE=0
+  tmp$catch1<-ifelse(tmp$f==0,0,tmp$catch+1)
+  tmp$cpue1<-tmp$catch1/tmp$f
+  tmp$lncpue1<-log(tmp$cpue1)
   
   # FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+  tmp$b_segment<- as.factor(tmp$b_segment)
   out<-lapply(gears,function(g)
     {
       fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)

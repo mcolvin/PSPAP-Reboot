@@ -1,0 +1,70 @@
+---
+title: "Effect of daily movement on abundance estimates: Robust Design"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+bibliography: PSref.bib
+csl: ecology.csl  
+---
+<!---
+rmarkdown::render_site("_2017-07-XX-?????.Rmd")# build website
+--->
+
+
+```{r,echo=FALSE}
+pp<-read.csv("output/RD-daily-movement-output-parameters.csv")
+pp$rep<- c(1:nrow(pp))
+nn<-read.csv("output/RD-daily-movement-output-abundance.csv")
+nn$year<- rep(c(1:10),nrow(pp))
+nn$rep<- sort(rep(pp$rep,10))
+nn$bias<- nn$Nhat-nn$Ntrue
+nn$pbias<- (nn$Nhat-nn$Ntrue)/nn$Ntrue
+xx<- aggregate(cbind(bias,pbias)~gamma2+rep,nn,mean)
+```
+
+### In a nutshell
+
+### Engage in the process
+
+### Background overview
+
+
+### Valuing fundamental objectives
+
+
+
+Recall that the fundamental objectives of the PSPAP were to:
+
+1. 
+2. 
+3.
+4.
+5.
+6.
+
+Through the workshop we identified many pathways to achieve these 
+fundamental objectives. For example, using the same CPUE based 
+monitoring design can achieve fundamental objective XX but it does a 
+poor job achieving some of the remaining objectives. Specifically, 
+abundance estimates from catch effort data are likely negatively biased, 
+providing little utility in meeting fundamental objective XX. 
+
+
+
+Bias is one way we can put a value on a monitoring design that links to a fundamental
+objective. In this case, the fundamental objective provided during the workshop
+was XXXXXXXXXXXXXX. In order to evaluate how alternative monitoring designs achieve the
+fundamental objectives we need to develop a way to quantify this fundamental objective.
+In terms of estimating abundance there are 2 measures of an estimator that are useful,
+bias and precision. In the figure above, we can calculate the bias of each yearly estimate
+for each rep where bias is the estimated abundance minus the true abundance. Fortunately
+this is simulated data so we know what the true abundance is! Bias can then be viewed
+as bias with fish as the units, for example the estimate overestimated true abundance by 200
+Pallid Sturgeon or bias can be scaled proportionally. Proportional bias allows and apples
+to apples comparison of the abundance estimates as a percentage. For example, a bias of
+50 pallid sturgeon if the true abundance was 80 is different than if the true abundance
+was 5000. 
+
+Proportional bias is illustrated in the figure below where proportional bias was
+calculated for the plot above.

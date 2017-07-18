@@ -1,5 +1,5 @@
 ---
-title: Effect of violating closure in a closed population
+title: "Effect of daily movement on abundance estimates: Robust Design"
 output: 
   html_document:
     includes:
@@ -9,457 +9,256 @@ csl: ecology.csl
 ---
 
 <!---
-rmarkdown::render_site("2017-06-XX-RD-and-closure.Rmd")# build website
+rmarkdown::render_site("_2017-06-XX-RD-and-closure.Rmd")# build website
 --->
 
+```{r,eval=FALSE,echo=FALSE}
+
+source("R/6-analysis-RD-and-Closure.R")
+input<-list()
+input$nprim = 10
+input$phi=rep(0.8,input$nprim)## SURVIVAL
+# FECUNDITY
+input$f=rep(0,input$nprim)
+input$n=1000 # initial population size
+input$n_inn=300 # initial number in study area
+## RANDOM MOVEMENT PRIMARY
+input$gam_prime=rep(0.7,input$nprim) # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+input$gam_d_prime=1-input$gam_prime # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+input$nsec=rep(4,input$nprim)## SECONDARY OCCASIONS
+## RANDOM MOVEMENT SECONDARY
+input$gam_d_prime2<-rep(0,input$nprim) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+input$gam_prime2<- 1-input$gam_d_prime2# UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+input$p=rep(0.3,input$nprim)## CAPTURE PROBABILITY
+inputs<-input
+#ch<-sim_ch(inputs=input)
+#ests<-est_rd(inputs=ch)
+
+combos<- expand.grid(gam_d_prime2=seq(0,0.5,by=0.05),
+    reps=c(1:100))
+nn<-pp<-data.frame()
+for(i in 433:nrow(combos))
+    {
+    input$gam_d_prime2<-rep(combos$gam_d_prime2[i],input$nprim) 
+    input$gam_prime2<- 1-input$gam_d_prime2
+    ch<-sim_ch(inputs=input)
+    ests<-est_rd(inputs=ch)  
+    parms=data.frame(
+        rep=i,
+        gamma2=input$gam_d_prime2[1],
+        gammaTrue=input$gam_d_prime[1],
+        gammahat=ests$parameters[ests$parameters$parameter=="GammaDoublePrime:(Intercept)",]$ests,
+        ptrue= input$p[1],  
+        phat= ests$parameters[ests$parameters$parameter=="p:(Intercept)",]$ests,
+        Strue=input$phi[1],
+        Shat=ests$parameters[ests$parameters$parameter=="S:(Intercept)",]$ests)
+    abund<-data.frame(
+        rep=i,
+        gamma2=input$gam_d_prime2[1],
+        year=c(1:input$nprim),
+        Ntrue=colSums(ch$Z_inn),        
+        Nhat= ests$abundance$derived.estimate)
+    pp<- rbind(pp,parms)
+    nn<-rbind(nn,abund)
+    }
+
+write.csv(pp,"output/RD-daily-movement-output-parameters.csv")
+write.csv(nn,"output/RD-daily-movement-output-abundance.csv")
+```
+
+
+```{r,echo=FALSE}
+pp<-read.csv("output/RD-daily-movement-output-parameters.csv")
+pp$rep<- c(1:nrow(pp))
+nn<-read.csv("output/RD-daily-movement-output-abundance.csv")
+nn$year<- rep(c(1:10),nrow(pp))
+nn$rep<- sort(rep(pp$rep,10))
+nn$bias<- nn$Nhat-nn$Ntrue
+nn$pbias<- (nn$Nhat-nn$Ntrue)/nn$Ntrue
+xx<- aggregate(cbind(bias,pbias)~gamma2+rep,nn,mean)
+```
 
 ### In a nutshell
 
 ### Engage in the process
 
-### Background
+### Background overview
 
+In a previous post we looked at the effect of violating the assumption 
+of closure. Specifically, when Pallid Sturgeon move in and out of a bend 
+on a daily basis. The analysis showed that as daily movement rates 
+increased there was a positive bias associated with abundance estimates 
+using the M0 abundance estimator for capture mark recapture approaches
+[see here](https://mcolvin.github.io/PSPAP-Reboot/2017-06-28-M0-and-closure.html). 
 
+To date the team has evaluated varying monitoring approaches identified 
+during the workshop including catch effort and closed population estimators.
 
-
-```{r}
-library(rowr)
-## make a ZZ nrow=inds, ncol=nprim*nsec
-## PRIMARY OCCASIONS
-nprim = 10
-
-## SURVIVAL
-phi=rep(0.8,nprim)
-# FECUNDITY
-f=rep(0.1,nprim)
-n=1000 # initial population size
-n_inn=300 # initial number in study area
-
-
-## RANDOM MOVEMENT PRIMARY
-gam_prime=rep(0.7,nprim) # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
-gam_d_prime=1-gam_prime # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
-
-
-## SECONDARY OCCASIONS
-nsec=rep(4,nprim)
-## RANDOM MOVEMENT SECONDARY
-
-gam_d_prime2<-rep(0.1,nprim) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
-gam_prime2<- 1-gam_d_prime2# UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
-
-## CAPTURE PROBABILITY
-p=rep(0.3,nprim)
-    
-    
-## SUPER POPULATION
-Z<- matrix(0,n,nprim)
-Z_inn<-Z
-Z_out<-Z
-
-Z[,1]<-1
-Z_inn[1:n_inn,1]<-1
-Z_out[,1]<- 1*(1-Z_inn[,1])
-
-# SIMULATE CAPTURE HISTORY
-## MORE THAN 1 CAPTURE OCCASIONS
-ch<- matrix(0,nrow(Z),sum(nsec))
-
-## LINK SECONDARY OCCASION TO PRIMARY OCCASION
-primsec<- matrix(
-    cbind(rep(1:nprim,nsec),
-    c(1:sum(nsec))), ncol=2)
-
- 
-## CAPTURE HISTORY FOR T=1    
-## UPDATE WHO IS IN AND OUT
-## AFTER DAY TO DAY MOVEMENT
-i<-1       
-ch<-Z_inn2<-Z_out2<- c()
-for(k in 1:nsec[i])
-    {
-    ch<- cbind(ch,rbinom(nrow(Z_inn),1,p[i]*Z_inn[,i]*Z[,i]))    
-    ## MOVEMENT OUT OF STUDY AREA
-    innToOut<- rbinom(n=nrow(Z),
-        size=1,
-        prob=gam_d_prime2[i]*Z[,i]*Z_inn[,i])
-    innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i])
-    ## REMAINING OUT OF STUDY AREA
-    outToOut<- rbinom(n=nrow(Z),
-        size=1,
-        prob=gam_prime2[i]*Z[,i]*Z_out[,i])
-    outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i])
-    Z_inn[,i]<-0 
-    Z_inn[which(innToInn==1 | outToInn==1),i]<- 1
-    Z_out[,i]<-0 
-    Z_out[which(outToOut==1 | innToOut==1),i]<- 1
-    Z_inn2<- cbind(Z_inn2,Z_inn[,i])
-    Z_out2<- cbind(Z_out2,Z_out[,i])
-    }    
 
  
 
-## SIMULATE POPULATION DYNAMICS
-for(i in 2:nprim)
-    {
-    ## SURVIVAL
-    Z[,i]<- rbinom(n=nrow(Z),
-        size=1,
-        prob=phi[i-1]*Z[,i-1])
-    
-    ## MOVEMENT OUT OF STUDY AREA
-    innToOut<- rbinom(n=nrow(Z),
-        size=1,
-        prob=gam_d_prime[i-1]*Z[,i]*Z_inn[,i-1])
-    innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i-1])
-    
-    ## REMAINING OUT OF STUDY AREA
-    outToOut<- rbinom(n=nrow(Z),
-        size=1,
-        prob=gam_prime[i-1]*Z[,i]*Z_out[,i-1])
-    outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i-1])
-    Z_inn[,i]<-0 
-    Z_inn[which(innToInn==1 | outToInn==1),i]<- 1
-    Z_out[,i]<-0 
-    Z_out[which(outToOut==1 | innToOut==1),i]<- 1
 
-   
-    ## SIMULATE DAY TO DAY MOVEMENT AND
-    ## CAPTURE HISTORY    
-    for(k in 1:nsec[i])
-        {
-        ch<- cbind.fill(ch,rbinom(nrow(Z_inn),1,p[i]*Z_inn[,i]*Z[,i]))        
-        ## MOVEMENT OUT OF STUDY AREA
-        innToOut<- rbinom(n=nrow(Z),
-            size=1,
-            prob=gam_d_prime2[i]*Z[,i]*Z_inn[,i])
-        innToInn<- (1-innToOut)*(Z[,i]*Z_inn[,i])
-        ## REMAINING OUT OF STUDY AREA
-        outToOut<- rbinom(n=nrow(Z),
-            size=1,
-            prob=gam_prime2[i]*Z[,i]*Z_out[,i])
-        outToInn<-  (1-outToOut)*(Z[,i]*Z_out[,i])
-        Z_inn[,i]<-0 
-        Z_inn[which(innToInn==1 | outToInn==1),i]<- 1
-        Z_out[,i]<-0 
-        Z_out[which(outToOut==1 | innToOut==1),i]<- 1
-        Z_inn2<- cbind.fill(Z_inn2,Z_inn[,i])
-        Z_out2<- cbind.fill(Z_out2,Z_out[,i])
-        }  
-    
-    ## RECRUITMENT
-    ## ASSUME RECRUITS SETTLE OUTSIDE OF 
-    ## STUDY AREA
-    R<-rpois(1,sum(Z[,i])*f[i-1])
-    app<- matrix(0,R,nprim)
-    app[,i]<-1
-    Z<- rbind(Z,app)
-    Z_out<- rbind(Z_out,app)
-    app[]<-0
-    Z_inn<- rbind(Z_inn,app)
-    }
+One alternative to a catch effort program or estimating abundance using 
+a cmr estimator like the M0 model is the robust design.
 
 
-    
-    
-
-    
-## SUBSET OUT FISH THAT ARE NEVER CAPTURED
-ch<- ch[which(apply(ch,1,sum)!=0),]
-## NEED THIS FOR RMARK
-# prep data for processing
-ch<- data.frame(ch=apply(ch,1,paste0,collapse=""),
-    freq=1,stringsAsFactors=FALSE)
-    
-## SET UP TIME INTERRVALS
-## FOR PROGRAM MARK
-ends<-cumsum(nsec) # last sampling occasion
-occs<- rep(0,sum(nsec))
-occs[ends]<-1# last occasion in primary
-occs<- occs[-length(occs)]# drop last 1 for processing 
+ of the monitoring design alternatives proposed during the meeting 
+was a capture mark capture (CMR) program that uses a robust design to 
+simultaneously estimate several demographic parameters like survival, 
+abundance, and movement. The estimation is possible because of the use 
+of primary occasions with repeated secondary occasions nested within 
+primary occasions. 
 
 
-out<-(list(ch=ch,
-    occs=occs,
-    nprim=nprim,
-    nsec=nsec,
-    Z=Z,
-    Z_inn=Z_inn,
-    Z_out=Z_out))
+Illustration of a robust design capture recapture program with multiple 
+primary occasions and secondary occasions with each primary occasion. 
+The period between primary occasions is treated as an open population so 
+pallid sturgeon are subject to survival and move in the system. The 
+secondary occasions are assumed to be closed to movement and survival 
+and therefore capture probability and abundance can be estimated. 
 
-    
 
-    
-    library(RMark)
-rd<-process.data(data=out$ch, 
-    model="Robust", 
-    time.intervals=out$occs)
-S=list(formula=~1)# SURVIVAL
-# SHARE = TRUE TO SET C = P
-p=list(formula=~1,share=TRUE)# CAPTURE PROBABILITY
-f0<- list(formula=~time) # NUMBER NOT ENCOUNTERED
-GammaDoublePrime=list(formula=~1,share=TRUE)
-GammaPrime=list(formula=~1)
-fit<-mark(data = rd, 
-	model = "Robust", 
-    time.intervals=time.intervals,
-	model.parameters=list(
-		S=S,
-		GammaDoublePrime=GammaDoublePrime,
-		# GammaPrime=GammaPrime, # not needed when share=TRUE
-		p=p),
-	threads=2,
-	brief=TRUE)
-derived<- fit$results$derived$`N Population Size`
-matplot((cbind(colSums(out$Z_inn),derived$estimate)),type='b')
-
-#RDPdfClosed
-
-plogis(summary(fit)$beta$estimate)[1:3]
-#f0 = beta[1] + effect of session then exp
-#exp(summary(fit)$beta$estimate)[-c(1:3)]
-#unlist(summary(fit)$real$f0)
+![](images/RD-conceptual-figure.png)
 
 
 
-## Notes
-* Recruitment does not effect estimates of phi, gamma,
-and p
+The parameters estimated include:
+
+* $\varphi$: the probability of surviving between primary occasions, 
+* $\gamma^{\prime}$:  the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was not present during the previous primary occasions given it survives to the current occasion (Figure 2),
+* $\gamma^{\prime\prime}$:  is the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was present during the previous primary occasions given it survives to the current occasion (Figure 2),
+* $c$ is the initial capture probability
+* $p$ is the recapture probability, and 
+* $f_0$ is number of unobserved individuals.  
 
 
 
+Illustration of movement between primary occasion 1 (t: left circle) and 
+primary occasion 2 (t+1; right circle). The arrows represent the 
+possible combinations of transitioning from observable and unobservable 
+at t to observable and unobservable at t+1. 
+
+![](images/RD-conceptual-figure2.png)
 
 
+In the 
 
 
+The robust design is not new to Pallid Sturgeon in 
+the Misso
+
+WS14 SPP12
+
+Relevant assumptions for the secondary periods (i.e., periods of where closure is
+assumed): 
 
 
+1. Stay put (Emigration = 0),
+2. New fish do not enter the bend (Immigration = 0), 
+3. New fish are not recruited (Recruitment = 0), and 
+4. Fish do not die (Survival = 1)
 
+We also assume:
 
+1. Fish do not lose tags,
+2. We detect tags perfectly, and
+3. Capture probability is equal among fish. 
 
-## Introduction
-
-Relevant assumptions 
-
-1. Fish do not migrate into or out of the study area
-2. Fish vulnerable to capture over the study period
-
+  
 ### Objectives
 
-1. Evaluate use of Robust Design in broodstock abundance estimates
-2. Quantify effects of violating the assumption that the population
-is closed to emigration.
-
-## Methods
-
-### Simulating a virtual population
-
-#### Initial abundance
-
-```{r}
-n<- 1000
-n_unobservable=2000
-nprim=5
-nsec=3
-phi=0.8
-gamma_prime=0.3
-gamma_dblprime=0.3
-p=0.3
-
-    
-super_n<- n+n_unobservable # SUPER POPULATION (ONSITE + OFFSITE)
-Z<- matrix(0,super_n,nprim)
-Z_observable<- matrix(0,super_n,nprim)
-Z_unobservable<- matrix(0,super_n,nprim)
-Z[1:super_n,1]<-1
-Z_observable[1:n,1]<-1
-Z_unobservable[(n+1):(n+n_unobservable),1]<-1
+The objectives of this analysis were to evaluate the effect of 
+daily movement on estimates of survival, abundance, and capture 
+probability. Introduce proxies for evaluating meeting objectives.
 
 
-# SURVIVAL, EMIGRATION, AND MIGRATION
-for(i in 1:super_n) # FOR EACH INDIVIDUAL IN THE SUPER POPULATION
+
+### Effect of violating closure assumption
+
+Not surprisingly, as daily movement rate increased, estimated bend-level 
+abundance increased. This was a similar result to the analysis of the M0 
+model. The figure below illustrates the effect of daily movement on 
+bend-level abundance estimates over time. The red lines are 100 
+replicates of true population dynamics and the black lines are the 
+estimated dynamics. As daily movement rate increases the gap between the 
+black and red lines increases illustrating the positive bias. 
+
+
+
+```{r,echo=FALSE}
+trans_black<- rgb(0,0,0,alpha=40,maxColorValue=255)
+trans_red<- rgb(255,0,0,alpha=40,maxColorValue=255)
+par(mfrow=c(4,3),mar=c(1,2,1,1),oma=c(4,4,1,1))
+for(g2 in unique(nn$gamma2))
+{
+plot(Nhat~year,nn,type='n',las=1)
+lapply(unique(nn$rep),function(x)
     {
-    for(j in 2:(nprim)) # FOR PRIMARY OCCASIONS 2:NPRIM
-        {
-        # DOES A FISH SURVIVE, IF IT WAS PREVIOUSLY ALIVE?
-        Z[i,j]<- rbinom(1,1,phi[j-1])*Z[i,j-1]
-
-        prs<-c(
-            # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
-            (1-Z_unobservable[i,j-1])*(gamma_dblprime[j-1]),
-            
-            # OBSERVABLE[t-1] --> OBSERVABLE[t]
-            (1-Z_unobservable[i,j-1])*(1-gamma_dblprime[j-1]),
-            
-            # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
-            Z_unobservable[i,j-1]*gamma_prime[j-1],
-            
-            # UNOBSERVABLE[t-1]--> 	OBSERVABLE[t]
-            Z_unobservable[i,j-1]*(1-gamma_prime[j-1]))
-
-        state<-sample(1:4,1,prs,replace=FALSE)
-        if(state==1 & Z[i,j]==1){Z_unobservable[i,j]<- 1}
-        if(state==2 & Z[i,j]==1){Z_observable[i,j]<-1}
-        if(state==3 & Z[i,j]==1){Z_unobservable[i,j]<-1}
-        if(state==4 & Z[i,j]==1){Z_observable[i,j]<-1}
-        }
+    points(Nhat~year,nn,subset=rep==x& gamma2==g2,col=trans_black,type='l')
+    points(Ntrue~year,nn,subset=rep==x & gamma2==g2,col=trans_red,type='l')
+    })
+mtext(side=3, paste("Daily movement rate = ",g2,sep=""),line=-1,cex=0.65)
     }
-    
-    
-    
-        
-    # SIMULATE CAPTURE HISTORY
-    ## MORE THAN 1 CAPTURE OCCASIONS
-    ch<- matrix(0,nrow(Z),sum(nsec))
-    avail2Capture<-ch
-    ## LINK SECONDARY OCCASION TO PRIMARY OCCASION
-    primsec<- matrix(cbind(rep(1:nprim,nsec),
-        c(1:sum(nsec))), ncol=2)
-    ## CAPTURE HISTORY CONDITIONAL ON BEING PRESENT (I.E., NOT EMIGRATED)
-    for(i in 1:super_n)
-        {
-        for(j in 1:sum(nsec))
-            {
-            primocc<- primsec[j,1]
-            avail2Capture[i,j]<-Z_observable[i,primsec[j,1]]
-            ch[i,j]<- rbinom(1,1,p[primocc]*avail2Capture[i,j])
-            }
-        }
-        
-    ## SUBSET OUT FISH THAT ARE NEVER CAPTURED
-    ch<- ch[which(apply(ch,1,sum)!=0),]
+plot.new()
+legend("center", c("True abundance", "Estimated abundance"),
+    col=c(trans_red, trans_black),lty=1,lwd=3)
+ mtext(side=1, "Year",outer=TRUE,line=2)
+ mtext(side=2, "Abundance",outer=TRUE,line=2)
+```
 
-    ## NEED THIS FOR RMARK
-    ch2<- data.frame(ch=apply(ch,1,paste0,collapse=""),freq=1,stringsAsFactors=FALSE)# prep data for processing
-
-    # NEED TO MAKE A MATRIX OF THAT INDICATES THE FIRST OCCASION
-    ends<-cumsum(nsec) # last sampling occasion
-    occs<- rep(0,sum(nsec))
-    occs[ends]<-1# last occasion in primary
-    occs<- occs[-length(occs)]# drop last 1 for processing 
+In the figure above, we can calculate the bias of each yearly estimate 
+for each rep where bias is the estimated abundance minus the true 
+abundance. Fortunately this is simulated data, so we know what the true 
+abundance is! Bias can then be viewed as bias with fish as the units, 
+for example the estimate overestimated true abundance by 200 Pallid 
+Sturgeon or bias can be scaled proportionally. Proportional bias allows 
+and apples to apples comparison of the abundance estimates as a 
+percentage. For example, a bias of 50 pallid sturgeon if the true 
+abundance was 80 is different than if the true abundance was 5000. 
 
 
-    return(list(ch=ch2,occs=occs))        
+
+Proportional bias is illustrated in the figure below where proportional 
+bias was calculated for the plot above. 
+
+
+
+```{r,echo=FALSE,cache=TRUE}
+trans_black<- rgb(0,0,0,alpha=40,maxColorValue=255)
+par(mfrow=c(4,3),mar=c(1,2,1,1),oma=c(4,4,1,1))
+for(g2 in unique(nn$gamma2))
+{
+plot(pbias~year,nn,type='n',las=1)
+lapply(unique(nn$rep),function(x)
+    {
+    points(pbias~year,nn,subset=rep==x& gamma2==g2,col=trans_black,type='l')
+    })
+mtext(side=3, paste("Daily movement rate = ",g2,sep=""),line=-1,cex=0.65)
     }
 
-    
-    
-nprim<- 10
-nsec<- floor(runif(nprim,5,10))
-phi	<- rep(0.8,nprim-1)
-
-# CAPTURE PROBABILITY
-p	<- rep(0.3,nprim)
-
-gamma_prime	<- rep(0.3, nprim-1) # pr(unobservable @ t-1  --> unobservable @ t )
-gamma_dblprime<- rep(0.4, nprim-1) # pr(observable @ t-1 --> unobservable  @ t   )
-
-n<- 175 # initial population size
-n_unobservable<- 200 # UNOBSERVABLE
-
-out<-sim_rd_ch(n=n, 
-    n_unobservable=n_unobservable, 
-    nprim=nprim,
-    nsec=nsec,
-    phi=phi,
-    gamma_prime=gamma_prime,
-    gamma_dblprime=gamma_dblprime,
-    p=p) 
-
-
-rd<-process.data(data=out$ch, model="Robust", time.intervals=out$occs)
-rd_ddl<-make.design.data(rd)
-
-S=list(formula=~1)# SURVIVAL
-# SHARE = TRUE TO SET C = P
-p=list(formula=~1,share=TRUE)# CAPTURE PROBABILITY
-f0<- list(formula=~1) # NUMBER NOT ENCOUNTERED
-GammaDoublePrime=list(formula=~1)
-GammaPrime=list(formula=~1)
-fit<-mark(data = rd, 
-	model = "Robust", 
-    time.intervals=time.intervals,
-	model.parameters=list(
-		S=S,
-		GammaDoublePrime=GammaDoublePrime,
-		GammaPrime=GammaPrime,
-		p=p),
-	threads=2,
-	brief=TRUE)
-derived<- fit$results$derived$`N Population Size`
-saveRDS(derived,"./output/derived.RDS")
-
-cleanup(ask=FALSE)
-
-
-
-
-
-#### Recruitment
-
-
-
-#### Survival
-
-#### Migration rates
-
-Assumes random movement where $\gamma^{\prime}=\gamma^{\prime\prime}.
-
-see http://www.montana.edu/rotella/documents/502/lab09Robust.Rmd
-to specify gamma parameters
-
-Process the data for estimation
-
-```{r}
-time.intervals=c(0,0,1,0,0,1,0,0,1,0,0,1,0,0)
-
-rd=process.data(data=rd.inp, model="Robust", time.intervals=time.intervals)
-
-names(rd)
-
-# take a look at the data
-head(rd$data)
-
-# check the number of primary occasions 
-rd$nocc
-
-# check the number of secondary occasions 
-rd$nocc.secondary
+mtext(side=1, "Year",outer=TRUE,line=2)
+mtext(side=2, "Proportional bias",outer=TRUE,line=2)
 ```
 
+Using the proportional bias values illustrated above we can get the average
+bias for each replicate, thus characterizing bias over the 10 year monitoring 
+period. Using the mean proportional bias values we can visualize the 
+effect of increasing daily movement rates on bend-level abundance estimates for a 
+10 year period.
 
-Set up Gamma'' to vary among primary occasions?
-Then specify the Gammas to be shared (random movement)
-```{r}
-GammaDoublePrime.random=list(formula=~time,share=TRUE)
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+boxplot(bias~gamma2,xx,las=1, 
+    ylab="Bias (Number of fish)", xlab="Movement rate")
 ```
 
-Now we can set up the design matrix to be estimated by Program Mark.
+Using a similar approach we can look at how estimates of survival are
+effected by daily movement. 
 
-```{r}
-fit_random=mark(data=rd, design.parameters=
-    list(GammaDoublePrime=list(time.bins=c(1,2,3,5)),
-         GammaPrime=list(time.bins=c(2,3,5))),
-    right=FALSE, 
-    model.parameters=list(S=S.time,
-        p=p.session,
-        GammaDoublePrime=GammaDoublePrime.random))
-```
-
-### Catch process
-
-
-### Estimating abundance and demographic rates
-
-### Consequence of removing fish on estimates
-
-### Consequences of violating closure assumption
+ 
 
 
 
-## Results
 
-
-## Discussion
 
 

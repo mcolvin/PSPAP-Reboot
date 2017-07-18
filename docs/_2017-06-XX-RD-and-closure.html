@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Effect of daily movement on abundance estimates: Robust Design</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<div><img src="images/20170321_180723.jpg" width="100%" align="right"></div>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Effect of daily movement on abundance estimates: Robust Design</h1>
+
+</div>
+
+
+<!---
+rmarkdown::render_site("_2017-06-XX-RD-and-closure.Rmd")# build website
+--->
+<div id="in-a-nutshell" class="section level3">
+<h3>In a nutshell</h3>
+</div>
+<div id="engage-in-the-process" class="section level3">
+<h3>Engage in the process</h3>
+</div>
+<div id="background-overview" class="section level3">
+<h3>Background overview</h3>
+<p>In a previous post we looked at the effect of violating the assumption of closure, where Pallid Sturgeon can move in and out of a bend on a daily basis. The analysis showed that as daily movement rates increased there was a positive bias.</p>
+<p>Recall that the fundamental objectives of the PSPAP were to:</p>
+<ol style="list-style-type: decimal">
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ol>
+<p>Through the workshop we identified many pathways to achieve these fundamental objectives. For example, using the same CPUE based monitoring design can achieve fundamental objective XX but it does a poor job achieving some of the remaining objectives. Specifically, abundance estimates from catch effort data are likely negatively biased, providing little utility in meeting fundamental objective XX.</p>
+<p>One of the monitoring design alternatives proposed during the meeting was a capture mark capture (CMR) program that uses a robust design to simultaneously estimate several demographic parameters like survival, abundance, and movement. The estimation is possible because of the use of primary occasions with repeated secondary occasions nested within primary occasions.</p>
+<p>Illustration of a robust design capture recapture program with multiple primary occasions and secondary occasions with each primary occasion. The period between primary occasions is treated as an open population so pallid sturgeon are subject to survival and move in the system. The secondary occasions are assumed to be closed to movement and survival and therefore capture probability and abundance can be estimated.</p>
+<div class="figure">
+<img src="images/RD-conceptual-figure.png" />
+
+</div>
+<p>The parameters estimated include:</p>
+<ul>
+<li><span class="math inline">\(\varphi\)</span>: the probability of surviving between primary occasions,</li>
+<li><span class="math inline">\(\gamma^{\prime}\)</span>: the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was not present during the previous primary occasions given it survives to the current occasion (Figure 2),</li>
+<li><span class="math inline">\(\gamma^{\prime\prime}\)</span>: is the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was present during the previous primary occasions given it survives to the current occasion (Figure 2),</li>
+<li><span class="math inline">\(c\)</span> is the initial capture probability</li>
+<li><span class="math inline">\(p\)</span> is the recapture probability, and</li>
+<li><span class="math inline">\(f_0\)</span> is number of unobserved individuals.</li>
+</ul>
+<p>Illustration of movement between primary occasion 1 (t: left circle) and primary occasion 2 (t+1; right circle). The arrows represent the possible combinations of transitioning from observable and unobservable at t to observable and unobservable at t+1.</p>
+<div class="figure">
+<img src="images/RD-conceptual-figure2.png" />
+
+</div>
+<p>In the</p>
+<p>The robust design is not new to Pallid Sturgeon in the Misso</p>
+<p>WS14 SPP12</p>
+<p>Relevant assumptions for the secondary periods (i.e., periods of where closure is assumed):</p>
+<ol style="list-style-type: decimal">
+<li>Stay put (Emigration = 0),</li>
+<li>New fish do not enter the bend (Immigration = 0),</li>
+<li>New fish are not recruited (Recruitment = 0), and</li>
+<li>Fish do not die (Survival = 1)</li>
+</ol>
+<p>We also assume:</p>
+<ol style="list-style-type: decimal">
+<li>Fish do not lose tags,</li>
+<li>We detect tags perfectly, and</li>
+<li>Capture probability is equal among fish.</li>
+</ol>
+</div>
+<div id="objectives" class="section level3">
+<h3>Objectives</h3>
+<p>The objectives of this analysis were to evaluate the effect of daily movement on estimates of survival, abundance, and capture probability. Introduce proxies for evaluating meeting objectives.</p>
+</div>
+<div id="effect-of-violating-closure-assumption" class="section level3">
+<h3>Effect of violating closure assumption</h3>
+<p>Not surprisingly, as daily movement rate increased, estimated bend-level abundance increased. This was a similar result to the analysis of the M0 model. The figure below illustrates the effect of daily movement on bend-level abundance estimates over time. The red lines are 100 replicates of true population dynamics and the black lines are the estimated dynamics. As daily movement rate increases the gap between the black and red lines increases illustrating the positive bias.</p>
+<p><img src="_2017-06-XX-RD-and-closure_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="valuing-fundamental-objectives" class="section level3">
+<h3>Valuing fundamental objectives</h3>
+<p>Bias is one way we can put a value on a monitoring design that links to a fundamental objective. In this case, the fundamental objective provided during the workshop was XXXXXXXXXXXXXX. In order to evaluate how alternative monitoring designs achieve the fundamental objectives we need to develop a way to quantify this fundamental objective. In terms of estimating abundance there are 2 measures of an estimator that are useful, bias and precision. In the figure above, we can calculate the bias of each yearly estimate for each rep where bias is the estimated abundance minus the true abundance. Fortunately this is simulated data so we know what the true abundance is! Bias can then be viewed as bias with fish as the units, for example the estimate overestimated true abundance by 200 Pallid Sturgeon or bias can be scaled proportionally. Proportional bias allows and apples to apples comparison of the abundance estimates as a percentage. For example, a bias of 50 pallid sturgeon if the true abundance was 80 is different than if the true abundance was 5000.</p>
+<p>Proportional bias is illustrated in the figure below where proportional bias was calculated for the plot above.</p>
+<p><img src="_2017-06-XX-RD-and-closure_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Using the proportional bias values illustrated above we can get the average bias for each replicate, thus characterizing bias over the 10 year monitoring period. Using the mean proportional bias values we can visualize the effect of increasing daily movement rates on bend-level abundance estimates.</p>
+<p><img src="_2017-06-XX-RD-and-closure_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
