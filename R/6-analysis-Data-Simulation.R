@@ -1,4 +1,6 @@
-# SIMULATING DATA
+# SIMULATING DATA 
+## CURRENTLY FOR A SINGLE REFERENCE POPULATION
+## BUT CAN MODIFY TO MAKE REFERENCE POPULATION REPLICATES TOO
 source("R/1_global.R")
 source("R/2_functions.R")
 source("R/3_load-and-clean.R")
@@ -44,3 +46,74 @@ replicate(nreps,
                     file=paste0("output/catch_dat_", sim_pop_ref, "_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
           })
 proc.time()-ptm
+
+
+
+
+
+###################################
+##  FUNCTION AND DATA SAVE TESTS ##
+###################################
+
+segs<- c(1,2,3,4,7,8,9,10,13,14)
+nyears<- 10
+
+beta0<- 2.9444
+phi<-matrix(plogis(beta0),length(segs),nyears-1)
+
+sim_pop<-reference_population(segs=segs,
+                              bends=bends,# BENDS DATAFRAME
+                              fish_density=init_dens, # FISH DENSITY PER RKM
+                              phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+
+yy<- bend_samples(sim_pop=sim_pop)
+
+ptm<-proc.time()
+dat_trial<-catch_data(sim_pop=sim_pop,
+                      catchability=rep(0.000005,9),
+                      B0_sd=rep(0.5,9),
+                      effort=effort)
+
+## TESTING SAVE FORMATS
+saveRDS(dat_trial,
+        file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".rds"))
+save(dat_trial,
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".RData"))
+proc.time()-ptm
+# user      system    elapsed 
+# 68.59     0.28      68.94 
+## BOTH ~6.8MB
+
+ptm<-proc.time()
+save(dat_trial,
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".gzip"),
+     compress="gzip")
+proc.time()-ptm
+# user    system    elapsed 
+# 1.69    0.04      1.72 
+## STILL ~6.8MB
+
+ptm<-proc.time()
+save(dat_trial,
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".bzip2"),
+     compress="bzip2")
+proc.time()-ptm
+# user    system    elapsed 
+# 10.11   0.01      10.20 
+## REDUCED SLIGHTLY ~6.2MB
+
+
+ptm<-proc.time()
+save(dat_trial,
+     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".xz"),
+     compress="xz")
+proc.time()-ptm
+# user    system    elapsed 
+# 15.78   0.14      16.01
+## RECUCED TO ~5MB
+
+## LOOK AT TEST OUTPUT
+sim_dat<-readRDS("output/catch_dat_catchability_random_rep2017-07-07 11_43_38.rds")
+sim_dat$true_vals
+head(sim_dat$samp_dat)
+head(sim_dat$catch_dat)

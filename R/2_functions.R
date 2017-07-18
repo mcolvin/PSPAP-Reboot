@@ -389,7 +389,7 @@ catch_data<-function(sim_pop=NULL,
 
 
 ## 6. GETTING TREND
-### CURRENTLY CALCULATING TREND FOR OCCASION 1 DATA ONLY
+### CALCULATING TREND FOR OCCASION 1 DATA ONLY
 get.trnd<-function(sim_dat=NULL,
                    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
                            "OT16", "TLC1", "TLC2", "TN")) 
@@ -425,8 +425,19 @@ get.trnd<-function(sim_dat=NULL,
         ## PVALUE FOR TREND ESTIMATE
         pval=summary(fit)$coefficients['year',4]
         )
+      return(tmp2)
       }
     )
+  out<-do.call(rbind,out)
+  # CALCULATE TREND BIAS AND PRECISION
+  ## ACTUAL POPULATION TREND
+  sim_dat$true_vals$b_segment<- as.factor(sim_dat$true_vals$b_segment)
+  fit<-lm(log(abundance)~b_segment+year,sim_dat$true_vals)
+  out$pop_trnd<-unname(coef(fit)['year'])
+  ## BIAS
+  out$bias<-out$trnd-out$pop_trnd
+  ## PRECISION AS THE COEFFICIENT OF VARIATION
+  out$cv<-out$se/abs(out$trnd)
   # OUTPUT THE GOODIES
   return(out)
 }
