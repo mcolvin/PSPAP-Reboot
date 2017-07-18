@@ -388,7 +388,7 @@ catch_data<-function(sim_pop=NULL,
 
 
 
-## 6. GETTING TREND
+## 6. GETTING CPUE TREND
 ### CALCULATING TREND FOR OCCASION 1 DATA ONLY
 get.trnd<-function(sim_dat=NULL,
                    gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
@@ -444,7 +444,51 @@ get.trnd<-function(sim_dat=NULL,
  
 
  
- 
+## 6. GETTING CPUE ABUNDANCE
+### CALCULATING ABUNDANCE FOR OCCASION 1 DATA ONLY
+get.abund<-function(sim_dat=NULL,
+                    bends=NULL)
+{
+  ## ESTIMATE ABUNDANCE USING CATCH DENSITY
+  ### GET CATCH FOR EACH SAMPLED BEND
+  tmp<-aggregate(fish_id~b_segment+bend_num+year+gear,
+                 sim_dat$catch_dat, length, subset=occasion==1)
+  names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
+  #### ADD SAMPLED BENDS WITH ZERO CATCH
+  sampled<-ddply(subset(sim_dat$samp_dat, occasion==1),.(b_segment,bend_num,year,gear),
+                 summarize,
+                 occ=mean(occasion))
+  tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year","gear"),all.y=TRUE)
+  tmp[which(is.na(tmp$catch)),]$catch<-0
+  ### ADD BEND LENGTH
+  tmp<-merge(tmp,bends[,c(2,3,9)],by=c("b_segment","bend_num"),all.x=TRUE)
+  ### ADD BEND CATCH DENSITY
+  tmp$catch_dens<-tmp$catch/tmp$length.rkm
+  ### GET SEGMENT DENSITY ESTIMATES
+  ests<-ddply(tmp,.(b_segment,year,gear),
+              summarize,
+              mean_dens=mean(catch_dens),
+              catch=sum(catch),
+              samp_length=sum(length.rkm))
+  ests$samp_dens<-ests$catch/ests$samp_length
+  ### ADD SEGMENT LENGTHS
+  ests<-merge(ests,aggregate(length.rkm~b_segment, data=bends,sum),
+              by="b_segment",all.x=TRUE)
+  ### ESTIMATE ABUNDANCE
+  ests$Nhat_AM<-ests$length.rkm*ests$mean_dens #arithmetic mean
+  ests$Nhat_HM<-ests$length.rkm*ests$samp_dens #harmonic mean
+  
+  ### ADD TRUE ABUNDANCE
+  ests<-merge(ests, sim_dat$true_vals[,1:3], by=c("b_segment","year"), all.x=TRUE)
+  
+  ### ADD BIAS
+  ests$bias_AM<-ests$Nhat_AM-ests$abundance
+  ests$bias_HM<-ests$Nhat_HM-ests$abundance
+  
+  ## OUTPUT ESTIMATES
+  ests<-ests[,c(1:3,9:13)]
+  return(ests)
+}
  
  
  
