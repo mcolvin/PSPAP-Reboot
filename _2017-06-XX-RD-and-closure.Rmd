@@ -17,18 +17,18 @@ rmarkdown::render_site("_2017-06-XX-RD-and-closure.Rmd")# build website
 source("R/6-analysis-RD-and-Closure.R")
 input<-list()
 input$nprim = 10
-input$phi=rep(0.8,input$nprim)## SURVIVAL
+input$phi=rep(0.8,input$nprim-1)## SURVIVAL
 # FECUNDITY
-input$f=rep(0,input$nprim)
+input$f=rep(0,input$nprim-1)
 input$n=1000 # initial population size
 input$n_inn=600 # initial number in study area
 ## RANDOM MOVEMENT PRIMARY
-input$gam_prime=rep(0.95,input$nprim) # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
-input$gam_d_prime=1-input$gam_prime # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+#input$gam_prime=rep(0.3,input$nprim-1) # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+input$gam_d_prime=rep(0.3,input$nprim-1) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]; TEMP EMIGRATION
 input$nsec=rep(4,input$nprim)## SECONDARY OCCASIONS
 ## RANDOM MOVEMENT SECONDARY
 input$gam_d_prime2<-rep(0,input$nprim) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
-input$gam_prime2<- 1-input$gam_d_prime2# UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+#input$gam_prime2<- rep(1,input$nprim)# UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
 input$p=rep(0.3,input$nprim)## CAPTURE PROBABILITY
 inputs<-input
 ch<-sim_ch(inputs=input)
@@ -82,7 +82,6 @@ nn<-pp<-data.frame()
 for(i in 1:nrow(combos))
     {
     input$gam_d_prime2<-rep(combos$gam_d_prime2[i],input$nprim) 
-    input$gam_prime2<- 1-input$gam_d_prime2
     ch<-sim_ch(inputs=input)
     ests<-est_rd(inputs=ch)  
     parms=data.frame(
@@ -96,7 +95,7 @@ for(i in 1:nrow(combos))
         Shat=ests$parameters[ests$parameters$parameter=="S:(Intercept)",]$ests)
     abund<-data.frame(
         rep=i,
-        gamma2=input$gam_d_prime2[1],
+        gamma2=input$gam_prime2[1],
         year=c(1:input$nprim),
         Ntrue=colSums(ch$Z_inn),        
         Nhat= ests$abundance$derived.estimate)
@@ -312,6 +311,9 @@ boxplot(Shat~gamma2,pp,ylim=c(0.7,0.9))
 abline(h=unique(pp$Strue))
 boxplot(phat~gamma2,pp)
 abline(h=unique(pp$ptrue))
+
+
+
 ```
 
 

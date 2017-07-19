@@ -3,22 +3,69 @@ RMark::cleanup(ask=FALSE)
     
 sim_ch<-function(inputs,...)
     {library(rowr)
-    ## MAKE THE SUPER POPULATION
-    Z<- matrix(0,inputs$n,inputs$nprim)
+    ## SET UP TIME INTERRVALS
+    ## FOR PROGRAM MARK
+    ends<-cumsum(inputs$nsec) # last sampling occasion
+    occs<- rep(0,sum(inputs$nsec))
+    occs[ends]<-1# last occasion in primary
+    occs<- occs[-length(occs)]# drop last 1 for processing
+
+    # SET UP SURVIVAL
+    S<-occs
+    S[which(S==1)]<-inputs$phi
+    S[which(S==0)]<-1
+    
+    # SET UP MOVEMENT
+    ## USES GAMMA DOUBLE PRIME PROBABILITY OF BEING IN OUTSIDE STUDY AREA
+    ## probability of temporarily emigrating from the observable sample during
+    ## an interval is the same as the probability of staying away
+    GammaDblPrime<-occs    
+    GammaDblPrime[which(GammaDblPrime==1)]<-inputs$gam_d_prime
+    GammaDblPrime[which(GammaDblPrime==0)]<-unlist(lapply(1:inputs$nprim,
+        function(x) {rep(inputs$gam_d_prime2[x],inputs$nsec[x]-1)}))
+
+    # SET UP RECRUITMENT
+    f<- occs
+    f[which(f==1)]<-inputs$f
+    f[which(f==0)]<-0
+    
+    
+    
+    
+    
+    
+    ## MAKE THE SUPER POPULATION AT T=1
+    Z<- matrix(0,inputs$n,sum(inputs$nsec))
     Z_inn<-Z
     Z_out<-Z
     Z[,1]<-1   
+    Z_inn[,1]<-rbinom(nrow(Z),1, 1-inputs$gam_d_prime)   
+    Z_out[,1]<-1-Z_inn[,1]  
+    
     ## SIMULATE POPULATION DYNAMICS
-    for(i in 2:inputs$nprim)
-        {## SURVIVAL
+    ### SIMULATES PRIMARY AND SECONDARY OCCASIONS...
+    for(i in 2:ncol(Z))
+        {
+        ## SURVIVAL
         Z[,i]<- rbinom(n=nrow(Z),
             size=1,
-            prob=inputs$phi[i-1]*Z[,i-1])
+            prob=S[i-1]*Z[,i-1])
+        ## MOVEMENT: RANDOM
+        if(GammaDblPrime[i-1]==0)
+            {
+            Z_inn[,i]<- Z_inn[,i-1]*Z[,i]
+            }
+        if(GammaDblPrime[i-1]>0)
+            {
+            Z_inn[,i]<- rbinom(nrow(Z),1,1-GammaDblPrime[i-1])*Z[,i]
+            }
+        Z_out[,i]<- (1-Z_inn[,i])*Z[,i]      
+        
         ## RECRUITMENT
         ## ASSUME RECRUITS SETTLE OUTSIDE OF 
         ## STUDY AREA
-        R<-rpois(1,sum(Z[,i])*inputs$f[i-1])
-        app<- matrix(0,R,inputs$nprim)
+        R<-rpois(1,sum(Z[,i])*f[i-1])
+        app<- matrix(0,R,ncol(Z))
         app[,i]<-1
         Z<- rbind(Z,app)
         Z_out<- rbind(Z_out,app)
@@ -26,16 +73,16 @@ sim_ch<-function(inputs,...)
         Z_inn<- rbind(Z_inn,app)
         }
 
+        #colSums(Z)
+        #colSums(Z_inn)
+        #colSums(Z_out)
+       #colSums(Z_inn)/colSums(Z)
+        #colSums(Z_out)/colSums(Z)
+
         
-    if(movement="random")
+    if(3==4)
         {
-        Z_inn<- rbn
-        Z_out<- (1-Z_inn)*Z[,i]
-        
-        }
-    if(movement="markovian")
-        {
-        ## SIMULATE MOVEMENT
+        ## SIMULATE MOVEMENT: markovian
         ## NOTE...... RANDOM DOES NOT DEPEND ON THE PREVIOUS
         ## LOCATION, I HAVE BEEN IMPLEMENTING MARKOVIAN BECAUSE
         ## GAMMAS DEPEND ON PREVIOUS LOCATION.
@@ -44,7 +91,8 @@ sim_ch<-function(inputs,...)
             {
             if(i==1)
                 {
-                Z_inn<-as.matrix(c(rep(1,inputs$n_inn),rep(0,inputs$n-inputs$n_inn)),ncol=1)
+                Z_inn<-as.matrix(c(rep(1,inputs$n_inn),
+                    rep(0,inputs$n-inputs$n_inn)),ncol=1)
                 Z_out<- 1-Z_inn             
                 }
             if(i>1)
@@ -82,29 +130,19 @@ sim_ch<-function(inputs,...)
         }   
 
     ## SIMULATE CAPTURE HISTORIES
-    ch<- matrix(0,nrow(Z_inn),ncol(Z_inn))
-    for(i in 1:ncol(Z_inn2))
+    ch<- matrix(0,nrow(Z),ncol(Z))
+    p<- rep(inputs$p,inputs$nsec)
+    for(i in 1:sum(inputs$nsec))
         {
-        ch[,i]<-rbinom(nrow(Z_inn),1,inputs$p[occ[i]]*Z_inn[,i])
+        ch[,i]<-rbinom(nrow(Z),1,p[i]*Z_inn[,i])
         }
-    
-             
-                   
+       
     ## SUBSET OUT FISH THAT ARE NEVER CAPTURED
     ch<- ch[which(apply(ch,1,sum)!=0),]
     ## NEED THIS FOR RMARK
     # prep data for processing
     ch<- data.frame(ch=apply(ch,1,paste0,collapse=""),
         freq=1,stringsAsFactors=FALSE)
-        
-    ## SET UP TIME INTERRVALS
-    ## FOR PROGRAM MARK
-    ends<-cumsum(inputs$nsec) # last sampling occasion
-    occs<- rep(0,sum(inputs$nsec))
-    occs[ends]<-1# last occasion in primary
-    occs<- occs[-length(occs)]# drop last 1 for processing 
-
-
     out<-(list(ch=ch,
         occs=occs,
         nprim=inputs$nprim,
