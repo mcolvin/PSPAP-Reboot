@@ -10,6 +10,7 @@ csl: ecology.csl
 
 <!---
 rmarkdown::render_site("_2017-06-XX-RD-and-closure.Rmd")# build website
+render
 --->
 
 ```{r,eval=FALSE,echo=FALSE}
@@ -196,7 +197,7 @@ $\gamma^{\prime}$ and $\gamma^{\prime\prime}$ are assumed to be equal.
 Random movement is the assumption of previous applications of the robust
 design to estimate Pallid Sturgeon abundance and demographic rates [@WS14; @SPP12]. 
 In the figure below, the observable portion of the population would be
-fish within the bend, and the unobservable portion are those outside 
+fish within the bend, and the unobservable portion is those fish outside 
 of the bend. Keep in mind these fish in the bend are 'observable' or 
 in other words, you have a chance at catching them whereas fish outside the 
 bend are unobservable because you are not sampling outside the bend.
@@ -214,17 +215,18 @@ results of daily movement on the closed population estimator, it seems
 likely that abundance will be overestimated with increased daily 
 movement however it is not clear how the daily movement will influence 
 survival and movement among primary occasions. To be clear, estimated 
-movement rate is for primary occasions is different than daily movement 
-rate. In the robust design daily movement rate is assumed to be 0 (i.e., 
-fish stay put in a bend) but fish can move in and out of the bend 
-between primary occasions. If biased estimates result because of daily 
-movement, it may limit the ability of a monitoring design to meet the 
-fundamental objectives identified in the workshop. Similar to the 
-previous analysis we are going to kick the wheels, so to say, of the 
-robust design to see how it performs with some level of daily movement 
-in and out of the bend. The objectives of this analysis were to evaluate 
-the effect of daily movement on estimates of abundance, survival, 
-movement rate and capture probability. 
+movement rate refers to movement between primary occasions (e.g., year 
+to year) and is different than daily movement rate (e.g., day to day). 
+In the robust design daily movement rate is assumed to be 0 (i.e., fish 
+stay put in a bend) but fish can move in and out of the bend between 
+primary occasions. If biased estimates result because of daily movement, 
+it may limit the ability of a monitoring design to meet the fundamental 
+objectives identified in the workshop. Similar to the previous analysis 
+we are going to kick the wheels, so to say, of the robust design to see 
+how it performs with some level of daily movement in and out of the 
+bend. The objectives of this analysis were to evaluate the effect of 
+daily movement on estimates of abundance, survival, movement rate and 
+capture probability. 
 
 To evaluate the effect of daily movement we simulated a cmr dataset for 
 a 10 year period (i.e., 10 primary occasions) representing a single 
@@ -286,7 +288,7 @@ abundance (Fortunately, this is simulated data, so we know what the true
 abundance is!). Bias is measured as numbers of fish and we can make 
 statements like abundance was overestimated by 20 Pallid Sturgeon. 
 However, a bias of 20 Pallid Sturgeon when the true abundance is 35 fish 
-versus 4000 fish are different and therefore we used a proportional bias 
+versus 4000 fish is different and therefore we used a proportional bias 
 calculated as $(estimated-true)/true$. Proportional bias allows a 
 comparison of estimates of varying magnitude. Proportional bias is 
 illustrated in the figure below for the scenarios in the above plot.
@@ -316,7 +318,7 @@ bend-level abundance estimates for a 10 year period in the boxplot below.
 
 ```{r,echo=FALSE}
 boxplot(pbias~gamma2,xx,las=1, 
-    ylab="Bias (Number of fish)", xlab="Movement rate")
+    ylab="Proportional bias", xlab="Movement rate")
     abline(h=0,col="red")
     text(10.3,0,"No bias", col="red",pos=1)
 ```
@@ -335,7 +337,8 @@ negative bias.
 
 ```{r,fig.align="center",echo=FALSE}
 boxplot(I((gammahat-gammaTrue)/gammaTrue)~gamma2,pp,boxwex=0.25,
-    at=c(1:11)-0.3,xaxt='n',range=8)
+    at=c(1:11)-0.3,xaxt='n',range=8,xlab="Daily movement rate",
+    ylab="Proportional bias")
 boxplot(I((Shat-Strue)/Strue)~gamma2,pp,add=TRUE,boxwex=0.25,col="red",range=8)
 boxplot(I((phat-ptrue)/ptrue)~gamma2,pp,add=TRUE,boxwex=0.25,
 at=c(1:11)+0.3,xaxt='n',col="darkgrey",range=8)
@@ -366,7 +369,7 @@ seems the robust design can do a decent job at estimating trend since
 there is no recruitment population trend is simply survival, but it may 
 result in some overestimates of abundance. However given the input from 
 the Nebraska crew we can potentially look at whether daily movement rates 
-are large enough to result in any real issue. One caveat to consdier is 
+are large enough to result in any real issue. One caveat to consider is 
 that if recruitment is occurring $\lambda$ is survival plus recruitment 
 rate, so further work needs to evaluate the effect of daily movement 
 when recruitment > 0. 
