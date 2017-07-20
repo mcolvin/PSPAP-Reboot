@@ -39,7 +39,7 @@ sim_ch<-function(inputs,...)
     Z_inn<-Z
     Z_out<-Z
     Z[,1]<-1   
-    Z_inn[,1]<-rbinom(nrow(Z),1, 1-inputs$gam_d_prime)   
+    Z_inn[,1]<-rbinom(nrow(Z),1, 1-inputs$gam_d_prime[1])   
     Z_out[,1]<-1-Z_inn[,1]  
     
     ## SIMULATE POPULATION DYNAMICS
@@ -148,6 +148,7 @@ sim_ch<-function(inputs,...)
         nprim=inputs$nprim,
         nsec=inputs$nsec,
         Z=Z,
+        trueN=colSums(Z_inn[,c(which(occs==1),length(occs))]),
         Z_inn=Z_inn,
         Z_out=Z_out))
     return(out)
