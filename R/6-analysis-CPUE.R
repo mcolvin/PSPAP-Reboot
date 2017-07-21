@@ -85,8 +85,6 @@ saveRDS(cpue_trnd,file=paste0("output/cpue_trnd_catchability_random_",
 # saveRDS(cpue_trnd,file=paste0("output/cpue_trnd_",pop_ref,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
 
-proc.time()-ptm
-
 
 
 #################################
@@ -101,7 +99,7 @@ get_abund<-lapply(dat_files, function(i)
   out<-get.abund(sim_dat=dat,bends=bends)
   return(out)
 })
-# PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
+# PUT IN A PALLATABLE FORM
 get_abund<-do.call(rbind,get_abund)
 
 # MAKE SUMMARY TABLE OF RESULTS
@@ -113,8 +111,8 @@ df_abund<-ddply(get_abund, .(b_segment,year,gear,abundance), summarize,
                sd_Nhat_HM=sd(Nhat_HM),
                mean_bias_HM=mean(bias_HM),
                sample_size=length(Nhat_HM))
-df_abund$cv_AM<-df_abund$sd_Nhat_AM/df_abund$mean_Nhat_AM
-df_abund$cv_HM<-df_abund$sd_Nhat_HM/df_abund$mean_Nhat_HM
+df_abund$cv_AM<-df_abund$sd_Nhat_AM/abs(df_abund$mean_Nhat_AM)
+df_abund$cv_HM<-df_abund$sd_Nhat_HM/abs(df_abund$mean_Nhat_HM)
   
 # STORE AND SAVE ABUNDANCE INFORMATION
 cpue_abund<-list(abund_dat=get_abund, summary=df_abund)
@@ -122,10 +120,8 @@ saveRDS(cpue_abund,file=paste0("output/cpue_abund_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 
 # ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(cpue_trnd,file=paste0("output/cpue_abund_",pop_ref,"_catchability_random_",
+# saveRDS(cpue_abund,file=paste0("output/cpue_abund_",pop_ref,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
-
-proc.time()-ptm
 
 
 
@@ -133,7 +129,7 @@ proc.time()-ptm
 
 
 ################################
-##  TEST GET.TRND & GET>ABUND ##
+##  TEST GET.TRND & GET.ABUND ##
 ################################
 sim_dat<-readRDS("output/catch_dat_catchability_random_rep2017-07-07 11_43_38.rds")
 

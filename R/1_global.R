@@ -1,4 +1,5 @@
 library(reshape2)
+library(Rcapture)
 library(plyr)
 library(knitr)
 library(pander)

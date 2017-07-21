@@ -425,6 +425,7 @@ get.trnd<-function(sim_dat=NULL,
         ## PVALUE FOR TREND ESTIMATE
         pval=summary(fit)$coefficients['year',4]
         )
+      tmp2$sig<-ifelse(tmp2$pval<0.05,1,0)
       return(tmp2)
       }
     )
@@ -491,7 +492,208 @@ get.abund<-function(sim_dat=NULL,
 }
  
  
- 
+
+
+
+
+## 7. GETTING M0 ESTIMATES
+get.M0.ests<-function(sim_dat=NULL,
+                      bends=NULL)
+{
+  ## PULL TRUE VALUES
+  true<-sim_dat$true_vals[,1:3]
+  colnames(true)[c(1,3)]<-c("segment", "N")
+  
+  ## MASSAGE DATA INTO SHAPE FOR 
+  ## CAPTURE HISTORIES
+  catch<-sim_dat$catch_dat
+  catch$ch<-1 #all fish on list were captured
+  gears<-unique(catch$gear) #identify gears that caught fish
+  occ<-as.character(unique(catch$occasion))
+  ch<-lapply(gears,function(g)
+  {
+    pp<- dcast(catch, 
+               b_segment+bend_num+year+fish_id~occasion,
+               value.var="ch", sum, subset=.(gear==g))
+    pp$gear<-g
+    return(pp)
+  })
+  ch<-do.call(rbind,ch)
+  
+  ## PULL SAMPLED BENDS
+  samps<-subset(sim_dat$samp_dat, deployment==1 & occasion==1)
+  samps<-subset(samps,f!=0) # remove unused gears (can remove once output is adjusted)
+  ### ADD BEND RKM
+  samps<- merge(samps,bends[,c(2,3,9)], by=c("b_segment","bend_num"))
+  
+  ## RUN M0 ESTIMATOR
+  bend_Np<- lapply(1:nrow(samps),function(x)
+  {
+    ## SUBSET BEND AND YEAR CAPTURE DATA
+    bend_dat<-subset(ch, 
+                     b_segment==samps$b_segment[x] & 
+                       bend_num==samps$bend_num[x] & 
+                       year==samps$year[x] &
+                       gear==samps$gear[x])
+    ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
+    if(nrow(bend_dat)>0){
+      tmp<- closedp.t(bend_dat[,occ])## estimate abundance
+      warn_codes<-ifelse(tmp$results[1,7]==0,0,
+                         ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
+                                ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
+                                       ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
+                                              ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
+                                                     tmp$glm.warn$M0)))))
+      tmp<- data.frame(## collect up relevant bits for M0
+        year=samps$year[x],
+        segment=samps$b_segment[x],
+        bendId=samps$bend_num[x],
+        gear=samps$gear[x],
+        rkm=samps$length.rkm[x],
+        Nhat=tmp$parameters$M0[1],
+        SE_Nhat=tmp$results[1,2],
+        p=tmp$parameters$M0[2],
+        fit=tmp$results[1,7],
+        warn=warn_codes,
+        samp_size=nrow(bend_dat)
+      )}
+    ## FILL FOR NO DATA
+    if(nrow(bend_dat)==0){# no data
+      tmp<- data.frame(
+        year=samps$year[x],
+        segment=samps$b_segment[x],
+        bendId=samps$bend_num[x],
+        gear=samps$gear[x],
+        rkm=samps$length.rkm[x],
+        Nhat=-99,
+        SE_Nhat=-99,
+        p=-99,
+        fit=-99,
+        warn=-99,
+        samp_size=0
+        )}
+    return(tmp)    
+  }) # ABOUT 15 MINUTES
+  bend_Np<- do.call("rbind", bend_Np)
+  bend_Np[bend_Np$fit!=0,]$Nhat<-NA ## make non converged and no fish models NA
+  bend_Np[bend_Np$fit!=0,]$SE_Nhat<-NA ## make non converged and no fish models NA
+  bend_Np$rkm<-ifelse(is.na(bend_Np$Nhat),NA,bend_Np$rkm)  ## needed to exclude in HM calculation
+  
+  ## CALCULATE BEND LEVEL DENSITY FROM ESTIMATES
+  bend_Np$dens<-bend_Np$Nhat/bend_Np$rkm 
+  
+  ## SUMMARIZE ESTIMATES TO SEGMENT LEVEL 
+  ests<-ddply(bend_Np,.(segment,year,gear),
+              summarize,
+              mn=mean(dens,na.rm = TRUE),
+              n_st=length(which(!is.na(dens))),
+              v_tmp=sum((1/rkm)^2*SE_Nhat^2,na.rm=TRUE),
+              N_sst=sum(Nhat,na.rm=TRUE),
+              d_sst=sum(rkm,na.rm=TRUE),
+              v_tmp2=sum(SE_Nhat^2, na.rm=TRUE),
+              perform=length(which(fit==0))/length(fit))
+    # To remove segments that had no bends with successful
+    # sampling catch data for the given gear: 
+    # ests<-subset(ests,n_st!=0) 
+  ### CALCULATE SEGMENT LENGTH
+  segmentDistance<- aggregate(length.rkm~b_segment,bends,sum)
+  colnames(segmentDistance)[1]<-"segment"
+  ### MERGE
+  ests<- merge(ests,segmentDistance, by="segment")
+  ### CALCULATE SAMPLED SEGMENT DENSITY
+  ests$dens_sst<-ests$N_sst/ests$d_sst
+  ### ESTIMATE SEGMENT LEVEL ABUNDANCE
+  ests$Nhat_AM<- ests$length.rkm*ests$mn  
+  ests$Nhat_HM<- ifelse(ests$n_st>0,ests$length.rkm*ests$dens_sst,NA)
+  
+  ## ABUNDANCE BIAS AND  PRECISION
+  ### MERGE ESTIMATES WITH TRUE VALUES
+  ests<-merge(ests,true,by=c("year","segment"))
+  ests<- ests[order(ests$segment,ests$year),]
+  ## CALCULATE ABUNDANCE BIAS
+  ests$abund_bias_AM<-ests$Nhat_AM-ests$N
+  ests$abund_bias_HM<-ests$Nhat_HM-ests$N
+  ## CALCULATE ABUNDANCE PRECISION
+  ests$abund_var_AM<-(ests$length.rkm/ests$n_st)^2*ests$v_tmp
+  ests$abund_var_HM<-ifelse(ests$n_st>0,(ests$length.rkm/ests$d_sst)^2*ests$v_tmp2,NA)
+  ests$abund_cv_AM<-sqrt(ests$abund_var_AM)/abs(ests$Nhat_AM)
+  ests$abund_cv_HM<-sqrt(ests$abund_var_HM)/abs(ests$Nhat_HM)
+  ests<-ests[,c("year","segment","gear","N","n_st","Nhat_AM", "abund_bias_AM","abund_cv_AM","Nhat_HM", "abund_bias_HM","abund_cv_HM","perform")]
+  
+  ## TREND BIAS AND PRECISION
+  ### FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+  out<-lapply(gears,function(g)
+  {
+    tmp<-subset(ests, gear==g)
+    perform<-length(which(tmp$n_st!=0))/length(tmp$n_st)
+    tmp<-subset(tmp,!is.na(Nhat_AM))
+    if(perform>0 #enough data
+       & length(unique(tmp$segment))>1 # more than one segment
+       & length(unique(tmp$year))>=2) # at least two years
+    {
+      fit_AM<-lm(log(Nhat_AM)~year+as.factor(segment),tmp)
+      fit_HM<-lm(log(Nhat_HM)~year+as.factor(segment),tmp)
+      tmp2<- data.frame( 
+        # THE GOODIES
+        ## GEAR
+        gear=g,
+        ## ARITHMETIC MEAN
+        ### TREND ESTIMATE
+        trnd_AM=coef(fit_AM)['year'],
+        ### STANDARD ERROR FOR TREND ESTIMATE
+        se_AM=summary(fit_AM)$coefficients['year',2],
+        ### PVALUE FOR TREND ESTIMATE
+        pval_AM=summary(fit_AM)$coefficients['year',4],
+        ## HARMONIC MEAN
+        ### TREND ESTIMATE
+        trnd_HM=coef(fit_HM)['year'],
+        ### STANDARD ERROR FOR TREND ESTIMATE
+        se_HM=summary(fit_HM)$coefficients['year',2],
+        ### PVALUE FOR TREND ESTIMATE
+        pval_HM=summary(fit_HM)$coefficients['year',4],
+        ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
+        perform=perform
+      )
+    }  
+    if(perform==0 #no data
+       | length(unique(tmp$segment))<=1 #or only one segment
+       | length(unique(tmp$year))<2) #or less than two years 
+    {
+      tmp2<- data.frame( 
+        gear=g,
+        trnd_AM=NA,
+        se_AM=NA,
+        pval_AM=NA,
+        trnd_HM=NA,
+        se_HM=NA,
+        pval_HM=NA,
+        perform=0 #NOT ENOUGH DATA TO CALCULATE TREND
+      )
+    }
+    tmp$sig_AM<-ifelse(tmp2$pval_AM<0.05,1,0)
+    tmp$sig_HM<-ifelse(tmp2$pval_HM<0.05,1,0)
+    return(tmp2)
+  })
+  out<-do.call(rbind,out)
+  
+  ### MERGE ACTUAL POPULATION TREND
+  fit<-lm(log(N)~year+as.factor(segment),true)
+  out$pop_trnd<-unname(coef(fit)['year'])
+  
+  ### TREND BIAS
+  #######################################
+  #  DO WE WANT EXP VERSION OF THIS???  #
+  #######################################
+  out$bias_AM<-out$trnd_AM-out$pop_trnd
+  out$bias_HM<-out$trnd_HM-out$pop_trnd
+  
+  ### TREND PRECISION (as coefficient of variation)
+  out$cv_AM<-out$se_AM/abs(out$trnd_AM)
+  out$cv_HM<-out$se_HM/abs(out$trnd_HM)
+  out<-out[,c("gear", "pop_trnd","trnd_AM","bias_AM", "cv_AM", "pval_AM",
+         "trnd_HM", "bias_HM", "cv_HM", "pval_HM", "perform")]
+  return(list(M0_trnd=out,M0_abund=ests))
+}
  
  
  
