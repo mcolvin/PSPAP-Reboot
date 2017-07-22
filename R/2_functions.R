@@ -425,7 +425,6 @@ get.trnd<-function(sim_dat=NULL,
         ## PVALUE FOR TREND ESTIMATE
         pval=summary(fit)$coefficients['year',4]
         )
-      tmp2$sig<-ifelse(tmp2$pval<0.05,1,0)
       return(tmp2)
       }
     )
@@ -670,8 +669,6 @@ get.M0.ests<-function(sim_dat=NULL,
         perform=0 #NOT ENOUGH DATA TO CALCULATE TREND
       )
     }
-    tmp$sig_AM<-ifelse(tmp2$pval_AM<0.05,1,0)
-    tmp$sig_HM<-ifelse(tmp2$pval_HM<0.05,1,0)
     return(tmp2)
   })
   out<-do.call(rbind,out)

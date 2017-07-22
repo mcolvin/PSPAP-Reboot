@@ -26,8 +26,8 @@ source("R/3_load-and-clean.R")
 
 
 ## PULL CATCH DATA
-dat_files<-dir("output", pattern="catch_dat_")
-
+dat_files<-dir("C:/Users/sreynolds/Desktop/DataDump/output", pattern="catch_dat_")
+dat_files<-dat_files[1:100]
 
 #############################
 ## 1. CPUE TREND ESTIMATES ##
@@ -37,7 +37,7 @@ dat_files<-dir("output", pattern="catch_dat_")
 get_trnd<-lapply(dat_files, function(i)
   {
     # TREND
-    dat<-readRDS(paste0("output/",i))
+    dat<-readRDS(paste0("C:/Users/sreynolds/Desktop/DataDump/output/",i))
     out<-get.trnd(sim_dat=dat)
     # FLAGS
     samp<-dat$samp_dat
@@ -58,9 +58,6 @@ get_trnd<-lapply(dat_files, function(i)
 # PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
 get_trnd<-do.call(rbind, get_trnd)
 get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
-  #########################################################
-  #### REMOVE RUNS WITH A CERTAIN NUMBER OF FLAGS HERE??? #
-  #########################################################
   
 # MAKE A SUMMARY TABLE OF RESULTS
 df_trnd<-ddply(get_trnd, .(gear), summarize,
@@ -69,12 +66,7 @@ df_trnd<-ddply(get_trnd, .(gear), summarize,
           mean_bias=mean(bias),
           mean_cv=mean(cv),
           mean_flags=mean(flag,na.rm=TRUE),
-          power=sum(sig)/length(sig),
-          max_pval=max(pval),
-          max_bias=max(bias),
-          min_bias=min(bias),
-          max_cv=max(cv),
-          max_flags=max(flag, na.rm=TRUE))
+          power=sum(sig)/length(sig))
 
 # STORE AND SAVE TREND INFORMATION
 cpue_trnd<-list(trnd_dat=get_trnd, summary=df_trnd)

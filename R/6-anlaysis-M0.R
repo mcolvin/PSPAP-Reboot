@@ -45,6 +45,8 @@ get_ests<-lapply(dat_files, function(i)
 # TREND
 ## PUT IN A PALLATABLE FORM
 get_M0_trnd<-do.call(rbind, sapply(get_ests, "[[", "M0_trnd", simplify=FALSE))
+get_M0_trnd$sig_AM<-ifelse(get_M0_trnd$pval_AM<0.05,1,0)
+get_M0_trnd$sig_HM<-ifelse(get_M0_trnd$pval_HM<0.05,1,0)
 
 ## MAKE SUMMARY TABLE OF RESULTS
 df_trnd<-ddply(get_M0_trnd, .(gear), summarize,
@@ -58,16 +60,7 @@ df_trnd<-ddply(get_M0_trnd, .(gear), summarize,
                mean_bias_HM=mean(bias_HM, na.rm=TRUE),
                mean_cv_HM=mean(cv_HM, na.rm=TRUE),
                power_HM=sum(sig_HM,na.rm=TRUE)/length(which(!is.na(sig_HM))),
-               mean_performance=mean(perform),
-               max_pval_AM=max(pval_AM,na.rm=TRUE),
-               max_bias_AM=max(bias_AM,na.rm=TRUE),
-               min_bias_AM=min(bias_AM,na.rm=TRUE),
-               max_cv_AM=max(cv_AM,na.rm=TRUE),
-               max_pval_HM=max(pval_HM,na.rm=TRUE),
-               max_bias_HM=max(bias_HM,na.rm=TRUE),
-               min_bias_HM=min(bias_HM,na.rm=TRUE),
-               max_cv_HM=max(cv_HM,na.rm=TRUE),
-               min_perform=min(perform))
+               mean_performance=mean(perform))
 
 # STORE AND SAVE TREND INFORMATION
 M0_trnd<-list(trnd_dat=get_M0_trnd, summary=df_trnd)
@@ -85,13 +78,13 @@ saveRDS(M0_trnd,file=paste0("output/M0_trnd_catchability_random_",
 get_M0_abund<-do.call(rbind, sapply(get_ests, "[[", "M0_abund", simplify=FALSE))
 
 # MAKE SUMMARY TABLE OF RESULTS
-df_abund<-ddply(get_M0_abund, .(b_segment,year,gear), summarize,
+df_abund<-ddply(get_M0_abund, .(segment,year,gear), summarize,
                 mean_Nhat_AM=mean(Nhat_AM, na.rm=TRUE),
-                mean_bias_AM=mean(bias_AM, na.rm=TRUE),
-                mean_cv_AM=mean(cv_AM, na.rm=TRUE),
+                mean_bias_AM=mean(abund_bias_AM, na.rm=TRUE),
+                mean_cv_AM=mean(abund_cv_AM, na.rm=TRUE),
                 mean_Nhat_HM=mean(Nhat_HM, na.rm=TRUE),
-                mean_bias_HM=mean(bias_HM, na.rm=TRUE),
-                mean_cv_HM=mean(cv_HM, na.rm=TRUE),
+                mean_bias_HM=mean(abund_bias_HM, na.rm=TRUE),
+                mean_cv_HM=mean(abund_cv_HM, na.rm=TRUE),
                 mean_perform=mean(perform, na.rm=TRUE))
 
 # STORE AND SAVE ABUNDANCE INFORMATION
