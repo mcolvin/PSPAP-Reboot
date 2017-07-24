@@ -9,8 +9,7 @@ csl: ecology.csl
 ---
 
 <!---
-rmarkdown::render_site("_2017-06-XX-RD-and-closure.Rmd")# build website
-render
+rmarkdown::render_site("2017-07-24-RD-and-closure.Rmd")# build website
 --->
 
 ```{r,eval=FALSE,echo=FALSE}
@@ -106,7 +105,8 @@ thing.
 * In relation to the fundamental objectives, the robust design can potentially
 provide estimates of the population trend (trend is survival in the absence of recruitment) and
 abundance. We explore bias as a metric to quantify these fundamental objectives. 
-
+* For more information on in an approachable form see a book chapter by
+Dr. Larkin Powell [here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bbba6b058ff21540.pdf)
 
 
 ### Engage in the process
@@ -130,6 +130,17 @@ on a daily basis. The analysis showed that as daily movement rates
 increased, there was a positive bias associated with abundance estimates 
 using the M0 abundance estimator for capture mark recapture (cmr) approaches
 [(see here)](https://mcolvin.github.io/PSPAP-Reboot/2017-06-28-M0-and-closure.html). 
+In this post we will look at a similar analysis but for the Robust Design. But first a 
+couple of thing before we get started.
+
+1. For more information on in an approachable form see a book chapter by
+Dr. Larkin Powell [here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bbba6b058ff21540.pdf)
+1. The analyses presented in the blog posts are, in some cases, simplifications
+of the analyses that are being conducted. Specifically, we hold some parameters 
+like survival and capture probability constant for simplicity and to illustrate
+the effect of parameters on monitoring design metrics like bias. The full analysis
+does allow for varying parameters and the potential to evaluate difference between
+origin or behavioral response (e.g., trap shyness). 
 
 The EA team has evaluated varying monitoring approaches identified 
 during the workshop by comparing known population (i.e., virtual) to 
