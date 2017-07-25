@@ -468,25 +468,39 @@ get.abund<-function(sim_dat=NULL,
   ests<-ddply(tmp,.(b_segment,year,gear),
               summarize,
               mean_dens=mean(catch_dens),
+              sd_dens=sd(catch_dens),
+              samp_size=sum(occ),
               catch=sum(catch),
               samp_length=sum(length.rkm))
-  ests$samp_dens<-ests$catch/ests$samp_length
+  ests$WM_dens<-ests$catch/ests$samp_length
   ### ADD SEGMENT LENGTHS
   ests<-merge(ests,aggregate(length.rkm~b_segment, data=bends,sum),
               by="b_segment",all.x=TRUE)
   ### ESTIMATE ABUNDANCE
   ests$Nhat_AM<-ests$length.rkm*ests$mean_dens #arithmetic mean
-  ests$Nhat_HM<-ests$length.rkm*ests$samp_dens #harmonic mean
+  ests$Nhat_WM<-ests$length.rkm*ests$WM_dens #weighted arithmetic mean
   
   ### ADD TRUE ABUNDANCE
   ests<-merge(ests, sim_dat$true_vals[,1:3], by=c("b_segment","year"), all.x=TRUE)
   
   ### ADD BIAS
   ests$bias_AM<-ests$Nhat_AM-ests$abundance
-  ests$bias_HM<-ests$Nhat_HM-ests$abundance
+  ests$bias_WM<-ests$Nhat_WM-ests$abundance
+  
+  ### ADD PRECISION AS CV
+  #### CALCULATE WEIGHTED MEAN SD
+  tmp<-merge(tmp, ests[,c(1:3,8,9)])
+  tmp$diffsq<-(tmp$catch_dens-tmp$WM_dens)^2
+  Wsd<-ddply(tmp,.(b_segment,year,gear),
+              summarize,
+              Wsd_dens=sqrt(sum((length.rkm/samp_length)*diffsq)))
+  ests<-merge(ests,Wsd)
+  #### CALCULATE CV
+  ests$cv_AM<-ests$sd_dens/ests$Nhat_AM
+  ests$cv_WM<-ests$Wsd_dens/ests$Nhat_WM
   
   ## OUTPUT ESTIMATES
-  ests<-ests[,c(1:3,9:13)]
+  ests<-ests[,c(1:3,6,11:15,17,18)]
   return(ests)
 }
  
@@ -576,7 +590,7 @@ get.M0.ests<-function(sim_dat=NULL,
   bend_Np<- do.call("rbind", bend_Np)
   bend_Np[bend_Np$fit!=0,]$Nhat<-NA ## make non converged and no fish models NA
   bend_Np[bend_Np$fit!=0,]$SE_Nhat<-NA ## make non converged and no fish models NA
-  bend_Np$rkm<-ifelse(is.na(bend_Np$Nhat),NA,bend_Np$rkm)  ## needed to exclude in HM calculation
+  bend_Np$rkm<-ifelse(is.na(bend_Np$Nhat),NA,bend_Np$rkm)  ## needed to exclude in WM calculation
   
   ## CALCULATE BEND LEVEL DENSITY FROM ESTIMATES
   bend_Np$dens<-bend_Np$Nhat/bend_Np$rkm 
@@ -603,7 +617,7 @@ get.M0.ests<-function(sim_dat=NULL,
   ests$dens_sst<-ests$N_sst/ests$d_sst
   ### ESTIMATE SEGMENT LEVEL ABUNDANCE
   ests$Nhat_AM<- ests$length.rkm*ests$mn  
-  ests$Nhat_HM<- ifelse(ests$n_st>0,ests$length.rkm*ests$dens_sst,NA)
+  ests$Nhat_WM<- ifelse(ests$n_st>0,ests$length.rkm*ests$dens_sst,NA)
   
   ## ABUNDANCE BIAS AND  PRECISION
   ### MERGE ESTIMATES WITH TRUE VALUES
@@ -611,13 +625,13 @@ get.M0.ests<-function(sim_dat=NULL,
   ests<- ests[order(ests$segment,ests$year),]
   ## CALCULATE ABUNDANCE BIAS
   ests$abund_bias_AM<-ests$Nhat_AM-ests$N
-  ests$abund_bias_HM<-ests$Nhat_HM-ests$N
+  ests$abund_bias_WM<-ests$Nhat_WM-ests$N
   ## CALCULATE ABUNDANCE PRECISION
   ests$abund_var_AM<-(ests$length.rkm/ests$n_st)^2*ests$v_tmp
-  ests$abund_var_HM<-ifelse(ests$n_st>0,(ests$length.rkm/ests$d_sst)^2*ests$v_tmp2,NA)
+  ests$abund_var_WM<-ifelse(ests$n_st>0,(ests$length.rkm/ests$d_sst)^2*ests$v_tmp2,NA)
   ests$abund_cv_AM<-sqrt(ests$abund_var_AM)/abs(ests$Nhat_AM)
-  ests$abund_cv_HM<-sqrt(ests$abund_var_HM)/abs(ests$Nhat_HM)
-  ests<-ests[,c("year","segment","gear","N","n_st","Nhat_AM", "abund_bias_AM","abund_cv_AM","Nhat_HM", "abund_bias_HM","abund_cv_HM","perform")]
+  ests$abund_cv_WM<-sqrt(ests$abund_var_WM)/abs(ests$Nhat_WM)
+  ests<-ests[,c("year","segment","gear","N","n_st","Nhat_AM", "abund_bias_AM","abund_cv_AM","Nhat_WM", "abund_bias_WM","abund_cv_WM","perform")]
   
   ## TREND BIAS AND PRECISION
   ### FIT LINEAR MODEL FOR TREND FOR EACH GEAR
@@ -631,7 +645,7 @@ get.M0.ests<-function(sim_dat=NULL,
        & length(unique(tmp$year))>=2) # at least two years
     {
       fit_AM<-lm(log(Nhat_AM)~year+as.factor(segment),tmp)
-      fit_HM<-lm(log(Nhat_HM)~year+as.factor(segment),tmp)
+      fit_WM<-lm(log(Nhat_WM)~year+as.factor(segment),tmp)
       tmp2<- data.frame( 
         # THE GOODIES
         ## GEAR
@@ -643,13 +657,13 @@ get.M0.ests<-function(sim_dat=NULL,
         se_AM=summary(fit_AM)$coefficients['year',2],
         ### PVALUE FOR TREND ESTIMATE
         pval_AM=summary(fit_AM)$coefficients['year',4],
-        ## HARMONIC MEAN
+        ## WEIGHTED ARITHMETIC MEAN
         ### TREND ESTIMATE
-        trnd_HM=coef(fit_HM)['year'],
+        trnd_WM=coef(fit_WM)['year'],
         ### STANDARD ERROR FOR TREND ESTIMATE
-        se_HM=summary(fit_HM)$coefficients['year',2],
+        se_WM=summary(fit_WM)$coefficients['year',2],
         ### PVALUE FOR TREND ESTIMATE
-        pval_HM=summary(fit_HM)$coefficients['year',4],
+        pval_WM=summary(fit_WM)$coefficients['year',4],
         ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
         perform=perform
       )
@@ -663,9 +677,9 @@ get.M0.ests<-function(sim_dat=NULL,
         trnd_AM=NA,
         se_AM=NA,
         pval_AM=NA,
-        trnd_HM=NA,
-        se_HM=NA,
-        pval_HM=NA,
+        trnd_WM=NA,
+        se_WM=NA,
+        pval_WM=NA,
         perform=0 #NOT ENOUGH DATA TO CALCULATE TREND
       )
     }
@@ -682,13 +696,13 @@ get.M0.ests<-function(sim_dat=NULL,
   #  DO WE WANT EXP VERSION OF THIS???  #
   #######################################
   out$bias_AM<-out$trnd_AM-out$pop_trnd
-  out$bias_HM<-out$trnd_HM-out$pop_trnd
+  out$bias_WM<-out$trnd_WM-out$pop_trnd
   
   ### TREND PRECISION (as coefficient of variation)
   out$cv_AM<-out$se_AM/abs(out$trnd_AM)
-  out$cv_HM<-out$se_HM/abs(out$trnd_HM)
+  out$cv_WM<-out$se_WM/abs(out$trnd_WM)
   out<-out[,c("gear", "pop_trnd","trnd_AM","bias_AM", "cv_AM", "pval_AM",
-         "trnd_HM", "bias_HM", "cv_HM", "pval_HM", "perform")]
+         "trnd_WM", "bias_WM", "cv_WM", "pval_WM", "perform")]
   return(list(M0_trnd=out,M0_abund=ests))
 }
  
