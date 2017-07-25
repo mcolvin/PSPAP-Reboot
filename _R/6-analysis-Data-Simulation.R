@@ -4,8 +4,7 @@
 source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
-source("_R/4_figures.R")
-source("_R/5_tables.R")
+
 ## GENERATE THE REFERENCE POPULATION
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
@@ -23,6 +22,11 @@ saveRDS(sim_pop,
 
 
 ## MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
+### PICK SAMLING TYPE
+#samp_type="r"
+samp_type="f"
+
+### RUN
 ptm<-proc.time()
 nreps=500
 
@@ -38,12 +42,13 @@ replicate(nreps,
             B0_sd<-runif(9,0,1.5)
             ## SAMPLING & CATCH DATA
             dat<-catch_data(sim_pop=sim_pop,
+                            samp_type=samp_type,
                             catchability=q_mean,
                             B0_sd=B0_sd,
                             effort=effort,
                             occasions=3)
             saveRDS(dat,
-                    file=paste0("_output/catch_dat_", sim_pop_ref, "_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
+                    file=paste0("_output/catch_dat_", sim_pop_ref, "_samp_type_",samp_type,"_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
           })
 proc.time()-ptm
 
@@ -66,10 +71,12 @@ sim_pop<-reference_population(segs=segs,
                               fish_density=init_dens, # FISH DENSITY PER RKM
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
-yy<- bend_samples(sim_pop=sim_pop)
+yyr<- bend_samples(sim_pop=sim_pop,"r")
+yyf<- bend_samples(sim_pop=sim_pop,"f")
 
 ptm<-proc.time()
 dat_trial<-catch_data(sim_pop=sim_pop,
+                      samp_type = "f",
                       catchability=rep(0.000005,9),
                       B0_sd=rep(0.5,9),
                       effort=effort)
