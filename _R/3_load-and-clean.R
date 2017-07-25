@@ -19,7 +19,7 @@ if(exists("effort_data")==FALSE){effort_data<-FALSE}
 
 # READ IN BEND DATA FOR RPMA 2 (UPPER) AND 4 (LOWER)
 
-bends<- read.csv("./dat/bend-data.csv")
+bends<- read.csv("./_dat/bend-data.csv")
 
 # make data.frame column names lower case
 names(bends)<- tolower(names(bends))
@@ -32,11 +32,11 @@ bends<-bends[-157,]
 # READ IN EFFORT DATA FROM 01-PSPAP-Background Analysis
 ## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
 ## AN OUTPUT FROM THE EFFORT ANALYSIS
-effort<- read.table("output/effort_dat.csv")
+effort<- read.table("_output/effort_dat.csv")
 effort$rpma<- ifelse(effort$basin=="UB",2,4)
 
 # READ IN DENSITY DATA
-dens<-read.csv("./dat/fish_density.csv")
+dens<-read.csv("./_dat/fish_density.csv")
 # REMOVE WU AND HOLAN DATA
 dens<-rbind(dens[1:4,],dens[7:nrow(dens),])
 # MAKE COLUMN NAMES LOWER CASE

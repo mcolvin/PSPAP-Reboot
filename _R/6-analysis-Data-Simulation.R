@@ -1,11 +1,11 @@
 # SIMULATING DATA 
 ## CURRENTLY FOR A SINGLE REFERENCE POPULATION
 ## BUT CAN MODIFY TO MAKE REFERENCE POPULATION REPLICATES TOO
-source("R/1_global.R")
-source("R/2_functions.R")
-source("R/3_load-and-clean.R")
-source("R/4_figures.R")
-source("R/5_tables.R")
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
+source("_R/4_figures.R")
+source("_R/5_tables.R")
 ## GENERATE THE REFERENCE POPULATION
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
@@ -19,7 +19,7 @@ sim_pop<-reference_population(segs=segs,
                               phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 sim_pop_ref<-gsub(":", "_", Sys.time())
 saveRDS(sim_pop,
-        file=paste0("output/sim_pop_version_",sim_pop_ref,".rds"))
+        file=paste0("_output/sim_pop_version_",sim_pop_ref,".rds"))
 
 
 ## MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
@@ -43,7 +43,7 @@ replicate(nreps,
                             effort=effort,
                             occasions=3)
             saveRDS(dat,
-                    file=paste0("output/catch_dat_", sim_pop_ref, "_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
+                    file=paste0("_output/catch_dat_", sim_pop_ref, "_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
           })
 proc.time()-ptm
 
@@ -76,9 +76,9 @@ dat_trial<-catch_data(sim_pop=sim_pop,
 
 ## TESTING SAVE FORMATS
 saveRDS(dat_trial,
-        file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".rds"))
+        file=paste0("_output/catch_dat_rep",gsub(":", "_", Sys.time()),".rds"))
 save(dat_trial,
-     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".RData"))
+     file=paste0("_output/catch_dat_rep",gsub(":", "_", Sys.time()),".RData"))
 proc.time()-ptm
 # user      system    elapsed 
 # 68.59     0.28      68.94 
@@ -86,7 +86,7 @@ proc.time()-ptm
 
 ptm<-proc.time()
 save(dat_trial,
-     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".gzip"),
+     file=paste0("_output/catch_dat_rep",gsub(":", "_", Sys.time()),".gzip"),
      compress="gzip")
 proc.time()-ptm
 # user    system    elapsed 
@@ -95,7 +95,7 @@ proc.time()-ptm
 
 ptm<-proc.time()
 save(dat_trial,
-     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".bzip2"),
+     file=paste0("_output/catch_dat_rep",gsub(":", "_", Sys.time()),".bzip2"),
      compress="bzip2")
 proc.time()-ptm
 # user    system    elapsed 
@@ -105,7 +105,7 @@ proc.time()-ptm
 
 ptm<-proc.time()
 save(dat_trial,
-     file=paste0("output/catch_dat_rep",gsub(":", "_", Sys.time()),".xz"),
+     file=paste0("_output/catch_dat_rep",gsub(":", "_", Sys.time()),".xz"),
      compress="xz")
 proc.time()-ptm
 # user    system    elapsed 
@@ -113,7 +113,7 @@ proc.time()-ptm
 ## RECUCED TO ~5MB
 
 ## LOOK AT TEST OUTPUT
-sim_dat<-readRDS("output/catch_dat_catchability_random_rep2017-07-07 11_43_38.rds")
+sim_dat<-readRDS("_output/catch_dat_catchability_random_rep2017-07-07 11_43_38.rds")
 sim_dat$true_vals
 head(sim_dat$samp_dat)
 head(sim_dat$catch_dat)

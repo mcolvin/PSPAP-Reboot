@@ -150,7 +150,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
 ## 4. FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT 
 ## TO SAMPLE
-bend_samples<-function(sim_pop=NULL)
+bend_samples<-function(sim_pop=NULL,
+                       samp_type=NULL)
 {
   # this function determines which bends within segments are to be
   # sampled each year with the number of bends sampled within a segment
@@ -171,6 +172,13 @@ bend_samples<-function(sim_pop=NULL)
   ##        abundances, respectively 
   ##  $sampled: a matrix of 0's (not sampled) and 1's (sampled) where
   ##    each row is a bend and each column is a year
+  
+  # ERROR HANDLING
+  if(samp_type!="r" & samp_type!="f")
+  {return(print("samp_type needs to be one of two characters: \n
+        r, which randomly selects bends for each year of sampling or \n
+        f, which randomly selects a single set of bends and fixes them
+                to be sampled every year \n"))}
   
   # GET BEND INFORMATION
   tmp<-sim_pop$bendMeta
@@ -213,6 +221,7 @@ bend_samples<-function(sim_pop=NULL)
 ## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
 ##    RESULTING CAPTURE HISTORIES OF FISH IN SAMPLED BENDS
 catch_data<-function(sim_pop=NULL,
+                     samp_type=NULL,
                      gears=c("GN14", "GN18", "GN41", "GN81",
                              "MF", "OT16", "TLC1", "TLC2", "TN"),
                      catchability=NULL,
@@ -225,7 +234,7 @@ catch_data<-function(sim_pop=NULL,
   tmp<-sim_pop$bendMeta
   b_abund<-sim_pop$out
   Z_abund<-sim_pop$Z
-  sampled<-bend_samples(sim_pop=sim_pop)
+  sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
   
   # LOG-ODDS CATCHABILITY BY GEAR
   B0<- log(catchability/(1-catchability))
