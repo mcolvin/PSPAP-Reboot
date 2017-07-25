@@ -182,7 +182,7 @@ bend_samples<-function(sim_pop=NULL,
   
   # GET BEND INFORMATION
   tmp<-sim_pop$bendMeta
-  tmp<-tmp[order(tmp$b_segment, tmp$bend_num),]
+  tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
   bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
   bends_in_segs$start<-1
   for(i in 1:nrow(bends_in_segs)) 
@@ -198,7 +198,24 @@ bend_samples<-function(sim_pop=NULL,
   # DETERMINE WHICH BENDS IN A SEGMENT TO SAMPLE
   abund<-sim_pop$out
   sampled<-matrix(0,nrow=nrow(abund), ncol=ncol(abund))
-  for(j in 1:ncol(abund))
+  if(samp_type=="r")
+  {
+    for(j in 1:ncol(abund))
+    {
+      sample_bends<-NULL
+      for(k in 1:nrow(bends_in_segs)) 
+      {
+        sample_bends<-c(sample_bends,
+                        sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), 
+                               bends_in_segs$samp_num[k], replace=FALSE))
+      }
+      for(i in 1:nrow(abund))
+      {
+        sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
+      }
+    } 
+  }
+  if(samp_type=="f")
   {
     sample_bends<-NULL
     for(k in 1:nrow(bends_in_segs)) 
@@ -209,7 +226,7 @@ bend_samples<-function(sim_pop=NULL,
     }
     for(i in 1:nrow(abund))
     {
-      sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
+      sampled[i,]<-rep(ifelse(any(sample_bends==i), 1, 0),ncol(abund))
     }
   } 
   
@@ -232,6 +249,7 @@ catch_data<-function(sim_pop=NULL,
 {
   # USE SIM_POP TO DEFINE VARIABLES
   tmp<-sim_pop$bendMeta
+  tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
   b_abund<-sim_pop$out
   Z_abund<-sim_pop$Z
   sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
