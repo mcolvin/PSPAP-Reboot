@@ -494,9 +494,9 @@ get.abund<-function(sim_dat=NULL,
   ### GET SEGMENT DENSITY ESTIMATES
   ests<-ddply(tmp,.(b_segment,year,gear),
               summarize,
+              samp_size=sum(occ),
               mean_dens=mean(catch_dens),
               sd_dens=sd(catch_dens),
-              samp_size=sum(occ),
               catch=sum(catch),
               samp_length=sum(length.rkm))
   ests$WM_dens<-ests$catch/ests$samp_length
@@ -523,11 +523,11 @@ get.abund<-function(sim_dat=NULL,
               Wsd_dens=sqrt(sum((length.rkm/samp_length)*diffsq)))
   ests<-merge(ests,Wsd)
   #### CALCULATE CV
-  ests$cv_AM<-ests$sd_dens/ests$Nhat_AM
-  ests$cv_WM<-ests$Wsd_dens/ests$Nhat_WM
+  ests$cv_AM<-ests$sd_dens/abs(ests$Nhat_AM)
+  ests$cv_WM<-ests$Wsd_dens/abs(ests$Nhat_WM)
   
   ## OUTPUT ESTIMATES
-  ests<-ests[,c(1:3,6,11:15,17,18)]
+  ests<-ests[,c(1:4,11:15,17,18)]
   return(ests)
 }
  

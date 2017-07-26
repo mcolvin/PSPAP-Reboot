@@ -3,9 +3,9 @@
 ### BIAS & PRECISION
 ## 2. GET.M0.ESTS FUNCTION TEST
 
-source("R/1_global.R")
-source("R/2_functions.R")
-source("R/3_load-and-clean.R")
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
 
 rm(effort, effort_data,studyArea,dfitfun,dfitfunLB,dfitfunUB,estimate, plot_metrics,sim_ch)
 
@@ -46,7 +46,7 @@ get_ests<-lapply(dat_files, function(i)
 ## PUT IN A PALLATABLE FORM
 get_M0_trnd<-do.call(rbind, sapply(get_ests, "[[", "M0_trnd", simplify=FALSE))
 get_M0_trnd$sig_AM<-ifelse(get_M0_trnd$pval_AM<0.05,1,0)
-get_M0_trnd$sig_HM<-ifelse(get_M0_trnd$pval_HM<0.05,1,0)
+get_M0_trnd$sig_WM<-ifelse(get_M0_trnd$pval_WM<0.05,1,0)
 
 ## MAKE SUMMARY TABLE OF RESULTS
 df_trnd<-ddply(get_M0_trnd, .(gear), summarize,
@@ -54,21 +54,23 @@ df_trnd<-ddply(get_M0_trnd, .(gear), summarize,
                mean_pval_AM=mean(pval_AM, na.rm=TRUE),
                mean_bias_AM=mean(bias_AM, na.rm=TRUE),
                mean_cv_AM=mean(cv_AM, na.rm=TRUE),
+               mean_cv_AM2=mean(cv_AM*trnd_AM, na.rm=TRUE)/mean(trnd_AM,na.rm=TRUE),
                power_AM=sum(sig_AM,na.rm=TRUE)/length(which(!is.na(sig_AM))),
-               mean_trnd_HM=mean(trnd_HM, na.rm=TRUE),
-               mean_pval_HM=mean(pval_HM, na.rm=TRUE),
-               mean_bias_HM=mean(bias_HM, na.rm=TRUE),
-               mean_cv_HM=mean(cv_HM, na.rm=TRUE),
-               power_HM=sum(sig_HM,na.rm=TRUE)/length(which(!is.na(sig_HM))),
+               mean_trnd_WM=mean(trnd_WM, na.rm=TRUE),
+               mean_pval_WM=mean(pval_WM, na.rm=TRUE),
+               mean_bias_WM=mean(bias_WM, na.rm=TRUE),
+               mean_cv_WM=mean(cv_WM, na.rm=TRUE),
+               mean_cv_WM2=mean(cv_WM*trnd_WM, na.rm=TRUE)/mean(trnd_WM,na.rm=TRUE),
+               power_WM=sum(sig_WM,na.rm=TRUE)/length(which(!is.na(sig_WM))),
                mean_performance=mean(perform))
 
 # STORE AND SAVE TREND INFORMATION
 M0_trnd<-list(trnd_dat=get_M0_trnd, summary=df_trnd)
-saveRDS(M0_trnd,file=paste0("output/M0_trnd_catchability_random_",
+saveRDS(M0_trnd,file=paste0("_output/M0_trnd_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 
 # ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(M0_trnd,file=paste0("output/M0_trnd_",pop_ref,"_catchability_random_",
+# saveRDS(M0_trnd,file=paste0("_output/M0_trnd_",pop_ref,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
 
 
@@ -82,18 +84,20 @@ df_abund<-ddply(get_M0_abund, .(segment,year,gear), summarize,
                 mean_Nhat_AM=mean(Nhat_AM, na.rm=TRUE),
                 mean_bias_AM=mean(abund_bias_AM, na.rm=TRUE),
                 mean_cv_AM=mean(abund_cv_AM, na.rm=TRUE),
-                mean_Nhat_HM=mean(Nhat_HM, na.rm=TRUE),
-                mean_bias_HM=mean(abund_bias_HM, na.rm=TRUE),
-                mean_cv_HM=mean(abund_cv_HM, na.rm=TRUE),
+                mean_cv_AM2=mean(abund_cv_AM*Nhat_AM, na.rm=TRUE)/mean(Nhat_AM,na.rm=TRUE),
+                mean_Nhat_WM=mean(Nhat_WM, na.rm=TRUE),
+                mean_bias_WM=mean(abund_bias_WM, na.rm=TRUE),
+                mean_cv_WM=mean(abund_cv_WM, na.rm=TRUE),
+                mean_cv_WM2=mean(abund_cv_WM*Nhat_WM, na.rm=TRUE)/mean(Nhat_WM,na.rm=TRUE),
                 mean_perform=mean(perform, na.rm=TRUE))
 
 # STORE AND SAVE ABUNDANCE INFORMATION
 M0_abund<-list(abund_dat=get_M0_abund, summary=df_abund)
-saveRDS(M0_abund,file=paste0("output/M0_abund_catchability_random_",
+saveRDS(M0_abund,file=paste0("_output/M0_abund_catchability_random_",
                                gsub(":", "_", Sys.time()),".rds"))
 
 # ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(M0_abund,file=paste0("output/M0_abund_",pop_ref,"_catchability_random_",
+# saveRDS(M0_abund,file=paste0("_output/M0_abund_",pop_ref,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
 
 
