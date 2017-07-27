@@ -724,14 +724,16 @@ get.M0t.ests<-function(sim_dat=NULL,
         gear=g,
         ## ARITHMETIC MEAN
         ### TREND ESTIMATE
-        trnd_AM_M0=coef(fit_AM_M0)['year'],
+        trnd_AM_M0=ifelse(is.na(summary(fit_AM_M0)$coefficients['year',2]),NA,
+                          coef(fit_AM_M0)['year']),
         ### STANDARD ERROR FOR TREND ESTIMATE
         se_AM_M0=summary(fit_AM_M0)$coefficients['year',2],
         ### PVALUE FOR TREND ESTIMATE
         pval_AM_M0=summary(fit_AM_M0)$coefficients['year',4],
         ## WEIGHTED ARITHMETIC MEAN
         ### TREND ESTIMATE
-        trnd_WM_M0=coef(fit_WM_M0)['year'],
+        trnd_WM_M0=ifelse(is.na(summary(fit_WM_M0)$coefficients['year',2]),NA,
+                          coef(fit_WM_M0)['year']),
         ### STANDARD ERROR FOR TREND ESTIMATE
         se_WM_M0=summary(fit_WM_M0)$coefficients['year',2],
         ### PVALUE FOR TREND ESTIMATE
@@ -767,14 +769,16 @@ get.M0t.ests<-function(sim_dat=NULL,
         gear=g,
         ## ARITHMETIC MEAN
         ### TREND ESTIMATE
-        trnd_AM_Mt=coef(fit_AM_Mt)['year'],
+        trnd_AM_Mt=ifelse(is.na(summary(fit_AM_Mt)$coefficients['year',2]),NA,
+                          coef(fit_AM_Mt)['year']),
         ### STANDARD ERROR FOR TREND ESTIMATE
         se_AM_Mt=summary(fit_AM_Mt)$coefficients['year',2],
         ### PVALUE FOR TREND ESTIMATE
         pval_AM_Mt=summary(fit_AM_Mt)$coefficients['year',4],
         ## WEIGHTED ARITHMETIC MEAN
         ### TREND ESTIMATE
-        trnd_WM_Mt=coef(fit_WM_Mt)['year'],
+        trnd_WM_Mt=ifelse(is.na(summary(fit_WM_Mt)$coefficients['year',2]),NA,
+                          coef(fit_WM_Mt)['year']),
         ### STANDARD ERROR FOR TREND ESTIMATE
         se_WM_Mt=summary(fit_WM_Mt)$coefficients['year',2],
         ### PVALUE FOR TREND ESTIMATE
