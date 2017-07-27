@@ -1,7 +1,7 @@
-# M0 ANALYSIS:
-## 1. M0 ESTIMATES: TREND & ABUNDANCE
+# M0 & Mt ANALYSIS:
+## 1. M0 & Mt ESTIMATES: TREND & ABUNDANCE
 ### BIAS & PRECISION
-## 2. GET.M0.ESTS FUNCTION TEST
+## 2. GET.M0t.ESTS FUNCTION TEST
 
 source("_R/1_global.R")
 source("_R/2_functions.R")
@@ -29,81 +29,106 @@ rm(effort, effort_data,studyArea,dfitfun,dfitfunLB,dfitfunUB,estimate, plot_metr
 dat_files<-dir("output", pattern="catch_dat_")
 
 
-#####################
-## 1. M0 ESTIMATES ##
-#####################
+##########################
+## 1. M0 & Mt ESTIMATES ##
+##########################
 
-# FIND M0 ESTIMATES FOR TREND AND ABUNDANCE
+# FIND M0 & Mt ESTIMATES FOR TREND AND ABUNDANCE
 get_ests<-lapply(dat_files, function(i)
 {
   # TREND & ABUNDANCE
   dat<-readRDS(paste0("output/",i))
-  out<-get.M0.ests(sim_dat=dat,bends=bends)
+  out<-get.M0t.ests(sim_dat=dat,bends=bends)
   return(out)
 })
 
 # TREND
 ## PUT IN A PALLATABLE FORM
-get_M0_trnd<-do.call(rbind, sapply(get_ests, "[[", "M0_trnd", simplify=FALSE))
-get_M0_trnd$sig_AM<-ifelse(get_M0_trnd$pval_AM<0.05,1,0)
-get_M0_trnd$sig_WM<-ifelse(get_M0_trnd$pval_WM<0.05,1,0)
+get_M0t_trnd<-do.call(rbind, sapply(get_ests, "[[", "M0t_trnd", simplify=FALSE))
+get_M0t_trnd$sig_AM_M0<-ifelse(get_M0t_trnd$pval_AM_M0<0.05,1,0)
+get_M0t_trnd$sig_WM_M0<-ifelse(get_M0t_trnd$pval_WM_M0<0.05,1,0)
+get_M0t_trnd$sig_AM_Mt<-ifelse(get_M0t_trnd$pval_AM_Mt<0.05,1,0)
+get_M0t_trnd$sig_WM_Mt<-ifelse(get_M0t_trnd$pval_WM_Mt<0.05,1,0)
 
 ## MAKE SUMMARY TABLE OF RESULTS
-df_trnd<-ddply(get_M0_trnd, .(gear), summarize,
-               mean_trnd_AM=mean(trnd_AM, na.rm=TRUE),
-               mean_pval_AM=mean(pval_AM, na.rm=TRUE),
-               mean_bias_AM=mean(bias_AM, na.rm=TRUE),
-               mean_cv_AM=mean(cv_AM, na.rm=TRUE),
-               mean_cv_AM2=mean(cv_AM*trnd_AM, na.rm=TRUE)/mean(trnd_AM,na.rm=TRUE),
-               power_AM=sum(sig_AM,na.rm=TRUE)/length(which(!is.na(sig_AM))),
-               mean_trnd_WM=mean(trnd_WM, na.rm=TRUE),
-               mean_pval_WM=mean(pval_WM, na.rm=TRUE),
-               mean_bias_WM=mean(bias_WM, na.rm=TRUE),
-               mean_cv_WM=mean(cv_WM, na.rm=TRUE),
-               mean_cv_WM2=mean(cv_WM*trnd_WM, na.rm=TRUE)/mean(trnd_WM,na.rm=TRUE),
-               power_WM=sum(sig_WM,na.rm=TRUE)/length(which(!is.na(sig_WM))),
-               mean_performance=mean(perform))
+df_trnd<-ddply(get_M0t_trnd, .(gear), summarize,
+               mean_trnd_AM_M0=mean(trnd_AM_M0, na.rm=TRUE),
+               mean_pval_AM_M0=mean(pval_AM_M0, na.rm=TRUE),
+               mean_bias_AM_M0=mean(bias_AM_M0, na.rm=TRUE),
+               mean_cv_AM_M0=mean(cv_AM_M0, na.rm=TRUE),
+               mean_cv_AM2_M0=mean(cv_AM_M0*trnd_AM_M0, na.rm=TRUE)/mean(trnd_AM_M0,na.rm=TRUE),
+               power_AM_M0=sum(sig_AM_M0,na.rm=TRUE)/length(which(!is.na(sig_AM_M0))),
+               mean_trnd_WM_M0=mean(trnd_WM_M0, na.rm=TRUE),
+               mean_pval_WM_M0=mean(pval_WM_M0, na.rm=TRUE),
+               mean_bias_WM_M0=mean(bias_WM_M0, na.rm=TRUE),
+               mean_cv_WM_M0=mean(cv_WM_M0, na.rm=TRUE),
+               mean_cv_WM2_M0=mean(cv_WM_M0*trnd_WM_M0, na.rm=TRUE)/mean(trnd_WM_M0,na.rm=TRUE),
+               power_WM_M0=sum(sig_WM_M0,na.rm=TRUE)/length(which(!is.na(sig_WM_M0))),
+               mean_performance_M0=mean(perform_M0),
+               mean_trnd_AM_Mt=mean(trnd_AM_Mt, na.rm=TRUE),
+               mean_pval_AM_Mt=mean(pval_AM_Mt, na.rm=TRUE),
+               mean_bias_AM_Mt=mean(bias_AM_Mt, na.rm=TRUE),
+               mean_cv_AM_Mt=mean(cv_AM_Mt, na.rm=TRUE),
+               mean_cv_AM2_Mt=mean(cv_AM_Mt*trnd_AM_Mt, na.rm=TRUE)/mean(trnd_AM_Mt,na.rm=TRUE),
+               power_AM_Mt=sum(sig_AM_Mt,na.rm=TRUE)/length(which(!is.na(sig_AM_Mt))),
+               mean_trnd_WM_Mt=mean(trnd_WM_Mt, na.rm=TRUE),
+               mean_pval_WM_Mt=mean(pval_WM_Mt, na.rm=TRUE),
+               mean_bias_WM_Mt=mean(bias_WM_Mt, na.rm=TRUE),
+               mean_cv_WM_Mt=mean(cv_WM_Mt, na.rm=TRUE),
+               mean_cv_WM2_Mt=mean(cv_WM_Mt*trnd_WM_Mt, na.rm=TRUE)/mean(trnd_WM_Mt,na.rm=TRUE),
+               power_WM_Mt=sum(sig_WM_Mt,na.rm=TRUE)/length(which(!is.na(sig_WM_Mt))),
+               mean_performance_Mt=mean(perform_Mt))
 
 # STORE AND SAVE TREND INFORMATION
-M0_trnd<-list(trnd_dat=get_M0_trnd, summary=df_trnd)
-saveRDS(M0_trnd,file=paste0("_output/M0_trnd_catchability_random_",
+M0t_trnd<-list(trnd_dat=get_M0t_trnd, summary=df_trnd)
+saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 
 # ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(M0_trnd,file=paste0("_output/M0_trnd_",pop_ref,"_catchability_random_",
+# saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_",pop_ref,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
 
 
 
 # ABUNDANCE
 ## PUT IN A PALLATABLE FORM
-get_M0_abund<-do.call(rbind, sapply(get_ests, "[[", "M0_abund", simplify=FALSE))
+get_M0t_abund<-do.call(rbind, sapply(get_ests, "[[", "M0t_abund", simplify=FALSE))
 
 # MAKE SUMMARY TABLE OF RESULTS
-df_abund<-ddply(get_M0_abund, .(segment,year,gear), summarize,
-                mean_Nhat_AM=mean(Nhat_AM, na.rm=TRUE),
-                mean_bias_AM=mean(abund_bias_AM, na.rm=TRUE),
-                mean_cv_AM=mean(abund_cv_AM, na.rm=TRUE),
-                mean_cv_AM2=mean(abund_cv_AM*Nhat_AM, na.rm=TRUE)/mean(Nhat_AM,na.rm=TRUE),
-                mean_Nhat_WM=mean(Nhat_WM, na.rm=TRUE),
-                mean_bias_WM=mean(abund_bias_WM, na.rm=TRUE),
-                mean_cv_WM=mean(abund_cv_WM, na.rm=TRUE),
-                mean_cv_WM2=mean(abund_cv_WM*Nhat_WM, na.rm=TRUE)/mean(Nhat_WM,na.rm=TRUE),
-                mean_perform=mean(perform, na.rm=TRUE))
+df_abund<-ddply(get_M0t_abund, .(segment,year,gear), summarize,
+                mean_Nhat_AM_M0=mean(Nhat_AM_M0, na.rm=TRUE),
+                mean_bias_AM_M0=mean(abund_bias_AM_M0, na.rm=TRUE),
+                mean_cv_AM_M0=mean(abund_cv_AM_M0, na.rm=TRUE),
+                mean_cv_AM2_M0=mean(abund_cv_AM_M0*Nhat_AM_M0, na.rm=TRUE)/mean(Nhat_AM_M0,na.rm=TRUE),
+                mean_Nhat_WM_M0=mean(Nhat_WM_M0, na.rm=TRUE),
+                mean_bias_WM_M0=mean(abund_bias_WM_M0, na.rm=TRUE),
+                mean_cv_WM_M0=mean(abund_cv_WM_M0, na.rm=TRUE),
+                mean_cv_WM2_M0=mean(abund_cv_WM_M0*Nhat_WM_M0, na.rm=TRUE)/mean(Nhat_WM_M0,na.rm=TRUE),
+                mean_perform_M0=mean(perform_M0, na.rm=TRUE),
+                mean_Nhat_AM_Mt=mean(Nhat_AM_Mt, na.rm=TRUE),
+                mean_bias_AM_Mt=mean(abund_bias_AM_Mt, na.rm=TRUE),
+                mean_cv_AM_Mt=mean(abund_cv_AM_Mt, na.rm=TRUE),
+                mean_cv_AM2_Mt=mean(abund_cv_AM_Mt*Nhat_AM_Mt, na.rm=TRUE)/mean(Nhat_AM_Mt,na.rm=TRUE),
+                mean_Nhat_WM_Mt=mean(Nhat_WM_Mt, na.rm=TRUE),
+                mean_bias_WM_Mt=mean(abund_bias_WM_Mt, na.rm=TRUE),
+                mean_cv_WM_Mt=mean(abund_cv_WM_Mt, na.rm=TRUE),
+                mean_cv_WM2_Mt=mean(abund_cv_WM_Mt*Nhat_WM_Mt, na.rm=TRUE)/mean(Nhat_WM_Mt,na.rm=TRUE),
+                mean_perform_Mt=mean(perform_Mt, na.rm=TRUE))
 
 # STORE AND SAVE ABUNDANCE INFORMATION
-M0_abund<-list(abund_dat=get_M0_abund, summary=df_abund)
-saveRDS(M0_abund,file=paste0("_output/M0_abund_catchability_random_",
+M0t_abund<-list(abund_dat=get_M0t_abund, summary=df_abund)
+saveRDS(M0t_abund,file=paste0("_output/M0t_abund_catchability_random_",
                                gsub(":", "_", Sys.time()),".rds"))
 
 # ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(M0_abund,file=paste0("_output/M0_abund_",pop_ref,"_catchability_random_",
+# saveRDS(M0t_abund,file=paste0("_output/M0t_abund_",pop_ref,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
 
 
 
+
 ###########################
-##  2. TEST GET.M0.ESTS  ##
+##  2. TEST GET.M0t.ESTS  ##
 ###########################
 
 ## PULL ONE REPLICATE OF CATCH DATA
@@ -112,7 +137,7 @@ sim_dat<-readRDS(paste0("output/",dat_files[2]))
 
 ## TEST FUNCTION
 ptm<-proc.time()
-yy<-get.M0.ests(sim_dat=sim_dat, bends=bends)
+yy<-get.M0t.ests(sim_dat=sim_dat, bends=bends)
 proc.time()-ptm
 # user      system    elapsed 
 # 817.50    36.12     864.53 
