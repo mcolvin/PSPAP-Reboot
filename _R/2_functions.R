@@ -16,37 +16,37 @@
 # EFFORT DISTRIBUTIONS
 ## FIT DISTRIBUTIONS TO EFFORT DATA 
 dfitfun<-function(x,dat,basin,gears)
-{
-  datLBgear<-subset(dat, gear==LBgears[x])
-  dfit<-fitdistr(datLBgear$effort, "gamma")
-  #Define Shape and Rate Based on Distribution Fitting
-  s<-as.numeric(unlist(dfit)[1])
-  r<-as.numeric(unlist(dfit)[2])
-  return(c(s,r))
-}
+    {
+    datLBgear<-subset(dat, gear==LBgears[x])
+    dfit<-fitdistr(datLBgear$effort, "gamma")
+    #Define Shape and Rate Based on Distribution Fitting
+    s<-as.numeric(unlist(dfit)[1])
+    r<-as.numeric(unlist(dfit)[2])
+    return(c(s,r))
+    }
 
 
 ## 1.  
 dfitfunLB<-function(x)
-{
-  datLBgear<-subset(datLB, gear==LBgears[x])
-  dfit<-fitdistr(datLBgear$effort, "gamma")
-  #Define Shape and Rate Based on Distribution Fitting
-  s<-as.numeric(unlist(dfit)[1])
-  r<-as.numeric(unlist(dfit)[2])
-  return(c(s,r))
-}
+    {
+    datLBgear<-subset(datLB, gear==LBgears[x])
+    dfit<-fitdistr(datLBgear$effort, "gamma")
+    #Define Shape and Rate Based on Distribution Fitting
+    s<-as.numeric(unlist(dfit)[1])
+    r<-as.numeric(unlist(dfit)[2])
+    return(c(s,r))
+    }
 
 ## 2.
 dfitfunUB<-function(x)
-{
-  datUBgear<-subset(datUB, gear==UBgears[x])
-  dfit<-fitdistr(datUBgear$effort, "gamma")
-  #Define Shape and Rate Based on Distribution Fitting
-  s<-as.numeric(unlist(dfit)[1])
-  r<-as.numeric(unlist(dfit)[2])
-  return(c(s,r))
-}
+    {
+    datUBgear<-subset(datUB, gear==UBgears[x])
+    dfit<-fitdistr(datUBgear$effort, "gamma")
+    #Define Shape and Rate Based on Distribution Fitting
+    s<-as.numeric(unlist(dfit)[1])
+    r<-as.numeric(unlist(dfit)[2])
+    return(c(s,r))
+    }
 
 
 
@@ -57,7 +57,11 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     bends=NULL,
     fish_density=NULL,
     nyears=10,
-    phi=0.95)
+    phi=0.95,
+    Linf=rep(1000,10),
+    k = rep(0.2,10)
+    vbgf_vcv=NULL,
+    initial_length=NULL)
     {
     # this function allocates fish to bends within a segment
     # probabilistically given bend weights and determines the survival
@@ -71,6 +75,12 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## nyears: number of years to simulate the population for
     ## phi: a matrix of survival probabilities by segment (rows) and 
     ##  year (cols)
+    ## Linf: a vector of mean Linf values for each segment
+    ## k: a vector of mean k values for each segment
+    ## vbgf_vcv: an array of variance and covariances for Linf and
+    ##  k. Each matrix is for a segment
+    ## initial_length: functions to simulate initial length given an
+    ##  empirical distribution of segment specific lengths
     
     # outputs
     ## out: a list of 3 objects:
@@ -82,6 +92,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
     ##    fish status (0=Dead, 1=Alive) where each row represents a fish
     ##    living in bend i and each column represents a year  
+
     
     # assumptions
     ## no movement
@@ -100,7 +111,19 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
       {return(print("Initial fish density (fish_density) needs to be \n
         a dataframe of densities by segment with number of \n
         rows equal to the number of segments."))}
-
+    ### GROWTH
+    if(dim(vbgf_vcv)[1]!=2|dim(vbgf_vcv)[2]!=2){return("The variance covariance \n
+        matrix needs to be 2x2 square")}
+    if(dim(vbgf_vcv)[3]!=10){return("There needs to be 10 2x2 variance covariance \n
+        matrices for each segment")}
+    if(length(Linf)!=10){return("Linf needs to be a vector of 10 values for each segment")}
+    if(length(k)!=10){return("k needs to be a vector of 10 values for each segment")}
+    ## END: ERROR HANDLING   
+    
+    
+    
+    
+    
     # GET BEND INFORMATION
     tmp<- subset(bends, b_segment %in% segs)
     tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]## CRITICAL
@@ -116,9 +139,15 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## DENSITY FOR BEND SIZE
     tmp$N_ini<-rpois(nrow(tmp),
         lambda=tmp$expected_dens*tmp$length.rkm)
-    ## EXAPAND BENDS FOR EACH FISH
-    indvidual_meta<- expanded.data<-as.data.frame(lapply(tmp,
-                   function(x) rep(x,tmp$N_ini)))
+    
+    ## ASSIGN A BEND TO EACH INVIDUAL 
+    ### EXPAND BENDS FOR EACH FISH
+    indvidual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
+    ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
+    indvidual_meta$k<-0.02 # PULL VALUES FROM MV NORMAL
+    indvidual_meta$Linf<- 1200 # PULL VALUES FROM MV NORMAL
+    
+    
     ## SET UP INVIDUAL POPULATION
     Z<- lapply(1:nrow(tmp),function(x)
         {
@@ -126,13 +155,23 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
         ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive) 
         y<-matrix(0,nrow=tmp$N_ini[x],ncol=nyears) 
         y[,1]<-1
+        
+        ### l: length for individuals
+        l<-matrix(0,nrow=tmp$N_ini[x],ncol=nyears) 
+        l_ini<-approxfun(initial_length[initial_length$segment==indvidual_meta$b_segment[x],]$qntls,
+            initial_length[initial_length$segment==indvidual_meta$b_segment[x],]$vals,
+            rule=2)
+        l[,1]<-l_ini(runif(tmp$N_ini[x]))
+        l[,1]<- ifelse(l[,1]> Linf,Linf*0.95,l[,1]) # fixme
         for(i in 2:nyears)
             {
             y[,i]<- rbinom(tmp$N_ini[x],
                 size=1,
                 prob=phi[tmp$phi_indx[x],i-1]*y[,i-1])
+            l[,i]<-l[,i-1]+(1)*y[,i-1]# 0 growth if dead   
+                
             }
-        return(y)
+        return(list(y=y, l=l))
         })
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
     out<- lapply(1:nrow(tmp),function(x)
@@ -143,96 +182,95 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     
     out<-list(out=out, bendMeta=tmp,Z=Z)
     return(out)# return relevant stuff
-}
-
+    }
 
 
 
 ## 4. FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT 
 ## TO SAMPLE
 bend_samples<-function(sim_pop=NULL,
-                       samp_type=NULL)
-{
-  # this function determines which bends within segments are to be
-  # sampled each year with the number of bends sampled within a segment
-  # given by Table A1 in PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
+    samp_type=NULL)
+    {
+    # this function determines which bends within segments are to be
+    # sampled each year with the number of bends sampled within a segment
+    # given by Table A1 in PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
   
-  # inputs
-  ## sim_pop: a simulated population using the reference_populations 
-  ##  function having components:
-  ##    $out: a matrix of bend abundance data (rows=bends; cols=years)
+    # inputs
+    ## sim_pop: a simulated population using the reference_populations 
+    ##  function having components:
+    ##    $out: a matrix of bend abundance data (rows=bends; cols=years)
   
-  # outputs
-  ## a list of 2 elements:
-  ##  $bendLong: a data.frame expanded from sim_pop$bendMeta to include one 
-  ##    observation per bend per year; new columns include:
-  ##      $sampled: a column of 0's (not sampled) and 1's (sampled) that
-  ##        tell if the given bend should be sampled in the given year
-  ##      $s_abund and $r_abund: columns of segment-level and RPMA-level
-  ##        abundances, respectively 
-  ##  $sampled: a matrix of 0's (not sampled) and 1's (sampled) where
-  ##    each row is a bend and each column is a year
+    # outputs
+    ## a list of 2 elements:
+    ##  $bendLong: a data.frame expanded from sim_pop$bendMeta to include one 
+    ##    observation per bend per year; new columns include:
+    ##      $sampled: a column of 0's (not sampled) and 1's (sampled) that
+    ##        tell if the given bend should be sampled in the given year
+    ##      $s_abund and $r_abund: columns of segment-level and RPMA-level
+    ##        abundances, respectively 
+    ##  $sampled: a matrix of 0's (not sampled) and 1's (sampled) where
+    ##    each row is a bend and each column is a year
   
-  # ERROR HANDLING
-  if(samp_type!="r" & samp_type!="f")
-  {return(print("samp_type needs to be one of two characters: \n
+    # ERROR HANDLING
+    if(samp_type!="r" & samp_type!="f")
+    {return(print("samp_type needs to be one of two characters: \n
         r, which randomly selects bends for each year of sampling or \n
         f, which randomly selects a single set of bends and fixes them
                 to be sampled every year \n"))}
   
-  # GET BEND INFORMATION
-  tmp<-sim_pop$bendMeta
-  tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
-  bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
-  bends_in_segs$start<-1
-  for(i in 1:nrow(bends_in_segs)) 
-  {
-    bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
-    if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
-  }
+    # GET BEND INFORMATION
+    tmp<-sim_pop$bendMeta
+    tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
+    bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
+    bends_in_segs$start<-1
+    for(i in 1:nrow(bends_in_segs)) 
+        {
+        bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
+        if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
+        }
   
-  # SAMPLE NUMBERS IN TABLE A1 IN 
-  #   PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
-  bends_in_segs$samp_num<-c(0, 12, 21, 12, 12, 15, 20, 10, 11, 14)
+    # SAMPLE NUMBERS IN TABLE A1 IN 
+    #   PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
+    bends_in_segs$samp_num<-c(0, 12, 21, 12, 12, 15, 20, 10, 11, 14)
   
-  # DETERMINE WHICH BENDS IN A SEGMENT TO SAMPLE
-  abund<-sim_pop$out
-  sampled<-matrix(0,nrow=nrow(abund), ncol=ncol(abund))
-  if(samp_type=="r")
-  {
-    for(j in 1:ncol(abund))
-    {
-      sample_bends<-NULL
-      for(k in 1:nrow(bends_in_segs)) 
-      {
-        sample_bends<-c(sample_bends,
+    # DETERMINE WHICH BENDS IN A SEGMENT TO SAMPLE
+    abund<-sim_pop$out
+    sampled<-matrix(0,nrow=nrow(abund), ncol=ncol(abund))
+    if(samp_type=="r")
+        {
+        for(j in 1:ncol(abund))
+            {
+            sample_bends<-NULL
+            for(k in 1:nrow(bends_in_segs)) 
+                {
+                sample_bends<-c(sample_bends,
                         sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), 
                                bends_in_segs$samp_num[k], replace=FALSE))
-      }
-      for(i in 1:nrow(abund))
-      {
-        sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
-      }
-    } 
-  }
-  if(samp_type=="f")
-  {
-    sample_bends<-NULL
-    for(k in 1:nrow(bends_in_segs)) 
-    {
-      sample_bends<-c(sample_bends,
+                }
+            for(i in 1:nrow(abund))
+                {
+                sampled[i,j]<-ifelse(any(sample_bends==i), 1, 0)
+                }
+            } 
+        }
+    if(samp_type=="f")
+        {
+        sample_bends<-NULL
+        for(k in 1:nrow(bends_in_segs)) 
+            {
+            sample_bends<-c(sample_bends,
                       sample(c(bends_in_segs$start[k]:bends_in_segs$stop[k]), 
                              bends_in_segs$samp_num[k], replace=FALSE))
-    }
-    for(i in 1:nrow(abund))
-    {
-      sampled[i,]<-rep(ifelse(any(sample_bends==i), 1, 0),ncol(abund))
-    }
-  } 
+            }
+        for(i in 1:nrow(abund))
+            {
+            sampled[i,]<-rep(ifelse(any(sample_bends==i), 1, 0),ncol(abund))
+            }
+        } 
   
-  # RETURN SAMPLES BENDS (MATRIX FORM)
-  return(sampled)
-}
+    # RETURN SAMPLES BENDS (MATRIX FORM)
+    return(sampled)
+    }
 
 
 ## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 

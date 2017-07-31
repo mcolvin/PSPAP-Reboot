@@ -1,6 +1,8 @@
 # SIMULATING DATA 
 ## CURRENTLY FOR A SINGLE REFERENCE POPULATION
 ## BUT CAN MODIFY TO MAKE REFERENCE POPULATION REPLICATES TOO
+
+setwd("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PSPAP-Reboot")
 source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
@@ -11,11 +13,31 @@ nyears<- 10
 
 beta0<- 2.9444
 phi<-matrix(plogis(beta0),length(segs),nyears-1)
+Linf<-rep(1000,length(segs))
+k<-rep(0.02,length(segs))
+vbgf_vcov<- array(0,dim=c(2,2,length(segs)))
+initial_length<-data.frame()
+for(ss in segs)
+    {
+    x<-runif(1000,30,1200)
+    qntls<-seq(0,1,0.025)
+    vals<-data.frame(segment=ss,qntls=qntls,vals=quantile(x,qntls))
+    initial_length<- rbind(initial_length,vals)
+    }
+
+
+
+l_ini<-approxfun(vals[vals$segment==1,]$qntls,
+    vals[vals$segment==1,]$vals,rule=2)
+l_ini(runif(1000))
+
 
 sim_pop<-reference_population(segs=segs,
-                              bends=bends,# BENDS DATAFRAME
-                              fish_density=init_dens, # FISH DENSITY PER RKM
-                              phi=phi) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+    bends=bends,# BENDS DATAFRAME
+    fish_density=init_dens, # FISH DENSITY PER RKM
+    phi=phi,
+    initial_length=initial_length) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+
 sim_pop_ref<-gsub(":", "_", Sys.time())
 saveRDS(sim_pop,
         file=paste0("_output/sim_pop_version_",sim_pop_ref,".rds"))
