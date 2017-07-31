@@ -27,20 +27,20 @@ for(ss in segs)
 
 
 
-l_ini<-approxfun(vals[vals$segment==1,]$qntls,
-    vals[vals$segment==1,]$vals,rule=2)
-l_ini(runif(1000))
-
-
 sim_pop<-reference_population(segs=segs,
     bends=bends,# BENDS DATAFRAME
     fish_density=init_dens, # FISH DENSITY PER RKM
     phi=phi,
+    Linf=rep(1000,10),
+    k = rep(0.2,10),
+    vbgf_vcv=vbgf_vcv,
     initial_length=initial_length) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 sim_pop_ref<-gsub(":", "_", Sys.time())
 saveRDS(sim_pop,
         file=paste0("_output/sim_pop_version_",sim_pop_ref,".rds"))
+
+individual_meta<- sim_pop$individual_meta
 
 
 ## MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
@@ -50,7 +50,7 @@ samp_type="f"
 
 ### RUN
 ptm<-proc.time()
-nreps=500
+nreps=1
 
 replicate(nreps,
           {
