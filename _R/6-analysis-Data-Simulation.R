@@ -15,7 +15,7 @@ beta0<- 2.9444
 phi<-matrix(plogis(beta0),length(segs),nyears-1)
 Linf<-rep(1000,length(segs))
 k<-rep(0.02,length(segs))
-vbgf_vcov<- array(0,dim=c(2,2,length(segs)))
+vbgf_vcv<- array(0,dim=c(2,2,length(segs)))
 initial_length<-data.frame()
 for(ss in segs)
     {
