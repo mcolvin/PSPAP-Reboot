@@ -26,7 +26,7 @@ rm(effort, effort_data,studyArea,dfitfun,dfitfunLB,dfitfunUB,estimate, plot_metr
 
 
 ## PULL CATCH DATA
-dat_files<-dir("output", pattern="catch_dat_")
+dat_files<-dir("_output", pattern="catch_dat_")
 
 
 ##########################
@@ -37,7 +37,7 @@ dat_files<-dir("output", pattern="catch_dat_")
 get_ests<-lapply(dat_files, function(i)
 {
   # TREND & ABUNDANCE
-  dat<-readRDS(paste0("output/",i))
+  dat<-readRDS(paste0("_output/",i))
   out<-get.M0t.ests(sim_dat=dat,bends=bends)
   return(out)
 })
