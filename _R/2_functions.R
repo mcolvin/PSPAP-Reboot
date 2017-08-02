@@ -59,7 +59,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     nyears=10,
     phi=0.95,
     Linf=rep(1000,10),
-    k = rep(0.2,10)
+    k = rep(0.2,10),
     vbgf_vcv=NULL,
     initial_length=NULL)
     {
@@ -129,6 +129,7 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]## CRITICAL
     bends_in_segs<-aggregate(bend_num~b_segment,tmp,length) 
     bends_in_segs$phi_indx<-1:nrow(bends_in_segs)
+    
     tmp<-merge(tmp, bends_in_segs[,-2],by="b_segment",all.x=TRUE)
     
     # ADD INITIAL DENSITIES TO TMP
@@ -139,48 +140,63 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ## DENSITY FOR BEND SIZE
     tmp$N_ini<-rpois(nrow(tmp),
         lambda=tmp$expected_dens*tmp$length.rkm)
-    
+    tmp<-tmp[order(tmp$b_segment,tmp$bend_num),]
+    tmp$id<-c(1:nrow(tmp))# link for later...
     ## ASSIGN A BEND TO EACH INVIDUAL 
     ### EXPAND BENDS FOR EACH FISH
-    indvidual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
+    individual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
     ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
-    indvidual_meta$k<-0.02 # PULL VALUES FROM MV NORMAL
-    indvidual_meta$Linf<- 1200 # PULL VALUES FROM MV NORMAL
+    individual_meta$k<-0.02 # PULL VALUES FROM MV NORMAL
+    individual_meta$Linf<- 1200 # PULL VALUES FROM MV NORMAL
+ 
+ 
+    ### y: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
+    ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
+    Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
+    Z[,1]<-1
+    ### l: length for individuals
+    l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
     
     
-    ## SET UP INVIDUAL POPULATION
-    Z<- lapply(1:nrow(tmp),function(x)
+    for(i in unique(individual_meta$b_segment))
         {
-        ### y: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
-        ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive) 
-        y<-matrix(0,nrow=tmp$N_ini[x],ncol=nyears) 
-        y[,1]<-1
-        
-        ### l: length for individuals
-        l<-matrix(0,nrow=tmp$N_ini[x],ncol=nyears) 
-        l_ini<-approxfun(initial_length[initial_length$segment==indvidual_meta$b_segment[x],]$qntls,
-            initial_length[initial_length$segment==indvidual_meta$b_segment[x],]$vals,
+        ## MAKE A QUICK FUNCTION OF THE INVERSE CUM DISTRIBUTION
+        l_ini<-approxfun(
+            initial_length[initial_length$segment==i,]$qntls,
+            initial_length[initial_length$segment==i,]$vals,
             rule=2)
-        l[,1]<-l_ini(runif(tmp$N_ini[x]))
-        l[,1]<- ifelse(l[,1]> Linf,Linf*0.95,l[,1]) # fixme
-        for(i in 2:nyears)
-            {
-            y[,i]<- rbinom(tmp$N_ini[x],
-                size=1,
-                prob=phi[tmp$phi_indx[x],i-1]*y[,i-1])
-            l[,i]<-l[,i-1]+(1)*y[,i-1]# 0 growth if dead   
-                
-            }
-        return(list(y=y, l=l))
-        })
-    # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
-    out<- lapply(1:nrow(tmp),function(x)
+        indx<- which(individual_meta$b_segment==i)
+        l[indx,1]<-l_ini(runif(length(indx)))
+        }
+    ## FIX ANY LENGTHS > THAN LINF
+    l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
+   
+    ## POPULATION DYNAMICS
+    for(i in 2:nyears)
         {
-        colSums(Z[[x]])
-        })
-    out<- as.matrix(do.call("rbind",out))
-    
-    out<-list(out=out, bendMeta=tmp,Z=Z)
+        Z[,i]<- rbinom(nrow(Z),
+            size=1,
+            prob=phi[individual_meta$phi_indx,i-1]*Z[,i-1])
+        ## FABENS MODEL FOR GROWTH (VBGF)
+        l[,i]<-l[,i-1] + (individual_meta$Linf-l[,i-1])*(1-exp(-individual_meta$k*1))*Z[,i-1]# 0 growth if dead   
+        }
+ 
+
+ 
+    # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
+    out<-aggregate(Z[,1],by=list(individual_meta$b_segment,individual_meta$bend_num),sum) 
+    for(i in 2:nyears)
+        {
+        app<-aggregate(Z[,i],by=list(individual_meta$b_segment,individual_meta$bend_num),sum)
+        names(app)[3]<-paste("yr",i,sep="_")
+        out<-merge(out,app,by=c("Group.1","Group.2"),all=TRUE)
+        }
+    names(out)[1:2]<-c("segment","bend")
+    out<-out[order(out$segment, out$bend),]
+    tmp<- tmp[order(tmp$b_segment,tmp$bend_num),]
+    out<-list(out=as.matrix(out[,-c(1:2)]), bendMeta=tmp,
+        individual_meta=individual_meta,
+        Z=Z,l=l)
     return(out)# return relevant stuff
     }
 
@@ -276,182 +292,196 @@ bend_samples<-function(sim_pop=NULL,
 ## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
 ##    RESULTING CAPTURE HISTORIES OF FISH IN SAMPLED BENDS
 catch_data<-function(sim_pop=NULL,
-                     samp_type=NULL,
-                     gears=c("GN14", "GN18", "GN41", "GN81",
-                             "MF", "OT16", "TLC1", "TLC2", "TN"),
-                     catchability=NULL,
-                     B0_sd=NULL,
-                     deployments=rep(8,9),
-                     effort=NULL,
-                     occasions=3)
-{
-  # USE SIM_POP TO DEFINE VARIABLES
-  tmp<-sim_pop$bendMeta
-  tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
-  b_abund<-sim_pop$out
-  Z_abund<-sim_pop$Z
-  sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
-  
-  # LOG-ODDS CATCHABILITY BY GEAR
-  B0<- log(catchability/(1-catchability))
-  
-  # EFFORT AND CATCHABILITY DATA FOR SAMPLED BENDS
-  b_samp<-lapply(1:ncol(sampled),function(yr)
-  { 
-    ## PULL OUT SAMPLED BENDS
-    samp_indx<-which(sampled[,yr]==1)
-    ## CREATE TABLE OF SAMPLED BENDS
-    tmp1<-tmp[samp_indx,]
-    tmp1<-tmp1[,names(tmp1) %in% c("b_segment","bend_num")]
-    ## ADD YEAR SAMPLED
-    tmp1$year<-yr
-      
-    ## FIND EFFORT AND CATCHABILITY FOR EACH GEAR, BEND, 
-    ## OCCASION, & DEPLOYMENT
-    gear_dat<-lapply(gears,function(g,d=deployments,out=tmp1)
+    samp_type=NULL,
+    gears=c("GN14", "GN18", "GN41", "GN81",
+         "MF", "OT16", "TLC1", "TLC2", "TN"),
+    catchability=NULL,
+    B0_sd=NULL,
+    deployments=rep(8,9),
+    effort=NULL,
+    occasions=3,
+    individual_meta=NULL)
     {
-      ### ADD GEAR TO TABLE
-      out$gear<-g
-      ### EXPAND TABLE FOR DEPLOYMENTS AND OCCASIONS
-      k<-which(gears==g)
-      out<-out[rep(seq_len(nrow(out)), each=d[k]*occasions),]
-      out$deployment<-rep(1:d[k],times=occasions*length(samp_indx))
-      out$occasion<-rep(1:occasions, each=8, times=length(samp_indx))
-        
-      ### ADD EFFORT
-      f<-sapply(samp_indx, function(x)
-        {
-          indx<-which(effort$gear==g & 
-                      effort$rpma==tmp$rpma[x])
-          #### ERROR HANDLING FOR GEARS THAT ARE NOT USED 
-          #### IN A RPMA: NO EFFORT AND f=0
-          if(length(indx)==0)
-          {
-            f_reps<-rep(0,d[k]*occasions)
-          }
-          if(length(indx)>0)
-          {
-            f_reps<-rgamma(n=d[k]*occasions,
-                             shape=effort$gamma_shape[indx], 
-                             rate=effort$gamma_rate[indx])
-          }
-          return(f_reps)
-      })
-      out$f<-c(f)
-        
-      ### ADD CATCHABILITY
-      out$q<-plogis(B0[k]+rnorm(n=d[k]*occasions*length(samp_indx),
-                              mean=0,sd=B0_sd[k]))
-      
-      ### ADD INPUT MEAN CATCHABILITY AND LOG-ODDS SD
-      out$q_mean<-catchability[k]
-      out$B0_sd<-B0_sd[k]
-      #dat_q<-aggregate(q~b_segment,out,mean)
-      #names(dat_q)[2]<-"data_q_mean"
-      #out<-merge(out,dat_q)
-      #dat_q<-aggregate(q~b_segment,out,sd)
-      #names(dat_q)[2]<-"data_q_sd"
-      #out<-merge(out,dat_q)
-        
-      ### RETURN EXPANDED DATAFRAME (SINGLE GEAR)
-      return(out)
-    })
-      
-    ## COMBINE INTO A SINGLE DATAFRAME
-    gear_dat<-do.call(rbind, gear_dat)
-      
-    ## RETURN DATAFRAME (SINGLE YEAR)
-    return(gear_dat)
-  })
-  # COMBINE INTO A SINGLE DATAFRAME
-  b_samp<-do.call(rbind, b_samp) 
-  
-  # ADD INDIVIDUAL CPs
-  b_samp$p<-b_samp$q*b_samp$f
-  #b_samp$pnot<-1-b_samp$p
+    # USE SIM_POP TO DEFINE VARIABLES
+    tmp<-sim_pop$bendMeta
+    tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
+    b_abund<-sim_pop$out
+    # Z_abund<-sim_pop$Z now a big matrix... delete
+    sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
 
-  ch<-lapply(1:ncol(sampled),function(yr)
-  { 
-    ## PULL OUT SAMPLED BENDS
-    samp_indx<-which(sampled[,yr]==1)
-    
-    bend_ch<-lapply(samp_indx, function(x)
-    {
-      if(nrow(Z_abund[[x]])==0) occ_ch<-NULL
-      if(nrow(Z_abund[[x]])>0)
-      {
+    # LOG-ODDS CATCHABILITY BY GEAR
+    B0<- log(catchability/(1-catchability))
+
+    # EFFORT AND CATCHABILITY DATA FOR SAMPLED BENDS
+    b_samp<-lapply(1:ncol(sampled),function(yr)
+        { 
+        ## PULL OUT SAMPLED BENDS
+        samp_indx<-which(sampled[,yr]==1)
         ## CREATE TABLE OF SAMPLED BENDS
-        tmp1<-tmp[x,names(tmp) %in% c("b_segment","bend_num")]
+        tmp1<-tmp[samp_indx,]
+        tmp1<-tmp1[,names(tmp1) %in% c("b_segment","bend_num")]
         ## ADD YEAR SAMPLED
         tmp1$year<-yr
-        ## EXPAND FOR INDIVIDUALS AND GEARS
-        tmp1<-tmp1[rep(1, nrow(Z_abund[[x]])*length(gears)),]
-        tmp1$fish_id<-rep(1:nrow(Z_abund[[x]]),length(gears))
-        tmp1$fish_id<-paste0(x,".",tmp1$fish_id)
-        tmp1$gear<-rep(gears, each=nrow(Z_abund[[x]]))
-        ## PULL OUT INDIVIDUAL DATA SURVIVAL
-        ZZ<-matrix(rep(Z_abund[[x]][,yr],length(gears)),
-                 nrow=length(Z_abund[[x]][,yr]),ncol=length(gears))
-        ## FIND CH FOR EACH OCCASION, GEAR, AND INDIVIDUAL
-        occ_ch<-lapply(1:occasions,function(occ,out=tmp1)
-          { 
-            ### EXPAND DATAFRAME TO INCLUDE OCCASION
-            out$occasion<-occ
-            ### FIND OCCASION LEVEL CP FOR GIVEN BEND AND YEAR
-            dat<-subset(b_samp, year==yr & b_segment==tmp$b_segment[x] 
-                        & bend_num==tmp$bend_num[x] & occasion==occ)
-            P<-aggregate(p~gear,dat,sum)
-            #P<-aggregate(pnot~gear,dat,prod)
-            #P$p<-1-P$pnot
-            ### CAP CPs AT 1
-            P$p<-ifelse(P$p>1,1,P$p)
-            capture_probability<- ZZ%*%diag(P$p)
-            ### CH
-            ch_reps<-matrix(rbinom(length(ZZ), size=1,
-                                   prob=c(capture_probability)),
-                            nrow=nrow(ZZ),
-                            ncol=ncol(ZZ))
-            out$ch<-c(ch_reps)
-            out<-subset(out,ch==1)
-            return(out)
+          
+        ## FIND EFFORT AND CATCHABILITY FOR EACH GEAR, BEND, 
+        ## OCCASION, & DEPLOYMENT
+        gear_dat<-lapply(gears,function(g,d=deployments,out=tmp1)
+            {
+            ### ADD GEAR TO TABLE
+            out$gear<-g
+            ### EXPAND TABLE FOR DEPLOYMENTS AND OCCASIONS
+            k<-which(gears==g)
+            out<-out[rep(seq_len(nrow(out)), each=d[k]*occasions),]
+            out$deployment<-rep(1:d[k],times=occasions*length(samp_indx))
+            out$occasion<-rep(1:occasions, each=8, times=length(samp_indx))
+
+            ### ADD EFFORT
+            f<-sapply(samp_indx, function(x)
+                {
+                indx<-which(effort$gear==g & 
+                      effort$rpma==tmp$rpma[x])
+                  #### ERROR HANDLING FOR GEARS THAT ARE NOT USED 
+                  #### IN A RPMA: NO EFFORT AND f=0
+                  if(length(indx)==0)
+                  {
+                    f_reps<-rep(0,d[k]*occasions)
+                  }
+                  if(length(indx)>0)
+                  {
+                    f_reps<-rgamma(n=d[k]*occasions,
+                                     shape=effort$gamma_shape[indx], 
+                                     rate=effort$gamma_rate[indx])
+                  }
+                  return(f_reps)
+                })
+        out$f<-c(f)
+        
+        ### ADD CATCHABILITY
+        out$q<-plogis(B0[k]+rnorm(n=d[k]*occasions*length(samp_indx),
+            mean=0,sd=B0_sd[k]))
+
+        ### ADD INPUT MEAN CATCHABILITY AND LOG-ODDS SD
+        out$q_mean<-catchability[k]
+        out$B0_sd<-B0_sd[k]
+        #dat_q<-aggregate(q~b_segment,out,mean)
+        #names(dat_q)[2]<-"data_q_mean"
+        #out<-merge(out,dat_q)
+        #dat_q<-aggregate(q~b_segment,out,sd)
+        #names(dat_q)[2]<-"data_q_sd"
+        #out<-merge(out,dat_q)
+
+        ### RETURN EXPANDED DATAFRAME (SINGLE GEAR)
+        return(out)
         })
-        occ_ch<-do.call(rbind,occ_ch)
-      }
-      return(occ_ch)
-    })
-    bend_ch<-do.call(rbind,bend_ch)
-  })
-  ch<-do.call(rbind,ch)
- 
-  # PROCESS THE DATA
-  tmp1<-aggregate(length.rkm~b_segment, tmp,sum)
-  tmp1<-tmp1[rep(seq_len(nrow(tmp1)),ncol(b_abund)),]
-  tmp1$year<-rep(1:ncol(b_abund), each=length(unique(tmp$b_segment)))
-  s_abund<-sapply(1:max(tmp$phi_indx), function(i)
-  {
-    r<-which(tmp$phi_indx==i)
-    if(length(r)==1) out<-b_abund[r,]
-    if(length(r)>1)
-    {
-      out<-colSums(b_abund[r,]) 
+      
+        ## COMBINE INTO A SINGLE DATAFRAME
+        gear_dat<-do.call(rbind, gear_dat)
+          
+        ## RETURN DATAFRAME (SINGLE YEAR)
+        return(gear_dat)
+        })
+  
+  
+  
+  
+  
+    # COMBINE INTO A SINGLE DATAFRAME
+    b_samp<-do.call(rbind, b_samp) 
+  
+    # ADD INDIVIDUAL CPs
+    b_samp$p<-b_samp$q*b_samp$f
+
+    # CREATE CAPTURE HISTORIES FOR EACH GEAR
+    # LONG TO RUN, OPTIMIZE CODE AT SOME POINT
+    # GO PARRELLEL?
+    ch<-lapply(1:ncol(sampled),function(yr)
+        { 
+        ## PULL OUT SAMPLED BENDS
+        samp_indx<-which(sampled[,yr]==1)
+    
+        bend_ch<-lapply(samp_indx, function(x)
+            {
+            indx<- which(individual_meta$id==x) ## HERE IS THE LINK TO FIX ONCE MOVEMENT IS DYNAMIC
+            Z_abund<-sim_pop$Z[indx,]  ## MAKE Z_ABUND
+            if(nrow(Z_abund)==0) {occ_ch<-NULL}
+            if(nrow(Z_abund)>0)
+                {
+                ## CREATE TABLE OF SAMPLED BENDS
+                tmp1<-tmp[x,names(tmp) %in% c("b_segment","bend_num")]
+                ## ADD YEAR SAMPLED
+                tmp1$year<-yr
+                ## EXPAND FOR INDIVIDUALS AND GEARS
+                ### INDEX OF INDIVUALS IN EACH REACH
+                tmp1<-tmp1[rep(1, nrow(Z_abund)*length(gears)),]
+                tmp1$fish_id<-rep(1:nrow(Z_abund),length(gears))
+                tmp1$fish_id<-paste0(x,".",tmp1$fish_id)
+                tmp1$gear<-rep(gears, each=nrow(Z_abund))
+                ## PULL OUT INDIVIDUAL DATA SURVIVAL
+                ZZ<-matrix(rep(Z_abund[,yr],length(gears)),
+                    nrow=length(Z_abund[,yr]),ncol=length(gears))
+                ## FIND CH FOR EACH OCCASION, GEAR, AND INDIVIDUAL
+                occ_ch<-lapply(1:occasions,function(occ,out=tmp1)
+                    { 
+                    ### EXPAND DATAFRAME TO INCLUDE OCCASION
+                    out$occasion<-occ
+                    ### FIND OCCASION LEVEL CP FOR GIVEN BEND AND YEAR
+                    dat<-subset(b_samp, year==yr & b_segment==tmp$b_segment[x] 
+                                & bend_num==tmp$bend_num[x] & occasion==occ)
+                    P<-aggregate(p~gear,dat,sum)
+                    #P<-aggregate(pnot~gear,dat,prod)
+                    #P$p<-1-P$pnot
+                    ### CAP CPs AT 1
+                    P$p<-ifelse(P$p>1,1,P$p)
+                    capture_probability<- ZZ%*%diag(P$p)
+                    ### CH
+                    ch_reps<-matrix(rbinom(length(ZZ), size=1,
+                        prob=c(capture_probability)),
+                        nrow=nrow(ZZ),
+                        ncol=ncol(ZZ))
+                    out$ch<-c(ch_reps)
+                    out<-subset(out,ch==1)
+                    return(out)
+                    })
+                occ_ch<-do.call(rbind,occ_ch)
+                }
+            return(occ_ch)
+            })
+        bend_ch<-do.call(rbind,bend_ch)
+        })
+    
+    ch<-do.call(rbind,ch)
+
+
+    
+    # PROCESS THE DATA
+    tmp1<-aggregate(length.rkm~b_segment, tmp,sum)
+    tmp1<-tmp1[rep(seq_len(nrow(tmp1)),ncol(b_abund)),]
+    tmp1$year<-rep(1:ncol(b_abund), each=length(unique(tmp$b_segment)))
+    s_abund<-sapply(1:max(tmp$phi_indx), function(i)
+        {
+        r<-which(tmp$phi_indx==i)
+        if(length(r)==1) out<-b_abund[r,]
+        if(length(r)>1)
+            {
+            out<-colSums(b_abund[r,]) 
+            }
+        return(out)
+        })
+    tmp1<-tmp1[order(tmp1$b_segment,tmp1$year),]
+    tmp1$abundance<-c(s_abund)
+    phi<-matrix(0,nrow=nrow(s_abund),ncol=ncol(s_abund))
+    for(i in 1:(nrow(phi)-1))
+        {
+        phi[i,]<-s_abund[i+1,]/s_abund[i,]
+        }
+    phi[nrow(phi),]<-NA
+    tmp1$phi<-c(phi)
+    tmp1$density<-tmp1$abundance/tmp1$length.rkm
+    tmp1<-tmp1[,c(1,3:6)]
+    b_samp<-b_samp[,which(names(b_samp)!="p")]
+    ch<-ch[,which(names(ch)!="ch")]
+    return(list(true_vals=tmp1, samp_dat=b_samp, catch_dat=ch))
     }
-    return(out)
-  })
-  tmp1<-tmp1[order(tmp1$b_segment,tmp1$year),]
-  tmp1$abundance<-c(s_abund)
-  phi<-matrix(0,nrow=nrow(s_abund),ncol=ncol(s_abund))
-  for(i in 1:(nrow(phi)-1))
-  {
-    phi[i,]<-s_abund[i+1,]/s_abund[i,]
-  }
-  phi[nrow(phi),]<-NA
-  tmp1$phi<-c(phi)
-  tmp1$density<-tmp1$abundance/tmp1$length.rkm
-  tmp1<-tmp1[,c(1,3:6)]
-  b_samp<-b_samp[,which(names(b_samp)!="p")]
-  ch<-ch[,which(names(ch)!="ch")]
-  return(list(true_vals=tmp1, samp_dat=b_samp, catch_dat=ch))
-}
 
 
 
