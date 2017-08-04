@@ -146,10 +146,8 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ### EXPAND BENDS FOR EACH FISH
     individual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
     ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
-    individual_meta$k<-0.02 # PULL VALUES FROM MV NORMAL
-    #individual_meta$k<-k[individual_meta$phi_indx] 
-    individual_meta$Linf<- 1200 # PULL VALUES FROM MV NORMAL
-    #individual_meta$Linf<-Linf[individual_meta$phi_indx]
+    individual_meta$k<-k[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL 
+    individual_meta$Linf<-Linf[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL
  
     ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
@@ -310,14 +308,13 @@ catch_data<-function(sim_pop=NULL,
     B0_sd=NULL,
     deployments=rep(8,9),
     effort=NULL,
-    occasions=3,
-    individual_meta=NULL)
+    occasions=3)
     {
     # USE SIM_POP TO DEFINE VARIABLES
     tmp<-sim_pop$bendMeta
     tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
     b_abund<-sim_pop$out
-    # Z_abund<-sim_pop$Z now a big matrix... delete
+    individual_meta<-sim_pop$individual_meta
     sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
 
     # LOG-ODDS CATCHABILITY BY GEAR

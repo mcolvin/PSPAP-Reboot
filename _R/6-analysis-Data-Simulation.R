@@ -12,7 +12,7 @@ nyears<- 10
 
 beta0<- 2.9444
 phi<-matrix(plogis(beta0),length(segs),nyears-1)
-Linf<-rep(1000,length(segs))
+Linf<-rep(1200,length(segs)) #Matches original code
 k<-rep(0.02,length(segs))
 vbgf_vcv<- array(0,dim=c(2,2,length(segs)))
 initial_length<-data.frame()
@@ -29,8 +29,8 @@ sim_pop<-reference_population(segs=segs,
     bends=bends,# BENDS DATAFRAME
     fish_density=init_dens, # FISH DENSITY PER RKM
     phi=phi,
-    Linf=rep(1000,10),
-    k = rep(0.2,10),
+    Linf=Linf,
+    k = k,
     vbgf_vcv=vbgf_vcv,
     initial_length=initial_length) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
@@ -71,8 +71,7 @@ replicate(nreps,
         B0_sd=B0_sd,
         effort=effort,
         deployments=rep(8,9),
-        occasions=3,
-        individual_meta=sim_pop$individual_meta)
+        occasions=3)
     saveRDS(dat,
         file=paste0("_output/catch_dat_", sim_pop_ref, "_samp_type_",samp_type,"_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
     })
