@@ -147,10 +147,11 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     individual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
     ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
     individual_meta$k<-0.02 # PULL VALUES FROM MV NORMAL
+    #individual_meta$k<-k[individual_meta$phi_indx] 
     individual_meta$Linf<- 1200 # PULL VALUES FROM MV NORMAL
+    #individual_meta$Linf<-Linf[individual_meta$phi_indx]
  
- 
-    ### y: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
+    ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
     Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
     Z[,1]<-1
@@ -184,15 +185,25 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
 
  
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
-    out<-aggregate(Z[,1],by=list(individual_meta$b_segment,individual_meta$bend_num),sum) 
+    out<-aggregate(Z[,1],
+                   by=list(individual_meta$b_segment,individual_meta$bend_num),
+                   sum)
+    names(out)[3]<-"yr_1"
     for(i in 2:nyears)
         {
-        app<-aggregate(Z[,i],by=list(individual_meta$b_segment,individual_meta$bend_num),sum)
+        app<-aggregate(Z[,i],
+                       by=list(individual_meta$b_segment,individual_meta$bend_num),
+                       sum)
         names(app)[3]<-paste("yr",i,sep="_")
         out<-merge(out,app,by=c("Group.1","Group.2"),all=TRUE)
         }
-    names(out)[1:2]<-c("segment","bend")
-    out<-out[order(out$segment, out$bend),]
+    names(out)[1:3]<-c("b_segment","bend_num", "N_ini")
+    if(length(out[is.na(out)])!=0){return(print("ERROR IN FISH COUNT"))} #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+    out<-merge(out,tmp[,c("b_segment","bend_num", "N_ini")],
+                 by=c("b_segment", "bend_num", "N_ini"), all=TRUE)
+    if(nrow(out)!=nrow(tmp)){return(print("ERROR IN BEND ABUNDANCE MERGE"))} #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+    out[is.na(out)]<-0
+    out<-out[order(out$b_segment, out$bend_num),]
     tmp<- tmp[order(tmp$b_segment,tmp$bend_num),]
     out<-list(out=as.matrix(out[,-c(1:2)]), bendMeta=tmp,
         individual_meta=individual_meta,
