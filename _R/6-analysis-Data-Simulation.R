@@ -25,7 +25,6 @@ for(ss in segs)
     }
 
 
-
 sim_pop<-reference_population(segs=segs,
     bends=bends,# BENDS DATAFRAME
     fish_density=init_dens, # FISH DENSITY PER RKM
@@ -34,6 +33,7 @@ sim_pop<-reference_population(segs=segs,
     k = rep(0.2,10),
     vbgf_vcv=vbgf_vcv,
     initial_length=initial_length) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+
 
 sim_pop_ref<-gsub(":", "_", Sys.time())
 saveRDS(sim_pop,
@@ -150,3 +150,26 @@ sim_dat<-readRDS("_output/catch_dat_catchability_random_rep2017-07-07 11_43_38.r
 sim_dat$true_vals
 head(sim_dat$samp_dat)
 head(sim_dat$catch_dat)
+
+
+### TESTING NEW REF_POP FUNCTION
+ptm<-proc.time()
+dims<-NULL
+check<-replicate(1000,    
+                 {
+                   sim_pop<-reference_population(segs=segs,
+                                                 bends=bends,# BENDS DATAFRAME
+                                                 fish_density=init_dens, # FISH DENSITY PER RKM
+                                                 phi=phi,
+                                                 Linf=rep(1000,10),
+                                                 k = rep(0.2,10),
+                                                 vbgf_vcv=vbgf_vcv,
+                                                 initial_length=initial_length) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+                   dims<-c(dims,nrow(sim_pop$out))
+                   return(dims)
+                 })
+proc.time()-ptm
+#user       system    elapsed 
+#1147.76    0.59      1157.84 
+all(check==471)
+#[1] TRUE
