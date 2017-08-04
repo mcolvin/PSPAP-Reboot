@@ -381,10 +381,6 @@ catch_data<-function(sim_pop=NULL,
         return(gear_dat)
         })
   
-  
-  
-  
-  
     # COMBINE INTO A SINGLE DATAFRAME
     b_samp<-do.call(rbind, b_samp) 
   
@@ -398,11 +394,10 @@ catch_data<-function(sim_pop=NULL,
         { 
         ## PULL OUT SAMPLED BENDS
         samp_indx<-which(sampled[,yr]==1)
-    
         bend_ch<-lapply(samp_indx, function(x)
             {
             indx<- which(individual_meta$id==x) ## HERE IS THE LINK TO FIX ONCE MOVEMENT IS DYNAMIC
-            Z_abund<-sim_pop$Z[indx,]  ## MAKE Z_ABUND
+            Z_abund<-sim_pop$Z[indx,,drop=FALSE]  ## MAKE Z_ABUND
             if(nrow(Z_abund)==0) {occ_ch<-NULL}
             if(nrow(Z_abund)>0)
                 {
