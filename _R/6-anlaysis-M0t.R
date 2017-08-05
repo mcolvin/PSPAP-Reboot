@@ -7,26 +7,23 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-rm(effort, effort_data,studyArea,dfitfun,dfitfunLB,dfitfunUB,estimate, plot_metrics,sim_ch)
+## RUN COMMENTED IF ONLY RESULTS FROM A PARTICULAR REFERENCE
+## POPULATION ARE DESIRED
+### READ IN ALL AVAILABLE REFERENCE POPULATIONS
+pop_list<-dir("output", pattern="sim_pop_version_")
+
+### SELECT A REFERENCE POPULATION
+item<-2
+pop_ref<-strsplit(pop_list[item],"version_")[[1]][2]
+pop_ref<-strsplit(pop_ref, ".", fixed=TRUE)[[1]][1]
+
+### PULL THE CATCH DATA ASSOCIATED WITH THE REFERENCE POPULATION
+dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref))
 
 
-# ## RUN COMMENTED IF ONLY RESULTS FROM A PARTICULAR REFERENCE
-# ## POPULATION ARE DESIRED
-# ### READ IN ALL AVAILABLE REFERENCE POPULATIONS
-# pop_list<-dir("output", pattern="sim_pop_version_")
-# 
-# ### SELECT A REFERENCE POPULATION
-# item<-2
-# pop_ref<-strsplit(pop_list[item],"version_")[[1]][2]
-# pop_ref<-strsplit(pop_ref, ".", fixed=TRUE)[[1]][1]
-# 
-# ### PULL THE CATCH DATA ASSOCIATED WITH THE REFERENCE POPULATION
-# dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref))
-
-
-
-## PULL CATCH DATA
-dat_files<-dir("_output", pattern="catch_dat_")
+# ## RUN COMMENTED TO USE ALL AVAILABLE DATA 
+# ## PULL CATCH DATA
+# dat_files<-dir("_output", pattern="catch_dat_")
 
 
 ##########################
@@ -80,14 +77,13 @@ df_trnd<-ddply(get_M0t_trnd, .(gear), summarize,
                mean_performance_Mt=mean(perform_Mt))
 
 # STORE AND SAVE TREND INFORMATION
-M0t_trnd<-list(trnd_dat=get_M0t_trnd, summary=df_trnd)
-saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_catchability_random_",
+M0t_trnd<-list(trnd_dat=get_M0t_trnd, summary=df_trnd, data=dat_files)
+### SAVE FOR A PARTICULAR REFERENCE POPULATION
+saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_",pop_ref,"_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
-
-# ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_",pop_ref,"_catchability_random_",
-#                               gsub(":", "_", Sys.time()),".rds"))
-
+# ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
+# saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_catchability_random_",
+#                              gsub(":", "_", Sys.time()),".rds"))
 
 
 # ABUNDANCE
@@ -116,14 +112,13 @@ df_abund<-ddply(get_M0t_abund, .(segment,year,gear), summarize,
                 mean_perform_Mt=mean(perform_Mt, na.rm=TRUE))
 
 # STORE AND SAVE ABUNDANCE INFORMATION
-M0t_abund<-list(abund_dat=get_M0t_abund, summary=df_abund)
-saveRDS(M0t_abund,file=paste0("_output/M0t_abund_catchability_random_",
-                               gsub(":", "_", Sys.time()),".rds"))
-
-# ### SAVE FOR A PARTICULAR REFERENC POPULATION 
-# saveRDS(M0t_abund,file=paste0("_output/M0t_abund_",pop_ref,"_catchability_random_",
+M0t_abund<-list(abund_dat=get_M0t_abund, summary=df_abund, data=dat_files)
+### SAVE FOR A PARTICULAR REFERENC POPULATION
+saveRDS(M0t_abund,file=paste0("_output/M0t_abund_",pop_ref,"_catchability_random_",
+                              gsub(":", "_", Sys.time()),".rds"))
+# ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
+# saveRDS(M0t_abund,file=paste0("_output/M0t_abund_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
-
 
 
 
