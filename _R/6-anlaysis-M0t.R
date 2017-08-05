@@ -16,9 +16,12 @@ pop_list<-dir("output", pattern="sim_pop_version_")
 item<-2
 pop_ref<-strsplit(pop_list[item],"version_")[[1]][2]
 pop_ref<-strsplit(pop_ref, ".", fixed=TRUE)[[1]][1]
+samp_type<-"r"
+#samp_type<-"f"
 
 ### PULL THE CATCH DATA ASSOCIATED WITH THE REFERENCE POPULATION
-dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref))
+dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref,
+                                        "_samp_type_",samp_type))
 
 
 # ## RUN COMMENTED TO USE ALL AVAILABLE DATA 
@@ -79,10 +82,11 @@ df_trnd<-ddply(get_M0t_trnd, .(gear), summarize,
 # STORE AND SAVE TREND INFORMATION
 M0t_trnd<-list(trnd_dat=get_M0t_trnd, summary=df_trnd, data=dat_files)
 ### SAVE FOR A PARTICULAR REFERENCE POPULATION
-saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_",pop_ref,"_catchability_random_",
+saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
+                             "_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
-# saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_catchability_random_",
+# saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_samp_type_",samp_type,"_catchability_random_",
 #                              gsub(":", "_", Sys.time()),".rds"))
 
 
@@ -114,10 +118,11 @@ df_abund<-ddply(get_M0t_abund, .(segment,year,gear), summarize,
 # STORE AND SAVE ABUNDANCE INFORMATION
 M0t_abund<-list(abund_dat=get_M0t_abund, summary=df_abund, data=dat_files)
 ### SAVE FOR A PARTICULAR REFERENC POPULATION
-saveRDS(M0t_abund,file=paste0("_output/M0t_abund_",pop_ref,"_catchability_random_",
+saveRDS(M0t_abund,file=paste0("_output/M0t_abund_",pop_ref,"_samp_type_",
+                              samp_type,"_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
-# saveRDS(M0t_abund,file=paste0("_output/M0t_abund_catchability_random_",
+# saveRDS(M0t_abund,file=paste0("_output/M0t_abund_samp_type_",samp_type,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
 
 
