@@ -640,7 +640,17 @@ get.M0t.ests<-function(sim_dat=NULL,
   ### ADD BEND RKM
   samps<- merge(samps,bends[,c(2,3,9)], by=c("b_segment","bend_num"))
   
-  ## RUN M0 ESTIMATOR
+  ## RUN M0 ESTIMATOR IN PARALLEL
+  library(parallel)
+  ### USE ALL CORES
+  no_cores<-detectCores()
+  ### INITIATE CLUSTER
+  cl<-makeCluster(no_cores)
+  ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+  clusterExport(cl, c("ch", "samps", "occ"))
+  clusterEvalQ(cl, library(Rcapture))
+  ### M0 ESTIMATOR
+  bend_Np<- parLapply(cl,1:nrow(samps),function(x)
   bend_Np<- lapply(1:nrow(samps),function(x)
   {
     ## SUBSET BEND AND YEAR CAPTURE DATA
