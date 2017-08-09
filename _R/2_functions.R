@@ -651,7 +651,6 @@ get.M0t.ests<-function(sim_dat=NULL,
   clusterEvalQ(cl, library(Rcapture))
   ### M0 ESTIMATOR
   bend_Np<- parLapply(cl,1:nrow(samps),function(x)
-  bend_Np<- lapply(1:nrow(samps),function(x)
   {
     ## SUBSET BEND AND YEAR CAPTURE DATA
     bend_dat<-subset(ch, 
@@ -713,7 +712,10 @@ get.M0t.ests<-function(sim_dat=NULL,
         warn_Mt=-99
         )}
     return(tmp)    
-  }) # ABOUT 15 MINUTES
+  }) # ABOUT 3.5 MINUTES
+  ### CLOSE CLUSTERS
+  stopCluster(cl)
+  ## 
   bend_Np<- do.call("rbind", bend_Np)
   bend_Np[bend_Np$fit_M0!=0,]$Nhat_M0<-NA ## make non converged and no fish models NA
   bend_Np[bend_Np$fit_M0!=0,]$SE_Nhat_M0<-NA ## make non converged and no fish models NA
