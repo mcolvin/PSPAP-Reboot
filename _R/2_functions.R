@@ -715,7 +715,7 @@ get.M0t.ests<-function(sim_dat=NULL,
   }) # ABOUT 3.5 MINUTES
   ### CLOSE CLUSTERS
   stopCluster(cl)
-  ## 
+  ### CREATE DATA FRAME
   bend_Np<- do.call("rbind", bend_Np)
   bend_Np[bend_Np$fit_M0!=0,]$Nhat_M0<-NA ## make non converged and no fish models NA
   bend_Np[bend_Np$fit_M0!=0,]$SE_Nhat_M0<-NA ## make non converged and no fish models NA
