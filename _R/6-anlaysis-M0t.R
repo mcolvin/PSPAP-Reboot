@@ -14,7 +14,7 @@ source("_R/3_load-and-clean.R")
 pop_list<-dir("E:/_output", pattern="sim_pop_version_")
 
 ### SELECT A REFERENCE POPULATION
-item<-2
+item<-1
 pop_ref<-strsplit(pop_list[item],"version_")[[1]][2]
 pop_ref<-strsplit(pop_ref, ".", fixed=TRUE)[[1]][1]
 samp_type<-"r"
@@ -77,6 +77,9 @@ get_ests<-lapply(dat_files, function(i)
   out$M0t_abund$occasions<-length(unique(samp$occasion))
   out$M0t_abund$total_effort<-sum(samp$f)
   out$M0t_abund$id<-strsplit(strsplit(i,"rep_")[[1]][2], ".", fixed=TRUE)[[1]][1]
+  saveRDS(out,file=paste0("E:/_output/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
+                               "_catchability_random_mini_output",
+                               gsub(":", "_", Sys.time()),".rds"))
   return(out)
 })
 proc.time()-ptm
@@ -169,7 +172,7 @@ saveRDS(M0t_abund,file=paste0("E:/_output/M0t_abund_",pop_ref,"_samp_type_",
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
 # saveRDS(M0t_abund,file=paste0("_output/M0t_abund_samp_type_",samp_type,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
-
+proc.time()-ptm
 
 
 ###########################
