@@ -143,12 +143,15 @@ sim_ch<-function(inputs,...)
     # prep data for processing
     ch<- data.frame(ch=apply(ch,1,paste0,collapse=""),
         freq=1,stringsAsFactors=FALSE)
+    NatStart<- 1   
+    for(i in 2:length(inputs$nsec))
+        {NatStart<- c(NatStart,NatStart[i-1]+inputs$nsec[i-1])}
     out<-(list(ch=ch,
         occs=occs,
         nprim=inputs$nprim,
         nsec=inputs$nsec,
         Z=Z,
-        trueN=colSums(Z_inn[,c(which(occs==1),length(occs))]),
+        trueN=colSums(Z_inn[,NatStart]),
         Z_inn=Z_inn,
         Z_out=Z_out))
     return(out)

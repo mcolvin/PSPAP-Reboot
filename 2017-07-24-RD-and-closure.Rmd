@@ -13,7 +13,7 @@ rmarkdown::render_site("2017-07-24-RD-and-closure.Rmd")# build website
 --->
 
 ```{r,eval=FALSE,echo=FALSE}
-source("R/6-analysis-RD-and-Closure.R")
+source("_R/6-analysis-RD-and-Closure.R")
 input<-list()
 input$nprim = 10
 input$phi=rep(0.8,input$nprim-1)## SURVIVAL
@@ -34,7 +34,7 @@ ch<-sim_ch(inputs=input)
 ests<-est_rd(inputs=ch)
 
 combos<- expand.grid(gam_d_prime2=seq(0,0.5,by=0.05),
-    reps=c(1:20))
+    reps=c(1:100))
 nn<-pp<-data.frame()
 for(i in 1:nrow(combos))
     {
@@ -62,8 +62,8 @@ for(i in 1:nrow(combos))
         nn<-rbind(nn,abund)
         }
     }
-write.csv(pp,"output/RD-daily-movement-output-parameters.csv")
-write.csv(nn,"output/RD-daily-movement-output-abundance.csv")
+write.csv(pp,"_output/RD-daily-movement-output-parameters.csv")
+write.csv(nn,"_output/RD-daily-movement-output-abundance.csv")
 ```
 
 <!--
@@ -77,9 +77,9 @@ GammaDoublePrime.zeroTE=list(formula=~1, fixed=0, share=TRUE)
 
 
 ```{r,echo=FALSE}
-pp<-read.csv("output/RD-daily-movement-output-parameters.csv")
+pp<-read.csv("_output/RD-daily-movement-output-parameters.csv")
 pp$rep<- c(1:nrow(pp))
-nn<-read.csv("output/RD-daily-movement-output-abundance.csv")
+nn<-read.csv("_output/RD-daily-movement-output-abundance.csv")
 nn$year<- rep(c(1:10),nrow(pp))
 nn$rep<- sort(rep(pp$rep,10))
 nn$bias<- nn$Nhat-nn$Ntrue
@@ -113,34 +113,44 @@ Dr. Larkin Powell [here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bb
 
 Want to engage in the process? Please let us know what you think in the 
 comments or email mike.colvin [at] msstate.edu. In this post, we use 
-measures of bias as a way to quantify the performance of a monitoring design.
-We are also investigating precision of estimates as well which will be addressed in 
-a future post. We are also linking effort and costs to the designs.
+measures of bias as a way to quantify the performance of a monitoring 
+design. We are also investigating precision of estimates as well which 
+will be addressed in a future post. We are also linking effort and costs 
+to the designs. 
 
-Are there other metrics (e.g., bias, precision) you suggest we should be using to 
-evaluate the performance of a monitoring design? 
+
+Are there other metrics (e.g., bias, precision) you suggest we should be 
+using to evaluate the performance of a monitoring design? 
+
+
 
 
 ### Background overview
 
 In a previous post, we looked at the effect of violating the assumption 
 of closure. Specifically, we evaluated a situation we might encounter on 
-the Missouri River where Pallid Sturgeon move in and out of a bend 
-on a daily basis. The analysis showed that as daily movement rates 
-increased, there was a positive bias associated with abundance estimates 
-using the M0 abundance estimator for capture mark recapture (cmr) approaches
-[(see here)](https://mcolvin.github.io/PSPAP-Reboot/2017-06-28-M0-and-closure.html). 
-In this post we will look at a similar analysis but for the Robust Design. But first a 
-couple of thing before we get started.
+the Missouri River where Pallid Sturgeon move in and out of a bend on a 
+daily basis. The analysis showed that as daily movement rates increased, 
+there was a positive bias associated with abundance estimates using the 
+M0 abundance estimator for capture mark recapture (cmr) approaches [(see 
+here)](https://mcolvin.github.io/PSPAP-Reboot/2017-06-28-M0-and-closure. 
+html). In this post we will look at a similar analysis but for the 
+Robust Design. But first a couple of thing before we get started. 
 
-1. For more information on in an approachable form see a book chapter by
-Dr. Larkin Powell [here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bbba6b058ff21540.pdf)
-1. The analyses presented in the blog posts are, in some cases, simplifications
-of the analyses that are being conducted. Specifically, we hold some parameters 
-like survival and capture probability constant for simplicity and to illustrate
-the effect of parameters on monitoring design metrics like bias. The full analysis
-does allow for varying parameters and the potential to evaluate difference between
-origin or behavioral response (e.g., trap shyness). 
+
+
+1. For more information on in an approachable form see a book chapter by 
+Dr. Larkin Powell 
+[here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bbba6b058ff2 
+1540.pdf) 1. The analyses presented in the blog posts are, in some 
+cases, simplifications of the analyses that are being conducted. 
+Specifically, we hold some parameters like survival and capture 
+probability constant for simplicity and to illustrate the effect of 
+parameters on monitoring design metrics like bias. The full analysis 
+does allow for varying parameters and the potential to evaluate 
+difference between origin or behavioral response (e.g., trap shyness). 
+
+
 
 The EA team has evaluated varying monitoring approaches identified 
 during the workshop by comparing known population (i.e., virtual) to 
