@@ -17,7 +17,7 @@ source("_R/3_load-and-clean.R")
 pop_list<-dir("D:/DataDump", pattern="sim_pop_version_")
 
 ### SELECT A REFERENCE POPULATION
-item<-2
+item<-6
 pop_ref<-strsplit(pop_list[item],"version_")[[1]][2]
 pop_ref<-strsplit(pop_ref, ".", fixed=TRUE)[[1]][1]
 samp_type<-"r"
@@ -37,7 +37,7 @@ dat_files<-dir("D:/DataDump", pattern=paste0("catch_dat_",pop_ref,
 #############################
 ## 1. CPUE TREND ESTIMATES ##
 #############################
-
+ptm<-proc.time()
 # FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
 ## RUN IN PARALLEL
 library(parallel)
@@ -93,7 +93,7 @@ get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
 #           power=sum(sig)/length(sig))
 
 # STORE AND SAVE TREND INFORMATION
-cpue_trnd<-list(trnd_dat=get_trnd)#, summary=df_trnd)
+cpue_trnd<-get_trnd#list(trnd_dat=get_trnd, summary=df_trnd)
 ### SAVE FOR A PARTICULAR REFERENCE POPULATION
 # saveRDS(cpue_trnd,file=paste0("_output/cpue_trnd_",pop_ref,"_samp_type_",
 #                               samp_type,"_catchability_random_",
@@ -105,12 +105,14 @@ saveRDS(cpue_trnd,file=paste0("D:/DataDump/cpue_trnd_",pop_ref,"_samp_type_",
 # saveRDS(cpue_trnd,file=paste0("_output/cpue_trnd_samp_type_",
 #                               samp_type,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
-
+proc.time()-ptm
+#user     system    elapsed 
+#0.08     0.02      104.71
 
 #################################
 ## 2. CPUE ABUNDANCE ESTIMATES ##
 #################################
-
+ptm<-proc.time()
 # FIND CATCH BASED ABUNDANCE ESTIMATES
 ## RUN IN PARALLEL
 library(parallel)
@@ -118,14 +120,15 @@ library(parallel)
 numCores<-detectCores()
 ### INITIATE CLUSTER
 cl<-makeCluster(numCores)
-clusterExport(cl,bends)
+clusterExport(cl,"bends")
 clusterEvalQ(cl, source("_R/2_functions.R"))
 clusterEvalQ(cl, library(plyr))
 ### RUN
 get_abund<-parLapply(cl,dat_files, function(i)
 {
   # ABUNDANCE
-  dat<-readRDS(paste0("output/",i))
+  #dat<-readRDS(paste0("_output/",i))
+  dat<-readRDS(paste0("D:/DataDump/",i))
   out<-get.abund(sim_dat=dat,bends=bends)
   # FLAGS
   samp<-dat$samp_dat
@@ -167,7 +170,7 @@ get_abund<-do.call(rbind,get_abund)
 #                mean_cv_WM2=mean(cv_WM*Nhat_WM)/mean(Nhat_WM))
   
 # STORE AND SAVE ABUNDANCE INFORMATION
-cpue_abund<-list(abund_dat=get_abund, summary=df_abund, data=dat_files)
+cpue_abund<-get_abund#list(abund_dat=get_abund, summary=df_abund)
 ### SAVE FOR A PARTICULAR REFERENCE POPULATION
 # saveRDS(cpue_abund,file=paste0("_output/cpue_abund_",pop_ref,"_samp_type_",
 #                                samp_type,"_catchability_random_",
@@ -179,8 +182,9 @@ saveRDS(cpue_abund,file=paste0("D:/DataDump/cpue_abund_",pop_ref,"_samp_type_",
 # saveRDS(cpue_abund,file=paste0("_output/cpue_abund_samp_type_",samp_type,
 #                                "_catchability_random_",
 #                                gsub(":", "_", Sys.time()),".rds"))
-
-
+proc.time()-ptm
+#user     system      elapsed 
+#0.94     0.08        204.99 
 
 
 ################################
