@@ -61,6 +61,7 @@ get_trnd<-parLapply(cl,dat_files, function(i)
     P<-ddply(P, .(gear), summarize,
              flags=length(which(flag!=0))/length(flag))
     out<-merge(out,P)
+    # CATCHABILITY
     q_stats<-ddply(subset(samp, occasion==1), .(gear),
                    summarize,
                    mean_q_input=mean(q_mean),
@@ -68,6 +69,7 @@ get_trnd<-parLapply(cl,dat_files, function(i)
                    mean_q_realized=mean(q),
                    q_sd_realized=sd(q))
     out<-merge(out, q_stats, by="gear")
+    # DEPLOYMENTS, OCCASIONS, TOTAL EFFORT, & DATA ID
     out$deployments<-length(unique(samp$deployment))
     out$occasions<-1
     out$total_effort<-sum(samp$f)
@@ -80,20 +82,23 @@ stopCluster(cl)
 get_trnd<-do.call(rbind, get_trnd)
 get_trnd$sig<-ifelse(get_trnd$pval<0.05,1,0)
   
-# MAKE A SUMMARY TABLE OF RESULTS
-df_trnd<-ddply(get_trnd, .(gear), summarize,
-          mean_trnd=mean(trnd),
-          mean_pval=mean(pval),
-          mean_bias=mean(bias),
-          mean_cv=mean(cv),
-          mean_cv2=mean(cv*abs(trnd))/abs(mean(trnd)),
-          mean_flags=mean(flag,na.rm=TRUE),
-          power=sum(sig)/length(sig))
+# # MAKE A SUMMARY TABLE OF RESULTS
+# df_trnd<-ddply(get_trnd, .(gear), summarize,
+#           mean_trnd=mean(trnd),
+#           mean_pval=mean(pval),
+#           mean_bias=mean(bias),
+#           mean_cv=mean(cv),
+#           mean_cv2=mean(cv*abs(trnd))/abs(mean(trnd)),
+#           mean_flags=mean(flag,na.rm=TRUE),
+#           power=sum(sig)/length(sig))
 
 # STORE AND SAVE TREND INFORMATION
-cpue_trnd<-list(trnd_dat=get_trnd, summary=df_trnd, data=dat_files)
+cpue_trnd<-list(trnd_dat=get_trnd)#, summary=df_trnd)
 ### SAVE FOR A PARTICULAR REFERENCE POPULATION
-saveRDS(cpue_trnd,file=paste0("_output/cpue_trnd_",pop_ref,"_samp_type_",
+# saveRDS(cpue_trnd,file=paste0("_output/cpue_trnd_",pop_ref,"_samp_type_",
+#                               samp_type,"_catchability_random_",
+#                               gsub(":", "_", Sys.time()),".rds"))
+saveRDS(cpue_trnd,file=paste0("D:/DataDump/cpue_trnd_",pop_ref,"_samp_type_",
                               samp_type,"_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
@@ -112,26 +117,50 @@ get_abund<-lapply(dat_files, function(i)
   # ABUNDANCE
   dat<-readRDS(paste0("output/",i))
   out<-get.abund(sim_dat=dat,bends=bends)
+  # FLAGS
+  samp<-dat$samp_dat
+  samp$p<-samp$q*samp$f
+  P<-aggregate(p~b_segment+bend_num+year+gear, samp, sum, subset=occasion==1)
+  P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))  
+  P<-ddply(P, .(b_segment, year, gear), summarize,
+           flags=length(which(flag!=0))/length(flag))
+  out<-merge(out,P, by=c("b_segment", "year", "gear"))
+  # CATCHABILITY
+  q_stats<-ddply(subset(samp, occasion==1), .(b_segment, year, gear),
+                 summarize,
+                 mean_q_input=mean(q_mean),
+                 B0_sd_input=mean(B0_sd),
+                 mean_q_realized=mean(q),
+                 q_sd_realized=sd(q))
+  out<-merge(out, q_stats, by=c("b_segment", "year", "gear"))
+  # DEPLOYMENTS, OCCASIONS, TOTAL EFFORT, & DATA ID
+  out$deployments<-length(unique(samp$deployment))
+  out$occasions<-1
+  out$total_effort<-sum(samp$f)
+  out$id<-strsplit(strsplit(i,"rep_")[[1]][2], ".", fixed=TRUE)[[1]][1]
   return(out)
 })
 # PUT IN A PALLATABLE FORM
 get_abund<-do.call(rbind,get_abund)
 
-# MAKE SUMMARY TABLE OF RESULTS
-df_abund<-ddply(get_abund, .(b_segment,year,gear), summarize,
-               mean_Nhat_AM=mean(Nhat_AM),
-               mean_bias_AM=mean(bias_AM),
-               mean_cv_AM=mean(cv_AM),
-               mean_cv_AM2=mean(cv_AM*Nhat_AM)/mean(Nhat_AM),
-               mean_Nhat_WM=mean(Nhat_WM),
-               mean_bias_WM=mean(bias_WM),
-               mean_cv_WM=mean(cv_WM),
-               mean_cv_WM2=mean(cv_WM*Nhat_WM)/mean(Nhat_WM))
+# # MAKE SUMMARY TABLE OF RESULTS
+# df_abund<-ddply(get_abund, .(b_segment,year,gear), summarize,
+#                mean_Nhat_AM=mean(Nhat_AM),
+#                mean_bias_AM=mean(bias_AM),
+#                mean_cv_AM=mean(cv_AM),
+#                mean_cv_AM2=mean(cv_AM*Nhat_AM)/mean(Nhat_AM),
+#                mean_Nhat_WM=mean(Nhat_WM),
+#                mean_bias_WM=mean(bias_WM),
+#                mean_cv_WM=mean(cv_WM),
+#                mean_cv_WM2=mean(cv_WM*Nhat_WM)/mean(Nhat_WM))
   
 # STORE AND SAVE ABUNDANCE INFORMATION
 cpue_abund<-list(abund_dat=get_abund, summary=df_abund, data=dat_files)
 ### SAVE FOR A PARTICULAR REFERENCE POPULATION
-saveRDS(cpue_abund,file=paste0("_output/cpue_abund_",pop_ref,"_samp_type_",
+# saveRDS(cpue_abund,file=paste0("_output/cpue_abund_",pop_ref,"_samp_type_",
+#                                samp_type,"_catchability_random_",
+#                                gsub(":", "_", Sys.time()),".rds"))
+saveRDS(cpue_abund,file=paste0("D:/DataDump/cpue_abund_",pop_ref,"_samp_type_",
                                samp_type,"_catchability_random_",
                                gsub(":", "_", Sys.time()),".rds"))
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
