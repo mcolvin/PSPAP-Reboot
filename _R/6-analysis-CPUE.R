@@ -13,7 +13,8 @@ source("_R/3_load-and-clean.R")
 ## RUN IF ONLY RESULTS FROM A PARTICULAR REFERENCE
 ## POPULATION ARE DESIRED
 ### READ IN ALL AVAILABLE REFERENCE POPULATIONS
-pop_list<-dir("output", pattern="sim_pop_version_")
+#pop_list<-dir("_output", pattern="sim_pop_version_")
+pop_list<-dir("D:/DataDump", pattern="sim_pop_version_")
 
 ### SELECT A REFERENCE POPULATION
 item<-2
@@ -23,9 +24,10 @@ samp_type<-"r"
 #samp_type<-"f"
 
 ### PULL THE CATCH DATA ASSOCIATED WITH THE REFERENCE POPULATION
-dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref,
+# dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref,
+#                                         "_samp_type_",samp_type))
+dat_files<-dir("D:/DataDump", pattern=paste0("catch_dat_",pop_ref,
                                         "_samp_type_",samp_type))
-
 
 # ## RUN TO USE ALL AVAILABLE DATA 
 # ## PULL CATCH DATA
@@ -37,26 +39,42 @@ dat_files<-dir("output", pattern=paste0("catch_dat_",pop_ref,
 #############################
 
 # FIND THE TREND IN CPUE AND CHECK FOR HIGH CAPTURE PROBABILITIES
-get_trnd<-lapply(dat_files, function(i)
+## RUN IN PARALLEL
+library(parallel)
+### USE ALL CORES
+numCores<-detectCores()
+### INITIATE CLUSTER
+cl<-makeCluster(numCores)
+clusterEvalQ(cl, source("_R/2_functions.R"))
+clusterEvalQ(cl, library(plyr))
+### RUN
+get_trnd<-parLapply(cl,dat_files, function(i)
   {
     # TREND
-    dat<-readRDS(paste0("C:/Users/sreynolds/Desktop/DataDump/output/",i))
+    dat<-readRDS(paste0("D:/DataDump/",i))
     out<-get.trnd(sim_dat=dat)
     # FLAGS
     samp<-dat$samp_dat
     samp$p<-samp$q*samp$f
     P<-aggregate(p~b_segment+bend_num+year+gear, samp, sum, subset=occasion==1)
     P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))  
-    if(nrow(subset(P, flag!=0))==0) {out$flag=0}
-    if(nrow(subset(P, flag!=0))!=0)
-      {
-        out<-merge(out,
-                   aggregate(flag~gear, P, length, subset=flag!=0),
-                   by="gear",all.x=TRUE)
-        out$flag<-ifelse(is.na(out$flag),0,out$flag)
-      }
+    P<-ddply(P, .(gear), summarize,
+             flags=length(which(flag!=0))/length(flag))
+    out<-merge(out,P)
+    q_stats<-ddply(subset(samp, occasion==1), .(gear),
+                   summarize,
+                   mean_q_input=mean(q_mean),
+                   B0_sd_input=mean(B0_sd),
+                   mean_q_realized=mean(q),
+                   q_sd_realized=sd(q))
+    out<-merge(out, q_stats, by="gear")
+    out$deployments<-length(unique(samp$deployment))
+    out$occasions<-1
+    out$total_effort<-sum(samp$f)
+    out$id<-strsplit(strsplit(i,"rep_")[[1]][2], ".", fixed=TRUE)[[1]][1]
     return(out)
   })
+stopCluster(cl)
   
 # PUT IN A PALLATABLE FORM AND ADD SIGNIFICANCE CHECK
 get_trnd<-do.call(rbind, get_trnd)
