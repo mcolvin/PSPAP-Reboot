@@ -661,35 +661,35 @@ get.M0t.ests<-function(sim_dat=NULL,
     ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
     if(nrow(bend_dat)>0){
       tmp<- closedp.t(bend_dat[,occ])## estimate abundance
-      warn_codes_M0<-ifelse(tmp$results[1,7]==0,0,
-                         ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
-                                ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
-                                       ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
-                                              ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
-                                                     tmp$glm.warn$M0)))))
-      warn_codes_Mt<-ifelse(tmp$results[2,7]==0,0,
-                            ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
-                                   ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
-                                          ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
-                                                 ifelse(grepl("0 occurred",tmp$glm.warn$Mt, fixed=TRUE),"z",
-                                                        tmp$glm.warn$Mt)))))
+      # warn_codes_M0<-ifelse(tmp$results[1,7]==0,0,
+      #                    ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
+      #                           ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
+      #                                  ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
+      #                                         ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
+      #                                                tmp$glm.warn$M0)))))
+      # warn_codes_Mt<-ifelse(tmp$results[2,7]==0,0,
+      #                       ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
+      #                              ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
+      #                                     ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
+      #                                            ifelse(grepl("0 occurred",tmp$glm.warn$Mt, fixed=TRUE),"z",
+      #                                                   tmp$glm.warn$Mt)))))
       tmp<- data.frame(## collect up relevant bits for M0 and Mt
         year=samps$year[x],
         segment=samps$b_segment[x],
         bendId=samps$bend_num[x],
         gear=samps$gear[x],
         rkm=samps$length.rkm[x],
-        samp_size=nrow(bend_dat),
+        #samp_size=nrow(bend_dat),
         Nhat_M0=tmp$parameters$M0[1],
         SE_Nhat_M0=tmp$results[1,2],
         p_M0=tmp$parameters$M0[2],
         fit_M0=tmp$results[1,7],
-        warn_M0=warn_codes_M0,
+        #warn_M0=warn_codes_M0,
         Nhat_Mt=tmp$parameters$Mt[1],
         SE_Nhat_Mt=tmp$results[2,2],
         p_Mt=tmp$parameters$Mt[2],
-        fit_Mt=tmp$results[2,7],
-        warn_Mt=warn_codes_Mt
+        fit_Mt=tmp$results[2,7]#,
+        #warn_Mt=warn_codes_Mt
       )}
     ## FILL FOR NO DATA
     if(nrow(bend_dat)==0){# no data
@@ -699,20 +699,20 @@ get.M0t.ests<-function(sim_dat=NULL,
         bendId=samps$bend_num[x],
         gear=samps$gear[x],
         rkm=samps$length.rkm[x],
-        samp_size=0,
+        #samp_size=0,
         Nhat_M0=-99,
         SE_Nhat_M0=-99,
         p_M0=-99,
         fit_M0=-99,
-        warn_M0=-99,
+        #warn_M0=-99,
         Nhat_Mt=-99,
         SE_Nhat_Mt=-99,
         p_Mt=-99,
-        fit_Mt=-99,
-        warn_Mt=-99
+        fit_Mt=-99#,
+        #warn_Mt=-99
         )}
     return(tmp)    
-  }) # ABOUT 3.5 MINUTES
+  }) # ABOUT 5 MINUTES ON CRUNCH
   ### CLOSE CLUSTERS
   stopCluster(cl)
   ### CREATE DATA FRAME

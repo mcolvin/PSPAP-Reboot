@@ -145,7 +145,7 @@ proc.time()-ptm
 ## RECUCED TO ~5MB
 
 ## LOOK AT TEST OUTPUT
-sim_dat<-readRDS("_output/catch_dat_catchability_random_rep2017-07-07 11_43_38.rds")
+sim_dat<-readRDS("E:/_output/catch_dat_2017-08-04 17_46_33_samp_type_r_catchability_random_rep_2017-08-04 17_55_54.rds")
 sim_dat$true_vals
 head(sim_dat$samp_dat)
 head(sim_dat$catch_dat)
