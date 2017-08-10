@@ -647,7 +647,7 @@ get.M0t.ests<-function(sim_dat=NULL,
   ### INITIATE CLUSTER
   cl<-makeCluster(no_cores)
   ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
-  clusterExport(cl, c("ch", "samps", "occ"))
+  clusterExport(cl, c("ch", "samps", "occ"), envir=environment())
   clusterEvalQ(cl, library(Rcapture))
   ### M0 ESTIMATOR
   bend_Np<- parLapply(cl,1:nrow(samps),function(x)
