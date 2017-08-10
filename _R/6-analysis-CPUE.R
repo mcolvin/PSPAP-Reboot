@@ -112,7 +112,17 @@ saveRDS(cpue_trnd,file=paste0("D:/DataDump/cpue_trnd_",pop_ref,"_samp_type_",
 #################################
 
 # FIND CATCH BASED ABUNDANCE ESTIMATES
-get_abund<-lapply(dat_files, function(i)
+## RUN IN PARALLEL
+library(parallel)
+### USE ALL CORES
+numCores<-detectCores()
+### INITIATE CLUSTER
+cl<-makeCluster(numCores)
+clusterExport(cl,bends)
+clusterEvalQ(cl, source("_R/2_functions.R"))
+clusterEvalQ(cl, library(plyr))
+### RUN
+get_abund<-parLapply(cl,dat_files, function(i)
 {
   # ABUNDANCE
   dat<-readRDS(paste0("output/",i))
@@ -140,6 +150,8 @@ get_abund<-lapply(dat_files, function(i)
   out$id<-strsplit(strsplit(i,"rep_")[[1]][2], ".", fixed=TRUE)[[1]][1]
   return(out)
 })
+stopCluster(cl)
+
 # PUT IN A PALLATABLE FORM
 get_abund<-do.call(rbind,get_abund)
 
