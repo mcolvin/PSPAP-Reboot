@@ -11,10 +11,10 @@ source("_R/3_load-and-clean.R")
 ## POPULATION ARE DESIRED
 ### READ IN ALL AVAILABLE REFERENCE POPULATIONS
 #pop_list<-dir("_output", pattern="sim_pop_version_")
-pop_list<-dir("E:/_output", pattern="sim_pop_version_")
+pop_list<-dir("D:/DataDump", pattern="sim_pop_version_")
 
 ### SELECT A REFERENCE POPULATION
-item<-1
+item<-2
 pop_ref<-strsplit(pop_list[item],"version_")[[1]][2]
 pop_ref<-strsplit(pop_ref, ".", fixed=TRUE)[[1]][1]
 samp_type<-"r"
@@ -23,7 +23,7 @@ samp_type<-"r"
 ### PULL THE CATCH DATA ASSOCIATED WITH THE REFERENCE POPULATION
 # dat_files<-dir("_output", pattern=paste0("catch_dat_",pop_ref,
 #                                         "_samp_type_",samp_type))
-dat_files<-dir("E:/_output", pattern=paste0("catch_dat_",pop_ref,
+dat_files<-dir("D:/DataDump", pattern=paste0("catch_dat_",pop_ref,
                                         "_samp_type_",samp_type))
 
 # ## RUN COMMENTED TO USE ALL AVAILABLE DATA 
@@ -41,7 +41,7 @@ get_ests<-lapply(dat_files, function(i)
 {
   # TREND & ABUNDANCE
   #dat<-readRDS(paste0("_output/",i))
-  dat<-readRDS(paste0("E:/_output/",i))
+  dat<-readRDS(paste0("D:/DataDump/",i))
   out<-get.M0t.ests(sim_dat=dat,bends=bends)
   colnames(out$M0t_abund)[which(colnames(out$M0t_abund)=="segment")]<-"b_segment"
   # FLAGS
@@ -77,7 +77,7 @@ get_ests<-lapply(dat_files, function(i)
   out$M0t_abund$occasions<-length(unique(samp$occasion))
   out$M0t_abund$total_effort<-sum(samp$f)
   out$M0t_abund$id<-strsplit(strsplit(i,"rep_")[[1]][2], ".", fixed=TRUE)[[1]][1]
-  saveRDS(out,file=paste0("E:/_output/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
+  saveRDS(out,file=paste0("D:/DataDump/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
                                "_catchability_random_mini_output",
                                gsub(":", "_", Sys.time()),".rds"))
   return(out)
@@ -127,7 +127,7 @@ M0t_trnd<-get_M0t_trnd#list(trnd_dat=get_M0t_trnd, summary=df_trnd)
 # saveRDS(M0t_trnd,file=paste0("_output/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
 #                              "_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
-saveRDS(M0t_trnd,file=paste0("E:/_output/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
+saveRDS(M0t_trnd,file=paste0("D:/DataDump/M0t_trnd_",pop_ref,"_samp_type_",samp_type,
                              "_catchability_random_",
                              gsub(":", "_", Sys.time()),".rds"))
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 
@@ -166,7 +166,7 @@ M0t_abund<-get_M0t_abund#list(abund_dat=get_M0t_abund, summary=df_abund)
 # saveRDS(M0t_abund,file=paste0("_output/M0t_abund_",pop_ref,"_samp_type_",
 #                               samp_type,"_catchability_random_",
 #                               gsub(":", "_", Sys.time()),".rds"))
-saveRDS(M0t_abund,file=paste0("E:/_output/M0t_abund_",pop_ref,"_samp_type_",
+saveRDS(M0t_abund,file=paste0("D:/DataDump/M0t_abund_",pop_ref,"_samp_type_",
                               samp_type,"_catchability_random_",
                               gsub(":", "_", Sys.time()),".rds"))
 # ### SAVE FOR MULTIPLE REFERENCE POPULATIONS 

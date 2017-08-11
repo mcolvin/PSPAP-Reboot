@@ -397,8 +397,17 @@ catch_data<-function(sim_pop=NULL,
 
     # CREATE CAPTURE HISTORIES FOR EACH GEAR
     # LONG TO RUN, OPTIMIZE CODE AT SOME POINT
-    # GO PARRELLEL?
-    ch<-lapply(1:ncol(sampled),function(yr)
+    ## RUN IN PARALLEL
+    library(parallel)
+    ### USE ALL CORES
+    numCores<-detectCores()
+    ### INITIATE CLUSTER
+    cl<-makeCluster(numCores)
+    ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+    clusterExport(cl, c("sampled", "individual_meta","sim_pop","tmp",
+                        "gears","occasions","b_samp"),
+                  envir=environment())
+    ch<-parLapply(cl,1:ncol(sampled),function(yr)
         { 
         ## PULL OUT SAMPLED BENDS
         samp_indx<-which(sampled[,yr]==1)
@@ -451,7 +460,8 @@ catch_data<-function(sim_pop=NULL,
             })
         bend_ch<-do.call(rbind,bend_ch)
         })
-    
+    ### CLOSE CLUSTERS
+    stopCluster(cl)
     ch<-do.call(rbind,ch)
 
 
