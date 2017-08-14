@@ -13,8 +13,8 @@ _site/
 analyses/_site/
 analyses/_data/
 PSPAP-Population-Assessment-Robust-Design/
-_data/
-_ouput/
+_dat/
+_output/
 _photos/
 
 *.neta
@@ -39,6 +39,7 @@ _photos/
 
 *.rdata
 *.rds
+*.csv
 
 # NPP FILES
 *.SESSION
