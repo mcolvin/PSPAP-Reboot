@@ -37,7 +37,7 @@ rep<-1
 sim_pop<-reference_population(inputs=input)
 # CRUNCH IS WF-FGNL842
 dir<- ifelse(pcname=="WF-FGNL842","D:/_output","_output")
-fn<- paste0(dir,"/sim-pop-",rep,".rds")
+fn<- paste0(dir,"/1-populations/sim-pop-",rep,".rds")
 saveRDS(sim_pop,file=fn)
 ```
 
