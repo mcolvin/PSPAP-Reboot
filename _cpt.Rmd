@@ -23,22 +23,28 @@ input$bends=bends
 input$fish_density=init_dens
 input$nyears<- 10
 input$beta0<- 2.9444
-input$phi<-matrix(plogis(beta0),length(segs),nyears-1)# MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+input$phi<-matrix(plogis(input$beta0),
+	length(input$segs),
+	input$nyears-1)# MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 input$Linf=NULL
 input$k = NULL
 input$vbgf_vcv=NULL
 input$initial_length=NULL
 ```
 
-
+The chunk below simulates 200 populations given the inputs above.
 
 ```{r,eval=FALSE}
-rep<-1    
-sim_pop<-reference_population(inputs=input)
-# CRUNCH IS WF-FGNL842
-dir<- ifelse(pcname=="WF-FGNL842","D:/_output","_output")
-fn<- paste0(dir,"/1-populations/sim-pop-",rep,".rds")
-saveRDS(sim_pop,file=fn)
+ptm <- proc.time()
+dir<- ifelse(pcname=="WF-FGNL842","E:/_output","_output")
+for(reps in 1:200)
+	{
+	sim_pop<-reference_population(inputs=input)
+	# CRUNCH IS WF-FGNL842
+	fn<- paste0(dir,"/1-populations/sim-pop-",reps,".rds")
+	saveRDS(sim_pop,file=fn)	
+	}
+proc.time() - ptm
 ```
 
 
