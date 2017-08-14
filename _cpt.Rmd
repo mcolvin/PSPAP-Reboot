@@ -32,7 +32,8 @@ input$vbgf_vcv=NULL
 input$initial_length=NULL
 ```
 
-The chunk below simulates 200 populations given the inputs above.
+The chunk below simulates 200 populations given the inputs above. 
+
 
 ```{r,eval=FALSE}
 ptm <- proc.time()
@@ -49,10 +50,55 @@ proc.time() - ptm
 
 
 
-
-        
+Code below loops over each simulated population and 
+saves the catch data.     
   
-        
+  
+```{r}
+pop_dir<- ifelse(pcname=="WF-FGNL842","E:/_output/1-populations/","_output/1-populations/")
+pop_dir_out<- ifelse(pcname=="WF-FGNL842","E:/_output/2-catch/","_output/2-catch/")
+pops<-dir(pop_dir)
+
+## MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
+### PICK SAMLING TYPE
+#samp_type="r"
+samp_type="f"
+
+### RUN
+ptm<-proc.time()
+for(i in 1:length(pops))
+    {
+    fp<- paste0(pop_dir,pops[reps])
+    sim_pop<- readRDS(fp)
+    input$id<-sim_pop$inputs$id
+    ## MEAN CATCHABILITY
+    q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.00005, 0.001),
+              runif(2,0.000000, 0.00005),runif(1,0.00005, 0.001))
+    # Accounts for differences in "OT16" and "TN" efforts.
+    ## B0_SD  
+    B0_sd<-runif(9,0,1.5)
+    
+    input<-list()
+    input$samp_type=samp_type
+    input$gears=c("GN14", "GN18", "GN41", "GN81",
+            "MF", "OT16", "TLC1", "TLC2", "TN")
+    input$catchability=q_mean
+    input$B0_sd=B0_sd
+    input$effort=effort
+    input$deployments=rep(8,9)
+    input$occasions=3
+    input$id<- i
+    
+    ## SAMPLING & CATCH DATA
+    dat<-catch_data(sim_pop=sim_pop,
+        inputs=input)
+    saveRDS(dat,
+        file=paste0(pop_dir_out,"catch-",reps,".rds"))  
+    }
+proc.time()-ptm
+
+
+
         
  
 
@@ -79,5 +125,5 @@ saveRDS(dat,file="output/test.Rds")
 proc.time()-ptm
 #user       system    elapsed 
 #15795.57   68.90     15988.57
-
+```
 

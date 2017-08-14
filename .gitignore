@@ -32,6 +32,7 @@ _photos/
 # OFFICE FILES
 *.xlsx
 *.docx
+*.doc
 *.pptx
 *.accdb
 

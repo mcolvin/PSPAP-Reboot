@@ -310,16 +310,17 @@ bend_samples<-function(sim_pop=NULL,
 
 ## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
 ##    RESULTING CAPTURE HISTORIES OF FISH IN SAMPLED BENDS
-catch_data<-function(sim_pop=NULL,
-    samp_type=NULL,
-    gears=c("GN14", "GN18", "GN41", "GN81",
-         "MF", "OT16", "TLC1", "TLC2", "TN"),
-    catchability=NULL,
-    B0_sd=NULL,
-    deployments=rep(8,9),
-    effort=NULL,
-    occasions=3)
+catch_data<-function(sim_pop=NULL,inputs,...)
     {
+    samp_type=inputs$samp_type
+    gears=inputs$gears
+    catchability=inputs$catchability
+    B0_sd=inputs$B0_sd
+    deployments=inputs$deployments
+    effort=inputs$effort
+    occasions=inputs$occasions    
+    
+    
     # USE SIM_POP TO DEFINE VARIABLES
     tmp<-sim_pop$bendMeta
     tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
@@ -503,7 +504,10 @@ catch_data<-function(sim_pop=NULL,
     tmp1<-tmp1[,c(1,3:6)]
     b_samp<-b_samp[,which(names(b_samp)!="p")]
     ch<-ch[,which(names(ch)!="ch")]
-    return(list(true_vals=tmp1, samp_dat=b_samp, catch_dat=ch))
+    return(list(true_vals=tmp1, 
+        samp_dat=b_samp, 
+        catch_dat=ch,
+        inputs=inputs))
     }
 
 
