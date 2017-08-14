@@ -1,0 +1,77 @@
+
+
+
+
+```{r}
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
+source("_R/4_figures.R")
+source("_R/5_tables.R")
+```
+
+
+
+
+```{r}
+# GENERATE THE REFERENCE POPULATION
+input<-list()
+input$segs<- c(1,2,3,4,7,8,9,10,13,14)
+# BENDS DATAFRAME
+input$bends=bends
+# FISH DENSITY PER RKM
+input$fish_density=init_dens
+input$nyears<- 10
+input$beta0<- 2.9444
+input$phi<-matrix(plogis(beta0),length(segs),nyears-1)# MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+input$Linf=NULL
+input$k = NULL
+input$vbgf_vcv=NULL
+input$initial_length=NULL
+```
+
+
+
+```{r,eval=FALSE}
+rep<-1    
+sim_pop<-reference_population(inputs=input)
+# CRUNCH IS WF-FGNL842
+dir<- ifelse(pcname=="WF-FGNL842","D:/_output","_output")
+fn<- paste0(dir,"/sim-pop-",rep,".rds")
+saveRDS(sim_pop,file=fn)
+```
+
+
+
+
+        
+  
+        
+        
+ 
+
+
+
+
+
+ 
+        
+# SIMULATE EFFORT & CATCH DATA FOR A FIXED B0_SD GRID
+## MEAN CATCHABILITY
+
+proc.time()-ptm
+
+dat<-samp_dat(sim_pop=sim_pop,
+    catchability=rep(0.00001,9),
+    B0_sd=runif(9, 0,1.5),
+    effort=effort,
+    occasions=3)
+saveRDS(dat,file="output/test.Rds") 
+
+
+
+proc.time()-ptm
+#user       system    elapsed 
+#15795.57   68.90     15988.57
+
+

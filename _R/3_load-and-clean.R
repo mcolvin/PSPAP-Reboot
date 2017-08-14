@@ -16,6 +16,9 @@ if(exists("effort_data")==FALSE){effort_data<-FALSE}
 
 
 
+## PC NAME FOR AUTOMATING FILE DIRECTORY FOR CRUNCH OR NOT...
+pcname<- Sys.info()[['nodename']]     
+
 
 # READ IN BEND DATA FOR RPMA 2 (UPPER) AND 4 (LOWER)
 

@@ -53,16 +53,19 @@ dfitfunUB<-function(x)
 # RELATIVE ABUNDANCE (CPUE)
 ## 3. FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
 ## AND THEN BENDS
-reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
-    bends=NULL,
-    fish_density=NULL,
-    nyears=10,
-    phi=0.95,
-    Linf=rep(1000,10),
-    k = rep(0.2,10),
-    vbgf_vcv=NULL,
-    initial_length=NULL)
+reference_population<- function(inputs,...)
     {
+    segs=inputs$segs
+    bends=inputs$bends
+    fish_density=inputs$fish_density
+    nyears=inputs$nyears
+    phi=inputs$phi
+    Linf=inputs$Linf
+    k = inputs$k
+    vbgf_vcv=inputs$vbgf_vcv
+    initial_length=inputs$initial_length
+    
+    
     # this function allocates fish to bends within a segment
     # probabilistically given bend weights and determines the survival
     # of fish within bend over nyears given survival probabilities
@@ -112,12 +115,12 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
         a dataframe of densities by segment with number of \n
         rows equal to the number of segments."))}
     ### GROWTH
-    if(dim(vbgf_vcv)[1]!=2|dim(vbgf_vcv)[2]!=2){return("The variance covariance \n
-        matrix needs to be 2x2 square")}
-    if(dim(vbgf_vcv)[3]!=10){return("There needs to be 10 2x2 variance covariance \n
-        matrices for each segment")}
-    if(length(Linf)!=10){return("Linf needs to be a vector of 10 values for each segment")}
-    if(length(k)!=10){return("k needs to be a vector of 10 values for each segment")}
+    #if(dim(vbgf_vcv)[1]!=2|dim(vbgf_vcv)[2]!=2){return("The variance covariance \n
+    #    matrix needs to be 2x2 square")}
+    #if(dim(vbgf_vcv)[3]!=10){return("There needs to be 10 2x2 variance covariance \n
+    #    matrices for each segment")}
+    #if(length(Linf)!=10){return("Linf needs to be a vector of 10 values for each segment")}
+    #if(length(k)!=10){return("k needs to be a vector of 10 values for each segment")}
     ## END: ERROR HANDLING   
     
     
@@ -146,41 +149,44 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     ### EXPAND BENDS FOR EACH FISH
     individual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
     ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
-    individual_meta$k<-k[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL 
-    individual_meta$Linf<-Linf[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL
- 
+    if(!(is.null(Linf)))
+        {
+        individual_meta$k<-k[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL 
+        individual_meta$Linf<-Linf[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL
+        }
     ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
     Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
     Z[,1]<-1
+    
+    
     ### l: length for individuals
-    l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
-    
-    
-    for(i in unique(individual_meta$b_segment))
+    if(!(is.null(Linf)))
         {
-        ## MAKE A QUICK FUNCTION OF THE INVERSE CUM DISTRIBUTION
-        l_ini<-approxfun(
-            initial_length[initial_length$segment==i,]$qntls,
-            initial_length[initial_length$segment==i,]$vals,
-            rule=2)
-        indx<- which(individual_meta$b_segment==i)
-        l[indx,1]<-l_ini(runif(length(indx)))
-        }
-    ## FIX ANY LENGTHS > THAN LINF
-    l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
-   
-    ## POPULATION DYNAMICS
-    for(i in 2:nyears)
-        {
-        Z[,i]<- rbinom(nrow(Z),
-            size=1,
-            prob=phi[individual_meta$phi_indx,i-1]*Z[,i-1])
-        ## FABENS MODEL FOR GROWTH (VBGF)
-        l[,i]<-l[,i-1] + (individual_meta$Linf-l[,i-1])*(1-exp(-individual_meta$k*1))*Z[,i-1]# 0 growth if dead   
-        }
- 
-
+        l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
+        for(i in unique(individual_meta$b_segment))
+            {
+            ## MAKE A QUICK FUNCTION OF THE INVERSE CUMULATIVE DISTRIBUTION
+            l_ini<-approxfun(
+                initial_length[initial_length$segment==i,]$qntls,
+                initial_length[initial_length$segment==i,]$vals,
+                rule=2)
+            indx<- which(individual_meta$b_segment==i)
+            l[indx,1]<-l_ini(runif(length(indx)))
+            }
+        ## FIX ANY LENGTHS > THAN LINF
+        l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
+       }
+        ## POPULATION DYNAMICS
+        for(i in 2:nyears)
+            {
+            Z[,i]<- rbinom(nrow(Z),
+                size=1,
+                prob=phi[individual_meta$phi_indx,i-1]*Z[,i-1])
+            ## FABENS MODEL FOR GROWTH (VBGF)
+            if(!(is.null(Linf))){l[,i]<-l[,i-1] + (individual_meta$Linf-l[,i-1])*(1-exp(-individual_meta$k*1))*Z[,i-1]}# 0 growth if dead   
+            }
+        
  
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
     out<-aggregate(Z[,1],
@@ -203,9 +209,13 @@ reference_population<- function(segs=c(1,2,3,4,7,8,9,10,13,14),
     out[is.na(out)]<-0
     out<-out[order(out$b_segment, out$bend_num),]
     tmp<- tmp[order(tmp$b_segment,tmp$bend_num),]
-    out<-list(out=as.matrix(out[,-c(1:2)]), bendMeta=tmp,
+    if(is.null(Linf)){l<-0}
+    out<-list(out=as.matrix(out[,-c(1:2)]), 
+        bendMeta=tmp,
         individual_meta=individual_meta,
-        Z=Z,l=l)
+        Z=Z,
+        l=l,
+        inputs=inputs)
     return(out)# return relevant stuff
     }
 
@@ -524,7 +534,7 @@ get.trnd<-function(sim_dat=NULL,
   tmp$b_segment<- as.factor(tmp$b_segment)
   out<-lapply(gears,function(g)
     {
-      fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)
+    fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)
       tmp2<- data.frame( 
         # THE GOODIES
         ## GEAR
@@ -928,9 +938,10 @@ get.M0t.ests<-function(sim_dat=NULL,
  
  
  
- 
- 
- 
+#######################################################################
+# MISC UNUSED FUNCTIONS FOR FUTURE REFERENCE
+#######################################################################
+
 # A FUNCTION TO SIMULATE DATA
 sim_ch<-function(inputs,index)
 	{
@@ -1097,12 +1108,6 @@ estimate<- function(dat,inputs,indx)
 
 	return(outt)	
 	}
-	
-	
-	
-	
-	
-	
 	
 plot_metrics<-function(metric,NN,xxt="s",main=FALSE,datt=pdat)
 	{
