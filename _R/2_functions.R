@@ -66,7 +66,8 @@ reference_population<- function(inputs,...)
     initial_length=inputs$initial_length
     mv_beta0=inputs$mv_beta0
     mv_beta1=inputs$mv_beta1
-    
+    dis<- inputs$dis
+    direct<- dis$direct
     
     # this function allocates fish to bends within a segment
     # probabilistically given bend weights and determines the survival
@@ -149,7 +150,8 @@ reference_population<- function(inputs,...)
     tmp$id<-c(1:nrow(tmp))# link for later...
     ## ASSIGN A BEND TO EACH INVIDUAL 
     ### EXPAND BENDS FOR EACH FISH
-    individual_meta<- as.data.frame(lapply(tmp,function(x) rep(x,tmp$N_ini)))
+    individual_meta<- as.data.frame(
+        lapply(tmp,function(x) rep(x,tmp$N_ini)))
     ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
     if(!(is.null(Linf)))
         {
@@ -178,44 +180,94 @@ reference_population<- function(inputs,...)
             }
         ## FIX ANY LENGTHS > THAN LINF
         l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
-       }
-        ## POPULATION DYNAMICS
-        for(i in 2:nyears)
-            {
-            Z[,i]<- rbinom(nrow(Z),
-                size=1,
-                prob=phi[individual_meta$phi_indx,i-1]*Z[,i-1])
-            ## FABENS MODEL FOR GROWTH (VBGF)
-            if(!(is.null(Linf))){l[,i]<-l[,i-1] + (individual_meta$Linf-l[,i-1])*(1-exp(-individual_meta$k*1))*Z[,i-1]}# 0 growth if dead   
-            }
-        
+        }
  
+ 
+    BND<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
+    BND[,1]<- individual_meta$b_id
+       
+    ###############################################################
+    ## POPULATION DYNAMICS
+    ## 1. SUVIVAL
+    ## 2. GROWTH
+    ## 3. MOVEMENT
+    ###############################################################
+    for(m in 1:sum(Z[,1]))
+        {# loop over individuals
+        for(i in 2:nyears)
+            {# loop over each year
+            ## 1. SURVIVAL
+            Z[m,i]<- rbinom(1,
+                size=1,
+                prob=phi[individual_meta$phi_indx[m],i-1]*Z[m,i-1])
+            ## 2. FABENS MODEL FOR GROWTH (VBGF)
+            if(!(is.null(Linf)))
+                {# 0 growth if dead 
+                l[m,i]<-l[m,i-1] + (individual_meta$Linf-l[m,i-1])*(1-exp(-individual_meta$k[m]*1))*Z[m,i-1]
+                }  
+            ## MOVEMENT MODEL
+            if(individual_meta$rpma[m]==2)
+                {
+                y<- exp(mv_beta0[1]+ 
+                    mv_beta1[1]*inputs$dis$rpma2[BND[m,i-1],])
+                y[which(inputs$dis$rpma2[BND[m,i-1],]==0)]<-1
+                p<- y/sum(y)
+                BND[m,i]<- sample(x=1:nrow(inputs$dis$rpma2), 
+                    size=1,
+                    prob=p/sum(p))*Z[m,i]# 0 if dead
+                } # end if 
+             if(individual_meta$rpma[m]==4)
+                {
+                y<- exp(mv_beta0[2]+ 
+                    mv_beta1[2]*inputs$dis$rpma4[BND[m,i-1],])
+                y[which(inputs$dis$rpma4[BND[m,i-1],]==0)]<-1
+                p<- y/sum(y)
+                BND[m,i]<- sample(x=1:nrow(inputs$dis$rpma4), 
+                    size=1,
+                    prob=p/sum(p))*Z[m,i]# 0 if dead
+                } # end if  
+            }
+        }
+    
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
     out<-aggregate(Z[,1],
-                   by=list(individual_meta$b_segment,individual_meta$bend_num),
+                by=list(rpma=individual_meta$rpma,
+                    b_id=BND[,1]),
                    sum)
     names(out)[3]<-"yr_1"
     for(i in 2:nyears)
         {
         app<-aggregate(Z[,i],
-                       by=list(individual_meta$b_segment,individual_meta$bend_num),
-                       sum)
+            by=list(
+                rpma=individual_meta$rpma,
+                b_id=BND[,i]),
+            sum)
         names(app)[3]<-paste("yr",i,sep="_")
-        out<-merge(out,app,by=c("Group.1","Group.2"),all=TRUE)
+        out<-merge(out,app,by=c("rpma","b_id"),all=TRUE)
         }
-    names(out)[1:3]<-c("b_segment","bend_num", "N_ini")
-    if(length(out[is.na(out)])!=0){return(print("ERROR IN FISH COUNT"))} #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
-    out<-merge(out,tmp[,c("b_segment","bend_num", "N_ini")],
-                 by=c("b_segment", "bend_num", "N_ini"), all=TRUE)
-    if(nrow(out)!=nrow(tmp)){return(print("ERROR IN BEND ABUNDANCE MERGE"))} #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+        
+    #names(out)[1:3]<-c("b_segment","bend_num", "N_ini")
+    #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+    if(length(out[is.na(out)])!=0)
+        {
+        return(print("ERROR IN FISH COUNT"))
+        } 
+    ## ADD SEGMENTS TO BENDS 
+    out<-merge(out,tmp[,c("rpma","b_segment","b_id", "N_ini")],
+        by=c("rpma", "b_id"), all=TRUE)
+    if(nrow(out)!=nrow(tmp))
+        {
+        return(print("ERROR IN BEND ABUNDANCE MERGE"))
+        } #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
     out[is.na(out)]<-0
-    out<-out[order(out$b_segment, out$bend_num),]
-    tmp<- tmp[order(tmp$b_segment,tmp$bend_num),]
+    out<-out[order(out$b_segment, out$b_id),]
+    tmp<- tmp[order(tmp$b_segment,tmp$b_id),]
     if(is.null(Linf)){l<-0}
     out<-list(out=as.matrix(out[,-c(1:2)]), 
         bendMeta=tmp,
         individual_meta=individual_meta,
         Z=Z,
+        BND=BND,
         l=l,
         inputs=inputs)
     return(out)# return relevant stuff

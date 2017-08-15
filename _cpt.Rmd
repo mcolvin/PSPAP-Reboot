@@ -30,8 +30,11 @@ input$Linf=NULL
 input$k = NULL
 input$vbgf_vcv=NULL # VARIANCE COVARIANCE MATRIX
 input$initial_length=NULL
-input$mv_beta0=NULL
-input$mv_beta1=NULL
+input$mv_beta0=c(1,1) # first is RPMA2, RPMA4
+input$mv_beta1=c(1,2) # first is RPMA2, RPMA4
+input$dis<- sp$dis  # pairwise distances for RPMA 2/4
+input$dir<- sp$dir  # direction for RPMA 2/4
+inputs<-input
 ```
 
 The chunk below simulates 200 populations given the inputs above. 
