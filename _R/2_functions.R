@@ -64,6 +64,8 @@ reference_population<- function(inputs,...)
     k = inputs$k
     vbgf_vcv=inputs$vbgf_vcv
     initial_length=inputs$initial_length
+    mv_beta0=inputs$mv_beta0
+    mv_beta1=inputs$mv_beta1
     
     
     # this function allocates fish to bends within a segment

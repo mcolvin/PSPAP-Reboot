@@ -25,46 +25,85 @@ xx<- aggregate(cbind(bias,pbias)~gamma2+rep,nn,mean)
 
 ### In a nutshell
 
+
+
+### Background
+
+The process for the evaluation of the PSPAP is intended to be 
+transparent and objective. In previous posts, we provide technical overviews of
+the and identify some of the uncertainties (i.e., demographic closure)
+that can influence the performance of alternative monitoring designs.
+For example, in simulations, violating the closure assumption during
+secondary occasions in a Robust Design can bias population estimates.^[]
+The purpose of this post is to discuss how we can link the simulation of 
+monitoring designs to agency objectives. Caveat: this post is a simplification
+of the analyses being conducted and is intended to provide an overview
+of the process and solicit input.  
+
+
 ### Engage in the process
 
-### Background overview
+Want to engage in the process? Please let us know what you think in the 
+comments or email mike.colvin [at] msstate.edu. Specifically,we are 
+interested in whether there are
+
+* other metrics in addition to the ones we covered in this post, and  
+* ones that we present here that should not be considered, 
+
+when we evaluate the performance of a monitoring design? 
 
 
 ### Valuing fundamental objectives
 
+Let's look at how we can value one of the fundamental objectives
+for the PSPAP going forward, specifically the objective to
+
+_Quantify population trend_.
+
+In simulating population monitoring designs we have identified 3
+metrics to value a monitoring design as it relates to quantifying
+population trend, as well as other objectives. Specifically, a the 
+estimates from a monitoring should program  
+
+1. Bias-how does an estimate perform relative to its true value 
+calculated as the true value minus the estimated value. We then
+divide the bias by the true value to be able to combine estimates
+of varying magnitude (i.e., survival, abundance).
+2. Precision-how precise are estimates specified as the coefficient 
+of variation (CV) calculated as the standard error of the estimate
+divided by the parameter estimate. There is not threshold for 
+what is optimal for estimator precision, generally, the more 
+precise the better. There are other alternatives to CV, however 
+CV is commonly used in fisheries and therefore likely to be 
+familiar. 
+3. Performance-In some cases an estimator like the Robust Design may not 
+have enough information for the estimator to provide an actual estimate. 
+This measure is quantified as the proportion of stochastic simulations 
+where the estimator did not converge or convergence was problematic. 
+Let's step through and example to clarify exactly what we are talking 
+about here. Suppose we have randomly generated 200 Pallid Sturgeon 
+Populations. Then we simulate the alternative monitoring programs and 
+estimate trend. In the case of a catch effort based monitoring program 
+the performance is 100% because there are no instances where trend 
+cannot be estimated from CPUE data, albeit zeros can be an issue at low 
+abundances or capture probability. However, if capture probability is 
+low then there may be instances where a capture recapture estimator just 
+does not work and estimates cannot be made.<!--
+finish up here
+--> 
+For example, suppose we use a Robust Design to estimate 
+segment level abundance for 200 randomly generated Pallid Sturgeon 
+populations. If 30 of those estimates did not result in a reliable 
+estimate then the performance was $1-30/200*100$ or 85% 
 
 
-Recall that the fundamental objectives of the PSPAP were to:
-
-1. 
-2. 
-3.
-4.
-5.
-6.
-
-Through the workshop we identified many pathways to achieve these 
-fundamental objectives. For example, using the same CPUE based 
-monitoring design can achieve fundamental objective XX but it does a 
-poor job achieving some of the remaining objectives. Specifically, 
-abundance estimates from catch effort data are likely negatively biased, 
-providing little utility in meeting fundamental objective XX. 
 
 
 
-Bias is one way we can put a value on a monitoring design that links to a fundamental
-objective. In this case, the fundamental objective provided during the workshop
-was XXXXXXXXXXXXXX. In order to evaluate how alternative monitoring designs achieve the
-fundamental objectives we need to develop a way to quantify this fundamental objective.
-In terms of estimating abundance there are 2 measures of an estimator that are useful,
-bias and precision. In the figure above, we can calculate the bias of each yearly estimate
-for each rep where bias is the estimated abundance minus the true abundance. Fortunately
-this is simulated data so we know what the true abundance is! Bias can then be viewed
-as bias with fish as the units, for example the estimate overestimated true abundance by 200
-Pallid Sturgeon or bias can be scaled proportionally. Proportional bias allows and apples
-to apples comparison of the abundance estimates as a percentage. For example, a bias of
-50 pallid sturgeon if the true abundance was 80 is different than if the true abundance
-was 5000. 
 
-Proportional bias is illustrated in the figure below where proportional bias was
-calculated for the plot above.
+### Valuing the fundamental objective
+
+
+
+
+

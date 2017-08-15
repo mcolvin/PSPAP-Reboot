@@ -28,8 +28,10 @@ input$phi<-matrix(plogis(input$beta0),
 	input$nyears-1)# MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
 input$Linf=NULL
 input$k = NULL
-input$vbgf_vcv=NULL
+input$vbgf_vcv=NULL # VARIANCE COVARIANCE MATRIX
 input$initial_length=NULL
+input$mv_beta0=NULL
+input$mv_beta1=NULL
 ```
 
 The chunk below simulates 200 populations given the inputs above. 
@@ -51,7 +53,8 @@ proc.time() - ptm
 
 
 Code below loops over each simulated population and 
-saves the catch data.     
+saves the catch data.  Took ~230 minutes to do 200 
+populations  
   
   
 ```{r}
@@ -96,7 +99,7 @@ for(reps in 1:length(pops))
         file=paste0(pop_dir_out,"catch-",reps,".rds"))  
     }
 proc.time()-ptm
-
+```
 
 
         
