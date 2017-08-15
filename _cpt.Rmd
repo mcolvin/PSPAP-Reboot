@@ -66,7 +66,7 @@ samp_type="f"
 
 ### RUN
 ptm<-proc.time()
-for(i in 1:length(pops))
+for(reps in 1:length(pops))
     {
     fp<- paste0(pop_dir,pops[reps])
     sim_pop<- readRDS(fp)
@@ -87,7 +87,7 @@ for(i in 1:length(pops))
     input$effort=effort
     input$deployments=rep(8,9)
     input$occasions=3
-    input$id<- i
+
     
     ## SAMPLING & CATCH DATA
     dat<-catch_data(sim_pop=sim_pop,
