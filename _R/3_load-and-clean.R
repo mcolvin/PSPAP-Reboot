@@ -20,21 +20,52 @@ if(exists("effort_data")==FALSE){effort_data<-FALSE}
 pcname<- Sys.info()[['nodename']]     
 
 
+#######################################################################
 # READ IN BEND DATA FOR RPMA 2 (UPPER) AND 4 (LOWER)
-
+# USED FOR MOVEMENT ANALYSIS
+#######################################################################
 bends<- read.csv("./_dat/bend-data.csv")
 
 # make data.frame column names lower case
 names(bends)<- tolower(names(bends))
 bends<- subset(bends,b_segment %in% c(1,2,3,4,7,8,9,10,13,14))
 bends<-bends[-157,]
-  ## bend_start_rkm needs to be adjusted either upstream or downstream
-  ## of segment 9 bend 65
+## bend_start_rkm needs to be adjusted either upstream or downstream
+## of segment 9 bend 65
+
+bends<-bends[order(bends$lower_river_mile),]
+# MAKE A PAIRWISE DISTANCE MATRICES FOR EACH RPMA
+bends$center<- bends$bend_start_rkm+ bends$length.rkm/2
+bends$b_id<- 1
+## ADD WITHIN BEND ID, INCREASING ORDER MOVING UPSTREAM
+bends$b_id[which(bends$rpma==2)]<- 1:length(which(bends$rpma==2))
+bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
+## PAIRWISE DISTANCES AND DIRECTION FOR RPMA2
+sp<- list()
+tmp<-subset(bends,rpma==2)
+tmp<- tmp[order(tmp$lower_river_mile),]
+sp$dis$rpma2<- -1*abs(outer(tmp$center,tmp$center,"-"))
+sp$direct$rpma2<- sp$dis$rpma2
+sp$direct$rpma2[lower.tri(sp$direct$rpma2)]<--1
+sp$direct$rpma2[upper.tri(sp$direct$rpma2)]<- 1
+
+## PAIRWISE DISTANCES AND DIRECTION FOR RPMA4
+tmp<-subset(bends,rpma==4)
+tmp<- tmp[order(tmp$lower_river_mile),]
+sp$dis$rpma4<- -1*abs(outer(tmp$center,tmp$center,"-"))
+sp$direct$rpma4<- sp$dis$rpma4
+sp$direct$rpma4[lower.tri(sp$direct$rpma4)]<--1
+sp$direct$rpma4[upper.tri(sp$direct$rpma4)]<- 1
 
 
+
+
+
+#######################################################################
 # READ IN EFFORT DATA FROM 01-PSPAP-Background Analysis
 ## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
 ## AN OUTPUT FROM THE EFFORT ANALYSIS
+#######################################################################
 effort<- read.table("_output/effort_dat.csv")
 effort$rpma<- ifelse(effort$basin=="UB",2,4)
 
@@ -54,6 +85,8 @@ init_dens<-aggregate(expected_dens~rpma+segments, init_dens, sum)
 init_dens<-init_dens[rep(seq_len(nrow(init_dens)), times=c(4,3,3)),]
 init_dens$segments<-c(1:4, 7:9, 10, 13, 14)
 colnames(init_dens)[2]<-"b_segment"
+
+
 
 
 ############## EFFORT ANALYSIS #####################
