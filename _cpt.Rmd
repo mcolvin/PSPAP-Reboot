@@ -43,7 +43,7 @@ The chunk below simulates 200 populations given the inputs above.
 ```{r,eval=FALSE}
 ptm <- proc.time()
 dir<- ifelse(pcname=="WF-FGNL842","E:/_output","_output")
-for(reps in 1:200)
+for(reps in 1:10)
 	{
 	sim_pop<-reference_population(inputs=input)
 	# CRUNCH IS WF-FGNL842

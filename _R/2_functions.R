@@ -206,7 +206,7 @@ reference_population<- function(inputs,...)
                 l[m,i]<-l[m,i-1] + (individual_meta$Linf-l[m,i-1])*(1-exp(-individual_meta$k[m]*1))*Z[m,i-1]
                 }  
             ## MOVEMENT MODEL
-            if(individual_meta$rpma[m]==2)
+            if(individual_meta$rpma[m]==2 & Z[m,i]>0)
                 {
                 y<- exp(mv_beta0[1]+ 
                     mv_beta1[1]*inputs$dis$rpma2[BND[m,i-1],])
@@ -214,9 +214,9 @@ reference_population<- function(inputs,...)
                 p<- y/sum(y)
                 BND[m,i]<- sample(x=1:nrow(inputs$dis$rpma2), 
                     size=1,
-                    prob=p/sum(p))*Z[m,i]# 0 if dead
+                    prob=p/sum(p))
                 } # end if 
-             if(individual_meta$rpma[m]==4)
+             if(individual_meta$rpma[m]==4& Z[m,i]>0)# needs to be alive
                 {
                 y<- exp(mv_beta0[2]+ 
                     mv_beta1[2]*inputs$dis$rpma4[BND[m,i-1],])
@@ -224,11 +224,11 @@ reference_population<- function(inputs,...)
                 p<- y/sum(y)
                 BND[m,i]<- sample(x=1:nrow(inputs$dis$rpma4), 
                     size=1,
-                    prob=p/sum(p))*Z[m,i]# 0 if dead
+                    prob=p/sum(p))
                 } # end if  
             }
         }
-    
+    BND[BND==0]<-NA
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
     out<-aggregate(Z[,1],
                 by=list(rpma=individual_meta$rpma,
