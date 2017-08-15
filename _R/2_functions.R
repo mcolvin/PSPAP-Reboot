@@ -245,7 +245,7 @@ reference_population<- function(inputs,...)
         names(app)[3]<-paste("yr",i,sep="_")
         out<-merge(out,app,by=c("rpma","b_id"),all=TRUE)
         }
-        
+    out[is.na(out)]<-0  # NAs for no fish in bend
     #names(out)[1:3]<-c("b_segment","bend_num", "N_ini")
     #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
     if(length(out[is.na(out)])!=0)
