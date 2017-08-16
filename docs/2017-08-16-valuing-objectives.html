@@ -245,7 +245,7 @@ rmarkdown::render_site("2017-08-16-valuing-objectives.Rmd")# build website
 <p>Now let’s look at the precision metric. Suppose it varies from 10 to 300 (not very precise). The equation to calculate scaled precision is the same as before. However, we do not need to take absolute values since all values are positive. In the plot below, values with lower CV values have higher values, and increasing values approach 0.</p>
 <p><img src="images/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Lastly, let’s look at conformance. Suppose performance values from simulating multiple replicates of each monitoring design vary from 35% to 100%. The difference between the performance metric with bias and precision is that higher values are more desirable and therefore we need to rearrange the proportional scaling equation to reflect this as,</p>
-<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}\]</span>.</p>
+<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.\]</span></p>
 <p>In the plot below, values with lower performance values have lower values and increasing values approach 1.</p>
 <p><img src="images/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>

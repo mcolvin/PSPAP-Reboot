@@ -147,7 +147,7 @@ between the performance metric with bias and precision is that higher values are
 desirable and therefore we need to rearrange the proportional scaling equation to reflect
 this as, 
 
-$$U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}$$.
+$$U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.$$
 
 In the plot below, values with lower performance values have lower 
 values and increasing values approach 1. 
