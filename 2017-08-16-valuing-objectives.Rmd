@@ -114,7 +114,7 @@ values, and increasing values approach 0.
 
 
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,fig.align='center'}
 pbias<- c(-300:300)
 pbias_u<- (max(abs(pbias))-abs(pbias))/(max(abs(pbias))-min(abs(pbias)))
 u_bias<- approxfun(pbias,pbias_u)
@@ -132,7 +132,7 @@ have higher values, and increasing values approach 0.
 
 
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,fig.align='center'}
 pbias<- c(10:300)
 pbias_u<- (max(pbias)-pbias)/(max(pbias)-min(pbias))
 u_cv<- approxfun(pbias,pbias_u)
@@ -153,7 +153,7 @@ In the plot below, values with lower performance values have lower
 values and increasing values approach 1. 
 
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,fig.align='center'}
 pbias<- c(30:100)
 pbias_u<- (pbias-min(pbias))/(max(pbias)-min(pbias))
 u_perf<- approxfun(pbias,pbias_u)
