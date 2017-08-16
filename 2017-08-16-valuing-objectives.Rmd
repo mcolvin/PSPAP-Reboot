@@ -205,7 +205,7 @@ value to achieve the objective of _quantifing population trend_.
 
 
 
-#### Closing
+### Closing
 
 This was an example outlining how alternative monitoring programs can be 
 objectively evaluated and compared in the context of meeting agency 
