@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Linking monitoring design estimates and objectives</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<div><img src="images/20170321_180723.jpg" width="100%" align="right"></div>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Linking monitoring design estimates and objectives</h1>
+
+</div>
+
+
+<!---
+rmarkdown::render_site("2017-08-16-valuing-objectives.Rmd")# build website
+--->
+<div id="background" class="section level3">
+<h3>Background</h3>
+<p>The process for the evaluation of the PSPAP is intended to be transparent and objective. In previous posts, we provide some technical overviews of identifying some of the uncertainties (i.e., demographic closure) that can influence the performance of alternative monitoring designs. For example, in simulations of a capture-recapture estimator, violating the closure assumption can bias population estimates.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> We used bias to evaluate the consequence of violating an assumption, but we can also use it to evaluate how well a monitoring design performs. The purpose of this post is to discuss how we can link simulated monitoring designs to agency objectives. Caveat: this post is a simplification of the analyses being conducted and is intended to provide an overview of the process and solicit input.</p>
+</div>
+<div id="engage-in-the-process" class="section level3">
+<h3>Engage in the process</h3>
+<p>Want to engage in the process? Please let us know what you think in the comments area below or email mike.colvin [at] msstate.edu. Specifically, we are interested in, when we evaluate the performance of a monitoring design, are there</p>
+<ul>
+<li>other metrics in addition to the ones we covered in this post, and<br />
+</li>
+<li>ones that we present here that should not be considered?</li>
+</ul>
+</div>
+<div id="valuing-fundamental-objectives" class="section level3">
+<h3>Valuing fundamental objectives</h3>
+<p>Let’s look at how we can quantify one of the fundamental objectives for the PSPAP going forward, specifically the objective to:</p>
+<p><em>Quantify population trend</em>.</p>
+<p>In simulating population monitoring designs, we are using 3 metrics to quantify how a monitoring design meets the objective of <em>quantifying population trend</em>. Specifically, the estimates from a monitoring program, as it relates to trend are evaluated by calculating:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Bias; How does an estimate compare to the true value.</strong> Bias is calculated as the true value minus the estimated value. We then divide the bias by the true value to be able to combine estimates of varying magnitude (i.e., survival, abundance), recall the previous post that used proportional bias <a href="2017-07-24-RD-and-closure.html">link</a>.</li>
+<li><strong>Precision: How precise are estimated values.</strong> Precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. There is no real threshold for what is optimal for estimator precision regarding decision making. Generally speaking, the more precise an estimate, the better. There are other alternatives to CV. However, CV is commonly used in fisheries and therefore likely to be familiar.</li>
+<li><strong>Performance; How likely is an estimator successful.</strong> In some cases, an estimator like the Robust Design may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations where the estimator did not converge, or convergence was problematic. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 2 alternative monitoring programs, a catch effort program and a capture recapture program. Then we estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, the performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse!</li>
+</ol>
+</div>
+<div id="valuing-the-fundamental-objective" class="section level3">
+<h3>Valuing the fundamental objective</h3>
+<p>The 3 metrics described above can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <span class="citation">(Conroy and Peterson 2013)</span>. The utility is then used to evaluate alternative monitoring programs. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and conformance is constrained between 0 (worst) and 100 (best).</p>
+<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalized values to a specified minimum and maximum. For example, we can scale the bias to values varying from 0 to 1 as:</p>
+<p><span class="math display">\[U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)}\]</span>,</p>
+<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot below, values with lower proportional bias are given higher values, and increasing values approach 0.</p>
+<p><img src="images/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Now let’s look at the precision metric. Suppose it varies from 10 to 300 (not very precise). The equation to calculate scaled precision is the same as before. However, we do not need to take absolute values since all values are positive. In the plot below, values with lower CV values have higher values, and increasing values approach 0.</p>
+<p><img src="images/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Lastly, let’s look at conformance. Suppose performance values from simulating multiple replicates of each monitoring design vary from 35% to 100%. The difference between the performance metric with bias and precision is that higher values are more desirable and therefore we need to rearrange the proportional scaling equation to reflect this as,</p>
+<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}\]</span>.</p>
+<p>In the plot below, values with lower performance values have lower values and increasing values approach 1.</p>
+<p><img src="images/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="linking-monitoring-designs-and-objectives" class="section level3">
+<h3>Linking monitoring designs and objectives</h3>
+<p>We can combine the utility values now such that monitoring designs resulting in a trend estimate with low bias, good precision, and good performance have higher values (i.e., approaching 1) and estimates of the trend that is biased, imprecise with poor performance approach 0. Values approach 1 because each of the scaled metrics is weighted. For example, if each metric is valued equally, then the weights would be 1/3. Alternatively, if really precision estimates of trend were desired the weight for scaled trend could be 0.5 and the remaining metrics weighted at 0.25. Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
+<ul>
+<li>Catch effort
+<ul>
+<li>Proportional bias = -60, scaled = 0.8</li>
+<li>Precision = 112, scaled = 0.648</li>
+<li>Performance = 100, scaled = 1</li>
+</ul></li>
+<li>Capture recapture
+<ul>
+<li>Proportional bias = 5, scaled = 0.983</li>
+<li>Precision = 115, scaled = 0.638</li>
+<li>Performance = 90, scaled = 0.857</li>
+</ul></li>
+</ul>
+<p>The scaled utility for the catch effort program is:</p>
+<p><span class="math display">\[0.774= 
+0.25\cdot 0.8+
+0.50 \cdot 0.648+
+0.25\cdot1,\]</span></p>
+<p>and the scaled utility for the capture recapture program is</p>
+<p><span class="math display">\[0.779= 
+0.25\cdot 0.983+
+0.50 \cdot 0.638+
+0.25\cdot0.857.\]</span></p>
+<p>The combined utility values indicate that the capture recapture program has more value to achieve the objective of <em>quantifing population trend</em>.</p>
+<div id="closing" class="section level4">
+<h4>Closing</h4>
+<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
+</div>
+</div>
+<div id="references" class="section level3 unnumbered">
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-RN4402">
+<p>Conroy, M., and J. Peterson. 2013. Decision making in natural resource management: A structured, adaptive approach. Book, Wiley.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://mcolvin.github.io/PSPAP-Reboot/2017-07-24-RD-and-closure.html" class="uri">https://mcolvin.github.io/PSPAP-Reboot/2017-07-24-RD-and-closure.html</a><a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
