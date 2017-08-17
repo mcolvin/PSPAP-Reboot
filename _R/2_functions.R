@@ -15,15 +15,15 @@
 
 # EFFORT DISTRIBUTIONS
 ## FIT DISTRIBUTIONS TO EFFORT DATA 
-dfitfun<-function(x,dat,basin,gears)
-    {
-    datLBgear<-subset(dat, gear==LBgears[x])
-    dfit<-fitdistr(datLBgear$effort, "gamma")
+dfitfun<-function(dat,basin,gears)
+  {
+    datBgear<-subset(dat, basin==basin & gear==gears)
+    dfit<-fitdistr(datBgear$effort, "gamma")
     #Define Shape and Rate Based on Distribution Fitting
     s<-as.numeric(unlist(dfit)[1])
     r<-as.numeric(unlist(dfit)[2])
     return(c(s,r))
-    }
+  }
 
 
 ## 1.  
@@ -55,19 +55,19 @@ dfitfunUB<-function(x)
 ## AND THEN BENDS
 reference_population<- function(inputs,...)
     {
-    segs=inputs$segs
-    bends=inputs$bends
-    fish_density=inputs$fish_density
-    nyears=inputs$nyears
-    phi=inputs$phi
-    Linf=inputs$Linf
-    k = inputs$k
-    vbgf_vcv=inputs$vbgf_vcv
-    initial_length=inputs$initial_length
-    mv_beta0=inputs$mv_beta0
-    mv_beta1=inputs$mv_beta1
+    segs<-inputs$segs
+    bends<-inputs$bends
+    fish_density<-inputs$fish_density
+    nyears<-inputs$nyears
+    phi<-inputs$phi
+    Linf<-inputs$Linf
+    k <- inputs$k
+    vbgf_vcv<-inputs$vbgf_vcv
+    #initial_length<-inputs$initial_length  #UNUSED
+    mv_beta0<-inputs$mv_beta0
+    mv_beta1<-inputs$mv_beta1
     dis<- inputs$dis
-    direct<- dis$direct
+    #direct<- dis$direct #UNUSED
     
     # this function allocates fish to bends within a segment
     # probabilistically given bend weights and determines the survival
@@ -192,39 +192,54 @@ reference_population<- function(inputs,...)
     ## 2. GROWTH
     ## 3. MOVEMENT
     ###############################################################
+    bends2segs<-ddply(individual_meta, .(rpma, b_id), summarize,
+                      phi_indx=mean(phi_indx))
+    #ADD IN BENDS WHICH INITIALLY HAD 0 FISH
+    bends2segs<-merge(data.frame(rpma=tmp$rpma[which(tmp$N_ini==0)],
+                                 b_id=tmp$b_id[which(tmp$N_ini==0)],
+                                 phi_indx=tmp$phi_indx[which(tmp$N_ini==0)]),
+                      bends2segs,
+                      by=c("rpma","b_id","phi_indx"),all=TRUE)
+    
     for(m in 1:sum(Z[,1]))
         {# loop over individuals
         for(i in 2:nyears)
             {# loop over each year
+            #INDEX FOR LOCATION OF FISH IN PREVIOUS TIME STEP  
+            m_indx<-ifelse(Z[m,i-1]>0,bends2segs$phi_indx[which(
+              bends2segs$rpma==individual_meta$rpma[m] & 
+                bends2segs$b_id==BND[m,i-1])],1)# Using 1 when FALSE is 
+                                              # arbitrary and only a placeholder
+                                              # since fish is dead at this point
             ## 1. SURVIVAL
             Z[m,i]<- rbinom(1,
                 size=1,
-                prob=phi[individual_meta$phi_indx[m],i-1]*Z[m,i-1])
+                prob=phi[m_indx,i-1]*Z[m,i-1])
             ## 2. FABENS MODEL FOR GROWTH (VBGF)
             if(!(is.null(Linf)))
                 {# 0 growth if dead 
-                l[m,i]<-l[m,i-1] + (individual_meta$Linf-l[m,i-1])*(1-exp(-individual_meta$k[m]*1))*Z[m,i-1]
+                l[m,i]<-l[m,i-1] + (Linf[m_indx]-l[m,i-1])*(1-exp(-k[m_indx]*1))*Z[m,i-1] #WANT Z[m,i]?
                 }  
-            ## MOVEMENT MODEL
+            ## 3. MOVEMENT MODEL
             if(individual_meta$rpma[m]==2 & Z[m,i]>0)
                 {
                 y<- exp(mv_beta0[1]+ 
-                    mv_beta1[1]*inputs$dis$rpma2[BND[m,i-1],])
-                y[which(inputs$dis$rpma2[BND[m,i-1],]==0)]<-1
+                    mv_beta1[1]*dis$rpma2[BND[m,i-1],])
+                y[which(dis$rpma2[BND[m,i-1],]==0)]<-1
                 p<- y/sum(y)
-                BND[m,i]<- sample(x=1:nrow(inputs$dis$rpma2), 
+                BND[m,i]<- sample(x=1:nrow(dis$rpma2), 
                     size=1,
-                    prob=p/sum(p))
+                    prob=p)
                 } # end if 
-             if(individual_meta$rpma[m]==4& Z[m,i]>0)# needs to be alive
+             if(individual_meta$rpma[m]==4 & Z[m,i]>0)# needs to be alive
                 {
                 y<- exp(mv_beta0[2]+ 
-                    mv_beta1[2]*inputs$dis$rpma4[BND[m,i-1],])
-                y[which(inputs$dis$rpma4[BND[m,i-1],]==0)]<-1
+                    mv_beta1[2]*dis$rpma4[BND[m,i-1],])
+                y[which(dis$rpma4[BND[m,i-1],]==0)]<-1
                 p<- y/sum(y)
-                BND[m,i]<- sample(x=1:nrow(inputs$dis$rpma4), 
+                BND[m,i]<- sample(x=1:nrow(dis$rpma4), 
                     size=1,
-                    prob=p/sum(p))
+                    prob=p)
                 } # end if  
             }
         }
@@ -246,14 +261,13 @@ reference_population<- function(inputs,...)
         out<-merge(out,app,by=c("rpma","b_id"),all=TRUE)
         }
     out[is.na(out)]<-0  # NAs for no fish in bend
-    #names(out)[1:3]<-c("b_segment","bend_num", "N_ini")
     #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
     if(length(out[is.na(out)])!=0)
         {
         return(print("ERROR IN FISH COUNT"))
         } 
     ## ADD SEGMENTS TO BENDS 
-    out<-merge(out,tmp[,c("rpma","b_segment","b_id", "N_ini")],
+    out<-merge(out,tmp[,c("rpma","b_segment","b_id")],
         by=c("rpma", "b_id"), all=TRUE)
     if(nrow(out)!=nrow(tmp))
         {
