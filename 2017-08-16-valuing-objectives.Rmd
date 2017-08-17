@@ -56,7 +56,7 @@ population trend_. Specifically, the
 estimates from a monitoring program, as it relates to trend are evaluated 
 by calculating:  
 
-1. **Bias; How does an estimate compare to the true value.** Bias is 
+1. **Bias: How does an estimate compare to the true value.** Bias is 
 calculated as the true value minus the estimated value. We then divide 
 the bias by the true value to be able to combine estimates of varying 
 magnitude (i.e., survival, abundance), recall the previous post that 
@@ -68,7 +68,7 @@ is no real threshold for what is optimal for estimator precision
 regarding decision making. Generally speaking, the more precise an 
 estimate, the better. There are other alternatives to CV. However, CV is 
 commonly used in fisheries and therefore likely to be familiar. 
-3. **Performance; How likely is an estimator successful.** In some 
+3. **Performance: How likely is an estimator successful.** In some 
 cases, an estimator like the Robust Design may not have enough 
 information for the estimator to provide an actual estimate. This 
 measure is quantified as the proportion of stochastic simulations where 
@@ -104,7 +104,7 @@ To convert the 3 metrics to a common scale we can use methods like proportional 
 which normalized values to a specified minimum and maximum. For example, we can scale
 the bias to values varying from 0 to 1 as:
 
-$$U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)}$$,
+$$U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},$$
 
 where $|bias|$ is the absolute value of bias. We use absolute value here 
 because we are assuming negative and positive bias are equally bad 
@@ -141,7 +141,7 @@ plot(pbias_u~pbias,type='l',xlab="Scaled coefficient of variation",
 ```
 
 
-Lastly, let's look at conformance. Suppose performance values from simulating
+Lastly, let's look at performance. Suppose performance values from simulating
 multiple replicates of each monitoring design vary from 35% to 100%. The difference
 between the performance metric with bias and precision is that higher values are more
 desirable and therefore we need to rearrange the proportional scaling equation to reflect
@@ -169,7 +169,7 @@ performance have higher values (i.e., approaching 1) and estimates of
 the trend that is biased, imprecise with poor performance approach 0. 
 Values approach 1 because each of the scaled metrics is weighted. For 
 example, if each metric is valued equally, then the weights would be 
-1/3. Alternatively, if really precision estimates of trend were desired 
+1/3. Alternatively, if really precise estimates of trend were desired 
 the weight for scaled trend could be 0.5 and the remaining metrics 
 weighted at 0.25. Suppose this last weighting scheme is the case and the 
 output from 2 monitoring programs, a catch effort based and capture 
@@ -200,7 +200,7 @@ $$`r round(0.25*u_bias(5)+0.50*u_cv(115)+0.25*u_perf(90),3)`=
 0.50 \cdot `r round(u_cv(115),3)`+
 0.25\cdot`r round(u_perf(90),3)`.$$
 
-The combined utility values indicate that the capture recapture program has more
+The combined utility values indicate that the capture recapture program has slightly more
 value to achieve the objective of _quantifing population trend_. 
 
 
