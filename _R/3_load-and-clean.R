@@ -35,7 +35,14 @@ bends<-bends[-157,]
 
 bends<-bends[order(bends$lower_river_mile),]
 # MAKE A PAIRWISE DISTANCE MATRICES FOR EACH RPMA
-bends$center<- bends$bend_start_rkm+ bends$length.rkm/2
+## FIND LOWER RKM FOR EACH BEND
+bends$lower_rkm<-0
+for(i in 2:length(bends$lower_rkm))
+{
+  bends$lower_rkm[i]<-bends$lower_rkm[i-1]+bends$length.rkm[i-1]
+}
+## FIND BEND CENTER
+bends$center<- bends$lower_rkm + bends$length.rkm/2
 bends$b_id<- 1
 ## ADD WITHIN BEND ID, INCREASING ORDER MOVING UPSTREAM
 bends$b_id[which(bends$rpma==2)]<- 1:length(which(bends$rpma==2))
