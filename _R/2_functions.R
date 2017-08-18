@@ -15,9 +15,9 @@
 
 # EFFORT DISTRIBUTIONS
 ## FIT DISTRIBUTIONS TO EFFORT DATA 
-dfitfun<-function(dat,basin,gears)
+dfitfun<-function(x,dat,basin,gears)
   {
-    datBgear<-subset(dat, basin==basin & gear==gears)
+    datBgear<-subset(dat, basin==basin & gear==gears[x])
     dfit<-fitdistr(datBgear$effort, "gamma")
     #Define Shape and Rate Based on Distribution Fitting
     s<-as.numeric(unlist(dfit)[1])
@@ -63,11 +63,11 @@ reference_population<- function(inputs,...)
     Linf<-inputs$Linf
     k <- inputs$k
     vbgf_vcv<-inputs$vbgf_vcv
-    #initial_length<-inputs$initial_length  #UNUSED
+    initial_length<-inputs$initial_length
     mv_beta0<-inputs$mv_beta0
     mv_beta1<-inputs$mv_beta1
     dis<- inputs$dis
-    #direct<- dis$direct #UNUSED
+    #direct<- inputs$direct #UNUSED
     
     # this function allocates fish to bends within a segment
     # probabilistically given bend weights and determines the survival
@@ -262,23 +262,22 @@ reference_population<- function(inputs,...)
         out<-merge(out,app,by=c("rpma","b_id"),all=TRUE)
         }
     out[is.na(out)]<-0  # NAs for no fish in bend
-    #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+    #ERROR HANDLING FOR DOUBLE CHECKING
     if(length(out[is.na(out)])!=0)
         {
         return(print("ERROR IN FISH COUNT"))
         } 
-    ## ADD SEGMENTS TO BENDS 
-    out<-merge(out,tmp[,c("rpma","b_segment","b_id")],
+    ## ADD SEGMENTS AND BEND NUMBERS TO BENDS 
+    out<-merge(out,tmp[,c("rpma","b_segment","bend_num","b_id")],
         by=c("rpma", "b_id"), all=TRUE)
     if(nrow(out)!=nrow(tmp))
         {
         return(print("ERROR IN BEND ABUNDANCE MERGE"))
-        } #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+        } #ERROR HANDLING FOR DOUBLE CHECKING
     out[is.na(out)]<-0
-    out<-out[order(out$b_segment, out$b_id),]
-    tmp<- tmp[order(tmp$b_segment,tmp$b_id),]
+    out<-out[order(out$b_segment, out$bend_num),]
     if(is.null(Linf)){l<-0}
-    out<-list(out=as.matrix(out[,-c(1:2)]), 
+    out<-list(out=as.matrix(out[,-c(1,2,nyears+3,nyears+4)]), 
         bendMeta=tmp,
         individual_meta=individual_meta,
         Z=Z,
@@ -407,7 +406,8 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         samp_indx<-which(sampled[,yr]==1)
         ## CREATE TABLE OF SAMPLED BENDS
         tmp1<-tmp[samp_indx,]
-        tmp1<-tmp1[,names(tmp1) %in% c("b_segment","bend_num")]
+        #tmp1<-tmp1[,names(tmp1) %in% c("b_segment","bend_num")]
+        tmp1<-tmp1[,c("b_segment","bend_num")]
         ## ADD YEAR SAMPLED
         tmp1$year<-yr
           

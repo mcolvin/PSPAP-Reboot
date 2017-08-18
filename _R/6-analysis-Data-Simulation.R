@@ -7,34 +7,42 @@ source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
 ## GENERATE THE REFERENCE POPULATION
-segs<- c(1,2,3,4,7,8,9,10,13,14)
-nyears<- 10
+inputs<-list()
+# GENERAL INFO
+inputs$segs<- c(1,2,3,4,7,8,9,10,13,14)
+inputs$nyears<- 10
+inputs$bends<-bends  # BENDS DATAFRAME
+inputs$fish_density<-init_dens  # FISH DENSITY PER RKM
 
+# SURVIVAL
 beta0<- 2.9444
-phi<-matrix(plogis(beta0),length(segs),nyears-1)
-Linf<-rep(1200,length(segs)) #Matches original code
-k<-rep(0.02,length(segs))
-vbgf_vcv<- array(0,dim=c(2,2,length(segs)))
+inputs$phi<-matrix(plogis(beta0),length(inputs$segs),inputs$nyears-1)  
+    # MATRIX OF YEAR AND SEGEMENT SPECIFIC SURVIVALS
+
+# GROWTH
+inputs$Linf<-rep(1200,length(inputs$segs)) #Matches original code
+inputs$k<-rep(0.02,length(inputs$segs))
+inputs$vbgf_vcv<- array(0,dim=c(2,2,length(inputs$segs)))
 initial_length<-data.frame()
-for(ss in segs)
-    {
+for(ss in inputs$segs)
+  {
     x<-runif(1000,30,1200)
     qntls<-seq(0,1,0.025)
     vals<-data.frame(segment=ss,qntls=qntls,vals=quantile(x,qntls))
     initial_length<- rbind(initial_length,vals)
-    }
+  }
+inputs$initial_length<-initial_length
+
+# MOVEMENT
+inputs$mv_beta0<-c(0,0)
+inputs$mv_beta1<-c(1,1)
+inputs$dis<-sp$dis
+#inputs$direct<-sp$direct
 
 
-sim_pop<-reference_population(segs=segs,
-    bends=bends,# BENDS DATAFRAME
-    fish_density=init_dens, # FISH DENSITY PER RKM
-    phi=phi,
-    Linf=Linf,
-    k = k,
-    vbgf_vcv=vbgf_vcv,
-    initial_length=initial_length) # MATRIX OF YEAR TO YEAR AND SEGEMENT SPECIFIC SURVIVALS
+sim_pop<-reference_population(inputs)
 
-
+# SAVE POPULATION
 sim_pop_ref<-gsub(":", "_", Sys.time())
 saveRDS(sim_pop,
         file=paste0("_output/sim_pop_version_",sim_pop_ref,".rds"))
@@ -50,10 +58,12 @@ samp_type="f"
 
 ### RUN
 ptm<-proc.time()
-nreps=1
+nreps<-3
+i<-0
 
 replicate(nreps,
     {
+    assign("i",i+1,envir=.GlobalEnv)  
     ## MEAN CATCHABILITY
     #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
     #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
