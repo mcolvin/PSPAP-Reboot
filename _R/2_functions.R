@@ -218,7 +218,7 @@ reference_population<- function(inputs,...)
             ## 2. FABENS MODEL FOR GROWTH (VBGF)
             if(!(is.null(Linf)))
                 {# 0 growth if dead 
-                l[m,i]<-l[m,i-1] + (Linf[m_indx]-l[m,i-1])*(1-exp(-k[m_indx]*1))*Z[m,i-1] #WANT Z[m,i]?
+                l[m,i]<-(l[m,i-1] + (Linf[m_indx]-l[m,i-1])*(1-exp(-k[m_indx])))*Z[m,i]
                 }  
             ## 3. MOVEMENT MODEL
             if(individual_meta$rpma[m]==2 & Z[m,i]>0)
@@ -243,6 +243,7 @@ reference_population<- function(inputs,...)
                 } # end if  
             }
         }
+    l[l==0]<-NA
     BND[BND==0]<-NA
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
     out<-aggregate(Z[,1],
