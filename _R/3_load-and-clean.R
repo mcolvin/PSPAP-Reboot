@@ -33,7 +33,10 @@ bends<-bends[-157,]
 ## bend_start_rkm needs to be adjusted either upstream or downstream
 ## of segment 9 bend 65
 
+# FIX ID COLUMN DUE TO REMOVED BEND
 bends<-bends[order(bends$lower_river_mile),]
+bends$id<- 1:nrow(bends)
+
 # MAKE A PAIRWISE DISTANCE MATRICES FOR EACH RPMA
 ## FIND LOWER RKM FOR EACH BEND
 bends$lower_rkm<-0
@@ -43,8 +46,9 @@ for(i in 2:length(bends$lower_rkm))
 }
 ## FIND BEND CENTER
 bends$center<- bends$lower_rkm + bends$length.rkm/2
+
+## ADD WITHIN RPMA BEND ID, INCREASING ORDER MOVING UPSTREAM
 bends$b_id<- 1
-## ADD WITHIN BEND ID, INCREASING ORDER MOVING UPSTREAM
 bends$b_id[which(bends$rpma==2)]<- 1:length(which(bends$rpma==2))
 bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
 ## PAIRWISE DISTANCES AND DIRECTION FOR RPMA2
