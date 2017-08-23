@@ -1,12 +1,21 @@
-# SIMULATING DATA 
-## CURRENTLY FOR A SINGLE REFERENCE POPULATION
-## BUT CAN MODIFY TO MAKE REFERENCE POPULATION REPLICATES TOO
+# DATA SIMULATED IN THIS SCRIPT
+## 1. REFERENCE POPULATIONS:
+###  a. abundance
+###  b. survival
+###  c. length/growth
+###  d. movement
+## 2. CATCH DATA
+###  a. true segment level data
+###  b. sampling data
+###  c. capture histories
+## 3. FUNCTION & DATA SAVE TESTS
 
 source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-## GENERATE THE REFERENCE POPULATION
+
+## 1. GENERATE REFERENCE POPULATIONS
 inputs<-list()
 # GENERAL INFO
 inputs$segs<- c(1,2,3,4,7,8,9,10,13,14)
@@ -45,20 +54,33 @@ inputs$mv_beta1<-c(1,1)
 inputs$dis<-sp$dis
 #inputs$direct<-sp$direct
 
-
-sim_pop<-reference_population(inputs)
-
-# SAVE POPULATION
-sim_pop_ref<-gsub(":", "_", Sys.time())
-saveRDS(sim_pop,
-        file=paste0("_output/sim_pop_version_",sim_pop_ref,".rds"))
-
-
+# RUN IN PARALLEL
+ptm<-proc.time()
+nreps<-8
+library(parallel)
+## USE ALL CORES
+numCores<-detectCores()
+## INITIATE CLUSTER
+cl<-makeCluster(numCores)
+## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+clusterExport(cl, c("inputs", "nreps"))
+clusterEvalQ(cl, source("_R/2_functions.R"))
+clusterEvalQ(cl, library(MASS))
+clusterEvalQ(cl, library(plyr))
+parLapply(cl,1:nreps, function(i)
+{
+  sim_pop<-reference_population(inputs = inputs)
+  # SAVE POPULATION
+  saveRDS(sim_pop,
+          file=paste0("_output/sim_pop_",i,".rds"))
+})
+stopCluster(cl)
+proc.time()-ptm
         
         
 
-## MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
-### INPUTS
+## 2. GENERATE CATCH DATA (FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD)
+# INPUTS
 inputs<-list()
 inputs$samp_type<-"r"
 inputs$gears<-c("GN14", "GN18", "GN41", "GN81","MF", "OT16", "TLC1", "TLC2", "TN")
@@ -66,11 +88,9 @@ inputs$deployments<-rep(8,9)
 inputs$occasions<-4
 inputs$effort<-effort
 
-
-### RUN
+# RUN W/O PARALLEL (CATCH_DAT ALREADY MAKES USE OF PARALLEL)
 ptm<-proc.time()
 nreps<-3
-
 lapply(1:nreps, function(i)
     {
     ## MEAN CATCHABILITY
@@ -83,19 +103,20 @@ lapply(1:nreps, function(i)
     ## B0_SD  
     inputs$B0_sd<-runif(9,0,1.5)
     ## SAMPLING & CATCH DATA
-    dat<-catch_data(sim_pop=sim_pop,inputs)
+    dat<-catch_data(sim_pop=sim_pop,inputs=inputs)
     saveRDS(dat,
-        file=paste0("_output/catch_dat_", sim_pop_ref, "_samp_type_",inputs$samp_type,"_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
+        file=paste0("_output/catch_dat_", inputs$samp_type,"_",sim_pop_ref,"-",i,".rds"))  
     })
 proc.time()-ptm
 
-sim_dat<-readRDS(file=paste0("_output/catch_dat_2017-08-22 16_38_36_samp_type_r_catchability_random_rep_2017-08-22 16_50_52.rds"))
 
 
 
-###################################
-##  FUNCTION AND DATA SAVE TESTS ##
-###################################
+
+
+#####################################
+## 3. FUNCTION AND DATA SAVE TESTS ##
+#####################################
 
 segs<- c(1,2,3,4,7,8,9,10,13,14)
 nyears<- 10
