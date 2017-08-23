@@ -51,6 +51,7 @@ bends$center<- bends$lower_rkm + bends$length.rkm/2
 bends$b_id<- 1
 bends$b_id[which(bends$rpma==2)]<- 1:length(which(bends$rpma==2))
 bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
+
 ## PAIRWISE DISTANCES AND DIRECTION FOR RPMA2
 sp<- list()
 tmp<-subset(bends,rpma==2)
@@ -97,6 +98,9 @@ init_dens<-init_dens[rep(seq_len(nrow(init_dens)), times=c(4,3,3)),]
 init_dens$segments<-c(1:4, 7:9, 10, 13, 14)
 colnames(init_dens)[2]<-"b_segment"
 
+
+#READ IN PRE-PROCESSED INITIAL LENGTH DATA
+initial_length<- read.csv("./_dat/length_inputs.csv")
 
 
 

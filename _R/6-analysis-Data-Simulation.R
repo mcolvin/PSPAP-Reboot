@@ -20,17 +20,23 @@ inputs$phi<-matrix(plogis(beta0),length(inputs$segs),inputs$nyears-1)
     # MATRIX OF YEAR AND SEGEMENT SPECIFIC SURVIVALS
 
 # GROWTH
-inputs$Linf<-rep(1200,length(inputs$segs)) #Matches original code
-inputs$k<-rep(0.02,length(inputs$segs))
-inputs$vbgf_vcv<- array(0,dim=c(2,2,length(inputs$segs)))
-initial_length<-data.frame()
-for(ss in inputs$segs)
-  {
-    x<-runif(1000,30,1200)
-    qntls<-seq(0,1,0.025)
-    vals<-data.frame(segment=ss,qntls=qntls,vals=quantile(x,qntls))
-    initial_length<- rbind(initial_length,vals)
-  }
+## LOWER BASIN
+inputs$lower$ln_Linf_mu<-6.982160
+inputs$lower$ln_k_mu<- -2.382711
+inputs$lower$vcv<- matrix(c(0.0894,-0.1327,-0.1327,0.3179),nrow=2,ncol=2, byrow=TRUE)
+## UPPER BASIN
+inputs$upper$ln_Linf_mu<-7.136028770
+inputs$upper$ln_k_mu<- -3.003764445
+inputs$upper$vcv<- matrix(c(0.2768,-0.364,-0.364,0.6342),nrow=2,ncol=2, byrow=TRUE)
+## INITIAL LENGTH
+#initial_length<-data.frame()
+#for(ss in inputs$segs)
+#  {
+#    x<-runif(1000,30,1200)
+#    qntls<-seq(0,1,0.025)
+#    vals<-data.frame(segment=ss,qntls=qntls,vals=quantile(x,qntls))
+#    initial_length<- rbind(initial_length,vals)
+#  }
 inputs$initial_length<-initial_length
 
 # MOVEMENT
@@ -53,6 +59,7 @@ saveRDS(sim_pop,
 
 ## MAKE CATCH DATA REPLICATES FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD
 ### INPUTS
+inputs<-list()
 inputs$samp_type<-"r"
 inputs$gears<-c("GN14", "GN18", "GN41", "GN81","MF", "OT16", "TLC1", "TLC2", "TN")
 inputs$deployments<-rep(8,9)
@@ -62,7 +69,7 @@ inputs$effort<-effort
 
 ### RUN
 ptm<-proc.time()
-nreps<-3
+nreps<-1
 i<-0
 
 replicate(nreps,
@@ -80,11 +87,11 @@ replicate(nreps,
     ## SAMPLING & CATCH DATA
     dat<-catch_data(sim_pop=sim_pop,inputs)
     saveRDS(dat,
-        file=paste0("_output/catch_dat_", sim_pop_ref, "_samp_type_",samp_type,"_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
+        file=paste0("_output/catch_dat_", sim_pop_ref, "_samp_type_",inputs$samp_type,"_catchability_random_rep_",gsub(":", "_", Sys.time()),".rds"))  
     })
 proc.time()-ptm
 
-
+sim_dat<-readRDS(file=paste0("_output/catch_dat_2017-08-22 16_38_36_samp_type_r_catchability_random_rep_2017-08-22 16_50_52.rds"))
 
 
 
