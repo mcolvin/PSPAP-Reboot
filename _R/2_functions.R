@@ -60,9 +60,6 @@ reference_population<- function(inputs,...)
     fish_density<-inputs$fish_density
     nyears<-inputs$nyears
     phi<-inputs$phi
-    Linf<-inputs$Linf
-    k <- inputs$k
-    vbgf_vcv<-inputs$vbgf_vcv
     initial_length<-inputs$initial_length
     mv_beta0<-inputs$mv_beta0
     mv_beta1<-inputs$mv_beta1
@@ -80,28 +77,46 @@ reference_population<- function(inputs,...)
     ## bends: bend data from load-and-clean
     ## nyears: number of years to simulate the population for
     ## phi: a matrix of survival probabilities by segment (rows) and 
-    ##  year (cols)
-    ## Linf: a vector of mean Linf values for each segment
-    ## k: a vector of mean k values for each segment
-    ## vbgf_vcv: an array of variance and covariances for Linf and
-    ##  k. Each matrix is for a segment
+    ##    year (cols)
+    ## lower: a list of growth values for the lower basin:
+    ##    $ln_Linf_mu: mean Linf value for growth equation
+    ##    $ln_k_mu: mean k value for growth equation
+    ##    $vcv: variance and covariances for Linf and k
+    ## upper: a list of growth values for the upper basin:
+    ##    $ln_Linf_mu: mean Linf value for growth equation
+    ##    $ln_k_mu: mean k value for growth equation
+    ##    $vcv: variance and covariances for Linf and k
     ## initial_length: functions to simulate initial length given an
-    ##  empirical distribution of segment specific lengths
+    ##    empirical distribution of segment specific lengths
+    ## mv_beta0:
+    ## mv_beta1:
+    ## dis:
     
     # outputs
     ## out: a list of 3 objects:
     ##  $out: a matrix where each row is a bend and 
     ##    each column represents a year; number
     ##  $bendMeta: a dataframe including the information in "bends"
-    ##    with expected segment density (from init_dens), bend abundance,
-    ##    and segment index columns added
-    ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
-    ##    fish status (0=Dead, 1=Alive) where each row represents a fish
-    ##    living in bend i and each column represents a year  
+    ##    with expected initial segment density (from init_dens), 
+    ##    initial bend abundance, and segment index columns added
+    ##  $individual_meta: a dataframe including the information in "bendMeta"
+    ##    but expanded to include one row for each individual fish
+    ##  $Z: a matrix with entries for individual survival status (0=Dead,
+    ##    1=Alive) where each row represents a fish living and each column
+    ##    represents a year 
+    ##  $BND: a matrix where each row is an individual fish (matching up with
+    ##    the entries from "individual_meta"), each column is a year, and each
+    ##    entry is a number from 1 to 471 which indicates the bend the fish was
+    ##    living in during the given year; NAs are entered for dead fish
+    ##  $l: a matrix where each row is an individual fish (matching up with
+    ##    the entries from "individual_meta"), each column is a year, and each
+    ##    entry is the length of the fish during the given year; NAs are entered
+    ##    for dead fish
+    ##  $inputs: a list of the inputs used to create the reference population
 
     
     # assumptions
-    ## no movement
+    ## no movement within years
     ## no recruitment
     ## survival homogenous for individuals
     
@@ -124,10 +139,13 @@ reference_population<- function(inputs,...)
     #    matrices for each segment")}
     #if(length(Linf)!=10){return("Linf needs to be a vector of 10 values for each segment")}
     #if(length(k)!=10){return("k needs to be a vector of 10 values for each segment")}
+    if(dim(inputs$lower$vcv)[1]!=2|dim(inputs$lower$vcv)[2]!=2)
+      {return("The lower variance covariance \n
+        matrix needs to be 2x2 square")}
+    if(dim(inputs$upper$vcv)[1]!=2|dim(inputs$upper$vcv)[2]!=2)
+      {return("The upper variance covariance \n
+        matrix needs to be 2x2 square")}
     ## END: ERROR HANDLING   
-    
-    
-    
     
     
     # GET BEND INFORMATION
@@ -153,12 +171,28 @@ reference_population<- function(inputs,...)
         lapply(tmp,function(x) rep(x,tmp$N_ini)))
     ### ADD INDIVIDUAL FISH ID
     individual_meta$fish_id<-1:nrow(individual_meta)
-    ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
-    if(!(is.null(Linf)))
-        {
-        individual_meta$k<-k[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL 
-        individual_meta$Linf<-Linf[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL
-        }
+    ## ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
+    ln_Linf<-ifelse(segs %in% c(1:4), inputs$upper$ln_Linf_mu,
+                    inputs$lower$ln_Linf_mu) 
+      # a vector of mean Linf values, one entry for each segment
+    ln_k<-ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
+      # a vector of mean k values, one entry for each segment
+    ln_vbgf_vcv<-array(0,dim=c(2,2,length(segs)))
+    for(i in 1:length(segs))
+    {
+      if(segs[i] %in% c(1:4)) {ln_vbgf_vcv[,,i]<-inputs$upper$vcv}
+      if(segs[i] %in% c(7:10,13,14)) {ln_vbgf_vcv[,,i]<-inputs$lower$vcv}
+    } # an array of variance and covariances for Linf and k
+      # each matrix is for a segment
+    ln_vals<-lapply(1:nrow(individual_meta),function(m)
+      {
+        mvrnorm(n=1,c(ln_k[individual_meta$phi_indx[m]],
+                      ln_Linf[individual_meta$phi_indx[m]]),
+                ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
+      })
+    ln_vals<-do.call("rbind",ln_vals)
+    individual_meta$k<-exp(ln_vals[,1]) 
+    individual_meta$Linf<-exp(ln_vals[,2]) 
     ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
     Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
@@ -166,23 +200,19 @@ reference_population<- function(inputs,...)
     
     
     ### l: length for individuals
-    if(!(is.null(Linf)))
+    l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
+    for(i in unique(individual_meta$b_segment))
         {
-        l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
-        for(i in unique(individual_meta$b_segment))
-            {
-            ## MAKE A QUICK FUNCTION OF THE INVERSE CUMULATIVE DISTRIBUTION
-            l_ini<-approxfun(
+        ## MAKE A QUICK FUNCTION OF THE INVERSE CUMULATIVE DISTRIBUTION
+        l_ini<-approxfun(
                 initial_length[initial_length$segment==i,]$qntls,
                 initial_length[initial_length$segment==i,]$vals,
                 rule=2)
-            indx<- which(individual_meta$b_segment==i)
-            l[indx,1]<-l_ini(runif(length(indx)))
-            }
-        ## FIX ANY LENGTHS > THAN LINF
-        l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
+        indx<- which(individual_meta$b_segment==i)
+        l[indx,1]<-l_ini(runif(length(indx)))
         }
- 
+    ## FIX ANY LENGTHS > THAN LINF
+    l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
  
     BND<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
     BND[,1]<- individual_meta$id
@@ -222,10 +252,8 @@ reference_population<- function(inputs,...)
                 size=1,
                 prob=phi[seg_indx,i-1]*Z[m,i-1])
             ## 2. FABENS MODEL FOR GROWTH (VBGF)
-            if(!(is.null(Linf)))
-                {# 0 growth if dead 
-                l[m,i]<-(l[m,i-1] + (Linf[seg_indx]-l[m,i-1])*(1-exp(-k[seg_indx])))*Z[m,i]
-                }  
+            l[m,i]<-(l[m,i-1] + (individual_meta$Linf[m]-l[m,i-1])*(1-exp(-individual_meta$k[m])))*Z[m,i]
+                # 0 growth if dead 
             ## 3. MOVEMENT MODEL
             if(individual_meta$rpma[m]==2 & Z[m,i]>0)
                 {
@@ -389,6 +417,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     individual_meta<-sim_pop$individual_meta
     individual_meta<-individual_meta[order(individual_meta$fish_id),]
     BND<-sim_pop$BND
+    #inputs<-c(inputs,sim_pop$inputs)
     sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
 
     # LOG-ODDS CATCHABILITY BY GEAR
