@@ -56,14 +56,14 @@ inputs$dis<-sp$dis
 
 # RUN IN PARALLEL
 ptm<-proc.time()
-nreps<-8
+nreps<-200
 library(parallel)
 ## USE ALL CORES
 numCores<-detectCores()
 ## INITIATE CLUSTER
 cl<-makeCluster(numCores)
 ## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
-clusterExport(cl, c("inputs", "nreps"))
+clusterExport(cl, c("inputs", "nreps","pcname"))
 clusterEvalQ(cl, source("_R/2_functions.R"))
 clusterEvalQ(cl, library(MASS))
 clusterEvalQ(cl, library(plyr))
@@ -71,8 +71,11 @@ parLapply(cl,1:nreps, function(i)
 {
   sim_pop<-reference_population(inputs = inputs)
   # SAVE POPULATION
-  saveRDS(sim_pop,
-          file=paste0("_output/sim_pop_",i,".rds"))
+  if(pcname=="WF-FGNL842")
+    {saveRDS(sim_pop,file=paste0("E:/_output/1-populations/sim_pop_",i,".rds"))}
+  if(pcname!="WF-FGNL842")
+    {saveRDS(sim_pop,file=paste0("_output/sim_pop_",i,".rds"))}
+  
 })
 stopCluster(cl)
 proc.time()-ptm
@@ -104,8 +107,12 @@ lapply(1:nreps, function(i)
     inputs$B0_sd<-runif(9,0,1.5)
     ## SAMPLING & CATCH DATA
     dat<-catch_data(sim_pop=sim_pop,inputs=inputs)
-    saveRDS(dat,
-        file=paste0("_output/catch_dat_", inputs$samp_type,"_",sim_pop_ref,"-",i,".rds"))  
+    if(pcname=="WF-FGNL842")
+      {saveRDS(dat,
+        file=paste0("E:/_output/2-catch/catch_dat_", inputs$samp_type,"_",sim_pop_ref,"-",i,".rds"))}
+    if(pcname!="WF-FGNL842")
+      {saveRDS(dat,
+        file=paste0("_output/catch_dat_", inputs$samp_type,"_",sim_pop_ref,"-",i,".rds"))}
     })
 proc.time()-ptm
 
