@@ -133,18 +133,18 @@ reference_population<- function(inputs,...)
         a dataframe of densities by segment with number of \n
         rows equal to the number of segments."))}
     ### GROWTH
-    #if(dim(vbgf_vcv)[1]!=2|dim(vbgf_vcv)[2]!=2){return("The variance covariance \n
-    #    matrix needs to be 2x2 square")}
-    #if(dim(vbgf_vcv)[3]!=10){return("There needs to be 10 2x2 variance covariance \n
-    #    matrices for each segment")}
-    #if(length(Linf)!=10){return("Linf needs to be a vector of 10 values for each segment")}
-    #if(length(k)!=10){return("k needs to be a vector of 10 values for each segment")}
     if(dim(inputs$lower$vcv)[1]!=2|dim(inputs$lower$vcv)[2]!=2)
       {return("The lower variance covariance \n
         matrix needs to be 2x2 square")}
     if(dim(inputs$upper$vcv)[1]!=2|dim(inputs$upper$vcv)[2]!=2)
       {return("The upper variance covariance \n
         matrix needs to be 2x2 square")}
+    #if(dim(vbgf_vcv)[1]!=2|dim(vbgf_vcv)[2]!=2){return("The variance covariance \n
+    #    matrix needs to be 2x2 square")}
+    #if(dim(vbgf_vcv)[3]!=10){return("There needs to be 10 2x2 variance covariance \n
+    #    matrices for each segment")}
+    #if(length(Linf)!=10){return("Linf needs to be a vector of 10 values for each segment")}
+    #if(length(k)!=10){return("k needs to be a vector of 10 values for each segment")}
     ## END: ERROR HANDLING   
     
     
