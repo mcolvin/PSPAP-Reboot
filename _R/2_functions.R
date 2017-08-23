@@ -186,16 +186,10 @@ reference_population<- function(inputs,...)
       # each matrix is for a segment
     ln_vals<-lapply(1:nrow(individual_meta),function(m)
       {
-        mvrnorm(n=1,c(ln_k[individual_meta$phi_indx[m]],
-                      ln_Linf[individual_meta$phi_indx[m]]),
-                ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
+        mvrnorm(n=1,c(ln_Linf[individual_meta$phi_indx[m]],
+                      ln_k[individual_meta$phi_indx[m]]),
+              ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
       })
-    #ln_vals<-lapply(1:nrow(individual_meta),function(m)
-    #  {
-    #    mvrnorm(n=1,c(ln_Linf[individual_meta$phi_indx[m]],
-    #                  ln_k[individual_meta$phi_indx[m]]),
-    #          ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
-    #  })
     ln_vals<-do.call("rbind",ln_vals)
     individual_meta$k<-exp(ln_vals[,1]) 
     individual_meta$Linf<-exp(ln_vals[,2]) 
