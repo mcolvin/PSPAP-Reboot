@@ -69,12 +69,10 @@ inputs$effort<-effort
 
 ### RUN
 ptm<-proc.time()
-nreps<-1
-i<-0
+nreps<-3
 
-replicate(nreps,
+lapply(1:nreps, function(i)
     {
-    assign("i",i+1,envir=.GlobalEnv)  
     ## MEAN CATCHABILITY
     #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
     #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
