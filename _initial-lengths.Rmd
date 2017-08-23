@@ -1,0 +1,59 @@
+
+
+
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
+
+## QUERY LENGTH WEIGHT DATA FROM PSPAP DATABASE
+com99<- odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/PDSG-LW/dat/dat.accdb")
+eff<- sqlFetch(com99,"eff")
+fish<- sqlFetch(com99,"fish")
+stocked<- sqlFetch(com99,"stocked")
+genetics<- sqlFetch(com99,"genetics")
+
+names(eff)<-tolower(names(eff))
+names(fish)<-tolower(names(fish))
+names(stocked)<-tolower(names(stocked))
+names(genetics)<- tolower(names(genetics))
+
+genetics[genetics==""]<-NA
+genetics$pittag_1<- toupper(genetics$pittag_1)
+genetics$pittag_2<- toupper(genetics$pittag_2)
+stocked$pit_tag<- toupper(stocked$pit_tag)
+stocked$pit_tag_2<- toupper(stocked$pit_tag_2)
+fish$tagnumber<- toupper(fish$tagnumber)
+
+
+# CLEAN AND MANINIPULATE
+tmp<- merge(eff,fish,by.x="uniqueidentifier",by.y="uniqueid")
+
+# SUBSET OUT FISH THAT ARE OUTLIERS 
+tmp<-subset(tmp, !is.na(length))
+tmp<-subset(tmp, !is.na(weight))
+tmp<- subset(tmp, length>0)
+tmp<- subset(tmp, weight>0)
+tmp<-subset(tmp,species=="PDSG")
+tmp$llength<-log(tmp$length)
+tmp$lweight<-log(tmp$weight)
+fit<-lm(lweight~llength,tmp)
+tmp$pred<- exp(fitted(fit))
+tmp$residual<- resid(fit)
+tmp<- subset(tmp, residual> -1.5)
+tmp<- subset(tmp, residual< 1.5)
+tmp<- subset(tmp, length>=200)
+tmp<- subset(tmp, year>=2015)
+out<-data.frame()
+quantiles<- seq(0,100,by=1)/100
+for(seg in unique(tmp$segment_id))
+    {
+    q<-quantile(tmp[tmp$segment_id==seg,]$length, quantiles,
+        na.rm = TRUE)
+    app<- data.frame(segment=seg,quantile=quantiles,val=q)
+    out<- rbind(out,app)
+    }
+
+out<-out[order(out$segment, out$quantile),]
+write.csv(out,"_output/length_inputs.csv")
+
+
