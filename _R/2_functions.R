@@ -15,9 +15,9 @@
 
 # EFFORT DISTRIBUTIONS
 ## FIT DISTRIBUTIONS TO EFFORT DATA 
-dfitfun<-function(dat,basin,gears)
+dfitfun<-function(x,dat,basin,gears)
   {
-    datBgear<-subset(dat, basin==basin & gear==gears)
+    datBgear<-subset(dat, basin==basin & gear==gears[x])
     dfit<-fitdistr(datBgear$effort, "gamma")
     #Define Shape and Rate Based on Distribution Fitting
     s<-as.numeric(unlist(dfit)[1])
@@ -60,14 +60,11 @@ reference_population<- function(inputs,...)
     fish_density<-inputs$fish_density
     nyears<-inputs$nyears
     phi<-inputs$phi
-    Linf<-inputs$Linf
-    k <- inputs$k
-    vbgf_vcv<-inputs$vbgf_vcv
-    #initial_length<-inputs$initial_length  #UNUSED
+    initial_length<-inputs$initial_length
     mv_beta0<-inputs$mv_beta0
     mv_beta1<-inputs$mv_beta1
     dis<- inputs$dis
-    #direct<- dis$direct #UNUSED
+    #direct<- inputs$direct #UNUSED
     
     # this function allocates fish to bends within a segment
     # probabilistically given bend weights and determines the survival
@@ -80,28 +77,46 @@ reference_population<- function(inputs,...)
     ## bends: bend data from load-and-clean
     ## nyears: number of years to simulate the population for
     ## phi: a matrix of survival probabilities by segment (rows) and 
-    ##  year (cols)
-    ## Linf: a vector of mean Linf values for each segment
-    ## k: a vector of mean k values for each segment
-    ## vbgf_vcv: an array of variance and covariances for Linf and
-    ##  k. Each matrix is for a segment
+    ##    year (cols)
+    ## lower: a list of growth values for the lower basin:
+    ##    $ln_Linf_mu: mean ln(Linf) value for growth equation
+    ##    $ln_k_mu: mean ln(k) value for growth equation
+    ##    $vcv: variance and covariances for Linf and k on a natural log scale
+    ## upper: a list of growth values for the upper basin:
+    ##    $ln_Linf_mu: mean ln(Linf) value for growth equation
+    ##    $ln_k_mu: mean ln(k) value for growth equation
+    ##    $vcv: variance and covariances for Linf and k on a natural log scale
     ## initial_length: functions to simulate initial length given an
-    ##  empirical distribution of segment specific lengths
+    ##    empirical distribution of segment specific lengths
+    ## mv_beta0:
+    ## mv_beta1:
+    ## dis:
     
     # outputs
     ## out: a list of 3 objects:
     ##  $out: a matrix where each row is a bend and 
     ##    each column represents a year; number
     ##  $bendMeta: a dataframe including the information in "bends"
-    ##    with expected segment density (from init_dens), bend abundance,
-    ##    and segment index columns added
-    ##  $Z: a list of 472 matrices; each matrix, Z[[i]], gives individual 
-    ##    fish status (0=Dead, 1=Alive) where each row represents a fish
-    ##    living in bend i and each column represents a year  
+    ##    with expected initial segment density (from init_dens), 
+    ##    initial bend abundance, and segment index columns added
+    ##  $individual_meta: a dataframe including the information in "bendMeta"
+    ##    but expanded to include one row for each individual fish
+    ##  $Z: a matrix with entries for individual survival status (0=Dead,
+    ##    1=Alive) where each row represents a fish living and each column
+    ##    represents a year 
+    ##  $BND: a matrix where each row is an individual fish (matching up with
+    ##    the entries from "individual_meta"), each column is a year, and each
+    ##    entry is a number from 1 to 471 which indicates the bend the fish was
+    ##    living in during the given year; NAs are entered for dead fish
+    ##  $l: a matrix where each row is an individual fish (matching up with
+    ##    the entries from "individual_meta"), each column is a year, and each
+    ##    entry is the length of the fish during the given year; NAs are entered
+    ##    for dead fish
+    ##  $inputs: a list of the inputs used to create the reference population
 
     
     # assumptions
-    ## no movement
+    ## no movement within years
     ## no recruitment
     ## survival homogenous for individuals
     
@@ -118,6 +133,12 @@ reference_population<- function(inputs,...)
         a dataframe of densities by segment with number of \n
         rows equal to the number of segments."))}
     ### GROWTH
+    if(dim(inputs$lower$vcv)[1]!=2|dim(inputs$lower$vcv)[2]!=2)
+      {return("The lower variance covariance \n
+        matrix needs to be 2x2 square")}
+    if(dim(inputs$upper$vcv)[1]!=2|dim(inputs$upper$vcv)[2]!=2)
+      {return("The upper variance covariance \n
+        matrix needs to be 2x2 square")}
     #if(dim(vbgf_vcv)[1]!=2|dim(vbgf_vcv)[2]!=2){return("The variance covariance \n
     #    matrix needs to be 2x2 square")}
     #if(dim(vbgf_vcv)[3]!=10){return("There needs to be 10 2x2 variance covariance \n
@@ -127,12 +148,9 @@ reference_population<- function(inputs,...)
     ## END: ERROR HANDLING   
     
     
-    
-    
-    
     # GET BEND INFORMATION
     tmp<- subset(bends, b_segment %in% segs)
-    tmp<- tmp[order(tmp$b_segment, tmp$bend_num),]## CRITICAL
+    tmp<- tmp[order(tmp$id),]## CRITICAL
     bends_in_segs<-aggregate(bend_num~b_segment,tmp,length) 
     bends_in_segs$phi_indx<-1:nrow(bends_in_segs)
     
@@ -146,18 +164,41 @@ reference_population<- function(inputs,...)
     ## DENSITY FOR BEND SIZE
     tmp$N_ini<-rpois(nrow(tmp),
         lambda=tmp$expected_dens*tmp$length.rkm)
-    tmp<-tmp[order(tmp$b_segment,tmp$bend_num),]
-    tmp$id<-c(1:nrow(tmp))# link for later...
+    tmp<-tmp[order(tmp$id),] #CRITICAL
     ## ASSIGN A BEND TO EACH INVIDUAL 
     ### EXPAND BENDS FOR EACH FISH
     individual_meta<- as.data.frame(
         lapply(tmp,function(x) rep(x,tmp$N_ini)))
-    ### ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
-    if(!(is.null(Linf)))
-        {
-        individual_meta$k<-k[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL 
-        individual_meta$Linf<-Linf[individual_meta$phi_indx] # PULL VALUES FROM MV NORMAL
-        }
+    ### ADD INDIVIDUAL FISH ID
+    individual_meta$fish_id<-1:nrow(individual_meta)
+    ## ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
+    ln_Linf<-ifelse(segs %in% c(1:4), inputs$upper$ln_Linf_mu,
+                    inputs$lower$ln_Linf_mu) 
+      # a vector of mean Linf values, one entry for each segment
+    ln_k<-ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
+      # a vector of mean k values, one entry for each segment
+    ln_vbgf_vcv<-array(0,dim=c(2,2,length(segs)))
+    for(i in 1:length(segs))
+    {
+      if(segs[i] %in% c(1:4)) {ln_vbgf_vcv[,,i]<-inputs$upper$vcv}
+      if(segs[i] %in% c(7:10,13,14)) {ln_vbgf_vcv[,,i]<-inputs$lower$vcv}
+    } # an array of variance and covariances for Linf and k
+      # each matrix is for a segment
+    ln_vals<-lapply(1:nrow(individual_meta),function(m)
+      {
+        mvrnorm(n=1,c(ln_k[individual_meta$phi_indx[m]],
+                      ln_Linf[individual_meta$phi_indx[m]]),
+                ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
+      })
+    #ln_vals<-lapply(1:nrow(individual_meta),function(m)
+    #  {
+    #    mvrnorm(n=1,c(ln_Linf[individual_meta$phi_indx[m]],
+    #                  ln_k[individual_meta$phi_indx[m]]),
+    #          ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
+    #  })
+    ln_vals<-do.call("rbind",ln_vals)
+    individual_meta$k<-exp(ln_vals[,1]) 
+    individual_meta$Linf<-exp(ln_vals[,2]) 
     ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
     Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
@@ -165,26 +206,22 @@ reference_population<- function(inputs,...)
     
     
     ### l: length for individuals
-    if(!(is.null(Linf)))
+    l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
+    for(i in unique(individual_meta$b_segment))
         {
-        l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
-        for(i in unique(individual_meta$b_segment))
-            {
-            ## MAKE A QUICK FUNCTION OF THE INVERSE CUMULATIVE DISTRIBUTION
-            l_ini<-approxfun(
-                initial_length[initial_length$segment==i,]$qntls,
-                initial_length[initial_length$segment==i,]$vals,
+        ## MAKE A QUICK FUNCTION OF THE INVERSE CUMULATIVE DISTRIBUTION
+        l_ini<-approxfun(
+                initial_length[initial_length$segment==i,]$quantile,
+                initial_length[initial_length$segment==i,]$val,
                 rule=2)
-            indx<- which(individual_meta$b_segment==i)
-            l[indx,1]<-l_ini(runif(length(indx)))
-            }
-        ## FIX ANY LENGTHS > THAN LINF
-        l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
+        indx<- which(individual_meta$b_segment==i)
+        l[indx,1]<-l_ini(runif(length(indx)))
         }
- 
+    ## FIX ANY LENGTHS > THAN LINF
+    l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
  
     BND<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
-    BND[,1]<- individual_meta$b_id
+    BND[,1]<- individual_meta$id
        
     ###############################################################
     ## POPULATION DYNAMICS
@@ -192,52 +229,55 @@ reference_population<- function(inputs,...)
     ## 2. GROWTH
     ## 3. MOVEMENT
     ###############################################################
-    bends2segs<-ddply(individual_meta, .(rpma, b_id), summarize,
+    bends2segs<-ddply(individual_meta, .(id), summarize,
+                      rpma=mean(rpma),
+                      b_id=mean(b_id),
                       phi_indx=mean(phi_indx))
     #ADD IN BENDS WHICH INITIALLY HAD 0 FISH
-    bends2segs<-merge(data.frame(rpma=tmp$rpma[which(tmp$N_ini==0)],
+    bends2segs<-merge(data.frame(id=tmp$id[which(tmp$N_ini==0)],
+                                 rpma=tmp$rpma[which(tmp$N_ini==0)],
                                  b_id=tmp$b_id[which(tmp$N_ini==0)],
                                  phi_indx=tmp$phi_indx[which(tmp$N_ini==0)]),
                       bends2segs,
-                      by=c("rpma","b_id","phi_indx"),all=TRUE)
-    
+                      by=c("id","rpma","b_id","phi_indx"),all=TRUE)
     for(m in 1:sum(Z[,1]))
         {# loop over individuals
         for(i in 2:nyears)
             {# loop over each year
             #INDEX FOR LOCATION OF FISH IN PREVIOUS TIME STEP  
-            m_indx<-ifelse(Z[m,i-1]>0,bends2segs$phi_indx[which(
-              bends2segs$rpma==individual_meta$rpma[m] & 
-                bends2segs$b_id==BND[m,i-1])],1)# Using 1 when FALSE is 
-                                              # arbitrary and only a placeholder
-                                              # since fish is dead at this point
+            seg_indx<-ifelse(Z[m,i-1]>0,bends2segs$phi_indx[which(
+              bends2segs$id==BND[m,i-1])],1)# Using 1 when FALSE is 
+                                            # arbitrary and only a placeholder
+                                            # since fish is dead at this point
+            b_indx<-ifelse(Z[m,i-1]>0,bends2segs$b_id[which(
+              bends2segs$id==BND[m,i-1])],1)# Using 1 when FALSE is 
+                                            # arbitrary and only a placeholder
+                                            # since fish is dead at this point
             ## 1. SURVIVAL
             Z[m,i]<- rbinom(1,
                 size=1,
-                prob=phi[m_indx,i-1]*Z[m,i-1])
+                prob=phi[seg_indx,i-1]*Z[m,i-1])
             ## 2. FABENS MODEL FOR GROWTH (VBGF)
-            if(!(is.null(Linf)))
-                {# 0 growth if dead 
-                l[m,i]<-(l[m,i-1] + (Linf[m_indx]-l[m,i-1])*(1-exp(-k[m_indx])))*Z[m,i]
-                }  
+            l[m,i]<-(l[m,i-1] + (individual_meta$Linf[m]-l[m,i-1])*(1-exp(-individual_meta$k[m])))*Z[m,i]
+                # 0 growth if dead 
             ## 3. MOVEMENT MODEL
             if(individual_meta$rpma[m]==2 & Z[m,i]>0)
                 {
-                y<- exp(mv_beta0[1]+ 
-                    mv_beta1[1]*dis$rpma2[BND[m,i-1],])
-                y[which(dis$rpma2[BND[m,i-1],]==0)]<-1
+                y<- exp(mv_beta0[1]+
+                    mv_beta1[1]*dis$rpma2[b_indx,])
+                y[which(dis$rpma2[b_indx,]==0)]<-1
                 p<- y/sum(y)
-                BND[m,i]<- sample(x=1:nrow(dis$rpma2), 
+                BND[m,i]<- sample(x=subset(tmp,rpma==2)$id,
                     size=1,
                     prob=p)
                 } # end if 
              if(individual_meta$rpma[m]==4 & Z[m,i]>0)# needs to be alive
                 {
-                y<- exp(mv_beta0[2]+ 
-                    mv_beta1[2]*dis$rpma4[BND[m,i-1],])
-                y[which(dis$rpma4[BND[m,i-1],]==0)]<-1
+                y<- exp(mv_beta0[2]+
+                    mv_beta1[2]*dis$rpma4[b_indx,])
+                y[which(dis$rpma4[b_indx,]==0)]<-1
                 p<- y/sum(y)
-                BND[m,i]<- sample(x=1:nrow(dis$rpma4), 
+                BND[m,i]<- sample(x=subset(tmp,rpma==4)$id,
                     size=1,
                     prob=p)
                 } # end if  
@@ -247,38 +287,28 @@ reference_population<- function(inputs,...)
     BND[BND==0]<-NA
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
     out<-aggregate(Z[,1],
-                by=list(rpma=individual_meta$rpma,
-                    b_id=BND[,1]),
+                by=list(id=BND[,1]),
                    sum)
-    names(out)[3]<-"yr_1"
+    names(out)[2]<-"yr_1"
     for(i in 2:nyears)
         {
         app<-aggregate(Z[,i],
-            by=list(
-                rpma=individual_meta$rpma,
-                b_id=BND[,i]),
+            by=list(id=BND[,i]),
             sum)
-        names(app)[3]<-paste("yr",i,sep="_")
-        out<-merge(out,app,by=c("rpma","b_id"),all=TRUE)
+        names(app)[2]<-paste("yr",i,sep="_")
+        out<-merge(out,app, by="id", all=TRUE)
         }
     out[is.na(out)]<-0  # NAs for no fish in bend
-    #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
-    if(length(out[is.na(out)])!=0)
-        {
-        return(print("ERROR IN FISH COUNT"))
-        } 
-    ## ADD SEGMENTS TO BENDS 
-    out<-merge(out,tmp[,c("rpma","b_segment","b_id")],
-        by=c("rpma", "b_id"), all=TRUE)
+    ## IN CASE THERE WERE BENDS WITH NO FISH 
+    out<-merge(out,data.frame(id=tmp$id), by="id", all=TRUE)
     if(nrow(out)!=nrow(tmp))
         {
         return(print("ERROR IN BEND ABUNDANCE MERGE"))
-        } #ERROR HANDLING FOR DOUBLE CHECKING...SHOULD BE ABLE TO REMOVE
+        } #ERROR HANDLING FOR DOUBLE CHECKING
     out[is.na(out)]<-0
-    out<-out[order(out$b_segment, out$b_id),]
-    tmp<- tmp[order(tmp$b_segment,tmp$b_id),]
-    if(is.null(Linf)){l<-0}
-    out<-list(out=as.matrix(out[,-c(1:2)]), 
+    out<-out[order(out$id),]
+    #if(is.null(Linf)){l<-0}
+    out<-list(out=as.matrix(out[,-c(1)]), 
         bendMeta=tmp,
         individual_meta=individual_meta,
         Z=Z,
@@ -324,15 +354,11 @@ bend_samples<-function(sim_pop=NULL,
   
     # GET BEND INFORMATION
     tmp<-sim_pop$bendMeta
-    tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
-    bends_in_segs<-aggregate(bend_num~b_segment,tmp,length)
-    bends_in_segs$start<-1
-    for(i in 1:nrow(bends_in_segs)) 
-        {
-        bends_in_segs$stop[i]<-sum(bends_in_segs$bend_num[1:i])
-        if(i>1) bends_in_segs$start[i]<-bends_in_segs$stop[i-1]+1
-        }
-  
+    tmp<-tmp[order(tmp$id),] #CRITICAL
+    bends_in_segs<-ddply(tmp, .(b_segment), summarize, 
+                         bend_num=length(bend_num), 
+                         start=min(id), 
+                         stop=max(id))
     # SAMPLE NUMBERS IN TABLE A1 IN 
     #   PSPAP_Vol_1.8.FEB 2017_Welker_Drobish_Williams.pdf
     bends_in_segs$samp_num<-c(0, 12, 21, 12, 12, 15, 20, 10, 11, 14)
@@ -392,9 +418,12 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     
     # USE SIM_POP TO DEFINE VARIABLES
     tmp<-sim_pop$bendMeta
-    tmp<-tmp[order(tmp$b_segment, tmp$bend_num),] #CRITICAL
+    tmp<-tmp[order(tmp$id),] #CRITICAL
     b_abund<-sim_pop$out
     individual_meta<-sim_pop$individual_meta
+    individual_meta<-individual_meta[order(individual_meta$fish_id),]
+    BND<-sim_pop$BND
+    #inputs<-c(inputs,sim_pop$inputs)
     sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
 
     # LOG-ODDS CATCHABILITY BY GEAR
@@ -407,7 +436,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         samp_indx<-which(sampled[,yr]==1)
         ## CREATE TABLE OF SAMPLED BENDS
         tmp1<-tmp[samp_indx,]
-        tmp1<-tmp1[,names(tmp1) %in% c("b_segment","bend_num")]
+        tmp1<-tmp1[,c("b_segment","bend_num","id")]
         ## ADD YEAR SAMPLED
         tmp1$year<-yr
           
@@ -448,16 +477,6 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         out$q<-plogis(B0[k]+rnorm(n=d[k]*occasions*length(samp_indx),
             mean=0,sd=B0_sd[k]))
 
-        ### ADD INPUT MEAN CATCHABILITY AND LOG-ODDS SD
-        out$q_mean<-catchability[k]
-        out$B0_sd<-B0_sd[k]
-        #dat_q<-aggregate(q~b_segment,out,mean)
-        #names(dat_q)[2]<-"data_q_mean"
-        #out<-merge(out,dat_q)
-        #dat_q<-aggregate(q~b_segment,out,sd)
-        #names(dat_q)[2]<-"data_q_sd"
-        #out<-merge(out,dat_q)
-
         ### RETURN EXPANDED DATAFRAME (SINGLE GEAR)
         return(out)
         })
@@ -484,7 +503,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     ### INITIATE CLUSTER
     cl<-makeCluster(numCores)
     ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
-    clusterExport(cl, c("sampled", "individual_meta","sim_pop","tmp",
+    clusterExport(cl, c("sampled", "individual_meta","BND","tmp",
                         "gears","occasions","b_samp"),
                   envir=environment())
     ch<-parLapply(cl,1:ncol(sampled),function(yr)
@@ -493,44 +512,37 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         samp_indx<-which(sampled[,yr]==1)
         bend_ch<-lapply(samp_indx, function(x)
             {
-            indx<- which(individual_meta$id==x) ## HERE IS THE LINK TO FIX ONCE MOVEMENT IS DYNAMIC
-            Z_abund<-sim_pop$Z[indx,,drop=FALSE]  ## MAKE Z_ABUND
-            if(nrow(Z_abund)==0) {occ_ch<-NULL}
-            if(nrow(Z_abund)>0)
+            indx<- which(BND[,yr]==x)   ## LINK FOR MOVEMENT; ONLY GIVES LIVE FISH
+            if(length(indx)==0) {occ_ch<-NULL}
+            if(length(indx)>0)
                 {
                 ## CREATE TABLE OF SAMPLED BENDS
-                tmp1<-tmp[x,names(tmp) %in% c("b_segment","bend_num")]
+                tmp1<-tmp[x,c("b_segment","bend_num","id")]
                 ## ADD YEAR SAMPLED
                 tmp1$year<-yr
-                ## EXPAND FOR INDIVIDUALS AND GEARS
-                ### INDEX OF INDIVUALS IN EACH REACH
-                tmp1<-tmp1[rep(1, nrow(Z_abund)*length(gears)),]
-                tmp1$fish_id<-rep(1:nrow(Z_abund),length(gears))
-                tmp1$fish_id<-paste0(x,".",tmp1$fish_id)
-                tmp1$gear<-rep(gears, each=nrow(Z_abund))
-                ## PULL OUT INDIVIDUAL DATA SURVIVAL
-                ZZ<-matrix(rep(Z_abund[,yr],length(gears)),
-                    nrow=length(Z_abund[,yr]),ncol=length(gears))
+                ## EXPAND FOR INDIVIDUALS
+                tmp1<-merge(tmp1,data.frame(fish_id=indx),all=TRUE)
+                ## EXPAND FOR GEARS
+                tmp1<-tmp1[rep(seq_len(nrow(tmp1)), each=length(gears)),]
+                tmp1$gear<-rep(gears, times=length(indx))
                 ## FIND CH FOR EACH OCCASION, GEAR, AND INDIVIDUAL
                 occ_ch<-lapply(1:occasions,function(occ,out=tmp1)
                     { 
                     ### EXPAND DATAFRAME TO INCLUDE OCCASION
                     out$occasion<-occ
                     ### FIND OCCASION LEVEL CP FOR GIVEN BEND AND YEAR
-                    dat<-subset(b_samp, year==yr & b_segment==tmp$b_segment[x] 
-                                & bend_num==tmp$bend_num[x] & occasion==occ)
+                    dat<-subset(b_samp, year==yr & id==x & occasion==occ)
                     P<-aggregate(p~gear,dat,sum)
                     #P<-aggregate(pnot~gear,dat,prod)
                     #P$p<-1-P$pnot
                     ### CAP CPs AT 1
                     P$p<-ifelse(P$p>1,1,P$p)
-                    capture_probability<- ZZ%*%diag(P$p)
                     ### CH
-                    ch_reps<-matrix(rbinom(length(ZZ), size=1,
-                        prob=c(capture_probability)),
-                        nrow=nrow(ZZ),
-                        ncol=ncol(ZZ))
-                    out$ch<-c(ch_reps)
+                    ch_reps<-matrix(rbinom(length(indx)*length(gears), size=1,
+                        prob=rep(P$p,each=length(indx))),
+                        nrow=length(indx),
+                        ncol=length(gears))
+                    out$ch<-c(t(ch_reps))
                     out<-subset(out,ch==1)
                     return(out)
                     })
@@ -543,8 +555,6 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     ### CLOSE CLUSTERS
     stopCluster(cl)
     ch<-do.call(rbind,ch)
-
-
     
     # PROCESS THE DATA
     tmp1<-aggregate(length.rkm~b_segment, tmp,sum)
