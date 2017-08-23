@@ -79,13 +79,13 @@ reference_population<- function(inputs,...)
     ## phi: a matrix of survival probabilities by segment (rows) and 
     ##    year (cols)
     ## lower: a list of growth values for the lower basin:
-    ##    $ln_Linf_mu: mean Linf value for growth equation
-    ##    $ln_k_mu: mean k value for growth equation
-    ##    $vcv: variance and covariances for Linf and k
+    ##    $ln_Linf_mu: mean ln(Linf) value for growth equation
+    ##    $ln_k_mu: mean ln(k) value for growth equation
+    ##    $vcv: variance and covariances for Linf and k on a natural log scale
     ## upper: a list of growth values for the upper basin:
-    ##    $ln_Linf_mu: mean Linf value for growth equation
-    ##    $ln_k_mu: mean k value for growth equation
-    ##    $vcv: variance and covariances for Linf and k
+    ##    $ln_Linf_mu: mean ln(Linf) value for growth equation
+    ##    $ln_k_mu: mean ln(k) value for growth equation
+    ##    $vcv: variance and covariances for Linf and k on a natural log scale
     ## initial_length: functions to simulate initial length given an
     ##    empirical distribution of segment specific lengths
     ## mv_beta0:
@@ -205,8 +205,8 @@ reference_population<- function(inputs,...)
         {
         ## MAKE A QUICK FUNCTION OF THE INVERSE CUMULATIVE DISTRIBUTION
         l_ini<-approxfun(
-                initial_length[initial_length$segment==i,]$qntls,
-                initial_length[initial_length$segment==i,]$vals,
+                initial_length[initial_length$segment==i,]$quantile,
+                initial_length[initial_length$segment==i,]$val,
                 rule=2)
         indx<- which(individual_meta$b_segment==i)
         l[indx,1]<-l_ini(runif(length(indx)))
@@ -301,7 +301,7 @@ reference_population<- function(inputs,...)
         } #ERROR HANDLING FOR DOUBLE CHECKING
     out[is.na(out)]<-0
     out<-out[order(out$id),]
-    if(is.null(Linf)){l<-0}
+    #if(is.null(Linf)){l<-0}
     out<-list(out=as.matrix(out[,-c(1)]), 
         bendMeta=tmp,
         individual_meta=individual_meta,
