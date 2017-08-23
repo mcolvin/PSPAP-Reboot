@@ -263,21 +263,21 @@ reference_population<- function(inputs,...)
             ## 3. MOVEMENT MODEL
             if(individual_meta$rpma[m]==2 & Z[m,i]>0)
                 {
-                y<- exp(mv_beta0[1]+ 
+                y<- exp(mv_beta0[1]+
                     mv_beta1[1]*dis$rpma2[b_indx,])
                 y[which(dis$rpma2[b_indx,]==0)]<-1
                 p<- y/sum(y)
-                BND[m,i]<- sample(x=subset(tmp,rpma==2)$id, 
+                BND[m,i]<- sample(x=subset(tmp,rpma==2)$id,
                     size=1,
                     prob=p)
                 } # end if 
              if(individual_meta$rpma[m]==4 & Z[m,i]>0)# needs to be alive
                 {
-                y<- exp(mv_beta0[2]+ 
+                y<- exp(mv_beta0[2]+
                     mv_beta1[2]*dis$rpma4[b_indx,])
                 y[which(dis$rpma4[b_indx,]==0)]<-1
                 p<- y/sum(y)
-                BND[m,i]<- sample(x=subset(tmp,rpma==4)$id, 
+                BND[m,i]<- sample(x=subset(tmp,rpma==4)$id,
                     size=1,
                     prob=p)
                 } # end if  
