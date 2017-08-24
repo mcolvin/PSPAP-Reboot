@@ -577,6 +577,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     tmp1<-tmp1[,c(1,3:6)]
     b_samp<-b_samp[,which(names(b_samp)!="p")]
     ch<-ch[,which(names(ch)!="ch")]
+    inputs$bends<-sim_pop$inputs$bends
     return(list(true_vals=tmp1, 
         samp_dat=b_samp, 
         catch_dat=ch,
@@ -588,9 +589,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
 
 ## 6. GETTING CPUE TREND
 ### CALCULATING TREND FOR OCCASION 1 DATA ONLY
-get.trnd<-function(sim_dat=NULL,
-                   gears=c("GN14", "GN18", "GN41", "GN81", "MF", 
-                           "OT16", "TLC1", "TLC2", "TN")) 
+get.trnd<-function(sim_dat=NULL,...) 
 {
   # GET CATCH AND EFFORT DATA
   ## CATCH
@@ -609,6 +608,7 @@ get.trnd<-function(sim_dat=NULL,
   
   # FIT LINEAR MODEL FOR TREND FOR EACH GEAR
   tmp$b_segment<- as.factor(tmp$b_segment)
+  gears<-sim_dat$inputs$gears
   out<-lapply(gears,function(g)
     {
     fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)
@@ -707,14 +707,10 @@ get.abund<-function(sim_dat=NULL,
 
 
 
-## 7. GETTING M0 ESTIMATES
-get.M0t.ests<-function(sim_dat=NULL,
-                      bends=NULL)
+## 7. GETTING M0 & Mt ESTIMATES
+M0t.est<-function(sim_dat=NULL,
+                  bends=NULL)
 {
-  ## PULL TRUE VALUES
-  true<-sim_dat$true_vals[,1:3]
-  colnames(true)[c(1,3)]<-c("segment", "N")
-  
   ## MASSAGE DATA INTO SHAPE FOR 
   ## CAPTURE HISTORIES
   catch<-sim_dat$catch_dat
@@ -733,11 +729,11 @@ get.M0t.ests<-function(sim_dat=NULL,
   
   ## PULL SAMPLED BENDS
   samps<-subset(sim_dat$samp_dat, deployment==1 & occasion==1)
-  samps<-subset(samps,f!=0) # remove unused gears
+  samps<-subset(samps,f!=0) # remove unused gears...this should only be GN18 and GN81 for the upper basin
   ### ADD BEND RKM
   samps<- merge(samps,bends[,c(2,3,9)], by=c("b_segment","bend_num"))
   
-  ## RUN M0 ESTIMATOR IN PARALLEL
+  ## RUN M0/Mt ESTIMATOR IN PARALLEL
   library(parallel)
   ### USE ALL CORES
   no_cores<-detectCores()
@@ -746,7 +742,7 @@ get.M0t.ests<-function(sim_dat=NULL,
   ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
   clusterExport(cl, c("ch", "samps", "occ"), envir=environment())
   clusterEvalQ(cl, library(Rcapture))
-  ### M0 ESTIMATOR
+  ### M0/Mt ESTIMATOR
   bend_Np<- parLapply(cl,1:nrow(samps),function(x)
   {
     ## SUBSET BEND AND YEAR CAPTURE DATA
@@ -758,35 +754,35 @@ get.M0t.ests<-function(sim_dat=NULL,
     ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
     if(nrow(bend_dat)>0){
       tmp<- closedp.t(bend_dat[,occ])## estimate abundance
-      # warn_codes_M0<-ifelse(tmp$results[1,7]==0,0,
-      #                    ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
-      #                           ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
-      #                                  ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
-      #                                         ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
-      #                                                tmp$glm.warn$M0)))))
-      # warn_codes_Mt<-ifelse(tmp$results[2,7]==0,0,
-      #                       ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
-      #                              ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
-      #                                     ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
-      #                                            ifelse(grepl("0 occurred",tmp$glm.warn$Mt, fixed=TRUE),"z",
-      #                                                   tmp$glm.warn$Mt)))))
+      warn_codes_M0<-ifelse(tmp$results[1,7]==0,0,
+                         ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
+                                ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
+                                       ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
+                                              ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
+                                                     tmp$glm.warn$M0)))))
+      warn_codes_Mt<-ifelse(tmp$results[2,7]==0,0,
+                            ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
+                                   ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
+                                          ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
+                                                 ifelse(grepl("0 occurred",tmp$glm.warn$Mt, fixed=TRUE),"z",
+                                                        tmp$glm.warn$Mt)))))
       tmp<- data.frame(## collect up relevant bits for M0 and Mt
         year=samps$year[x],
         segment=samps$b_segment[x],
-        bendId=samps$bend_num[x],
+        bend_num=samps$bend_num[x],
         gear=samps$gear[x],
         rkm=samps$length.rkm[x],
-        #samp_size=nrow(bend_dat),
+        samp_size=nrow(bend_dat),
         Nhat_M0=tmp$parameters$M0[1],
         SE_Nhat_M0=tmp$results[1,2],
         p_M0=tmp$parameters$M0[2],
         fit_M0=tmp$results[1,7],
-        #warn_M0=warn_codes_M0,
+        warn_M0=warn_codes_M0,
         Nhat_Mt=tmp$parameters$Mt[1],
         SE_Nhat_Mt=tmp$results[2,2],
         p_Mt=tmp$parameters$Mt[2],
-        fit_Mt=tmp$results[2,7]#,
-        #warn_Mt=warn_codes_Mt
+        fit_Mt=tmp$results[2,7],
+        warn_Mt=warn_codes_Mt
       )}
     ## FILL FOR NO DATA
     if(nrow(bend_dat)==0){# no data
@@ -796,17 +792,17 @@ get.M0t.ests<-function(sim_dat=NULL,
         bendId=samps$bend_num[x],
         gear=samps$gear[x],
         rkm=samps$length.rkm[x],
-        #samp_size=0,
+        samp_size=0,
         Nhat_M0=-99,
         SE_Nhat_M0=-99,
         p_M0=-99,
         fit_M0=-99,
-        #warn_M0=-99,
+        warn_M0=-99,
         Nhat_Mt=-99,
         SE_Nhat_Mt=-99,
         p_Mt=-99,
-        fit_Mt=-99#,
-        #warn_Mt=-99
+        fit_Mt=-99,
+        warn_Mt=-99
         )}
     return(tmp)    
   }) # ABOUT 5 MINUTES ON CRUNCH
@@ -814,6 +810,10 @@ get.M0t.ests<-function(sim_dat=NULL,
   stopCluster(cl)
   ### CREATE DATA FRAME
   bend_Np<- do.call("rbind", bend_Np)
+  
+  
+  
+##NEW FUNCTION HERE  
   bend_Np[bend_Np$fit_M0!=0,]$Nhat_M0<-NA ## make non converged and no fish models NA
   bend_Np[bend_Np$fit_M0!=0,]$SE_Nhat_M0<-NA ## make non converged and no fish models NA
   bend_Np[bend_Np$fit_Mt!=0,]$Nhat_Mt<-NA ## make non converged and no fish models NA
@@ -860,6 +860,9 @@ get.M0t.ests<-function(sim_dat=NULL,
   ests$Nhat_WM_Mt<- ifelse(ests$n_st_Mt>0,ests$length.rkm*ests$dens_sst_Mt,NA)
   
   ## ABUNDANCE BIAS AND  PRECISION
+  ### PULL TRUE VALUES
+  true<-sim_dat$true_vals[,1:3]
+  colnames(true)[c(1,3)]<-c("segment", "N")
   ### MERGE ESTIMATES WITH TRUE VALUES
   ests<-merge(ests,true,by=c("year","segment"))
   ests<- ests[order(ests$segment,ests$year),]

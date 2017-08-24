@@ -109,10 +109,10 @@ lapply(1:nreps, function(i)
     dat<-catch_data(sim_pop=sim_pop,inputs=inputs)
     if(pcname=="WF-FGNL842")
       {saveRDS(dat,
-        file=paste0("E:/_output/2-catch/catch_dat_", inputs$samp_type,"_",sim_pop_ref,"-",i,".rds"))}
+        file=paste0("E:/_output/2-catch/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
     if(pcname!="WF-FGNL842")
       {saveRDS(dat,
-        file=paste0("_output/catch_dat_", inputs$samp_type,"_",sim_pop_ref,"-",i,".rds"))}
+        file=paste0("_output/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
     })
 proc.time()-ptm
 
