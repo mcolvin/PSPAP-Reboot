@@ -733,12 +733,13 @@ M0t.est<-function(sim_dat=NULL,...)
   bends<-sim_dat$inputs$bends
   samps<- merge(samps,bends[,c("b_segment","bend_num","length.rkm")], by=c("b_segment","bend_num"))
   
+  ptm<-proc.time()
   ## RUN M0/Mt ESTIMATOR IN PARALLEL
   library(parallel)
   ### USE ALL CORES
-  no_cores<-detectCores()
+  num_cores<-detectCores()
   ### INITIATE CLUSTER
-  cl<-makeCluster(no_cores)
+  cl<-makeCluster(num_cores)
   ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
   clusterExport(cl, c("ch", "samps", "occ"), envir=environment())
   clusterEvalQ(cl, library(Rcapture))
@@ -754,13 +755,13 @@ M0t.est<-function(sim_dat=NULL,...)
     ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
     if(nrow(bend_dat)>0){
       tmp<- closedp.t(bend_dat[,occ])## estimate abundance
-      warn_codes_M0<-ifelse(tmp$results[1,7]==0,0,
+      warn_codes_M0<-ifelse(tmp$results[1,7]==0,"0",
                          ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
                                 ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
                                        ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
                                               ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
                                                      tmp$glm.warn$M0)))))
-      warn_codes_Mt<-ifelse(tmp$results[2,7]==0,0,
+      warn_codes_Mt<-ifelse(tmp$results[2,7]==0,"0",
                             ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
                                    ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
                                           ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
@@ -789,7 +790,7 @@ M0t.est<-function(sim_dat=NULL,...)
       tmp<- data.frame(
         year=samps$year[x],
         segment=samps$b_segment[x],
-        bendId=samps$bend_num[x],
+        bend_num=samps$bend_num[x],
         gear=samps$gear[x],
         rkm=samps$length.rkm[x],
         samp_size=0,
@@ -797,17 +798,18 @@ M0t.est<-function(sim_dat=NULL,...)
         SE_Nhat_M0=-99,
         p_M0=-99,
         fit_M0=-99,
-        warn_M0=-99,
+        warn_M0="-99",
         Nhat_Mt=-99,
         SE_Nhat_Mt=-99,
         p_Mt=-99,
         fit_Mt=-99,
-        warn_Mt=-99
+        warn_Mt="-99"
         )}
     return(tmp)    
   }) # ABOUT 5 MINUTES ON CRUNCH
   ### CLOSE CLUSTERS
   stopCluster(cl)
+  proc.time()-ptm
   ### CREATE DATA FRAME
   bend_Np<- do.call("rbind", bend_Np)
   return(bend_Np)
