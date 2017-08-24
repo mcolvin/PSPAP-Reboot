@@ -107,8 +107,8 @@ lapply(1:200, function(i)
       ## MEAN CATCHABILITY
       #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
       #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
-      q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.00005, 0.001),
-                runif(2,0.000000, 0.00005),runif(1,0.00005, 0.001))
+      q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.0001, 0.004),
+                runif(2,0.000000, 0.00005),runif(1,0.00009, 0.004))
       # Accounts for differences in "OT16" and "TN" efforts.
       inputs$catchability<-q_mean
       ## B0_SD  
