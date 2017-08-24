@@ -583,11 +583,159 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         catch_dat=ch,
         inputs=inputs))
     }
+ 
+
+
+
+## 6. GETTING CPUE ESTIMATES
+### USES OCCASION 1 DATA ONLY
+CPUE.ests<-function(sim_dat=NULL,...)
+{
+  ## GET CATCH FOR EACH SAMPLED BEND
+  tmp<-aggregate(fish_id~b_segment+bend_num+year+gear,
+                 sim_dat$catch_dat, length, subset=occasion==1)
+  names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
+  ### ADD SAMPLED BENDS WITH ZERO CATCH
+  sampled<-ddply(subset(sim_dat$samp_dat, occasion==1),.(b_segment,bend_num,year,gear),
+                 summarize,
+                 effort=sum(f))
+  tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year","gear"),all.y=TRUE)
+  tmp[which(is.na(tmp$catch)),]$catch<-0
+  ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
+  tmp<-subset(tmp,effort!=0)
+  ## ADD ESTIMATE AND RENAME COLUMNS
+  colnames(tmp)[which(colnames(tmp)=="b_segment")]<-"segment"
+  tmp$estimator<-"CPUE"
+  return(tmp)
+}
 
 
 
 
-## 6. GETTING CPUE TREND
+## 7. GETTING M0 & Mt ESTIMATES
+M0t.est<-function(sim_dat=NULL,...)
+{
+  ## MASSAGE DATA INTO SHAPE 
+  ## CAPTURE HISTORIES
+  catch<-sim_dat$catch_dat
+  catch$ch<-1 #all fish on list were captured
+  gears<-unique(catch$gear) #identify gears that caught fish
+  occ<-as.character(unique(catch$occasion))
+  ch<-lapply(gears,function(g)
+  {
+    pp<- dcast(catch, 
+               b_segment+bend_num+year+fish_id~occasion,
+               value.var="ch", sum, subset=.(gear==g))
+    pp$gear<-g
+    return(pp)
+  })
+  ch<-do.call(rbind,ch)
+  
+  ## PULL SAMPLED BENDS
+  samps<-ddply(subset(sim_dat$samp_dat, occasion==1),.(b_segment,bend_num,year,gear),
+                 summarize,
+                 effort=sum(f))
+  ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
+  samps<-subset(samps,effort!=0)
+  # ### ADD BEND RKM
+  # bends<-sim_dat$inputs$bends
+  # samps<- merge(samps,bends[,c("b_segment","bend_num","length.rkm")], by=c("b_segment","bend_num"))
+  
+  ## RUN M0/Mt ESTIMATOR IN PARALLEL
+  library(parallel)
+  ### USE ALL CORES
+  num_cores<-detectCores()
+  ### INITIATE CLUSTER
+  cl<-makeCluster(num_cores)
+  ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+  clusterExport(cl, c("ch", "samps", "occ"), envir=environment())
+  clusterEvalQ(cl, library(Rcapture))
+  ### M0/Mt ESTIMATOR
+  bend_Np<- parLapply(cl,1:nrow(samps),function(x)
+  {
+    ## SUBSET BEND AND YEAR CAPTURE DATA
+    bend_dat<-subset(ch, 
+                     b_segment==samps$b_segment[x] & 
+                       bend_num==samps$bend_num[x] & 
+                       year==samps$year[x] &
+                       gear==samps$gear[x])
+    ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
+    if(nrow(bend_dat)>0){
+      tmp<- closedp.t(bend_dat[,occ])## estimate abundance
+      warn_codes_M0<-ifelse(tmp$results[1,7]==0,"0",
+                         ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
+                                ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
+                                       ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
+                                              ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
+                                                     tmp$glm.warn$M0)))))
+      warn_codes_Mt<-ifelse(tmp$results[2,7]==0,"0",
+                            ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
+                                   ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
+                                          ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
+                                                 ifelse(grepl("0 occurred",tmp$glm.warn$Mt, fixed=TRUE),"z",
+                                                        tmp$glm.warn$Mt)))))
+      tmp<- data.frame(## collect up relevant bits for M0 and Mt
+        year=samps$year[x],
+        segment=samps$b_segment[x],
+        bend_num=samps$bend_num[x],
+        gear=samps$gear[x],
+        effort=samps$effort[x],
+        #rkm=samps$length.rkm[x],
+        samp_size=nrow(bend_dat),
+        Nhat_M0=tmp$parameters$M0[1],
+        SE_Nhat_M0=tmp$results[1,2],
+        p_M0=tmp$parameters$M0[2],
+        fit_M0=tmp$results[1,7],
+        warn_M0=warn_codes_M0,
+        Nhat_Mt=tmp$parameters$Mt[1],
+        SE_Nhat_Mt=tmp$results[2,2],
+        p_Mt=tmp$parameters$Mt[2],
+        fit_Mt=tmp$results[2,7],
+        warn_Mt=warn_codes_Mt
+      )}
+    ## FILL FOR NO DATA
+    if(nrow(bend_dat)==0){# no data
+      tmp<- data.frame(
+        year=samps$year[x],
+        segment=samps$b_segment[x],
+        bend_num=samps$bend_num[x],
+        gear=samps$gear[x],
+        effort=samps$effort[x],
+        #rkm=samps$length.rkm[x],
+        samp_size=0,
+        Nhat_M0=-99,
+        SE_Nhat_M0=-99,
+        p_M0=-99,
+        fit_M0=-99,
+        warn_M0="-99",
+        Nhat_Mt=-99,
+        SE_Nhat_Mt=-99,
+        p_Mt=-99,
+        fit_Mt=-99,
+        warn_Mt="-99"
+      )}
+    return(tmp)    
+  }) # ABOUT 5 MINUTES ON CRUNCH
+  ### CLOSE CLUSTERS
+  stopCluster(cl)
+  ### CREATE DATA FRAME
+  bend_Np<- do.call("rbind", bend_Np)
+  ## REORGANIZE DATA FRAME
+  tmp0<-bend_Np[,c(1:11)]
+  tmp0$estimator<-"M0"
+  colnames(tmp0)<-gsub("_M0", "", colnames(tmp0))
+  tmpt<-bend_Np[,c(1:6,12:16)]
+  tmpt$estimator<-"Mt"
+  colnames(tmpt)<-gsub("_Mt", "", colnames(tmpt))
+  bend_Np<-rbind(tmp0,tmpt)
+  return(bend_Np)
+}
+
+
+  
+
+
+## 8. GETTING CPUE TREND
 ### CALCULATING TREND FOR OCCASION 1 DATA ONLY
 get.trnd<-function(sim_dat=NULL,...) 
 {
@@ -598,7 +746,7 @@ get.trnd<-function(sim_dat=NULL,...)
   names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
   ## EFFORT
   tmp2<-aggregate(f~b_segment+year+gear,
-                 sim_dat$samp_dat, sum, subset=occasion==1)
+                  sim_dat$samp_dat, sum, subset=occasion==1)
   tmp<-merge(tmp2, tmp, all.x=TRUE)
   # CALCULATE SEGMENT-LEVEL CPUE AND LN(CPUE)
   ## USE CATCH +1 TO AVOID CPUE=0
@@ -610,22 +758,22 @@ get.trnd<-function(sim_dat=NULL,...)
   tmp$b_segment<- as.factor(tmp$b_segment)
   gears<-sim_dat$inputs$gears
   out<-lapply(gears,function(g)
-    {
+  {
     fit<- lm(lncpue1~b_segment+year, tmp, subset=gear==g)
-      tmp2<- data.frame( 
-        # THE GOODIES
-        ## GEAR
-        gear=g,
-        ## TREND ESTIMATE
-        trnd=coef(fit)['year'],
-        ## STANDARD ERROR FOR TREND ESTIMATE
-        se=summary(fit)$coefficients['year',2],
-        ## PVALUE FOR TREND ESTIMATE
-        pval=summary(fit)$coefficients['year',4]
-        )
-      return(tmp2)
-      }
+    tmp2<- data.frame( 
+      # THE GOODIES
+      ## GEAR
+      gear=g,
+      ## TREND ESTIMATE
+      trnd=coef(fit)['year'],
+      ## STANDARD ERROR FOR TREND ESTIMATE
+      se=summary(fit)$coefficients['year',2],
+      ## PVALUE FOR TREND ESTIMATE
+      pval=summary(fit)$coefficients['year',4]
     )
+    return(tmp2)
+  }
+  )
   out<-do.call(rbind,out)
   # CALCULATE TREND BIAS AND PRECISION
   ## ACTUAL POPULATION TREND
@@ -639,9 +787,7 @@ get.trnd<-function(sim_dat=NULL,...)
   # OUTPUT THE GOODIES
   return(out)
 }
- 
 
- 
 ## 6. GETTING CPUE ABUNDANCE
 ### CALCULATING ABUNDANCE FOR OCCASION 1 DATA ONLY
 get.abund<-function(sim_dat=NULL,
@@ -690,8 +836,8 @@ get.abund<-function(sim_dat=NULL,
   tmp<-merge(tmp, ests[,c(1:3,8,9)])
   tmp$diffsq<-(tmp$catch_dens-tmp$WM_dens)^2
   Wsd<-ddply(tmp,.(b_segment,year,gear),
-              summarize,
-              Wsd_dens=sqrt(sum((length.rkm/samp_length)*diffsq)))
+             summarize,
+             Wsd_dens=sqrt(sum((length.rkm/samp_length)*diffsq)))
   ests<-merge(ests,Wsd)
   #### CALCULATE CV
   ests$cv_AM<-ests$sd_dens/abs(ests$Nhat_AM)
@@ -701,120 +847,6 @@ get.abund<-function(sim_dat=NULL,
   ests<-ests[,c(1:4,11:15,17,18)]
   return(ests)
 }
- 
- 
-
-
-
-
-## 7. GETTING M0 & Mt ESTIMATES
-M0t.est<-function(sim_dat=NULL,...)
-{
-  ## MASSAGE DATA INTO SHAPE FOR 
-  ## CAPTURE HISTORIES
-  catch<-sim_dat$catch_dat
-  catch$ch<-1 #all fish on list were captured
-  gears<-unique(catch$gear) #identify gears that caught fish
-  occ<-as.character(unique(catch$occasion))
-  ch<-lapply(gears,function(g)
-  {
-    pp<- dcast(catch, 
-               b_segment+bend_num+year+fish_id~occasion,
-               value.var="ch", sum, subset=.(gear==g))
-    pp$gear<-g
-    return(pp)
-  })
-  ch<-do.call(rbind,ch)
-  
-  ## PULL SAMPLED BENDS
-  samps<-subset(sim_dat$samp_dat, deployment==1 & occasion==1)
-  samps<-subset(samps,f!=0) # remove unused gears...this should only be GN18 and GN81 for the upper basin
-  ### ADD BEND RKM
-  bends<-sim_dat$inputs$bends
-  samps<- merge(samps,bends[,c("b_segment","bend_num","length.rkm")], by=c("b_segment","bend_num"))
-  
-  ptm<-proc.time()
-  ## RUN M0/Mt ESTIMATOR IN PARALLEL
-  library(parallel)
-  ### USE ALL CORES
-  num_cores<-detectCores()
-  ### INITIATE CLUSTER
-  cl<-makeCluster(num_cores)
-  ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
-  clusterExport(cl, c("ch", "samps", "occ"), envir=environment())
-  clusterEvalQ(cl, library(Rcapture))
-  ### M0/Mt ESTIMATOR
-  bend_Np<- parLapply(cl,1:nrow(samps),function(x)
-  {
-    ## SUBSET BEND AND YEAR CAPTURE DATA
-    bend_dat<-subset(ch, 
-                     b_segment==samps$b_segment[x] & 
-                       bend_num==samps$bend_num[x] & 
-                       year==samps$year[x] &
-                       gear==samps$gear[x])
-    ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
-    if(nrow(bend_dat)>0){
-      tmp<- closedp.t(bend_dat[,occ])## estimate abundance
-      warn_codes_M0<-ifelse(tmp$results[1,7]==0,"0",
-                         ifelse(grepl("bias",tmp$glm.warn$M0, fixed=TRUE),"b",
-                                ifelse(grepl("sigma",tmp$glm.warn$M0, fixed=TRUE),"s",
-                                       ifelse(grepl("converge",tmp$glm.warn$M0, fixed=TRUE),"c",
-                                              ifelse(grepl("0 occurred",tmp$glm.warn$M0, fixed=TRUE),"z",
-                                                     tmp$glm.warn$M0)))))
-      warn_codes_Mt<-ifelse(tmp$results[2,7]==0,"0",
-                            ifelse(grepl("bias",tmp$glm.warn$Mt, fixed=TRUE),"b",
-                                   ifelse(grepl("sigma",tmp$glm.warn$Mt, fixed=TRUE),"s",
-                                          ifelse(grepl("converge",tmp$glm.warn$Mt, fixed=TRUE),"c",
-                                                 ifelse(grepl("0 occurred",tmp$glm.warn$Mt, fixed=TRUE),"z",
-                                                        tmp$glm.warn$Mt)))))
-      tmp<- data.frame(## collect up relevant bits for M0 and Mt
-        year=samps$year[x],
-        segment=samps$b_segment[x],
-        bend_num=samps$bend_num[x],
-        gear=samps$gear[x],
-        rkm=samps$length.rkm[x],
-        samp_size=nrow(bend_dat),
-        Nhat_M0=tmp$parameters$M0[1],
-        SE_Nhat_M0=tmp$results[1,2],
-        p_M0=tmp$parameters$M0[2],
-        fit_M0=tmp$results[1,7],
-        warn_M0=warn_codes_M0,
-        Nhat_Mt=tmp$parameters$Mt[1],
-        SE_Nhat_Mt=tmp$results[2,2],
-        p_Mt=tmp$parameters$Mt[2],
-        fit_Mt=tmp$results[2,7],
-        warn_Mt=warn_codes_Mt
-      )}
-    ## FILL FOR NO DATA
-    if(nrow(bend_dat)==0){# no data
-      tmp<- data.frame(
-        year=samps$year[x],
-        segment=samps$b_segment[x],
-        bend_num=samps$bend_num[x],
-        gear=samps$gear[x],
-        rkm=samps$length.rkm[x],
-        samp_size=0,
-        Nhat_M0=-99,
-        SE_Nhat_M0=-99,
-        p_M0=-99,
-        fit_M0=-99,
-        warn_M0="-99",
-        Nhat_Mt=-99,
-        SE_Nhat_Mt=-99,
-        p_Mt=-99,
-        fit_Mt=-99,
-        warn_Mt="-99"
-        )}
-    return(tmp)    
-  }) # ABOUT 5 MINUTES ON CRUNCH
-  ### CLOSE CLUSTERS
-  stopCluster(cl)
-  proc.time()-ptm
-  ### CREATE DATA FRAME
-  bend_Np<- do.call("rbind", bend_Np)
-  return(bend_Np)
-}
-  
   
   
 # ##NEW FUNCTION HERE  
