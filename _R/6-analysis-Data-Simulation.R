@@ -79,7 +79,9 @@ parLapply(cl,1:nreps, function(i)
 })
 stopCluster(cl)
 proc.time()-ptm
-        
+# CRUNCH FOR 200 (ABOUT 4.5 HOURS)
+# user    system    elapsed 
+# 2.53    0.80      15979.43
         
 
 ## 2. GENERATE CATCH DATA (FOR RANDOM DRAWS OF CATCHABILITY AND B0_SD)
@@ -93,29 +95,38 @@ inputs$effort<-effort
 
 # RUN W/O PARALLEL (CATCH_DAT ALREADY MAKES USE OF PARALLEL)
 ptm<-proc.time()
-nreps<-3
-lapply(1:nreps, function(i)
+nreps<-2
+lapply(1:200, function(i)
+  {
+  if(pcname=="WF-FGNL842")
+    {sim_pop<-readRDS(file=paste0("E:/_output/1-populations/sim_pop_",i,".rds"))}
+  if(pcname!="WF-FGNL842")
+    {sim_pop<-readRDS(file=paste0("_output/sim_pop_",i,".rds"))}
+  lapply(1:nreps,function(j)
     {
-    ## MEAN CATCHABILITY
-    #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
-    #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
-    q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.00005, 0.001),
-              runif(2,0.000000, 0.00005),runif(1,0.00005, 0.001))
+      ## MEAN CATCHABILITY
+      #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
+      #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
+      q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.00005, 0.001),
+                runif(2,0.000000, 0.00005),runif(1,0.00005, 0.001))
       # Accounts for differences in "OT16" and "TN" efforts.
-    inputs$catchability<-q_mean
-    ## B0_SD  
-    inputs$B0_sd<-runif(9,0,1.5)
-    ## SAMPLING & CATCH DATA
-    dat<-catch_data(sim_pop=sim_pop,inputs=inputs)
-    if(pcname=="WF-FGNL842")
-      {saveRDS(dat,
-        file=paste0("E:/_output/2-catch/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
-    if(pcname!="WF-FGNL842")
-      {saveRDS(dat,
-        file=paste0("_output/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
+      inputs$catchability<-q_mean
+      ## B0_SD  
+      inputs$B0_sd<-runif(9,0,1.5)
+      ## SAMPLING & CATCH DATA
+      dat<-catch_data(sim_pop=sim_pop,inputs=inputs)
+      if(pcname=="WF-FGNL842")
+        {saveRDS(dat,
+          file=paste0("E:/_output/2-catch/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
+      if(pcname!="WF-FGNL842")
+        {saveRDS(dat,
+          file=paste0("_output/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
     })
+  })
 proc.time()-ptm
-
+# CRUNCH for 2x200 (ABOUT 12 HOURS)
+# user      system    elapsed 
+# 4298.17   355.77    43635.42
 
 
 
