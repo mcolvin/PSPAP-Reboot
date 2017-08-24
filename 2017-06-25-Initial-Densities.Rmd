@@ -1,26 +1,32 @@
 ---
-layout: post
 title: "Estimation of Initial Pallid Sturgeon Densities"
-output: html_document
-published: false
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
 bibliography: PSref.bib
-csl: applied-mathematical-modelling.csl
+csl: ecology.csl  
 nocite: | 
   @J16, @K05, @KB05, @USFWS07, @R15
 ---
 <!--
-knitr::knit("2017-06-30-Initial-Densities.Rmd")
-rmarkdown::render("2017-06-30-Initial-Densities.Rmd")
+rmarkdown::render("2017-06-25-Initial-Densities.Rmd")
 -->
 
+
+```{r opts, echo = FALSE}
+knitr::opts_chunk$set(fig.path = "./images/")
+```
+
+
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
-source("R/1_global.R")
-#source("R/2_functions.R")
+source("_R/1_global.R")
+#source("_R/2_functions.R")
 effort_data<- FALSE
 studyArea<- FALSE
-source("R/3_load-and-clean.R")
-#source("R/4_figures.R")
-source("R/5_tables.R")
+source("_R/3_load-and-clean.R")
+#source("_R/4_figures.R")
+source("_R/5_tables.R")
 ``` 
 
 ## Overview
@@ -61,9 +67,15 @@ tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
 tbl2[duplicated(tbl2$rpma),]$rpma<-""
 tbl2[duplicated(tbl2$segments),]$segments<-""
 tbl2$ref<-c("[9]", "[5]-[8]","[4]","[4]","[1]","[1]")
+tbl2<- tbl2[,c(1,2,3,4,6,7,8)]
 kable(tbl2,row.names=FALSE,
-    col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Maximum Density (fish/rkm)",  "Mean Density (fish/rkm)", "Mean Density Year", "References"),
-    align="llcccccc")
+    col.names=c("RPMA","Segments", "Fish Type", 
+        "Mean Density (fish/rkm)", 
+        "Minimum Density (fish/rkm)",  
+        "Maximum Density (fish/rkm)", 
+        #"Mean Density Year", 
+        "References"),
+    align="llccccc")
 ``` 
   
   *Estimated year of data collection based on reference date.  

@@ -18,7 +18,8 @@ tables_effort<- function(n,dat=dat,...)
     {
     datS<-subset(dat,standard_gear=="yes")
     datS$tmp<-1 # TO SUM FOR COUNTS
-    tmp<-dcast(datS, basin+segment_id+bend+gearC+gear_id~yr,value.var="tmp",sum)
+    tmp<-dcast(datS, basin+segment_id+bend+gearC+gear_id~yr,
+        value.var="tmp",sum)
     return(tmp)      
     }
   if(n==3)
