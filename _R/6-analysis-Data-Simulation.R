@@ -121,7 +121,7 @@ lapply(1:200, function(i)
       if(pcname!="WF-FGNL842")
         {saveRDS(dat,
           file=paste0("_output/catch_dat_", inputs$samp_type,"_",i,"-",j,".rds"))}
-      })
+    })
   })
 proc.time()-ptm
 # CRUNCH for 2x200 (ABOUT 12 HOURS)
