@@ -126,7 +126,8 @@ lapply(1:200, function(i)
 proc.time()-ptm
 # CRUNCH for 2x200 (ABOUT 12 HOURS)
 # user      system    elapsed 
-# 4298.17   355.77    43635.42
+# 4298.17   355.77    43635.42 (r)
+# 4280.51   346.73    43428.20 (f) 
 
 
 
