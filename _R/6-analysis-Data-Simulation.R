@@ -95,14 +95,14 @@ inputs$effort<-effort
 
 # RUN W/O PARALLEL (CATCH_DAT ALREADY MAKES USE OF PARALLEL)
 ptm<-proc.time()
-nreps<-2
-lapply(1:200, function(i)
+#nreps<-2
+lapply(1:100, function(i)
   {
   if(pcname=="WF-FGNL842")
     {sim_pop<-readRDS(file=paste0("E:/_output/1-populations/sim_pop_",i,".rds"))}
   if(pcname!="WF-FGNL842")
     {sim_pop<-readRDS(file=paste0("_output/sim_pop_",i,".rds"))}
-  lapply(1:nreps,function(j)
+  lapply(3:4,function(j)
     {
       ## MEAN CATCHABILITY
       #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
