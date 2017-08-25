@@ -577,7 +577,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     tmp1<-tmp1[,c(1,3:6)]
     b_samp<-b_samp[,which(names(b_samp)!="p")]
     ch<-ch[,which(names(ch)!="ch")]
-    inputs<-c(sim_pop$inputs,inputs)
+    inputs<-c(sim_pop$inputs, inputs)
     return(list(true_vals=tmp1, 
         samp_dat=b_samp, 
         catch_dat=ch,
