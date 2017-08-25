@@ -44,6 +44,7 @@ for(i in 2:length(bends$lower_rkm))
 {
   bends$lower_rkm[i]<-bends$lower_rkm[i-1]+bends$length.rkm[i-1]
 }
+rm(i)
 ## FIND BEND CENTER
 bends$center<- bends$lower_rkm + bends$length.rkm/2
 
@@ -68,6 +69,7 @@ sp$dis$rpma4<- -1*abs(outer(tmp$center,tmp$center,"-"))
 sp$direct$rpma4<- sp$dis$rpma4
 sp$direct$rpma4[lower.tri(sp$direct$rpma4)]<--1
 sp$direct$rpma4[upper.tri(sp$direct$rpma4)]<- 1
+rm(tmp)
 
 
 
@@ -296,4 +298,4 @@ if(studyArea==TRUE)# CAN BE LONG...
     ## LOAD BEND DATA 
     bends<- readOGR("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/GIS", 
         "bends_sp_ll")
-    }
+}
