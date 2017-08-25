@@ -773,6 +773,8 @@ abund.trnd<-function(est=NULL,...)
     ests$WM_dens<-ests$catch/ests$samp_rkm
     ## ADD SEGMENT LENGTHS
     ests<-merge(ests,seg_length, by="segment",all.x=TRUE)
+    
+    # ABUNDANCE
     ## ESTIMATE SEGMENT ABUNDANCE
     ests$Nhat_AM<-ests$seg_rkm*ests$mean_dens #arithmetic mean
     ests$Nhat_WM<-ests$seg_rkm*ests$WM_dens #weighted arithmetic mean
@@ -781,31 +783,25 @@ abund.trnd<-function(est=NULL,...)
     ## ADD BIAS
     ests$bias_AM<-ests$Nhat_AM-ests$abundance
     ests$bias_WM<-ests$Nhat_WM-ests$abundance
-    
-    ####START HERE####
-    
     ## ADD PRECISION
-    #### CALCULATE WEIGHTED MEAN SD
-    tmp<-merge(tmp, ests[,c(1:3,8,9)])
+    ### CALCULATE WEIGHTED MEAN SD
+    tmp<-merge(tmp, ests[,c("segment","year","gear","WM_dens","samp_rkm")],
+               by=c("segment","year","gear"),all.x=TRUE)
     tmp$diffsq<-(tmp$catch_dens-tmp$WM_dens)^2
-    Wsd<-ddply(tmp,.(b_segment,year,gear),
+    Wsd<-ddply(tmp,.(segment,year,gear),
                summarize,
-               Wsd_dens=sqrt(sum((length.rkm/samp_length)*diffsq)))
-    ests<-merge(ests,Wsd)
-    #### CALCULATE CV
-    ests$cv_AM<-ests$sd_dens/abs(ests$Nhat_AM)
-    ests$cv_WM<-ests$Wsd_dens/abs(ests$Nhat_WM)    ## ADD SEGMENT-LEVEL CPUE AND LN(CPUE)
+               Wsd_dens=sqrt(sum((rkm/samp_rkm)*diffsq)))
+    ests<-merge(ests,Wsd, by=c("segment","year","gear"))
+    ### CALCULATE CV
+    ests$precision_AM<-ests$sd_dens/abs(ests$Nhat_AM)
+    ests$precision_WM<-ests$Wsd_dens/abs(ests$Nhat_WM)    
+    
+    # TREND
+    ## ADD SEGMENT-LEVEL CPUE AND LN(CPUE)
     ### USE CATCH +1 TO AVOID CPUE=0
     ests$catch1<-ests$catch+1
     ests$cpue1<-ests$catch1/ests$effort
     ests$lncpue1<-log(ests$cpue1)
-    
-    
-    ## OUTPUT ESTIMATES
-    ests<-ests[,c(1:4,11:15,17,18)]
-    
-    
-    
     ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
     ests$segment<- as.factor(ests$segment)
     gears<-est$inputs$gears
@@ -825,24 +821,18 @@ abund.trnd<-function(est=NULL,...)
       return(tmp2)
     })
     out<-do.call(rbind,out)
-    
+    ## ADD POPULATION TREND
+    out$pop_trnd<-pop_trnd
     ## CALCULATE TREND BIAS
     out$bias<-out$trnd-out$pop_trnd
     ## CALCULATE TREND PRECISION
     out$precision<-out$se/abs(out$trnd)
-    # OUTPUT THE GOODIES
-    return(out)
-  }
-  
 
-    
-    
-    
-    return(ests)
+    # OUTPUT THE GOODIES
+    return(list(trnd=out[,-c(3)],abund=ests[,c(1:4,12:18)]))
   }
-    
-    
-  }
+
+  # M0 & Mt ESTIMATES
   if(est$estimator[1]=="M0"|est$estimator[1]=="Mt")
   {
     # CLEAN UP DATA
