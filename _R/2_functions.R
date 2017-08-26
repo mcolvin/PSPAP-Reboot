@@ -738,7 +738,7 @@ M0t.est<-function(sim_dat=NULL,...)
 
 
 
-## 8. GETTING ABUNDANCE AND TREND
+## 8. GETTING ABUNDANCE AND TREND ESTIMATES
 abund.trnd<-function(est=NULL,...) 
 {
   # FIND ACTUAL SEGMENT ABUNDANCES
@@ -972,6 +972,30 @@ abund.trnd<-function(est=NULL,...)
     return(list(trnd=out, abund=ests))
   }
 }
+
+
+
+
+## 9. GETTING LENGTH ESTIMATES
+length.dat<-function(sim_dat=NULL,...)
+{
+  # FIND ACTUAL SEGMENT-LEVEL MEAN LENGTH
+    true_abund<-est$true[,1:3]
+    names(true_abund)[1]<-"segment"
+
+# FIND ACTUAL POPULATION TREND BY GEAR
+est$true$b_segment<- as.factor(est$true$b_segment)
+fit<-lm(log(abundance)~b_segment+year,est$true)
+pop_trnd<-unname(coef(fit)['year'])
+
+# FIND SEGMENT LENGTHS
+bends<-est$inputs$bends
+seg_length<-aggregate(length.rkm~b_segment, data=bends,sum)
+names(seg_length)<-c("segment","seg_rkm")
+
+# PULL ESTIMATES AND INPUTS
+tmp<-est$est
+gears<-est$inputs$gears
  
  
 #######################################################################
