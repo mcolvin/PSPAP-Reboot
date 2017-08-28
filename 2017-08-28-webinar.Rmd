@@ -14,7 +14,7 @@ knitr::opts_chunk$set(fig.path = "./images/")
 ```
 
 The webinar will be held August 31st, 9am-12pm by Webex. You should 
-have received an invitation by email. The post below detials the 
+have received an invitation by email. The post below details the 
 objectives for the webinar and what to expect during the objectives
 refinement. Please leave comments in the box below or email to 
 michael.colvin at msstate.edu.
