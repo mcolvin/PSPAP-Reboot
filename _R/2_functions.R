@@ -1054,6 +1054,14 @@ length.dat<-function(sim_dat=NULL,...)
   names(tmp)[1]<-"segment"
   return(tmp)
 }
+
+
+
+
+
+
+
+
  
 #######################################################################
 # MISC UNUSED FUNCTIONS FOR FUTURE REFERENCE
