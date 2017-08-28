@@ -11,6 +11,7 @@ source("_R/3_load-and-clean.R")
 ## 1. CPUE ESTIMATES ##
 #######################
 ptm<-proc.time()
+lapply(1:200, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
