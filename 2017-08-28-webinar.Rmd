@@ -1,0 +1,72 @@
+---
+title: "Background for August 31st Webinar"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+---
+<!---
+rmarkdown::render_site("2017-08-28-webinar.Rmd")# build website
+--->
+
+```{r opts, echo = FALSE}
+knitr::opts_chunk$set(fig.path = "./images/")
+```
+
+The webinar will be held August 31st, 9am-12pm by Webex. You should 
+have received an invitation by email. The post below details the 
+objectives for the webinar and what to expect during the objectives
+refinement. Please leave comments in the box below or email to 
+michael.colvin at msstate.edu.
+
+## Webinar Overview
+
+The objectives of the webinar are to:
+
+1. Overview progress to perform analysis: this will be a general 
+overview of the modeling process and how PSPAP data is being used to 
+inform analyses 
+2. Overview the evaluation process for alternative designs: this will be 
+a general overview of how we link analyses to objectives. 
+3. Revising and clarifying objectives, specifically:
+    a. Clarify objectives focusing on quantifiable metrics and 
+    spatial and temporal resolutions.
+    b. Clarify objectives that can be achieved by the population assessment 
+    program and those achievable by the broodstock program. 
+    c. Evaluate isolated objectives for inclusion (i.e., are there objectives 
+    that do not fit in the network that can be eliminated?)
+
+## What to expect during the webinar
+
+During the webinar, the majority of the time will be dedicated to 
+revisiting and revising monitoring objectives. The first 30-45 minutes 
+will overview progress to date and process overview. The remaining time 
+will focus on objectives. Below are some low hanging fruit from the 
+original objectives network that needs clarification and refinement. The 
+objective in the network is in bold, and the sub bullet represents 
+questions and clarifications. 
+
+
+* **Catch rates of all PS by size class.**
+    * How are size classes defined?
+* **Quantify PS abundance or relative abundance**
+    * What is the spatial scale is of interest: segment, RPMA, other?
+* **Quantify PS population trend**
+    * What is the time horizon for this metric? 
+    * We can define trend 2 ways
+        * Population growth rate ($\lambda = Survival \enspace rate + Recruitment \enspace rate$)
+        * Change in abundance or relative abundance from one year to the next
+* **Quantify PS recruitment to age-1.**
+    * Is this for natural origin fish only? 
+    * How is age 1 defined? Size at a given date?
+    * How should recruitment be defined? Presence or absence of age-1 Pallid Sturgeon? Abundance (relative or absolute)? As a rate?
+* **Age structure.**
+    * How is this metric quantified? As mean age? Proportions?
+    * What is the spatial resolution? Segment? RPMA?
+    * How should aging error be evaluated?
+
+
+
+**There will be additional time to provide input on these objectives.** 
+Input gathered from this webinar will be compiled and a secondary input 
+period used in electronic format (e.g., web form). 
