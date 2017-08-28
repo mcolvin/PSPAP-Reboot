@@ -1,0 +1,1110 @@
+// ~->[DNET-1]->~
+
+// File created by ColvinM at MSStateU using Netica 6.02 on Aug 25, 2017 at 17:59:29 UTC.
+
+bnet monitoring_objectives_networkv {
+autoupdate = TRUE;
+whenchanged = 1500315759;
+
+visual V1 {
+	defdispform = BELIEFBARS;
+	nodelabeling = TITLE;
+	NodeMaxNumEntries = 50;
+	nodefont = font {shape= "Arial"; size= 9;};
+	linkfont = font {shape= "Arial"; size= 9;};
+	ShowLinkStrengths = 1;
+	windowposn = (25, 25, 905, 338);
+	resolution = 72;
+	magnification = 0.840896;
+	drawingbounds = (2527, 1143);
+	showpagebreaks = FALSE;
+	usegrid = TRUE;
+	gridspace = (6, 6);
+	NodeSet Node {BuiltIn = 1; Color = 0x00e1e1e1;};
+	NodeSet Nature {BuiltIn = 1; Color = 0x00f8eed2;};
+	NodeSet Deterministic {BuiltIn = 1; Color = 0x00d3caa6;};
+	NodeSet Finding {BuiltIn = 1; Color = 0x00c8c8c8;};
+	NodeSet Constant {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet ConstantValue {BuiltIn = 1; Color = 0x00ffffb4;};
+	NodeSet Utility {BuiltIn = 1; Color = 0x00ffbdbd;};
+	NodeSet Decision {BuiltIn = 1; Color = 0x00dee8ff;};
+	NodeSet Documentation {BuiltIn = 1; Color = 0x00f0fafa;};
+	NodeSet Title {BuiltIn = 1; Color = 0x00ffffff;};
+	NodeSet USACE_Core {Color = 0x0000ff00;};
+	NodeSet USFWS_core {Color = 0x00ff0000;};
+	PrinterSetting A {
+		margins = (1270, 1270, 1270, 1270);
+		};
+	};
+
+node s7 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Trawling";
+	whenchanged = 1490128939;
+	visual V1 {
+		center = (168, 1056);
+		dispform = LABELBOX;
+		height = 13;
+		};
+	};
+
+node s30 {
+	discrete = TRUE;
+	statetitles = ("Closed population estimaators", "Smaller gill mesh", "Use trammel nets");
+	kind = DECISION;
+	parents = ();
+	title = "PSPAP Monitoring Designs\n";
+	comment = "fixed sites or index sites\nRandom sites?";
+	whenchanged = 1495464472;
+	visual V1 {
+		center = (774, 1074);
+		dispform = BELIEFBARS;
+		height = 42;
+		};
+	};
+
+node E {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s7, s30);
+	title = "catch rates of all PS\nby size class";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1495465173;
+	visual V1 {
+		center = (1080, 300);
+		dispform = LABELBOX;
+		height = 27;
+		};
+	};
+
+node s25 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Free embryo collection";
+	comment = "Expensive\nEffectiveness monitoring\nLots of shovenose free larvae, 1 in a 1000 is a PS";
+	whenchanged = 1492177824;
+	visual V1 {
+		center = (87, 996);
+		dispform = LABELBOX;
+		height = 11;
+		};
+	};
+
+node B {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s7, s25, s30);
+	title = "Quantify catch rates of age 0\nand age 1 PS\n";
+	whenchanged = 1495465168;
+	visual V1 {
+		center = (378, 372);
+		dispform = LABELBOX;
+		height = 39;
+		};
+	};
+
+node G {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E);
+	title = "Quantify PS abundance \nor relative abundance";
+	comment = "Quantify PS numbers \nas an interim measure until \nsufficient and sustained natural";
+	whenchanged = 1495463816;
+	visual V1 {
+		center = (942, 150);
+		dispform = LABELBOX;
+		height = 36;
+		};
+	};
+
+node E1 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Evaluate annual trends in \nNative forage fish";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490131186;
+	visual V1 {
+		center = (1506, 612);
+		dispform = LABELBOX;
+		height = 66;
+		};
+	};
+
+node J {
+	discrete = FALSE;
+	levels = (0, 0);
+	kind = UTILITY;
+	chance = DETERMIN;
+	parents = (E, E1, s30);
+	title = "Maintain compatiblity \nwith legacy data";
+	whenchanged = 1500314954;
+	visual V1 {
+		center = (1134, 30);
+		dispform = LABELBOX;
+		height = 23;
+		};
+	};
+
+node s26 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Robust design";
+	comment = "Pradel formulation?";
+	whenchanged = 1490129600;
+	visual V1 {
+		center = (318, 990);
+		dispform = LABELBOX;
+		height = 5;
+		};
+	};
+
+node s29 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "N mixture model";
+	comment = "fixed sites or index sites\nRandom sites?";
+	whenchanged = 1490130047;
+	visual V1 {
+		center = (468, 1044);
+		dispform = LABELBOX;
+		height = 43;
+		};
+	};
+
+node s27 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Calibrated Population\nModel";
+	whenchanged = 1492109356;
+	visual V1 {
+		center = (84, 366);
+		dispform = LABELBOX;
+		height = 61;
+		};
+	};
+
+node F {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s26, s29, s30, s27);
+	title = "Population estimates for PS\nfor all size and age classes, \nparticularly ages 2 to 3 \n";
+	whenchanged = 1495464301;
+	visual V1 {
+		center = (822, 228);
+		dispform = LABELBOX;
+		height = 69;
+		};
+	};
+
+node C {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s29);
+	title = "Model-based estimates of \nabundance of age 0 and \nage 1 PS\n";
+	whenchanged = 1490129968;
+	visual V1 {
+		center = (594, 210);
+		dispform = LABELBOX;
+		height = 70;
+		};
+	};
+
+node s28 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Hatchery report and data";
+	whenchanged = 1492105675;
+	visual V1 {
+		center = (93, 498);
+		dispform = LABELBOX;
+		height = 16;
+		};
+	};
+
+node D {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s26, s27, s28, s29, s30);
+	title = "Model-based estimates of \nsurvival of hatchery and naturally\nreproducing PS to age 1\n";
+	whenchanged = 1495464674;
+	visual V1 {
+		center = (138, 180);
+		dispform = LABELBOX;
+		height = 2;
+		};
+	};
+
+node E7 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "IRC habitat";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490128235;
+	visual V1 {
+		center = (1044, 966);
+		dispform = LABELBOX;
+		height = 45;
+		};
+	};
+
+node s17 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E7);
+	title = "Drift and dspersal";
+	whenchanged = 1490123543;
+	visual V1 {
+		center = (1044, 888);
+		dispform = LABELBOX;
+		height = 44;
+		};
+	};
+
+node s19 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Telemetry River sweep";
+	comment = "Validating tag life\n\
+		radio and acoustic to work on tributaries \n\n\
+		Low water, concentrates fish, \n\
+		Constructed habitat features obscure tags\n\
+		detectibility poor at bankful, midwinter-march\n\
+		1 boat 1 crew 0.5 river width\n\
+		Tandem search, 90% on good \n\
+		Fish don't move (lower river) for long periods\n\
+		conductivity, depth, detectiblity.\n\
+		no radio sioux city downstream, noisy below Platte\n\
+		Assume 100% survival\n\n\n\
+		Upper basin\n\
+		Experienced crews\n\
+		Altered flows on Mo is difficult\n\
+		Big streaches of river, few boatramps\n\
+		Radio tags limits time, ect\n\
+		redudent stations, \n\
+		50 + adults 130 juveniles\n\
+		Below confluence of yellowstone detectibility is poor";
+	whenchanged = 1490133344;
+	visual V1 {
+		center = (1200, 1116);
+		dispform = LABELBOX;
+		height = 8;
+		};
+	};
+
+node E3 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Use of Mississippi\nand tributaries\n";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490123117;
+	visual V1 {
+		center = (1266, 876);
+		dispform = LABELBOX;
+		height = 62;
+		};
+	};
+
+node s14 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s17, s19, E3);
+	title = "Movement";
+	whenchanged = 1490126024;
+	visual V1 {
+		center = (1134, 684);
+		dispform = LABELBOX;
+		height = 50;
+		};
+	};
+
+node s13 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s14, s19);
+	title = "Habitat selection";
+	whenchanged = 1490125589;
+	visual V1 {
+		center = (1044, 558);
+		dispform = LABELBOX;
+		height = 49;
+		};
+	};
+
+node E6 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s19);
+	title = "Spawning habitat";
+	comment = "Doppler and hydroacoustics";
+	whenchanged = 1490128224;
+	visual V1 {
+		center = (1200, 528);
+		dispform = LABELBOX;
+		height = 65;
+		};
+	};
+
+node E19 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Didson";
+	whenchanged = 1490133799;
+	visual V1 {
+		center = (1122, 1044);
+		dispform = LABELBOX;
+		height = 9;
+		};
+	};
+
+node E4 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s12, s14, E6, s19, E19);
+	title = "Spawning aggregation \nand syncrony\n";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490133788;
+	visual V1 {
+		center = (1158, 444);
+		dispform = LABELBOX;
+		height = 35;
+		};
+	};
+
+node s21 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Blood";
+	comment = "Dane-It is a pain\n\
+		Tyler not a pain\n\
+		Tissue sample\n\
+		Take blood on wild fish. \n\
+		Females preferred, but good info on males";
+	whenchanged = 1490131908;
+	visual V1 {
+		center = (546, 786);
+		dispform = LABELBOX;
+		height = 10;
+		};
+	};
+
+node s4 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s21);
+	title = "Contaminants";
+	whenchanged = 1490125756;
+	visual V1 {
+		center = (696, 684);
+		dispform = LABELBOX;
+		height = 60;
+		};
+	};
+
+node s1 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s21);
+	title = "RNA Stress markers";
+	whenchanged = 1490127224;
+	visual V1 {
+		center = (594, 678);
+		dispform = LABELBOX;
+		height = 59;
+		};
+	};
+
+node S {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s4, s1);
+	title = "Stress";
+	whenchanged = 1490123420;
+	visual V1 {
+		center = (594, 564);
+		dispform = LABELBOX;
+		height = 58;
+		};
+	};
+
+node s23 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Measure fish length\nand weight";
+	whenchanged = 1495465146;
+	visual V1 {
+		center = (972, 804);
+		dispform = LABELBOX;
+		height = 68;
+		};
+	};
+
+node E10 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "EDNA";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490123591;
+	visual V1 {
+		center = (1596, 978);
+		dispform = LABELBOX;
+		height = 63;
+		};
+	};
+
+node L5 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Take a Tissue sample";
+	comment = "lower caudal clip to ethanol, may regenerate \n\nPit tag to not get a fin clipped in upper basin\
+		";
+	whenchanged = 1500315723;
+	visual V1 {
+		center = (252, 1092);
+		dispform = LABELBOX;
+		height = 12;
+		};
+	};
+
+node E11 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L5);
+	title = "Stable isotopes";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490127460;
+	visual V1 {
+		center = (1368, 960);
+		dispform = LABELBOX;
+		height = 56;
+		};
+	};
+
+node E9 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Lavage";
+	comment = "8-10 minutes per fish, lab work on backside variable\n\
+		Lab skills ablility to id fish from Phargynyl gill teeth and \n\
+		spines/vertebrae\n\n\
+		Age-0 chironomids by head capsules, substrate associated with \n\
+		chrironomids in diet, could learn alot about IRC substrate use.\n\
+		";
+	whenchanged = 1490133580;
+	visual V1 {
+		center = (1494, 972);
+		dispform = LABELBOX;
+		height = 54;
+		};
+	};
+
+node E14 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Stomach removal";
+	comment = "Family, labor intensive in lab\nETOH for genetics";
+	whenchanged = 1490133673;
+	visual V1 {
+		center = (1692, 930);
+		dispform = LABELBOX;
+		height = 53;
+		};
+	};
+
+node E8 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E10, E11, E9, E14);
+	title = "Foraging habitat\n";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490133633;
+	visual V1 {
+		center = (1452, 732);
+		dispform = LABELBOX;
+		height = 55;
+		};
+	};
+
+node E5 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E1, E8);
+	title = "Diet";
+	comment = "PM 2.2:  catch rates of all PS\nby size class (to maintain legacy data)\n";
+	whenchanged = 1490123577;
+	visual V1 {
+		center = (1176, 612);
+		dispform = LABELBOX;
+		height = 64;
+		};
+	};
+
+node s9 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s13, E4, S, s23, E5);
+	title = "Fish condition";
+	whenchanged = 1495465130;
+	visual V1 {
+		center = (948, 414);
+		dispform = LABELBOX;
+		height = 47;
+		};
+	};
+
+node s16 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s23);
+	title = "Growth";
+	whenchanged = 1495465130;
+	visual V1 {
+		center = (744, 528);
+		dispform = LABELBOX;
+		height = 46;
+		};
+	};
+
+node L2 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "PIT tag fish";
+	comment = "will need to change whole system to use best 125 khz, need 134.2 for arrays";
+	whenchanged = 1500315759;
+	visual V1 {
+		center = (564, 930);
+		dispform = LABELBOX;
+		height = 40;
+		};
+	};
+
+node s12 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s9, s16, L2);
+	title = "Age at maturity";
+	whenchanged = 1490126993;
+	visual V1 {
+		center = (828, 438);
+		dispform = LABELBOX;
+		height = 6;
+		};
+	};
+
+node s22 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "ultrasound";
+	comment = "validation with brood stock program\n\n\
+		Ultrasound is an art, lots of training to get good\n\
+		Not trivial\n\n\
+		Fish with eggs easy, males and early unreproctive fish is hard\n\
+		vet field models, may replace blood.40k per machine";
+	whenchanged = 1490132605;
+	visual V1 {
+		center = (672, 786);
+		dispform = LABELBOX;
+		height = 51;
+		};
+	};
+
+node s11 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s12, s16, s22);
+	title = "Fecundity";
+	whenchanged = 1490126408;
+	visual V1 {
+		center = (678, 300);
+		dispform = LABELBOX;
+		height = 38;
+		};
+	};
+
+node s18 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "CJS";
+	whenchanged = 1490125561;
+	visual V1 {
+		center = (954, 1032);
+		dispform = LABELBOX;
+		height = 7;
+		};
+	};
+
+node s20 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Catch effort";
+	whenchanged = 1490125618;
+	visual V1 {
+		center = (402, 942);
+		dispform = LABELBOX;
+		height = 41;
+		};
+	};
+
+node E2 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Predation";
+	comment = "Role into survival?\nLow priority";
+	whenchanged = 1490130810;
+	visual V1 {
+		center = (960, 384);
+		dispform = LABELBOX;
+		height = 28;
+		};
+	};
+
+node s3 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (S, L5);
+	title = "Disease";
+	whenchanged = 1490127450;
+	visual V1 {
+		center = (390, 678);
+		dispform = LABELBOX;
+		height = 57;
+		};
+	};
+
+node s8 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s9, s4, s18, s20, s26, E2, s3);
+	title = "Survival";
+	comment = "Use survival to get at trend in upper basin";
+	whenchanged = 1500315649;
+	visual V1 {
+		center = (816, 348);
+		dispform = LABELBOX;
+		height = 26;
+		};
+	};
+
+node s15 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L2);
+	title = "Age structure";
+	whenchanged = 1490128122;
+	visual V1 {
+		center = (456, 588);
+		dispform = LABELBOX;
+		height = 3;
+		};
+	};
+
+node L1 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L5, s25);
+	title = "Genetic composition";
+	whenchanged = 1492177828;
+	visual V1 {
+		center = (168, 828);
+		dispform = LABELBOX;
+		height = 18;
+		};
+	};
+
+node s2 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L1);
+	title = "Hybridization";
+	whenchanged = 1492177679;
+	visual V1 {
+		center = (180, 648);
+		dispform = LABELBOX;
+		height = 19;
+		};
+	};
+
+node s5 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s16, S, s15, s9);
+	title = "Reproductive cycling";
+	whenchanged = 1490123315;
+	visual V1 {
+		center = (600, 432);
+		dispform = LABELBOX;
+		height = 25;
+		};
+	};
+
+node L4 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s21);
+	title = "Sex";
+	whenchanged = 1490127278;
+	visual V1 {
+		center = (432, 498);
+		dispform = LABELBOX;
+		height = 1;
+		link 1 {
+			path = ((540, 777), (390, 570), (427, 507));
+			};
+		};
+	};
+
+node L6 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L4);
+	title = "Sex ratio";
+	whenchanged = 1490127307;
+	visual V1 {
+		center = (402, 438);
+		dispform = LABELBOX;
+		height = 4;
+		};
+	};
+
+node s {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s9, S);
+	title = "Egg quality";
+	whenchanged = 1490123274;
+	visual V1 {
+		center = (546, 312);
+		dispform = LABELBOX;
+		height = 37;
+		};
+	};
+
+node L3 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Egg sample";
+	comment = "feasible to do in field, 1 suture, needle biposy, 5-10 minutes";
+	whenchanged = 1490132702;
+	visual V1 {
+		center = (270, 1068);
+		dispform = LABELBOX;
+		height = 14;
+		};
+	};
+
+node s10 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s9, s21, L3);
+	title = "Reproductive readiness";
+	comment = "ultrasound in field";
+	whenchanged = 1490127064;
+	visual V1 {
+		center = (552, 384);
+		dispform = LABELBOX;
+		height = 48;
+		};
+	};
+
+node s6 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L1);
+	title = "Estimate Effective \npopulation size";
+	comment = "Linkage based analysis \nNeed hatchery stocking";
+	whenchanged = 1492177687;
+	visual V1 {
+		center = (288, 636);
+		dispform = LABELBOX;
+		height = 15;
+		};
+	};
+
+node L {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (L1);
+	title = "Local adaptation";
+	comment = "fraction of fish that are GPMU stocked of hatchery origin or local\nfraction local\n";
+	whenchanged = 1492177674;
+	visual V1 {
+		center = (66, 642);
+		dispform = LABELBOX;
+		height = 17;
+		};
+	};
+
+node F1 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (s15, s2, s5, L6, L1, s, s10, s6, L, s30);
+	title = "Population structure and \nother characteristics\n";
+	whenchanged = 1495465170;
+	visual V1 {
+		center = (366, 192);
+		dispform = LABELBOX;
+		height = 24;
+		link 2 {
+			path = ((181, 639), (240, 342), (346, 216));
+			};
+		};
+	};
+
+node K {
+	discrete = FALSE;
+	levels = (0, 0);
+	kind = UTILITY;
+	chance = DETERMIN;
+	parents = (F, B, C, D, G, s11, s8, E4, F1);
+	title = "Provide relevant\nmodel inputs";
+	comment = "Provide estimates with associated\nuncertainty needed to run the PS population model";
+	whenchanged = 1495463734;
+	visual V1 {
+		center = (576, 30);
+		dispform = LABELBOX;
+		height = 21;
+		link 6 {
+			path = ((677, 291), (660, 186), (587, 53));
+			};
+		};
+	};
+
+node A {
+	discrete = FALSE;
+	levels = (0, 0);
+	kind = UTILITY;
+	chance = DETERMIN;
+	inputs = (, C, , F1, L1, s25);
+	parents = (B, C, D, F1, L1, s25);
+	title = "Quantify PS recruitment\nto age 1.\n";
+	whenchanged = 1495463748;
+	visual V1 {
+		center = (330, 32);
+		dispform = LABELBOX;
+		height = 20;
+		link 3 {
+			path = ((182, 145), (289, 65));
+			};
+		};
+	};
+
+node K2 {
+	discrete = FALSE;
+	levels = (0, 0);
+	kind = UTILITY;
+	chance = DETERMIN;
+	parents = (G, F, s8, s30);
+	title = "Quantify PS population trend\n";
+	whenchanged = 1500314956;
+	visual V1 {
+		center = (858, 30);
+		dispform = LABELBOX;
+		height = 22;
+		};
+	};
+
+node H {
+	discrete = FALSE;
+	levels = (0, 0);
+	kind = UTILITY;
+	chance = DETERMIN;
+	parents = ();
+	title = "Remain in cost \nconstraints ";
+	whenchanged = 1495463711;
+	visual V1 {
+		center = (1386, 36);
+		dispform = LABELBOX;
+		height = 29;
+		};
+	};
+
+node E13 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Fin ray";
+	comment = "\n\
+		Microchemstiry cost $  not cost prohibitive, \n\
+		survival related to taking a fin ray\n\n\
+		May need to do some level but not quite mature\n\
+		<10 may be OK to age";
+	whenchanged = 1490132348;
+	visual V1 {
+		center = (1782, 438);
+		dispform = LABELBOX;
+		height = 67;
+		};
+	};
+
+node E12 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E13);
+	title = "Microchemistry";
+	comment = "Go into movement";
+	whenchanged = 1490127603;
+	visual V1 {
+		center = (1734, 294);
+		dispform = LABELBOX;
+		height = 52;
+		};
+	};
+
+node E18 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Hydroacoustic monitoring";
+	comment = "\nSplit beam hydroacoustic, 25K topside , \n20 k per transducer for asian carps\n";
+	whenchanged = 1490133775;
+	visual V1 {
+		center = (1902, 702);
+		dispform = LABELBOX;
+		height = 32;
+		};
+	};
+
+node E16 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E18);
+	title = "Fish communities";
+	comment = "\n";
+	whenchanged = 1490131064;
+	visual V1 {
+		center = (1890, 636);
+		dispform = LABELBOX;
+		height = 33;
+		};
+	};
+
+node E17 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Zooplankton density";
+	comment = "\n";
+	whenchanged = 1490130980;
+	visual V1 {
+		center = (1932, 588);
+		dispform = LABELBOX;
+		height = 30;
+		};
+	};
+
+node E15 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = (E16, E17);
+	title = "Competition with invasive species";
+	comment = "No gears that effectively get at invasives\n";
+	whenchanged = 1490131039;
+	visual V1 {
+		center = (1854, 492);
+		dispform = LABELBOX;
+		height = 31;
+		};
+	};
+
+node s33 {
+	discrete = TRUE;
+	numstates = 1;
+	kind = NATURE;
+	parents = ();
+	title = "Stocking program reports";
+	whenchanged = 1490131632;
+	visual V1 {
+		center = (1830, 792);
+		dispform = LABELBOX;
+		height = 34;
+		};
+	};
+NodeSet USACE_Core {Nodes = (D, C, B, A, J, G, F, E, K2);};
+NodeSet USFWS_core {Nodes = (G, E, K2, J, K, A, F1, C, B, D, E2, F, s27, L6, L4, s5, s, s11, s12, s9, S, s15, L2, s10, s8, s4, s1, s16, s21, s23, s22, s18, s13, s19, E19, E4, E7, s17, E3, L3, s14, L5, s25, s6, L1, L, s2);};
+};
