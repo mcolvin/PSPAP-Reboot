@@ -629,14 +629,15 @@ CPUE.ests<-function(sim_dat=NULL,...)
   colnames(tmp)[which(colnames(tmp)=="b_segment")]<-"segment"
   colnames(tmp)[which(colnames(tmp)=="length.rkm")]<-"rkm"
   tmp$estimator<-"CPUE"
-  return(list(est=tmp,true=sim_dat$true_vals,inputs=sim_dat$inputs))
+  return(tmp)
+  #return(list(est=tmp,true=sim_dat$true_vals,inputs=sim_dat$inputs))
 }
 
 
 
 
 ## 7. GETTING M0 & Mt ESTIMATES
-M0t.est<-function(sim_dat=NULL,...)
+M0t.ests<-function(sim_dat=NULL,...)
 {
   ## MASSAGE DATA INTO SHAPE 
   ## CAPTURE HISTORIES
@@ -751,30 +752,34 @@ M0t.est<-function(sim_dat=NULL,...)
   tmpt$estimator<-"Mt"
   colnames(tmpt)<-gsub("_Mt", "", colnames(tmpt))
   bend_Np<-rbind(tmp0,tmpt)
-  return(list(est=bend_Np,true=sim_dat$true_vals,inputs=sim_dat$inputs))
+  return(bend_Np)
+  #return(list(est=bend_Np,true=sim_dat$true_vals,inputs=sim_dat$inputs))
 }
 
 
 
 
 ## 8. GETTING ABUNDANCE AND TREND ESTIMATES
-abund.trnd<-function(est=NULL,...) 
+abund.trnd<-function(est=NULL, 
+                     sim_dat=NULL, # NEEDS  TO MATCH EST!
+                     ...) 
 {
   # FIND ACTUAL SEGMENT ABUNDANCES
-  names(est$true)[1]<-"segment"
-  true_abund<-est$true[,c("segment","year","abundance")]   #HERE
+  true<-sim_dat$true_vals
+  names(true)[1]<-"segment"
+  true_abund<-true[,c("segment","year","abundance")]
   
   # FIND ACTUAL POPULATION TREND BY GEAR
-  est$true$segment<- as.factor(est$true$segment) #HERE
-  fit<-lm(log(abundance)~segment+year,est$true)
+  true$segment<- as.factor(true$segment)
+  fit<-lm(log(abundance)~segment+year,true)
   pop_trnd<-unname(coef(fit)['year'])
   
   # FIND SEGMENT LENGTHS
-  seg_length<-aggregate(seg_rkm~segment, data=est$true,mean) #HERE
+  seg_length<-aggregate(seg_rkm~segment, data=true,mean)
   
   # PULL ESTIMATES AND INPUTS
-  tmp<-est$est
-  gears<-est$inputs$gears #HERE
+  tmp<-est
+  gears<-sim_dat$inputs$gears
   
   # CPUE ESTIMATES
   if(tmp$estimator[1]=="CPUE")
@@ -950,7 +955,7 @@ abund.trnd<-function(est=NULL,...)
           | length(unique(tmp$segment))<=1 #or only one segment
           | length(unique(tmp$year))<2) #or less than two years
         {
-          tmp2_M0<- data.frame(
+          tmp2<- data.frame(
             gear=g,
             estimator=e,
             trnd_AM=NA,
