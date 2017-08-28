@@ -647,7 +647,7 @@ M0t.est<-function(sim_dat=NULL,...)
   ch<-lapply(gears,function(g)
   {
     pp<- dcast(catch, 
-               b_segment+bend_num+year+fish_id~occasion,
+               year+b_segment+bend_num+fish_id~occasion,
                value.var="ch", sum, subset=.(gear==g))
     pp$gear<-g
     return(pp)
@@ -997,23 +997,63 @@ abund.trnd<-function(est=NULL,...)
 length.dat<-function(sim_dat=NULL,...)
 {
   # FIND ACTUAL SEGMENT-LEVEL MEAN LENGTH
-    true_abund<-est$true[,1:3]
-    names(true_abund)[1]<-"segment"
+  true_l<-sim_dat$true_vals[,c("b_segment", "year", "mean_length")]
 
-# FIND ACTUAL POPULATION TREND BY GEAR
-est$true$b_segment<- as.factor(est$true$b_segment)
-fit<-lm(log(abundance)~b_segment+year,est$true)
-pop_trnd<-unname(coef(fit)['year'])
-
-# FIND SEGMENT LENGTHS
-bends<-est$inputs$bends
-seg_length<-aggregate(length.rkm~b_segment, data=bends,sum)
-names(seg_length)<-c("segment","seg_rkm")
-
-# PULL ESTIMATES AND INPUTS
-tmp<-est$est
-gears<-est$inputs$gears
- 
+  # PULL LENGTH DATA AND INPUTS
+  ## MASSAGE DATA INTO CAPTURE HISTORIES 
+  catch<-sim_dat$catch_dat
+  catch$ch<-1 #all fish on list were captured
+  gears<-unique(catch$gear) #identify gears that caught fish
+  occ<-as.character(unique(catch$occasion))
+  ch<-lapply(gears,function(g)
+  {
+    pp<- dcast(catch, 
+               year+b_segment+bend_num+length+fish_id~occasion,
+               value.var="ch", sum, subset=.(gear==g))
+    pp$gear<-g
+    return(pp)
+  })
+  ch<-do.call(rbind,ch)
+    
+  # CALCULATE MEAN LENGTH
+  ## CPUE 
+  tmpC<-ddply(subset(ch,`1`==1), .(b_segment, year, gear), summarize,
+              lhat=mean(length),
+              SE_length=sd(length))
+  ### ADD MISSING SEGMENTS
+  samp_segs<-aggregate(f~b_segment+year+gear,sim_dat$samp_dat, sum)
+  samp_segs<-subset(samp_segs,f!=0)
+  tmpC<-merge(tmpC,samp_segs,all.y=TRUE)
+  if(length(which(is.na(tmpC$lhat)))!=0){tmpC[which(is.na(tmpC$lhat)),]$lhat<-0}
+  ### ADD ESTIMATOR TYPE
+  tmpC$estimator<-"CPUE"
+  
+  ## M0 & Mt ANALYSES
+  tmp<-ddply(ch, .(b_segment, year, gear), summarize,
+             lhat=mean(length),
+             SE_length=sd(length))
+  ### ADD MISSING SEGMENTS
+  tmp<-merge(tmp,samp_segs,all.y=TRUE)
+  if(length(which(is.na(tmp$lhat)))!=0){tmp[which(is.na(tmp$lhat)),]$lhat<-0}
+  ### EXPAND FOR TWO ESTIMATORS
+  tmp<-rbind(tmp,tmp)
+  tmp$estimator<-c(rep("M0",nrow(tmp)/2),rep("Mt",nrow(tmp)/2))
+  
+  ## COMBINE AND ADD BIAS AND PRECISION
+  tmp<-rbind(tmpC,tmp)
+  tmp$perform<-1
+  ### ADD ACTUAL MEAN LENGTHS
+  tmp<-merge(tmp, true_l, by=c("b_segment","year"))
+  ### ADD BIAS
+  tmp$bias<-tmp$lhat-tmp$mean_length
+  ### ADD PRECISION
+  tmp$precision<-tmp$SE_length/tmp$lhat
+  ### FORMULATE OUTPUT
+  tmp<-tmp[,c("b_segment","year","gear","mean_length","lhat","bias","precision",
+              "perform","estimator")]
+  names(tmp)[1]<-"segment"
+  return(tmp)
+}
  
 #######################################################################
 # MISC UNUSED FUNCTIONS FOR FUTURE REFERENCE
