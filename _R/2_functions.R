@@ -292,14 +292,13 @@ reference_population<- function(inputs,...)
         names(app)[2]<-paste("yr",i,sep="_")
         out<-merge(out,app, by="id", all=TRUE)
         }
-    out[is.na(out)]<-0  # NAs for no fish in bend
-    ## IN CASE THERE WERE BENDS WITH NO FISH 
+    ## IN CASE THERE WERE BENDS WITH NO FISH EVERY YEAR
     out<-merge(out,data.frame(id=tmp$id), by="id", all=TRUE)
+    out[is.na(out)]<-0  # NAs for no fish in bend
     if(nrow(out)!=nrow(tmp))
         {
         return(print("ERROR IN BEND ABUNDANCE MERGE"))
         } #ERROR HANDLING FOR DOUBLE CHECKING
-    out[is.na(out)]<-0
     out<-out[order(out$id),]
     #if(is.null(Linf)){l<-0}
     out<-list(out=as.matrix(out[,-c(1)]), 
@@ -416,8 +415,9 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     b_abund<-sim_pop$out
     individual_meta<-sim_pop$individual_meta
     individual_meta<-individual_meta[order(individual_meta$fish_id),]
+    l<-sim_pop$l
     BND<-sim_pop$BND
-    #inputs<-c(inputs,sim_pop$inputs)
+    inputs<-c(sim_pop$inputs,inputs)
     sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
 
     # LOG-ODDS CATCHABILITY BY GEAR
@@ -497,7 +497,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     ### INITIATE CLUSTER
     cl<-makeCluster(numCores)
     ### MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
-    clusterExport(cl, c("sampled", "individual_meta","BND","tmp",
+    clusterExport(cl, c("sampled", "individual_meta","l","BND","tmp",
                         "gears","occasions","b_samp"),
                   envir=environment())
     ch<-parLapply(cl,1:ncol(sampled),function(yr)
@@ -516,6 +516,8 @@ catch_data<-function(sim_pop=NULL,inputs,...)
                 tmp1$year<-yr
                 ## EXPAND FOR INDIVIDUALS
                 tmp1<-merge(tmp1,data.frame(fish_id=indx),all=TRUE)
+                ## ADD INDIVIDUAL LENGTHS
+                tmp1$length<-l[indx,yr]
                 ## EXPAND FOR GEARS
                 tmp1<-tmp1[rep(seq_len(nrow(tmp1)), each=length(gears)),]
                 tmp1$gear<-rep(gears, times=length(indx))
@@ -552,8 +554,10 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     
     # PROCESS THE DATA
     tmp1<-aggregate(length.rkm~b_segment, tmp,sum)
+    names(tmp1)[2]<-"seg_rkm"
     tmp1<-tmp1[rep(seq_len(nrow(tmp1)),ncol(b_abund)),]
     tmp1$year<-rep(1:ncol(b_abund), each=length(unique(tmp$b_segment)))
+    # SEGMENT ABUNDANCE BY YEAR
     s_abund<-sapply(1:max(tmp$phi_indx), function(i)
         {
         r<-which(tmp$phi_indx==i)
@@ -566,15 +570,30 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         })
     tmp1<-tmp1[order(tmp1$b_segment,tmp1$year),]
     tmp1$abundance<-c(s_abund)
-    phi<-matrix(0,nrow=nrow(s_abund),ncol=ncol(s_abund))
-    for(i in 1:(nrow(phi)-1))
+    # SEGMENT MEAN LENGTH BY YEAR
+    s_length<-sapply(1:max(tmp$phi_indx), function(i)
+    {
+      r<-which(tmp$phi_indx==i) #find ids (bends) in segment
+      seg_i<-sapply(1:ncol(BND),function(yr)
         {
-        phi[i,]<-s_abund[i+1,]/s_abund[i,]
-        }
-    phi[nrow(phi),]<-NA
-    tmp1$phi<-c(phi)
-    tmp1$density<-tmp1$abundance/tmp1$length.rkm
-    tmp1<-tmp1[,c(1,3:6)]
+          z<-which(BND[,yr] %in% r)
+          if(length(z)==0) out<-NA
+          if(length(z)!=0) out<-mean(l[z,yr])
+          return(out)
+        })
+      return(seg_i)
+    })
+    tmp1<-tmp1[order(tmp1$b_segment,tmp1$year),]
+    tmp1$mean_length<-c(s_length)
+    #phi<-matrix(0,nrow=nrow(s_abund),ncol=ncol(s_abund))
+    #for(i in 1:(nrow(phi)-1))
+    #    {
+    #    phi[i,]<-s_abund[i+1,]/s_abund[i,]
+    #    }
+    #phi[nrow(phi),]<-NA
+    #tmp1$phi<-c(phi)
+    #tmp1$density<-tmp1$abundance/tmp1$length.rkm
+    #tmp1<-tmp1[,c(1,3:6)]
     b_samp<-b_samp[,which(names(b_samp)!="p")]
     ch<-ch[,which(names(ch)!="ch")]
     inputs<-c(sim_pop$inputs, inputs)
@@ -738,26 +757,24 @@ M0t.est<-function(sim_dat=NULL,...)
 
 
 
-## 8. GETTING ABUNDANCE AND TREND
+## 8. GETTING ABUNDANCE AND TREND ESTIMATES
 abund.trnd<-function(est=NULL,...) 
 {
   # FIND ACTUAL SEGMENT ABUNDANCES
-  true_abund<-est$true[,1:3]
-  names(true_abund)[1]<-"segment"
+  names(est$true)[1]<-"segment"
+  true_abund<-est$true[,c("segment","year","abundance")]   #HERE
   
   # FIND ACTUAL POPULATION TREND BY GEAR
-  est$true$b_segment<- as.factor(est$true$b_segment)
-  fit<-lm(log(abundance)~b_segment+year,est$true)
+  est$true$segment<- as.factor(est$true$segment) #HERE
+  fit<-lm(log(abundance)~segment+year,est$true)
   pop_trnd<-unname(coef(fit)['year'])
   
   # FIND SEGMENT LENGTHS
-  bends<-est$inputs$bends
-  seg_length<-aggregate(length.rkm~b_segment, data=bends,sum)
-  names(seg_length)<-c("segment","seg_rkm")
+  seg_length<-aggregate(seg_rkm~segment, data=est$true,mean) #HERE
   
   # PULL ESTIMATES AND INPUTS
   tmp<-est$est
-  gears<-est$inputs$gears
+  gears<-est$inputs$gears #HERE
   
   # CPUE ESTIMATES
   if(tmp$estimator[1]=="CPUE")
@@ -972,6 +989,30 @@ abund.trnd<-function(est=NULL,...)
     return(list(trnd=out, abund=ests))
   }
 }
+
+
+
+
+## 9. GETTING LENGTH ESTIMATES
+length.dat<-function(sim_dat=NULL,...)
+{
+  # FIND ACTUAL SEGMENT-LEVEL MEAN LENGTH
+    true_abund<-est$true[,1:3]
+    names(true_abund)[1]<-"segment"
+
+# FIND ACTUAL POPULATION TREND BY GEAR
+est$true$b_segment<- as.factor(est$true$b_segment)
+fit<-lm(log(abundance)~b_segment+year,est$true)
+pop_trnd<-unname(coef(fit)['year'])
+
+# FIND SEGMENT LENGTHS
+bends<-est$inputs$bends
+seg_length<-aggregate(length.rkm~b_segment, data=bends,sum)
+names(seg_length)<-c("segment","seg_rkm")
+
+# PULL ESTIMATES AND INPUTS
+tmp<-est$est
+gears<-est$inputs$gears
  
  
 #######################################################################
