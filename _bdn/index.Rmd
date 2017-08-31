@@ -97,6 +97,6 @@ Lavage
 Stomach removal	
 EDNA	
 Hatchery report and data	
-Closed population estimaators
+Closed population estimators
 Smaller gill mesh
 Use trammel nets
