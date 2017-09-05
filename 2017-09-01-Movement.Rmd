@@ -3,7 +3,7 @@ title: "August 31st Webinar Follow-Up:  Movement"
 output: 
   html_document:
   includes:
-  in_header: header_banner.html 
+    in_header: header_banner.html 
 bibliography: PSref.bib
 csl: ecology.csl  
 ---
