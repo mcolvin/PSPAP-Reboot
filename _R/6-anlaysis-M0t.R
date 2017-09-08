@@ -44,7 +44,9 @@ lapply(1:200, function(i)
   })
 })
 proc.time()-ptm
-
+# CRUNCH FOR 200 RUNS (ABOUT 31 HOURS OR 9.3 MINUTES A PIECE)
+# user       system     elapsed 
+# 6128.45    358.91     112122.03
 
 
 
