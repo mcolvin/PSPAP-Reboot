@@ -54,6 +54,18 @@ inputs$mv_beta1<-c(1,1)
 inputs$dis<-sp$dis
 #inputs$direct<-sp$direct
 
+# RECRUITMENT
+## Recruits ~ Poisson(Recuitment_occurs(exp(beta0+disp)))
+## Recruitment_occurs~Bernoulli(1/frequency)
+## ASSUMES NO SPAWNER RECRUIT RELATIONSHIP, REASOANBLE FOR THIS POPULATION
+## APLLIES SAME VALUES TO UPPER AND LOWER, CAN TEASE OUT IN BDN
+inputs$upper$r_beta0<- 5.5    # ln(MEAN RECRUITS)|RECRUITMENT
+inputs$lower$r_beta0<- 5.5    # ln(MEAN RECRUITS)|RECRUITMENT
+inputs$upper$r_freq<-  3      # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
+inputs$lower$r_freq<-  3      # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
+
+
+
 # RUN IN PARALLEL
 ptm<-proc.time()
 nreps<-200
