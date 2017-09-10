@@ -64,6 +64,11 @@ reference_population<- function(inputs,...)
     mv_beta0<-inputs$mv_beta0
     mv_beta1<-inputs$mv_beta1
     dis<- inputs$dis
+    mv_beta0<- inputs$mv_beta0
+    mv_beta1<-inputs$mv_beta1
+    dis<-inputs$dis
+    
+    
     #direct<- inputs$direct #UNUSED
     
     # this function allocates fish to bends within a segment
@@ -174,22 +179,22 @@ reference_population<- function(inputs,...)
     ## ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
     ln_Linf<-ifelse(segs %in% c(1:4), inputs$upper$ln_Linf_mu,
                     inputs$lower$ln_Linf_mu) 
-      # a vector of mean Linf values, one entry for each segment
+    # a vector of mean Linf values, one entry for each segment
     ln_k<-ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
       # a vector of mean k values, one entry for each segment
     ln_vbgf_vcv<-array(0,dim=c(2,2,length(segs)))
     for(i in 1:length(segs))
-    {
-      if(segs[i] %in% c(1:4)) {ln_vbgf_vcv[,,i]<-inputs$upper$vcv}
-      if(segs[i] %in% c(7:10,13,14)) {ln_vbgf_vcv[,,i]<-inputs$lower$vcv}
-    } # an array of variance and covariances for Linf and k
-      # each matrix is for a segment
+        {
+        if(segs[i] %in% c(1:4)) {ln_vbgf_vcv[,,i]<-inputs$upper$vcv}
+        if(segs[i] %in% c(7:10,13,14)) {ln_vbgf_vcv[,,i]<-inputs$lower$vcv}
+        } # an array of variance and covariances for Linf and k
+            # each matrix is for a segment
     ln_vals<-lapply(1:nrow(individual_meta),function(m)
-      {
+        {
         mvrnorm(n=1,c(ln_Linf[individual_meta$phi_indx[m]],
                       ln_k[individual_meta$phi_indx[m]]),
               ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
-      })
+        })
     ln_vals<-do.call("rbind",ln_vals)
     individual_meta$k<-exp(ln_vals[,2]) 
     individual_meta$Linf<-exp(ln_vals[,1]) 
@@ -222,6 +227,7 @@ reference_population<- function(inputs,...)
     ## 1. SUVIVAL
     ## 2. GROWTH
     ## 3. MOVEMENT
+    ## 4. RECRUITMENT
     ###############################################################
     bends2segs<-ddply(individual_meta, .(id), summarize,
                       rpma=mean(rpma),
@@ -234,49 +240,110 @@ reference_population<- function(inputs,...)
                                  phi_indx=tmp$phi_indx[which(tmp$N_ini==0)]),
                       bends2segs,
                       by=c("id","rpma","b_id","phi_indx"),all=TRUE)
-    for(m in 1:sum(Z[,1]))
-        {# loop over individuals
-        for(i in 2:nyears)
-            {# loop over each year
-            #INDEX FOR LOCATION OF FISH IN PREVIOUS TIME STEP  
-            seg_indx<-ifelse(Z[m,i-1]>0,bends2segs$phi_indx[which(
-              bends2segs$id==BND[m,i-1])],1)# Using 1 when FALSE is 
-                                            # arbitrary and only a placeholder
-                                            # since fish is dead at this point
-            b_indx<-ifelse(Z[m,i-1]>0,bends2segs$b_id[which(
-              bends2segs$id==BND[m,i-1])],1)# Using 1 when FALSE is 
-                                            # arbitrary and only a placeholder
-                                            # since fish is dead at this point
-            ## 1. SURVIVAL
-            Z[m,i]<- rbinom(1,
-                size=1,
-                prob=phi[seg_indx,i-1]*Z[m,i-1])
-            ## 2. FABENS MODEL FOR GROWTH (VBGF)
-            l[m,i]<-(l[m,i-1] + (individual_meta$Linf[m]-l[m,i-1])*(1-exp(-individual_meta$k[m])))*Z[m,i]
-                # 0 growth if dead 
-            ## 3. MOVEMENT MODEL
-            if(individual_meta$rpma[m]==2 & Z[m,i]>0)
+        
+                      
+    # BEGIN POPULATION SIMULATION 
+    for(i in 2:nyears)
+        {# loop over each year
+        
+        ## 4. RECRUITMENT
+        ### HOW MANY RECRUITS AGE-1 
+        recruits_upper<- rbinom(1,1,1/inputs$upper$r_freq)*rpois(1,exp(inputs$upper$r_beta0))
+        recruits_lower<- rbinom(1,1,1/inputs$lower$r_freq)*rpois(1,exp(inputs$lower$r_beta0))
+       
+        ### RECRUIT TO POPULATION
+        if(sum(recruits_upper,recruits_lower)>0)
+            {
+            ### ASSIGN AN LENGTH AND GROWTH PARAMETERS
+            new_recruits<- data.frame(
+                rpma=c(rep(2,recruits_upper),rep(4,recruits_lower)))
+            ### ASSIGN A SEGMENT AND BEND
+            recruit_loc<- lapply(1:nrow(new_recruits),function(x)
                 {
-                y<- exp(mv_beta0[1]+
-                    mv_beta1[1]*dis$rpma2[b_indx,])
-                y[which(dis$rpma2[b_indx,]==0)]<-1
-                p<- y/sum(y)
-                BND[m,i]<- sample(x=subset(tmp,rpma==2)$id,
-                    size=1,
-                    prob=p)
-                } # end if 
-             if(individual_meta$rpma[m]==4 & Z[m,i]>0)# needs to be alive
+                bend<- sample(tmp[which(tmp$rpma==new_recruits$rpma[x]),]$b_id,1)
+                segment<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$b_segment
+                phi_indx= tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$phi_indx
+                return(list(b_id=bend,b_segment=segment,phi_indx=phi_indx))
+                })
+            recruit_loc<-as.data.frame(do.call("rbind",recruit_loc))
+            new_recruits$b_segment<- unlist(recruit_loc$b_segment)
+            new_recruits$b_id<- unlist(recruit_loc$b_id)
+            new_recruits$phi_indx<- unlist(recruit_loc$phi_indx)
+            
+            ### GROWTH PARAMETES FOR NEW RECRUITS
+            ln_vals<-lapply(1:nrow(new_recruits),function(m)
                 {
-                y<- exp(mv_beta0[2]+
-                    mv_beta1[2]*dis$rpma4[b_indx,])
-                y[which(dis$rpma4[b_indx,]==0)]<-1
-                p<- y/sum(y)
-                BND[m,i]<- sample(x=subset(tmp,rpma==4)$id,
-                    size=1,
-                    prob=p)
-                } # end if  
+                mvrnorm(n=1,c(ln_Linf[new_recruits$phi_indx[m]],
+                              ln_k[new_recruits$phi_indx[m]]),
+                      ln_vbgf_vcv[,,new_recruits$phi_indx[m]])
+                })
+        
+            ln_vals<-do.call("rbind",ln_vals)
+            new_recruits$k<-exp(ln_vals[,2]) 
+            new_recruits$Linf<-exp(ln_vals[,1]) 
+            individual_meta<-rbind.fill(individual_meta,new_recruits)      
+                  
+            ## UPDATA MATRICES: Z, L, BEND..
+            ### MATRICES TO APPEND TO OTHER
+            BND_recruits<-l_recruits<-Z_recruits<- matrix(0,nrow=sum(recruits_upper,recruits_lower),ncol=nyears)
+            
+            # ALIVE OR NOT
+            Z_recruits[,i-1]<-1 # had to be alive in previous year to recruit
+            Z<-rbind(Z,Z_recruits)
+            
+            # LENGTH AT AGE 0
+            l_recruits[,i-1]<-200 ## 250mm calibrates to ~ 325 mm at age-1
+            l<-rbind(l,l_recruits)
+            
+            ## BEND
+            BND_recruits[,i-1]<-new_recruits$b_id
+            BND<-rbind(BND,BND_recruits)
             }
-        }
+        
+            for(m in 1:sum(Z[,1]))
+                {# loop over individuals
+                #INDEX FOR LOCATION OF FISH IN PREVIOUS TIME STEP  
+                seg_indx<-ifelse(Z[m,i-1]>0,bends2segs$phi_indx[which(
+                  bends2segs$id==BND[m,i-1])],1)# Using 1 when FALSE is 
+                                                # arbitrary and only a placeholder
+                                                # since fish is dead at this point
+                b_indx<-ifelse(Z[m,i-1]>0,bends2segs$b_id[which(
+                  bends2segs$id==BND[m,i-1])],1)# Using 1 when FALSE is 
+                                                # arbitrary and only a placeholder
+                                                # since fish is dead at this point
+                ## 1. SURVIVAL
+                Z[m,i]<- rbinom(1,
+                    size=1,
+                    prob=phi[seg_indx,i-1]*Z[m,i-1])
+                ## 2. FABENS MODEL FOR GROWTH (VBGF)
+                l[m,i]<-(l[m,i-1] + (individual_meta$Linf[m]-l[m,i-1])*(1-exp(-individual_meta$k[m])))*Z[m,i]
+                    # 0 growth if dead 
+                ## 3. MOVEMENT MODEL
+                if(individual_meta$rpma[m]==2 & Z[m,i]>0)
+                    {
+                    y<- exp(mv_beta0[1]+
+                        mv_beta1[1]*dis$rpma2[b_indx,])
+                    y[which(dis$rpma2[b_indx,]==0)]<-1
+                    p<- y/sum(y)
+                    BND[m,i]<- sample(x=subset(tmp,rpma==2)$id,
+                        size=1,
+                        prob=p)
+                    } # end if 
+                 if(individual_meta$rpma[m]==4 & Z[m,i]>0)# needs to be alive
+                    {
+                    y<- exp(mv_beta0[2]+
+                        mv_beta1[2]*dis$rpma4[b_indx,])
+                    y[which(dis$rpma4[b_indx,]==0)]<-1
+                    p<- y/sum(y)
+                    BND[m,i]<- sample(x=subset(tmp,rpma==4)$id,
+                        size=1,
+                        prob=p)
+                    } # end if
+                }
+        } # END POPOULATION SIMULATION
+        
+        
+    ## PROCESS POPULATION AND RETURN    
     l[l==0]<-NA
     BND[BND==0]<-NA
     # MATRIX OF BEND LEVEL ABUNDANCES TO RETURN
