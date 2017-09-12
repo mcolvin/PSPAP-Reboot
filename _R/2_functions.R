@@ -64,11 +64,6 @@ reference_population<- function(inputs,...)
     mv_beta0<-inputs$mv_beta0
     mv_beta1<-inputs$mv_beta1
     dis<- inputs$dis
-    mv_beta0<- inputs$mv_beta0
-    mv_beta1<-inputs$mv_beta1
-    dis<-inputs$dis
-    
-    
     #direct<- inputs$direct #UNUSED
     
     # this function allocates fish to bends within a segment
@@ -196,8 +191,8 @@ reference_population<- function(inputs,...)
               ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
         })
     ln_vals<-do.call("rbind",ln_vals)
-    individual_meta$k<-exp(ln_vals[,2]) 
     individual_meta$Linf<-exp(ln_vals[,1]) 
+    individual_meta$k<-exp(ln_vals[,2])
     ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
     Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
@@ -254,21 +249,24 @@ reference_population<- function(inputs,...)
         ### RECRUIT TO POPULATION
         if(sum(recruits_upper,recruits_lower)>0)
             {
-            ### ASSIGN AN LENGTH AND GROWTH PARAMETERS
+            ### ASSIGN A LENGTH AND GROWTH PARAMETERS
             new_recruits<- data.frame(
                 rpma=c(rep(2,recruits_upper),rep(4,recruits_lower)))
             ### ASSIGN A SEGMENT AND BEND
             recruit_loc<- lapply(1:nrow(new_recruits),function(x)
                 {
                 bend<- sample(tmp[which(tmp$rpma==new_recruits$rpma[x]),]$b_id,1)
+                  #MAKE PROBABILITY BASED ON BEND LENGTH, LOCATION, IRC HABITAT AVAILABILITY ETC???
                 segment<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$b_segment
-                phi_indx= tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$phi_indx
-                return(list(b_id=bend,b_segment=segment,phi_indx=phi_indx))
+                phi_indx<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$phi_indx
+                id<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$id
+                return(list(b_id=bend,b_segment=segment,phi_indx=phi_indx, id=id))
                 })
             recruit_loc<-as.data.frame(do.call("rbind",recruit_loc))
             new_recruits$b_segment<- unlist(recruit_loc$b_segment)
             new_recruits$b_id<- unlist(recruit_loc$b_id)
             new_recruits$phi_indx<- unlist(recruit_loc$phi_indx)
+            new_recruits$id<-unlist(recruit_loc$id)
             
             ### GROWTH PARAMETES FOR NEW RECRUITS
             ln_vals<-lapply(1:nrow(new_recruits),function(m)
@@ -279,28 +277,31 @@ reference_population<- function(inputs,...)
                 })
         
             ln_vals<-do.call("rbind",ln_vals)
+            new_recruits$Linf<-exp(ln_vals[,1])
             new_recruits$k<-exp(ln_vals[,2]) 
-            new_recruits$Linf<-exp(ln_vals[,1]) 
+            new_recruits$fish_id<-(max(individual_meta$fish_id)+1):(max(individual_meta$fish_id)+sum(recruits_upper,recruits_lower))
             individual_meta<-rbind.fill(individual_meta,new_recruits)      
                   
-            ## UPDATA MATRICES: Z, L, BEND..
+            ## UPDATE MATRICES: Z, L, BND
             ### MATRICES TO APPEND TO OTHER
             BND_recruits<-l_recruits<-Z_recruits<- matrix(0,nrow=sum(recruits_upper,recruits_lower),ncol=nyears)
             
             # ALIVE OR NOT
             Z_recruits[,i-1]<-1 # had to be alive in previous year to recruit
             Z<-rbind(Z,Z_recruits)
+              ## WHERE ARE WE GETTING THE FECUNDITY BIT...SINCE SURVIVAL TO AGE 1 COULD BE IN PLACE TWICE NOW
             
             # LENGTH AT AGE 0
             l_recruits[,i-1]<-200 ## 250mm calibrates to ~ 325 mm at age-1
             l<-rbind(l,l_recruits)
+              ## ADD VARIATION IN AGE 0 SIZE???
             
             ## BEND
-            BND_recruits[,i-1]<-new_recruits$b_id
+            BND_recruits[,i-1]<-new_recruits$id
             BND<-rbind(BND,BND_recruits)
             }
         
-            for(m in 1:sum(Z[,1]))
+            for(m in 1:nrow(Z))
                 {# loop over individuals
                 #INDEX FOR LOCATION OF FISH IN PREVIOUS TIME STEP  
                 seg_indx<-ifelse(Z[m,i-1]>0,bends2segs$phi_indx[which(
