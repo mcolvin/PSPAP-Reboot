@@ -1,3 +1,70 @@
+if(pcname!="WF-FGNL842")
+{
+  catch_list<-dir("D:/_output/2-catch", pattern="catch_dat_")
+  lapply(1:length(catch_list), function(x)
+  {
+    id<-strsplit(catch_list[x], "catch_dat_")[[1]][2]
+    sim_dat<-readRDS(file=paste0("D:/_output/2-catch/", catch_list[x]))
+    est_list<-dir("D:/_output/3-estimates", pattern=id)
+    if(length(est_list)>0)
+    {
+      tmp<-lapply(1:length(est_list),function(y)
+      {
+        est<-readRDS(file=paste0("D:/_output/3-estimates/",est_list[y]))
+        out<-abund.trnd(est=est,sim_dat=sim_dat)
+        # REFORMAT M0t TREND OUTPUTS
+        if(strsplit(est_list[y],"_est_")[[1]][1]=="M0t")
+        {
+          tmpA<-out$trnd[,c(1:6,11,12)]
+          tmpA$estimator<-paste0(tmpA$estimator,"_AM")
+          colnames(tmpA)<-gsub("_AM", "", colnames(tmpA))
+          tmpW<-out$trnd[,c(1,2,7:12)]
+          tmpW$estimator<-paste0(tmpW$estimator,"_WM")
+          colnames(tmpW)<-gsub("_WM", "", colnames(tmpW))
+          out$trnd<-rbind(tmpA,tmpW)
+        }
+        return(out)
+      })
+      # COLLECT OUTPUT
+      trnd<-do.call(rbind,lapply(tmp, `[[`, 1))
+      abund<-do.call(rbind,lapply(tmp, `[[`, 2))
+      lgth<-length.dat(sim_dat = sim_dat)
+      # SAVE OUTPUT
+      out<-list(trnd=trnd, abund=abund, lgth=lgth)
+      saveRDS(out,file=paste0("D:/_output/4-utilities/abund_trnd_lgth_",id))
+      
+      trnd$id<-strsplit(id,".rds")[[1]][1]
+    }
+
+
+lapply(1:length(est_list), function(x)
+{
+  id<-strsplit(est_list[x], "_est_")[[1]][2]
+  if(pcname=="WF-FGNL842")
+  {
+    sim_dat<-readRDS(file=paste0("E:/_output/2-catch/catch_dat_", id))
+    est<-readRDS(file=paste0("E:/_output/3-estimates/",est_list[x]))
+  }
+  if(pcname!="WF-FGNL842")
+  {
+    sim_dat<-readRDS(file=paste0("D:/_output/2-catch/catch_dat_", id))
+    est<-readRDS(file=paste0("D:/_output/3-estimates/",est_list[x]))
+  }
+  out<-abund.trnd(est=est,sim_dat=sim_dat)
+  out$length<-length.dat(sim_dat = sim_dat)
+  out$extras<-data.frame(flags=, mean_q_input=, B0_sd_input=, mean_q_realized=, q_sd_realized=,samp_type=,deployments=,occasions=sim_dat$inputs$occasions,total_effort=,id=strsplit(id, ".rds"))
+  if(pcname=="WF-FGNL842")
+  {
+    saveRDS(out,file=paste0("E:/_output/4-utilities/est_eval_", id))
+  }
+  if(pcname!="WF-FGNL842")
+  {
+    saveRDS(out,file=paste0("D:/_output/4-utilities/est_eval_", id))
+  }
+  
+}
+
+
 # ESTIMATOR RESULTS FOR CONDITIONAL PROBABILITY TABLES
 ## 1. TREND
 ## 2. ABUNDANCE
