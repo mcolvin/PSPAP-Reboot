@@ -828,239 +828,365 @@ M0t.ests<-function(sim_dat=NULL,...)
 
 
 ## 8. GETTING ABUNDANCE AND TREND ESTIMATES
-abund.trnd<-function(est=NULL, 
-                     sim_dat=NULL, # NEEDS  TO MATCH EST!
-                     ...) 
-{
-  # FIND ACTUAL SEGMENT ABUNDANCES
-  true<-sim_dat$true_vals
-  names(true)[1]<-"segment"
-  true_abund<-true[,c("segment","year","abundance")]
+abund.trnd<-function(samp_type=NULL, 
+                     pop_num=NULL, 
+                     catch_num=NULL,
+                     location=NULL, #Optional: character string describing where "_output" is located when not located in GitHub; Ex. for Crunch use "E:/"  
+                     est_type=NULL, #Optional: for when only a subset of available estimate types should be evaluated; character vector ("CPUE", "M0", etc.)
+                     ...)       
+                     
+{ 
+  ## ERROR HANDLING
+  if(samp_type!="r" & samp_type!="f")
+  {return(print("samp_type needs to be one of two characters: \n
+                r, which randomly selects bends for each year of sampling or \n
+                f, which randomly selects a single set of bends and fixes them
+                to be sampled every year \n"))}
   
-  # FIND ACTUAL POPULATION TREND BY GEAR
-  true$segment<- as.factor(true$segment)
-  fit<-lm(log(abundance)~segment+year,true)
-  pop_trnd<-unname(coef(fit)['year'])
-  
-  # FIND SEGMENT LENGTHS
-  seg_length<-aggregate(seg_rkm~segment, data=true,mean)
-  
-  # PULL ESTIMATES AND INPUTS
-  tmp<-est
-  gears<-sim_dat$inputs$gears
-  
-  # CPUE ESTIMATES
-  if(tmp$estimator[1]=="CPUE")
+  # PULL CATCH DATA AND ASSOCIATED ESTIMATES
+  id<-paste0(samp_type, "_", pop_num, "-", catch_num)
+  sim_dat<-readRDS(file=paste0(location,"_output/2-catch/catch_dat_",id,".rds"))
+  est_list<-dir(paste0(location, "_output/3-estimates"), pattern=id)
+  if(length(est_type)>0)
   {
-    ## ADD ESTIMATED BEND DENSITY
-    tmp$catch_dens<-tmp$catch/tmp$rkm
-    ## GET SEGMENT LEVEL ESTIMATES BY YEAR AND GEAR
-    ests<-ddply(tmp,.(segment,year,gear),
-                summarize,
-                samp_size=length(catch),
-                mean_dens=mean(catch_dens),
-                sd_dens=sd(catch_dens),
-                catch=sum(catch),
-                effort=sum(effort),
-                samp_rkm=sum(rkm))
-    ests$WM_dens<-ests$catch/ests$samp_rkm
-    ## ADD SEGMENT LENGTHS, PERFORMANCE, AND ESTIMATOR
-    ests<-merge(ests,seg_length, by="segment",all.x=TRUE)
-    ests$perform<-1
-    ests$estimator<-"CPUE"
-    
-    # ABUNDANCE
-    ## ESTIMATE SEGMENT ABUNDANCE
-    ests$Nhat_AM<-ests$seg_rkm*ests$mean_dens #arithmetic mean
-    ests$Nhat_WM<-ests$seg_rkm*ests$WM_dens #weighted arithmetic mean
-    ## ADD TRUE ABUNDANCE
-    ests<-merge(ests, true_abund, by=c("segment","year"), all.x=TRUE)
-    ## ADD BIAS
-    ests$bias_AM<-ests$Nhat_AM-ests$abundance
-    ests$bias_WM<-ests$Nhat_WM-ests$abundance
-    ## ADD PRECISION
-    ### CALCULATE WEIGHTED MEAN SD
-    tmp<-merge(tmp, ests[,c("segment","year","gear","WM_dens","samp_rkm")],
-               by=c("segment","year","gear"),all.x=TRUE)
-    tmp$diffsq<-(tmp$catch_dens-tmp$WM_dens)^2
-    Wsd<-ddply(tmp,.(segment,year,gear),
-               summarize,
-               Wsd_dens=sqrt(sum((rkm/samp_rkm)*diffsq)))
-    ests<-merge(ests,Wsd, by=c("segment","year","gear"))
-    ### CALCULATE CV
-    ests$precision_AM<-ests$sd_dens/abs(ests$Nhat_AM)
-    ests$precision_WM<-ests$Wsd_dens/abs(ests$Nhat_WM)    
-    
-    # TREND
-    ## ADD SEGMENT-LEVEL CPUE AND LN(CPUE)
-    ### USE CATCH +1 TO AVOID CPUE=0
-    ests$catch1<-ests$catch+1
-    ests$cpue1<-ests$catch1/ests$effort
-    ests$lncpue1<-log(ests$cpue1)
-    ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
-    ests$segment<- as.factor(ests$segment)
-    out<-lapply(gears,function(g)
-    {
-      fit<- lm(lncpue1~segment+year, ests, subset=gear==g)
-      tmp2<- data.frame( 
-        # THE GOODIES
-        ## GEAR
-        gear=g,
-        ## TREND ESTIMATE
-        trnd=coef(fit)['year'],
-        ## STANDARD ERROR FOR TREND ESTIMATE
-        se=summary(fit)$coefficients['year',2],
-        ## PVALUE FOR TREND ESTIMATE
-        pval=summary(fit)$coefficients['year',4])
-      return(tmp2)
-    })
-    out<-do.call(rbind,out)
-    ## ADD POPULATION TREND
-    out$pop_trnd<-pop_trnd
-    ## CALCULATE TREND BIAS
-    out$bias<-out$trnd-out$pop_trnd
-    ## CALCULATE TREND PRECISION
-    out$precision<-out$se/abs(out$trnd)
-
-    # OUTPUT THE GOODIES
-    out<-out[,c("gear", "pop_trnd","trnd","bias","precision","pval")]
-    out$perform<-1
-    out$estimator<-"CPUE"
-    ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
-                  "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
-                  "estimator")]
-    return(list(trnd=out,abund=ests))
+    indx<-lapply(est_type, function(i){grep(i,est_list)})
+    indx<-unlist(indx)
+    est_list<-est_list[indx]
   }
-
-  # M0 & Mt ESTIMATES
-  if(tmp$estimator[1]=="M0"|tmp$estimator[1]=="Mt")
-  {
-    ## CLEAN UP DATA
-    ### MAKE NON-CONVERGED MODELS AND NO FISH MODELS NA
-    tmp[tmp$fit!=0,]$Nhat<-NA 
-    tmp[tmp$fit!=0,]$SE_Nhat<-NA
-    tmp[tmp$fit!=0,]$p<-NA
-    tmp[is.na(tmp$Nhat),]$rkm<-NA  #important for WM calculation
-    ## ADD ESTIMATED BEND DENSITY
-    tmp$dens<-tmp$Nhat/tmp$rkm
-    ## GET SEGMENT LEVEL ESTIMATES BY YEAR, GEAR, AND ESTIMATE TYPE
-    ests<-ddply(tmp,.(segment,year,gear,estimator),
-                summarize,
-                mean_dens=mean(dens,na.rm = TRUE),
-                n_st=length(which(!is.na(dens))), #samp_size???
-                v_tmp=sum((1/rkm)^2*SE_Nhat^2,na.rm=TRUE),
-                N_sst=sum(Nhat,na.rm=TRUE),
-                d_sst=sum(rkm,na.rm=TRUE),  #samp_rkm??? #CHECK ON THESE!!! WAS rkm_M0 and above just rkm
-                v_tmp2=sum(SE_Nhat^2, na.rm=TRUE),
-                perform=length(which(fit==0))/length(fit))
-    ests$dens_sst<-ests$N_sst/ests$d_sst
-        # To remove segments that had no bends with successful
-        # sampling catch data for the given gear:
-        # ests<-subset(ests,n_st!=0)
-    ## ADD SEGMENT LENGTHS
-    ests<-merge(ests,seg_length, by="segment",all.x=TRUE)
+  if(length(est_list)==0)  
+  {return(print("There is no estimate data of type 'est_type' for reference population \n
+                'pop_num' and catch data run 'catch_num' with sampling 'samp_type' in \n
+                 specified location."))}
     
-    # ABUNDANCE
-    ## ESTIMATE SEGMENT ABUNDANCE
-    ests$Nhat_AM<-ests$seg_rkm*ests$mean_dens
-    ests$Nhat_WM<-ifelse(ests$n_st>0,ests$seg_rkm*ests$dens_sst,NA)
-    ## ADD TRUE ABUNDANCE
-    ests<-merge(ests, true_abund, by=c("segment","year"), all.x=TRUE)
-    ## ADD BIAS
-    ests$bias_AM<-ests$Nhat_AM-ests$abundance
-    ests$bias_WM<-ests$Nhat_WM-ests$abundance
-    ## ADD PRECISION
-    ### CALCULATE VARIANCES
-    ests$var_AM<-(ests$seg_rkm/ests$n_st)^2*ests$v_tmp
-    ests$var_WM<-ifelse(ests$n_st>0,(ests$seg_rkm/ests$d_sst)^2*ests$v_tmp2,NA)
-    ### CALCULATE CV
-    ests$precision_AM<-sqrt(ests$var_AM)/abs(ests$Nhat_AM)
-    ests$precision_WM<-sqrt(ests$var_WM)/abs(ests$Nhat_WM)
-    
-    # TREND
-    ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
-    out<-lapply(gears,function(g)
+  
+  # COMPILE SEGMENT LEVEL BASED TREND AND ABUNDANCE ESTIMATES
+  outt<-lapply(est_list,function(x)
     {
-      tmp<-subset(ests, gear==g)
-      out2<-lapply(unique(tmp$estimator), function(e)
+    # PULL ESTIMATOR RESULTS
+    est<-readRDS(file=paste0(location,"_output/3-estimates/",x))
+    # FIND ACTUAL SEGMENT ABUNDANCES
+    true<-sim_dat$true_vals
+    names(true)[1]<-"segment"
+    true_abund<-true[,c("segment","year","abundance")]
+  
+    # FIND ACTUAL POPULATION TREND BY GEAR
+    true$segment<- as.factor(true$segment)
+    fit<-lm(log(abundance)~segment+year,true)
+    pop_trnd<-unname(coef(fit)['year'])
+  
+    # FIND SEGMENT LENGTHS
+    seg_length<-aggregate(seg_rkm~segment, data=true,mean)
+  
+    # PULL ESTIMATES AND INPUTS
+    tmp<-est
+    gears<-sim_dat$inputs$gears
+  
+    # CPUE ESTIMATES
+    if(tmp$estimator[1]=="CPUE")
+    {
+      ## ADD ESTIMATED BEND DENSITY
+      tmp$catch_dens<-tmp$catch/tmp$rkm
+      ## GET SEGMENT LEVEL ESTIMATES BY YEAR AND GEAR
+      ests<-ddply(tmp,.(segment,year,gear),
+                  summarize,
+                  samp_size=length(catch),
+                  mean_dens=mean(catch_dens),
+                  sd_dens=sd(catch_dens),
+                  catch=sum(catch),
+                  effort=sum(effort),
+                  samp_rkm=sum(rkm))
+      ests$WM_dens<-ests$catch/ests$samp_rkm
+      ## ADD SEGMENT LENGTHS, PERFORMANCE, AND ESTIMATOR
+      ests<-merge(ests,seg_length, by="segment",all.x=TRUE)
+      ests$perform<-1
+      ests$estimator<-"CPUE"
+    
+      # ABUNDANCE
+      ## ESTIMATE SEGMENT ABUNDANCE
+      ests$Nhat_AM<-ests$seg_rkm*ests$mean_dens #arithmetic mean
+      ests$Nhat_WM<-ests$seg_rkm*ests$WM_dens #weighted arithmetic mean
+      ## ADD TRUE ABUNDANCE
+      ests<-merge(ests, true_abund, by=c("segment","year"), all.x=TRUE)
+      ## ADD BIAS
+      ests$bias_AM<-ests$Nhat_AM-ests$abundance
+      ests$bias_WM<-ests$Nhat_WM-ests$abundance
+      ## ADD PRECISION
+      ### CALCULATE WEIGHTED MEAN SD
+      tmp<-merge(tmp, ests[,c("segment","year","gear","WM_dens","samp_rkm")],
+                 by=c("segment","year","gear"),all.x=TRUE)
+      tmp$diffsq<-(tmp$catch_dens-tmp$WM_dens)^2
+      Wsd<-ddply(tmp,.(segment,year,gear),
+                 summarize,
+                 Wsd_dens=sqrt(sum((rkm/samp_rkm)*diffsq)))
+      ests<-merge(ests,Wsd, by=c("segment","year","gear"))
+      ### CALCULATE CV
+      ests$precision_AM<-ests$sd_dens/abs(ests$Nhat_AM)
+      ests$precision_WM<-ests$Wsd_dens/abs(ests$Nhat_WM)
+      ## ADD ABUNDANCE EXTRAS
+      ### FLAGS
+      samp<-sim_dat$samp_dat
+      colnames(samp)[which(colnames(samp)=="b_segment")]<-"segment"
+      samp$p<-samp$q*samp$f
+      P<-aggregate(p~segment+bend_num+year+gear, samp, sum, subset=occasion==1)
+      P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
+      fl<-ddply(P, .(segment, year, gear), summarize, 
+                flags=length(which(flag!=0))/length(flag))
+      ests<-merge(ests,fl, by=c("segment", "year","gear"), all.x=TRUE)
+      ### CATCHABILITY AND TOTAL EFFORT
+      q_stats<-ddply(subset(samp, occasion==1), .(segment, year, gear),
+                     summarize,
+                     q_mean_realized=mean(q),
+                     q_sd_realized=sd(q),
+                     total_effort=sum(f))
+      ests<-merge(ests, q_stats, by=c("segment","year","gear"), all.x=TRUE)
+    
+      # TREND
+      ## ADD SEGMENT-LEVEL CPUE AND LN(CPUE)
+      ### USE CATCH +1 TO AVOID CPUE=0
+      ests$catch1<-ests$catch+1
+      ests$cpue1<-ests$catch1/ests$effort
+      ests$lncpue1<-log(ests$cpue1)
+      ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+      ests$segment<- as.factor(ests$segment)
+      out<-lapply(gears,function(g)
       {
-        tmp<-subset(tmp, estimator==e)
-        perform<-length(which(tmp$n_st!=0))/length(tmp$n_st)
-        tmp<-subset(tmp,!is.na(Nhat_AM))
-        if(perform>0 #enough data
-          & length(unique(tmp$segment))>1 # more than one segment
-          & length(unique(tmp$year))>=2) # at least two years
-        {
-          fit_AM<-lm(log(Nhat_AM)~year+as.factor(segment),tmp)
-          fit_WM<-lm(log(Nhat_WM)~year+as.factor(segment),tmp)
-          tmp2<- data.frame(
-            # THE GOODIES
-            ## GEAR
-            gear=g,
-            ## ESTIMATOR
-            estimator=e,
-            ## ARITHMETIC MEAN
-            ### TREND ESTIMATE
-            trnd_AM=ifelse(is.na(summary(fit_AM)$coefficients['year',2]),NA,
-                            coef(fit_AM)['year']),
-            ### STANDARD ERROR FOR TREND ESTIMATE
-            se_AM=summary(fit_AM)$coefficients['year',2],
-            ### PVALUE FOR TREND ESTIMATE
-            pval_AM=summary(fit_AM)$coefficients['year',4],
-            ## WEIGHTED ARITHMETIC MEAN
-            ### TREND ESTIMATE
-            trnd_WM=ifelse(is.na(summary(fit_WM)$coefficients['year',2]),NA,
-                              coef(fit_WM)['year']),
-            ### STANDARD ERROR FOR TREND ESTIMATE
-            se_WM=summary(fit_WM)$coefficients['year',2],
-            ### PVALUE FOR TREND ESTIMATE
-            pval_WM=summary(fit_WM)$coefficients['year',4],
-            ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
-            perform=perform
-          )
-        }
-        if(perform==0 #no data
-          | length(unique(tmp$segment))<=1 #or only one segment
-          | length(unique(tmp$year))<2) #or less than two years
-        {
-          tmp2<- data.frame(
-            gear=g,
-            estimator=e,
-            trnd_AM=NA,
-            se_AM=NA,
-            pval_AM=NA,
-            trnd_WM=NA,
-            se_WM=NA,
-            pval_WM=NA,
-            perform=0 #NOT ENOUGH DATA TO CALCULATE TREND
-          )
-        }
+        fit<- lm(lncpue1~segment+year, ests, subset=gear==g)
+        tmp2<- data.frame( 
+          # THE GOODIES
+          ## GEAR
+          gear=g,
+          ## TREND ESTIMATE
+          trnd=coef(fit)['year'],
+          ## STANDARD ERROR FOR TREND ESTIMATE
+          se=summary(fit)$coefficients['year',2],
+          ## PVALUE FOR TREND ESTIMATE
+          pval=summary(fit)$coefficients['year',4])
         return(tmp2)
       })
-      out2<-do.call("rbind",out2)
-      return(out2)
-    })
-    out<-do.call(rbind,out)
-    ## ADD POPULATION TREND
-    out$pop_trnd<-pop_trnd
-    ## CALCULATE TREND BIAS
-    out$bias_AM<-out$trnd_AM-out$pop_trnd
-    out$bias_WM<-out$trnd_WM-out$pop_trnd
-    ## CALCULATE TREND PRECISION
-    out$precision_AM<-out$se_AM/abs(out$trnd_AM)
-    out$precision_WM<-out$se_WM/abs(out$trnd_WM)
-    #######################################
-    #  DO WE WANT EXP VERSION OF THIS???  #
-    #######################################
-    out<-out[,c("gear", "pop_trnd","trnd_AM","bias_AM", "precision_AM",
-                "pval_AM", "trnd_WM", "bias_WM", "precision_WM", "pval_WM",
-                "perform", "estimator")]
-    ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
-                "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
-                "estimator")]
-    # OUTPUT THE GOODIES
+      out<-do.call(rbind,out)
+      ## ADD POPULATION TREND
+      out$pop_trnd<-pop_trnd
+      ## CALCULATE TREND BIAS
+      out$bias<-out$trnd-out$pop_trnd
+      ## CALCULATE TREND PRECISION
+      out$precision<-out$se/abs(out$trnd)
+      ## ADD TREND EXTRAS
+      out$perform<-1
+      out$estimator<-"CPUE"
+      ### FLAGS
+      fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
+      out<-merge(out,fl, by="gear")
+      ### CATCHABILITY AND TOTAL EFFORT
+      q_stats<-ddply(subset(samp, occasion==1), .(gear),
+                     summarize,
+                     q_mean_realized=mean(q),
+                     q_sd_realized=sd(q),
+                     total_effort=sum(f))
+      out<-merge(out, q_stats, by="gear")
+      # ADD INPUTS
+      inputs<-sim_dat$inputs
+      in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
+                         B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
+                         occasions=1, samp_type=inputs$samp_type,pop_id=pop_num,
+                         catch_id=catch_num)
+      out<-merge(out, in_dat, by="gear", all.x=TRUE)
+      ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
+      # OUTPUT THE GOODIES
+      out<-out[,c("gear", "pop_trnd","trnd","bias","precision","pval", "perform",
+                  "estimator","flags", "total_effort", "q_mean_realized","q_sd_realized",
+                  "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
+                  "pop_id", "catch_id")]
+      ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
+                    "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
+                    "estimator","flags", "total_effort", "q_mean_realized","q_sd_realized",
+                    "q_mean_input","B0_sd_input","deployments","occasions","samp_type",
+                    "pop_id", "catch_id")]
+    }
+
+    # M0 & Mt ESTIMATES
+    if(tmp$estimator[1]=="M0"|tmp$estimator[1]=="Mt")
+    {
+      ## CLEAN UP DATA
+      ### MAKE NON-CONVERGED MODELS AND NO FISH MODELS NA
+      tmp[tmp$fit!=0,]$Nhat<-NA 
+      tmp[tmp$fit!=0,]$SE_Nhat<-NA
+      tmp[tmp$fit!=0,]$p<-NA
+      tmp[is.na(tmp$Nhat),]$rkm<-NA  #important for WM calculation
+      ## ADD ESTIMATED BEND DENSITY
+      tmp$dens<-tmp$Nhat/tmp$rkm
+      ## GET SEGMENT LEVEL ESTIMATES BY YEAR, GEAR, AND ESTIMATE TYPE
+      ests<-ddply(tmp,.(segment,year,gear,estimator),
+                  summarize,
+                  mean_dens=mean(dens,na.rm = TRUE),
+                  n_st=length(which(!is.na(dens))), #samp_size???
+                  v_tmp=sum((1/rkm)^2*SE_Nhat^2,na.rm=TRUE),
+                  N_sst=sum(Nhat,na.rm=TRUE),
+                  d_sst=sum(rkm,na.rm=TRUE),  #samp_rkm??? #CHECK ON THESE!!! WAS rkm_M0 and above just rkm
+                  v_tmp2=sum(SE_Nhat^2, na.rm=TRUE),
+                  perform=length(which(fit==0))/length(fit))
+      ests$dens_sst<-ests$N_sst/ests$d_sst
+          # To remove segments that had no bends with successful
+          # sampling catch data for the given gear:
+          # ests<-subset(ests,n_st!=0)
+      ## ADD SEGMENT LENGTHS
+      ests<-merge(ests,seg_length, by="segment",all.x=TRUE)
+    
+      # ABUNDANCE
+      ## ESTIMATE SEGMENT ABUNDANCE
+      ests$Nhat_AM<-ests$seg_rkm*ests$mean_dens
+      ests$Nhat_WM<-ifelse(ests$n_st>0,ests$seg_rkm*ests$dens_sst,NA)
+      ## ADD TRUE ABUNDANCE
+      ests<-merge(ests, true_abund, by=c("segment","year"), all.x=TRUE)
+      ## ADD BIAS
+      ests$bias_AM<-ests$Nhat_AM-ests$abundance
+      ests$bias_WM<-ests$Nhat_WM-ests$abundance
+      ## ADD PRECISION
+      ### CALCULATE VARIANCES
+      ests$var_AM<-(ests$seg_rkm/ests$n_st)^2*ests$v_tmp
+      ests$var_WM<-ifelse(ests$n_st>0,(ests$seg_rkm/ests$d_sst)^2*ests$v_tmp2,NA)
+      ### CALCULATE CV
+      ests$precision_AM<-sqrt(ests$var_AM)/abs(ests$Nhat_AM)
+      ests$precision_WM<-sqrt(ests$var_WM)/abs(ests$Nhat_WM)
+      ## ADD ABUNDANCE EXTRAS
+      ### FLAGS
+      samp<-sim_dat$samp_dat
+      colnames(samp)[which(colnames(samp)=="b_segment")]<-"segment"
+      samp$p<-samp$q*samp$f
+      P<-aggregate(p~segment+bend_num+year+gear+occasion, samp, sum)
+      P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
+      fl<-ddply(P, .(segment, year, gear), summarize, 
+                flags=length(which(flag!=0))/length(flag))
+      ests<-merge(ests,fl, by=c("segment", "year","gear"), all.x=TRUE)
+      ### CATCHABILITY AND TOTAL EFFORT
+      q_stats<-ddply(samp, .(segment, year, gear),
+                     summarize,
+                     q_mean_realized=mean(q),
+                     q_sd_realized=sd(q),
+                     total_effort=sum(f))
+      ests<-merge(ests, q_stats, by=c("segment","year","gear"), all.x=TRUE)
+  
+      
+      
+      # TREND
+      ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+      out<-lapply(gears,function(g)
+      {
+        tmp<-subset(ests, gear==g)
+        out2<-lapply(unique(tmp$estimator), function(e)
+        {
+          tmp<-subset(tmp, estimator==e)
+          perform<-length(which(tmp$n_st!=0))/length(tmp$n_st)
+          tmp<-subset(tmp,!is.na(Nhat_AM))
+          if(perform>0 #enough data
+            & length(unique(tmp$segment))>1 # more than one segment
+            & length(unique(tmp$year))>=2) # at least two years
+          {
+            fit_AM<-lm(log(Nhat_AM)~year+as.factor(segment),tmp)
+            fit_WM<-lm(log(Nhat_WM)~year+as.factor(segment),tmp)
+            tmp2<- data.frame(
+              # THE GOODIES
+              ## GEAR
+              gear=g,
+              ## ESTIMATOR
+              estimator=e,
+              ## ARITHMETIC MEAN
+              ### TREND ESTIMATE
+              trnd_AM=ifelse(is.na(summary(fit_AM)$coefficients['year',2]),NA,
+                              coef(fit_AM)['year']),
+              ### STANDARD ERROR FOR TREND ESTIMATE
+              se_AM=summary(fit_AM)$coefficients['year',2],
+              ### PVALUE FOR TREND ESTIMATE
+              pval_AM=summary(fit_AM)$coefficients['year',4],
+              ## WEIGHTED ARITHMETIC MEAN
+              ### TREND ESTIMATE
+              trnd_WM=ifelse(is.na(summary(fit_WM)$coefficients['year',2]),NA,
+                                coef(fit_WM)['year']),
+              ### STANDARD ERROR FOR TREND ESTIMATE
+              se_WM=summary(fit_WM)$coefficients['year',2],
+              ### PVALUE FOR TREND ESTIMATE
+              pval_WM=summary(fit_WM)$coefficients['year',4],
+              ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
+              perform=perform
+            )
+          }
+          if(perform==0 #no data
+            | length(unique(tmp$segment))<=1 #or only one segment
+            | length(unique(tmp$year))<2) #or less than two years
+          {
+            tmp2<- data.frame(
+              gear=g,
+              estimator=e,
+              trnd_AM=NA,
+              se_AM=NA,
+              pval_AM=NA,
+              trnd_WM=NA,
+              se_WM=NA,
+              pval_WM=NA,
+              perform=0 #NOT ENOUGH DATA TO CALCULATE TREND
+            )
+          }
+          return(tmp2)
+        })
+        out2<-do.call("rbind",out2)
+        return(out2)
+      })
+      out<-do.call(rbind,out)
+      ## ADD POPULATION TREND
+      out$pop_trnd<-pop_trnd
+      ## CALCULATE TREND BIAS
+      out$bias_AM<-out$trnd_AM-out$pop_trnd
+      out$bias_WM<-out$trnd_WM-out$pop_trnd
+      ## CALCULATE TREND PRECISION
+      out$precision_AM<-out$se_AM/abs(out$trnd_AM)
+      out$precision_WM<-out$se_WM/abs(out$trnd_WM)
+      #######################################
+      #  DO WE WANT EXP VERSION OF THIS???  #
+      #######################################
+      ## ADD TREND EXTRAS
+      ### FLAGS
+      fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
+      out<-merge(out,fl, by="gear")
+      ### CATCHABILITY AND TOTAL EFFORT
+      q_stats<-ddply(samp, .(gear),
+                     summarize,
+                     q_mean_realized=mean(q),
+                     q_sd_realized=sd(q),
+                     total_effort=sum(f))
+      out<-merge(out, q_stats, by="gear")
+      # ADD INPUTS
+      inputs<-sim_dat$inputs
+      in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
+                         B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
+                         occasions=inputs$occasions, samp_type=inputs$samp_type,
+                         pop_id=pop_num, catch_id=catch_num)
+      out<-merge(out, in_dat, by="gear", all.x=TRUE)
+      ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
+      # OUTPUT THE GOODIES
+      out<-out[,c("gear", "pop_trnd","trnd_AM","bias_AM", "precision_AM",
+                  "pval_AM", "trnd_WM", "bias_WM", "precision_WM", "pval_WM",
+                  "perform", "estimator","flags", "total_effort", "q_mean_realized",
+                  "q_sd_realized","q_mean_input", "B0_sd_input","deployments","occasions",
+                  "samp_type","pop_id", "catch_id")]
+      ## REFORMAT M0t TREND OUTPUTS
+      tmpA<-out[,c(1:6,11:23)]
+      tmpA$estimator<-paste0(tmpA$estimator,"_AM")
+      colnames(tmpA)<-gsub("_AM", "", colnames(tmpA))
+      tmpW<-out[,c(1,2,7:23)]
+      tmpW$estimator<-paste0(tmpW$estimator,"_WM")
+      colnames(tmpW)<-gsub("_WM", "", colnames(tmpW))
+      out<-rbind(tmpA,tmpW)
+      ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
+                  "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
+                  "estimator","flags", "total_effort", "q_mean_realized","q_sd_realized",
+                  "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
+                  "pop_id", "catch_id")]
+    } 
     return(list(trnd=out, abund=ests))
-  }
+  })
+  # ORGANIZE OUTPUT INTO TWO TABLES
+  trnd<-do.call(rbind,lapply(outt, `[[`, 1))
+  abund<-do.call(rbind,lapply(outt, `[[`, 2))
+  return(list(trnd=trnd,abund=abund))
 }
 
 
