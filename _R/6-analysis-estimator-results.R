@@ -1,9 +1,12 @@
 
+source("_R/1_global.r")
+
 # MAKE OUTPUT TABLES FROM ESTIMATES AND SAVE MINI TABLES ALONG THE WAY
 samp_type<-"r"
 if(pcname=="WF-FGNL842"){loc<-"E:/"}
-if(pcname!="WF-FGNL842"){loc<-"D:/"}
-outi<-lapply(3:4, function(i)
+#if(pcname!="WF-FGNL842"){loc<-"D:/"}
+if(pcname!="WF-FGNL842"){loc<-NULL}
+outi<-lapply(1:200, function(i)
 {
   # RUN IN PARALLEL
   library(parallel)
