@@ -245,8 +245,8 @@ reference_population<- function(inputs,...)
     recruits_lower<- rbinom(nyears,1,1/inputs$lower$r_freq)
     r_dat<-data.frame(r_freq_up=recruits_upper, r_mean_up=recruits_upper_mean,
                       r_freq_lo=recruits_lower, r_mean_lo=recruits_lower_mean)
-    recruits_upper<- rbinom(nyears,1,1/inputs$upper$r_freq)*recruits_upper_mean
-    recruits_lower<- rbinom(nyears,1,1/inputs$lower$r_freq)*recruits_upper_mean
+    recruits_upper<- recruits_upper*recruits_upper_mean
+    recruits_lower<- recruits_lower*recruits_upper_mean
 
     for(i in 2:nyears)
         {# loop over each year
@@ -379,6 +379,7 @@ reference_population<- function(inputs,...)
         Z=Z,
         BND=BND,
         l=l,
+        r_dat=r_dat,
         inputs=inputs)
     return(out)# return relevant stuff
     }
