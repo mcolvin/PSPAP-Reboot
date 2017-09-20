@@ -173,8 +173,7 @@ reference_population<- function(inputs,...)
     individual_meta$fish_id<-1:nrow(individual_meta)
     ## ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
     ln_Linf<-ifelse(segs %in% c(1:4), inputs$upper$ln_Linf_mu,
-                    inputs$lower$ln_Linf_mu) 
-    # a vector of mean Linf values, one entry for each segment
+                    inputs$lower$ln_Linf_mu) # a vector of mean Linf values, one entry for each segment
     ln_k<-ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
       # a vector of mean k values, one entry for each segment
     ln_vbgf_vcv<-array(0,dim=c(2,2,length(segs)))
@@ -235,17 +234,22 @@ reference_population<- function(inputs,...)
                                  phi_indx=tmp$phi_indx[which(tmp$N_ini==0)]),
                       bends2segs,
                       by=c("id","rpma","b_id","phi_indx"),all=TRUE)
-        
-                      
+    
+    
     # BEGIN POPULATION SIMULATION 
+    ## 4. RECRUITMENT
+    ### HOW MANY RECRUITS AGE-1 
+    recruits_upper_mean<-rpois(nyears,exp(inputs$upper$r_beta0))
+    recruits_upper<- rbinom(nyears,1,1/inputs$upper$r_freq)
+    recruits_lower_mean<-rpois(nyears,exp(inputs$lower$r_beta0))
+    recruits_lower<- rbinom(nyears,1,1/inputs$lower$r_freq)
+    r_dat<-data.frame(r_freq_up=recruits_upper, r_mean_up=recruits_upper_mean,
+                      r_freq_lo=recruits_lower, r_mean_lo=recruits_lower_mean)
+    recruits_upper<- rbinom(nyears,1,1/inputs$upper$r_freq)*recruits_upper_mean
+    recruits_lower<- rbinom(nyears,1,1/inputs$lower$r_freq)*recruits_upper_mean
+
     for(i in 2:nyears)
         {# loop over each year
-        
-        ## 4. RECRUITMENT
-        ### HOW MANY RECRUITS AGE-1 
-        recruits_upper<- rbinom(1,1,1/inputs$upper$r_freq)*rpois(1,exp(inputs$upper$r_beta0))
-        recruits_lower<- rbinom(1,1,1/inputs$lower$r_freq)*rpois(1,exp(inputs$lower$r_beta0))
-       
         ### RECRUIT TO POPULATION
         if(sum(recruits_upper,recruits_lower)>0)
             {

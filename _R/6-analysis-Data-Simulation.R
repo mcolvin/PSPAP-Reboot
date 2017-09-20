@@ -54,21 +54,10 @@ inputs$mv_beta1<-c(1,1)
 inputs$dis<-sp$dis
 #inputs$direct<-sp$direct
 
-# RECRUITMENT
-## Recruits ~ Poisson(Recuitment_occurs(exp(beta0+disp)))
-## Recruitment_occurs~Bernoulli(1/frequency)
-## ASSUMES NO SPAWNER RECRUIT RELATIONSHIP, REASOANBLE FOR THIS POPULATION
-## APLLIES SAME VALUES TO UPPER AND LOWER, CAN TEASE OUT IN BDN
-inputs$upper$r_beta0<- 5.5    # ln(MEAN RECRUITS)|RECRUITMENT
-inputs$lower$r_beta0<- 5.5    # ln(MEAN RECRUITS)|RECRUITMENT
-inputs$upper$r_freq<-  3      # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
-inputs$lower$r_freq<-  3      # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
-
-
 
 # RUN IN PARALLEL
 ptm<-proc.time()
-nreps<-200
+nreps<-400
 library(parallel)
 ## USE ALL CORES
 numCores<-detectCores()
@@ -79,13 +68,22 @@ clusterExport(cl, c("inputs", "nreps","pcname"))
 clusterEvalQ(cl, source("_R/2_functions.R"))
 clusterEvalQ(cl, library(MASS))
 clusterEvalQ(cl, library(plyr))
-parLapply(cl,1:nreps, function(i)
+parLapply(cl,201:nreps, function(i)
 {
+  # RECRUITMENT
+  ## Recruits ~ Poisson(Recuitment_occurs(exp(beta0+disp)))
+  ## Recruitment_occurs~Bernoulli(1/frequency)
+  ## ASSUMES NO SPAWNER RECRUIT RELATIONSHIP, REASOANBLE FOR THIS POPULATION
+  ## APPLIES SAME VALUES TO UPPER AND LOWER, CAN TEASE OUT IN BDN
+  inputs$upper$r_beta0<- runif(1,2.3,4.61)    # ln(MEAN RECRUITS)|RECRUITMENT
+  inputs$lower$r_beta0<- runif(1,2.3,4.61)  # ln(MEAN RECRUITS)|RECRUITMENT
+  inputs$upper$r_freq<- sample(c(1:5),1)      # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
+  inputs$lower$r_freq<- sample(c(1:5),1)   # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
   sim_pop<-reference_population(inputs = inputs)
   # SAVE POPULATION
   if(pcname=="WF-FGNL842")
     {saveRDS(sim_pop,file=paste0("E:/_output/1-populations/sim_pop_",i,".rds"))}
-  if(pcname!="WF-FGNL842")
+  if(pcname!="WF-FGNL842") 
     {saveRDS(sim_pop,file=paste0("_output/sim_pop_",i,".rds"))}
   
 })
