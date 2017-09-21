@@ -173,8 +173,7 @@ reference_population<- function(inputs,...)
     individual_meta$fish_id<-1:nrow(individual_meta)
     ## ASSIGN GROWTH PARAMETERS TO EACH INDIVIDUAL
     ln_Linf<-ifelse(segs %in% c(1:4), inputs$upper$ln_Linf_mu,
-                    inputs$lower$ln_Linf_mu) 
-    # a vector of mean Linf values, one entry for each segment
+                    inputs$lower$ln_Linf_mu) # a vector of mean Linf values, one entry for each segment
     ln_k<-ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
       # a vector of mean k values, one entry for each segment
     ln_vbgf_vcv<-array(0,dim=c(2,2,length(segs)))
@@ -235,23 +234,28 @@ reference_population<- function(inputs,...)
                                  phi_indx=tmp$phi_indx[which(tmp$N_ini==0)]),
                       bends2segs,
                       by=c("id","rpma","b_id","phi_indx"),all=TRUE)
-        
-                      
+    
+    
     # BEGIN POPULATION SIMULATION 
+    ## 4. RECRUITMENT
+    ### HOW MANY RECRUITS AGE-1 
+    recruits_upper_mean<-rpois((nyears-1),exp(inputs$upper$r_beta0))
+    recruits_upper<- rbinom((nyears-1),1,1/inputs$upper$r_freq)
+    recruits_lower_mean<-rpois((nyears-1),exp(inputs$lower$r_beta0))
+    recruits_lower<- rbinom((nyears-1),1,1/inputs$lower$r_freq)
+    r_dat<-data.frame(r_freq_up=recruits_upper, r_mean_up=recruits_upper_mean,
+                      r_freq_lo=recruits_lower, r_mean_lo=recruits_lower_mean)
+    recruits_upper<- recruits_upper*recruits_upper_mean
+    recruits_lower<- recruits_lower*recruits_upper_mean
+
     for(i in 2:nyears)
         {# loop over each year
-        
-        ## 4. RECRUITMENT
-        ### HOW MANY RECRUITS AGE-1 
-        recruits_upper<- rbinom(1,1,1/inputs$upper$r_freq)*rpois(1,exp(inputs$upper$r_beta0))
-        recruits_lower<- rbinom(1,1,1/inputs$lower$r_freq)*rpois(1,exp(inputs$lower$r_beta0))
-       
         ### RECRUIT TO POPULATION
-        if(sum(recruits_upper,recruits_lower)>0)
+        if(sum(recruits_upper[i-1],recruits_lower[i-1])>0)
             {
             ### ASSIGN A LENGTH AND GROWTH PARAMETERS
             new_recruits<- data.frame(
-                rpma=c(rep(2,recruits_upper),rep(4,recruits_lower)))
+                rpma=c(rep(2,recruits_upper[i-1]),rep(4,recruits_lower[i-1])))
             ### ASSIGN A SEGMENT AND BEND
             recruit_loc<- lapply(1:nrow(new_recruits),function(x)
                 {
@@ -279,17 +283,16 @@ reference_population<- function(inputs,...)
             ln_vals<-do.call("rbind",ln_vals)
             new_recruits$Linf<-exp(ln_vals[,1])
             new_recruits$k<-exp(ln_vals[,2]) 
-            new_recruits$fish_id<-(max(individual_meta$fish_id)+1):(max(individual_meta$fish_id)+sum(recruits_upper,recruits_lower))
+            new_recruits$fish_id<-(max(individual_meta$fish_id)+1):(max(individual_meta$fish_id)+sum(recruits_upper[i-1],recruits_lower[i-1]))
             individual_meta<-rbind.fill(individual_meta,new_recruits)      
                   
             ## UPDATE MATRICES: Z, L, BND
             ### MATRICES TO APPEND TO OTHER
-            BND_recruits<-l_recruits<-Z_recruits<- matrix(0,nrow=sum(recruits_upper,recruits_lower),ncol=nyears)
+            BND_recruits<-l_recruits<-Z_recruits<- matrix(0,nrow=sum(recruits_upper[i-1],recruits_lower[i-1]),ncol=nyears)
             
             # ALIVE OR NOT
             Z_recruits[,i-1]<-1 # had to be alive in previous year to recruit
             Z<-rbind(Z,Z_recruits)
-              ## WHERE ARE WE GETTING THE FECUNDITY BIT...SINCE SURVIVAL TO AGE 1 COULD BE IN PLACE TWICE NOW
             
             # LENGTH AT AGE 0
             l_recruits[,i-1]<-200 ## 250mm calibrates to ~ 325 mm at age-1
@@ -343,7 +346,6 @@ reference_population<- function(inputs,...)
                 }
         } # END POPOULATION SIMULATION
         
-        
     ## PROCESS POPULATION AND RETURN    
     l[l==0]<-NA
     BND[BND==0]<-NA
@@ -375,6 +377,7 @@ reference_population<- function(inputs,...)
         Z=Z,
         BND=BND,
         l=l,
+        r_dat=r_dat,
         inputs=inputs)
     return(out)# return relevant stuff
     }
