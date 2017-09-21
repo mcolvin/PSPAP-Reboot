@@ -75,7 +75,7 @@ parLapply(cl,201:nreps, function(i)
   ## Recruitment_occurs~Bernoulli(1/frequency)
   ## ASSUMES NO SPAWNER RECRUIT RELATIONSHIP, REASOANBLE FOR THIS POPULATION
   ## APPLIES SAME VALUES TO UPPER AND LOWER, CAN TEASE OUT IN BDN
-  inputs$upper$r_beta0<- runif(1,2.3,4.61)    # ln(MEAN RECRUITS)|RECRUITMENT
+  inputs$upper$r_beta0<- runif(1,2.3,3.92)    # ln(MEAN RECRUITS)|RECRUITMENT
   inputs$lower$r_beta0<- runif(1,2.3,4.61)  # ln(MEAN RECRUITS)|RECRUITMENT
   inputs$upper$r_freq<- sample(c(1:5),1)      # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
   inputs$lower$r_freq<- sample(c(1:5),1)   # 1 OUT xx YEARS RECRUITMENT OCCURS, INPUT IS DENOMINATOR
