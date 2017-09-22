@@ -192,13 +192,14 @@ reference_population<- function(inputs,...)
     ln_vals<-do.call("rbind",ln_vals)
     individual_meta$Linf<-exp(ln_vals[,1]) 
     individual_meta$k<-exp(ln_vals[,2])
-    ### Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
+    individual_meta$yr_ini<-0
+    
+    ## Z: INDIVIDUAL SURVIVAL MATRIX WHERE EACH ROW IS A SINGLE FISH 
     ### IN THE GIVEN BEND AND EACH COLUMN IS A YEAR (0=Dead, 1=Alive)  
     Z<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
     Z[,1]<-1
     
-    
-    ### l: length for individuals
+    ## l: LENGTH FOR INDIVIDUALS
     l<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)
     for(i in unique(individual_meta$b_segment))
         {
@@ -210,12 +211,13 @@ reference_population<- function(inputs,...)
         indx<- which(individual_meta$b_segment==i)
         l[indx,1]<-l_ini(runif(length(indx)))
         }
-    ## FIX ANY LENGTHS > THAN LINF
+    ### FIX ANY LENGTHS > THAN LINF
     l[,1]<- ifelse(l[,1]>= individual_meta$Linf,individual_meta$Linf*0.95,l[,1])    
- 
+    
+    ## BND: BEND LOCATION FOR INDIVIDUALS 
     BND<-matrix(0,nrow=nrow(individual_meta),ncol=nyears)  
     BND[,1]<- individual_meta$id
-       
+   
     ###############################################################
     ## POPULATION DYNAMICS
     ## 1. SUVIVAL
@@ -239,14 +241,13 @@ reference_population<- function(inputs,...)
     # BEGIN POPULATION SIMULATION 
     ## 4. RECRUITMENT
     ### HOW MANY RECRUITS AGE-1 
-    recruits_upper_mean<-rpois((nyears-1),exp(inputs$upper$r_beta0))
-    recruits_upper<- rbinom((nyears-1),1,1/inputs$upper$r_freq)
-    recruits_lower_mean<-rpois((nyears-1),exp(inputs$lower$r_beta0))
-    recruits_lower<- rbinom((nyears-1),1,1/inputs$lower$r_freq)
-    r_dat<-data.frame(r_freq_up=recruits_upper, r_mean_up=recruits_upper_mean,
-                      r_freq_lo=recruits_lower, r_mean_lo=recruits_lower_mean)
-    recruits_upper<- recruits_upper*recruits_upper_mean
-    recruits_lower<- recruits_lower*recruits_upper_mean
+    r_freq_upper<-rbinom(nyears,1,1/inputs$upper$r_freq)
+    r_freq_lower<-rbinom(nyears,1,1/inputs$lower$r_freq)
+    recruits_upper<- r_freq_upper*rpois(nyears,exp(inputs$upper$r_beta0))
+    recruits_lower<- r_freq_lower*rpois(nyears,exp(inputs$lower$r_beta0))
+    r_dat<-data.frame(rpma=c(rep(2,nyears),rep(4,nyears)), year=rep(1:nyears,2),
+                      r_year=c(r_freq_upper,r_freq_lower), 
+                      age_0=c(recruits_upper,recruits_lower))
 
     for(i in 2:nyears)
         {# loop over each year
@@ -284,6 +285,7 @@ reference_population<- function(inputs,...)
             new_recruits$Linf<-exp(ln_vals[,1])
             new_recruits$k<-exp(ln_vals[,2]) 
             new_recruits$fish_id<-(max(individual_meta$fish_id)+1):(max(individual_meta$fish_id)+sum(recruits_upper[i-1],recruits_lower[i-1]))
+            new_recruits$yr_ini<-i-1
             individual_meta<-rbind.fill(individual_meta,new_recruits)      
                   
             ## UPDATE MATRICES: Z, L, BND
@@ -345,7 +347,62 @@ reference_population<- function(inputs,...)
                     } # end if
                 }
         } # END POPOULATION SIMULATION
-        
+    
+    ## AGE 0's IN FINAL YEAR
+    if(sum(recruits_upper[nyears],recruits_lower[nyears])>0)
+    {
+      ### ASSIGN A LENGTH AND GROWTH PARAMETERS
+      new_recruits<- data.frame(
+        rpma=c(rep(2,recruits_upper[nyears]),rep(4,recruits_lower[nyears])))
+      ### ASSIGN A SEGMENT AND BEND
+      recruit_loc<- lapply(1:nrow(new_recruits),function(x)
+      {
+        bend<- sample(tmp[which(tmp$rpma==new_recruits$rpma[x]),]$b_id,1)
+        #MAKE PROBABILITY BASED ON BEND LENGTH, LOCATION, IRC HABITAT AVAILABILITY ETC???
+        segment<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$b_segment
+        phi_indx<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$phi_indx
+        id<- tmp[which(tmp$b_id==bend & tmp$rpma==new_recruits$rpma[x]),]$id
+        return(list(b_id=bend,b_segment=segment,phi_indx=phi_indx, id=id))
+      })
+      recruit_loc<-as.data.frame(do.call("rbind",recruit_loc))
+      new_recruits$b_segment<- unlist(recruit_loc$b_segment)
+      new_recruits$b_id<- unlist(recruit_loc$b_id)
+      new_recruits$phi_indx<- unlist(recruit_loc$phi_indx)
+      new_recruits$id<-unlist(recruit_loc$id)
+      
+      ### GROWTH PARAMETES FOR NEW RECRUITS
+      ln_vals<-lapply(1:nrow(new_recruits),function(m)
+      {
+        mvrnorm(n=1,c(ln_Linf[new_recruits$phi_indx[m]],
+                      ln_k[new_recruits$phi_indx[m]]),
+                ln_vbgf_vcv[,,new_recruits$phi_indx[m]])
+      })
+      
+      ln_vals<-do.call("rbind",ln_vals)
+      new_recruits$Linf<-exp(ln_vals[,1])
+      new_recruits$k<-exp(ln_vals[,2]) 
+      new_recruits$fish_id<-(max(individual_meta$fish_id)+1):(max(individual_meta$fish_id)+sum(recruits_upper[nyears],recruits_lower[nyears]))
+      new_recruits$yr_ini<-nyears
+      individual_meta<-rbind.fill(individual_meta,new_recruits)      
+      
+      ## UPDATE MATRICES: Z, L, BND
+      ### MATRICES TO APPEND TO OTHER
+      BND_recruits<-l_recruits<-Z_recruits<- matrix(0,nrow=sum(recruits_upper[nyears],recruits_lower[nyears]),ncol=nyears)
+      
+      # ALIVE OR NOT
+      Z_recruits[,nyears]<-1 # had to be alive in previous year to recruit
+      Z<-rbind(Z,Z_recruits)
+      
+      # LENGTH AT AGE 0
+      l_recruits[,nyears]<-200 ## 250mm calibrates to ~ 325 mm at age-1
+      l<-rbind(l,l_recruits)
+      ## ADD VARIATION IN AGE 0 SIZE???
+      
+      ## BEND
+      BND_recruits[,nyears]<-new_recruits$id
+      BND<-rbind(BND,BND_recruits)
+    }
+    
     ## PROCESS POPULATION AND RETURN    
     l[l==0]<-NA
     BND[BND==0]<-NA
