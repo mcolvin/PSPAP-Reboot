@@ -112,13 +112,21 @@ lapply(1:100, function(i)
     {sim_pop<-readRDS(file=paste0("E:/_output/1-populations/sim_pop_",i,".rds"))}
   if(pcname!="WF-FGNL842")
     {sim_pop<-readRDS(file=paste0("_output/sim_pop_",i,".rds"))}
-  lapply(3:4,function(j)
+  lapply(1:4,function(j)
     {
       ## MEAN CATCHABILITY
       #q_mean<-runif(9,0.000000, 0.001) # Favors larger values
       #q_mean<-10^(-runif(9,3,6)) # More even spacing of magnitudes
-      q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.0001, 0.004),
-                runif(2,0.000000, 0.00005),runif(1,0.00009, 0.004))
+      if(j==3 | j==4)
+      {
+        q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.0001, 0.004),
+                  runif(2,0.000000, 0.00005),runif(1,0.00009, 0.004))
+      }
+      if(j==1|j==2)
+      {
+        q_mean<-c(runif(5,0.000000, 0.00005), runif(1,0.0005, 0.0065),
+                  runif(2,0.000000, 0.00005),runif(1,0.0001, 0.006))
+      }
       # Accounts for differences in "OT16" and "TN" efforts.
       inputs$catchability<-q_mean
       ## B0_SD  
