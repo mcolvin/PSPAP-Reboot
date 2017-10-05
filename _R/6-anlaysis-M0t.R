@@ -19,8 +19,8 @@ lapply(1:200, function(i)
   }
   if(pcname!="WF-FGNL842")
   {
-    catch_list<-dir("_output", pattern=paste0("catch_dat_r_",i,"-"))
-    catch_list<-c(catch_list,dir("_output/", 
+    catch_list<-dir("_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("_output/2-catch", 
                                  pattern=paste0("catch_dat_f_",i,"-")))
   }
   lapply(1:length(catch_list), function(j)
@@ -29,7 +29,7 @@ lapply(1:200, function(i)
     if(pcname=="WF-FGNL842")
       {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("_output/",catch_list[j]))}
+      {sim_dat<-readRDS(file=paste0("_output/2-catch/",catch_list[j]))}
     # GET M0 & Mt ESTIMATES
     est<-M0t.ests(sim_dat=sim_dat)
     # SAVE ESTIMATES
@@ -39,7 +39,7 @@ lapply(1:200, function(i)
                          strsplit(catch_list[j], "catch_dat")[[1]][2]))}
     if(pcname!="WF-FGNL842")
     {saveRDS(est,
-             file=paste0("_output/M0t_est", 
+             file=paste0("_output/3-estimates/M0t_est", 
                          strsplit(catch_list[j], "catch_dat")[[1]][2]))}
   })
 })
