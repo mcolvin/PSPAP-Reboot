@@ -4,6 +4,7 @@ library(plyr)
 library(knitr)
 library(pander)
 library(lattice)
+library(truncnorm)
 
 library(digest)
 #require(gpclib)
@@ -15,3 +16,4 @@ library(rgdal)
 library(RODBC)
 library(reshape2)
 library(MASS)
+
