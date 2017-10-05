@@ -194,14 +194,14 @@ reference_population<- function(inputs,...)
         } # an array of variance and covariances for Linf and k
             # each matrix is for a segment
     ln_vals<-lapply(1:nrow(individual_meta),function(m)
-        {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
-        z1<-rtruncnorm(1, qnorm(0.1), qnorm(0.9), mean=0, sd=1)
-        z2<-rtruncnorm(n=1, a=-sqrt(qnorm(0.9)^2-z1^2), b=sqrt(qnorm(0.9)^2-z1^2), 
-                       mean=0, sd=1)
-        X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
-               c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
-        return(X)
-        })
+    {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
+      z1<-rtruncnorm(1, -sqrt(-2*log(0.2)), sqrt(-2*log(0.2)), mean=0, sd=1)
+      z2<-rtruncnorm(n=1, a=-sqrt(-2*log(0.2)-z1^2), b=sqrt(-2*log(0.2)-z1^2), 
+                     mean=0, sd=1)
+      X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
+             c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
+      return(X)
+    })
     ln_vals<-do.call("rbind",ln_vals)
     individual_meta$Linf<-exp(ln_vals[,1]) 
     individual_meta$k<-exp(ln_vals[,2])
@@ -288,14 +288,14 @@ reference_population<- function(inputs,...)
             
             ### GROWTH PARAMETES FOR NEW RECRUITS
             ln_vals<-lapply(1:nrow(individual_meta),function(m)
-              {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
-              z1<-rtruncnorm(1, qnorm(0.1), qnorm(0.9), mean=0, sd=1)
-              z2<-rtruncnorm(n=1, a=-sqrt(qnorm(0.9)^2-z1^2), b=sqrt(qnorm(0.9)^2-z1^2), 
+            {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
+              z1<-rtruncnorm(1, -sqrt(-2*log(0.2)), sqrt(-2*log(0.2)), mean=0, sd=1)
+              z2<-rtruncnorm(n=1, a=-sqrt(-2*log(0.2)-z1^2), b=sqrt(-2*log(0.2)-z1^2), 
                              mean=0, sd=1)
               X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
                      c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
               return(X)
-              })
+            })
             ln_vals<-do.call("rbind",ln_vals)
             new_recruits$Linf<-exp(ln_vals[,1])
             new_recruits$k<-exp(ln_vals[,2]) 
@@ -388,8 +388,8 @@ reference_population<- function(inputs,...)
       ### GROWTH PARAMETES FOR NEW RECRUITS
       ln_vals<-lapply(1:nrow(individual_meta),function(m)
       {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
-        z1<-rtruncnorm(1, qnorm(0.1), qnorm(0.9), mean=0, sd=1)
-        z2<-rtruncnorm(n=1, a=-sqrt(qnorm(0.9)^2-z1^2), b=sqrt(qnorm(0.9)^2-z1^2), 
+        z1<-rtruncnorm(1, -sqrt(-2*log(0.2)), sqrt(-2*log(0.2)), mean=0, sd=1)
+        z2<-rtruncnorm(n=1, a=-sqrt(-2*log(0.2)-z1^2), b=sqrt(-2*log(0.2)-z1^2), 
                        mean=0, sd=1)
         X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
                c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
