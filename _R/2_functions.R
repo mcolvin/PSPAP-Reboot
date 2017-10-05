@@ -537,6 +537,8 @@ bend_samples<-function(sim_pop=NULL,
     }
 
 
+
+
 ## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
 ##    RESULTING CAPTURE HISTORIES OF FISH IN SAMPLED BENDS
 catch_data<-function(sim_pop=NULL,inputs,...)
@@ -558,6 +560,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     individual_meta<-individual_meta[order(individual_meta$fish_id),]
     l<-sim_pop$l
     BND<-sim_pop$BND
+    r_dat<-sim_pop$r_dat
     inputs<-c(sim_pop$inputs,inputs)
     sampled<-bend_samples(sim_pop=sim_pop,samp_type=samp_type)
 
@@ -726,6 +729,15 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     })
     tmp1<-tmp1[order(tmp1$b_segment,tmp1$year),]
     tmp1$mean_length<-c(s_length)
+    # SEGMENT AGE-0s (THAT RECRUIT) BY YEAR
+    s_recruits<-aggregate(fish_id~yr_ini+b_segment,individual_meta, length, subset=yr_ini!=0)
+    colnames(s_recruits)[which(colnames(s_recruits)=="fish_id")]<-"age_0"
+    colnames(s_recruits)[which(colnames(s_recruits)=="yr_ini")]<-"year"
+    tmp1<-merge(tmp1,s_recruits,by=c("b_segment","year"), all.x=TRUE)
+    tmp1[is.na(tmp1$age_0),]$age_0<-0
+    # RECRUITMENT DATA BY YEAR
+    tmp1$rpma<-ifelse(tmp1$b_segment %in% c(1:4),2,4)
+    tmp1<-merge(tmp1,r_dat[,c("rpma", "year","r_year")],by=c("rpma","year"), all.x=TRUE)
     #phi<-matrix(0,nrow=nrow(s_abund),ncol=ncol(s_abund))
     #for(i in 1:(nrow(phi)-1))
     #    {
@@ -735,6 +747,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     #tmp1$phi<-c(phi)
     #tmp1$density<-tmp1$abundance/tmp1$length.rkm
     #tmp1<-tmp1[,c(1,3:6)]
+    tmp1<-tmp1[,which(names(tmp1)!="rpma")]
     b_samp<-b_samp[,which(names(b_samp)!="p")]
     ch<-ch[,which(names(ch)!="ch")]
     inputs<-c(sim_pop$inputs, inputs)
