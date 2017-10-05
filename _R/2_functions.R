@@ -176,18 +176,31 @@ reference_population<- function(inputs,...)
                     inputs$lower$ln_Linf_mu) # a vector of mean Linf values, one entry for each segment
     ln_k<-ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
       # a vector of mean k values, one entry for each segment
-    ln_vbgf_vcv<-array(0,dim=c(2,2,length(segs)))
+    ln_B<-array(0,dim=c(2,2,length(segs)))
     for(i in 1:length(segs))
         {
-        if(segs[i] %in% c(1:4)) {ln_vbgf_vcv[,,i]<-inputs$upper$vcv}
-        if(segs[i] %in% c(7:10,13,14)) {ln_vbgf_vcv[,,i]<-inputs$lower$vcv}
+        if(segs[i] %in% c(1:4)) 
+          {
+          ln_B[,,i]<-eigen(inputs$upper$vcv)$vectors%*%
+            matrix(c(sqrt(eigen(inputs$upper$vcv)$values[1]),0,0,
+                     sqrt(eigen(inputs$upper$vcv)$values[2])),2,2)
+          }
+        if(segs[i] %in% c(7:10,13,14))
+          {
+          ln_B[,,i]<-eigen(inputs$lower$vcv)$vectors%*%
+            matrix(c(sqrt(eigen(inputs$lower$vcv)$values[1]),0,0,
+                   sqrt(eigen(inputs$lower$vcv)$values[2])),2,2)
+          }
         } # an array of variance and covariances for Linf and k
             # each matrix is for a segment
     ln_vals<-lapply(1:nrow(individual_meta),function(m)
-        {
-        mvrnorm(n=1,c(ln_Linf[individual_meta$phi_indx[m]],
-                      ln_k[individual_meta$phi_indx[m]]),
-              ln_vbgf_vcv[,,individual_meta$phi_indx[m]])
+        {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
+        z1<-rtruncnorm(1, qnorm(0.1), qnorm(0.9), mean=0, sd=1)
+        z2<-rtruncnorm(n=1, a=-sqrt(qnorm(0.9)^2-z1^2), b=sqrt(qnorm(0.9)^2-z1^2), 
+                       mean=0, sd=1)
+        X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
+               c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
+        return(X)
         })
     ln_vals<-do.call("rbind",ln_vals)
     individual_meta$Linf<-exp(ln_vals[,1]) 
