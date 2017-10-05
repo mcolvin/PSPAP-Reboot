@@ -287,13 +287,15 @@ reference_population<- function(inputs,...)
             new_recruits$id<-unlist(recruit_loc$id)
             
             ### GROWTH PARAMETES FOR NEW RECRUITS
-            ln_vals<-lapply(1:nrow(new_recruits),function(m)
-                {
-                mvrnorm(n=1,c(ln_Linf[new_recruits$phi_indx[m]],
-                              ln_k[new_recruits$phi_indx[m]]),
-                      ln_vbgf_vcv[,,new_recruits$phi_indx[m]])
-                })
-        
+            ln_vals<-lapply(1:nrow(individual_meta),function(m)
+              {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
+              z1<-rtruncnorm(1, qnorm(0.1), qnorm(0.9), mean=0, sd=1)
+              z2<-rtruncnorm(n=1, a=-sqrt(qnorm(0.9)^2-z1^2), b=sqrt(qnorm(0.9)^2-z1^2), 
+                             mean=0, sd=1)
+              X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
+                     c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
+              return(X)
+              })
             ln_vals<-do.call("rbind",ln_vals)
             new_recruits$Linf<-exp(ln_vals[,1])
             new_recruits$k<-exp(ln_vals[,2]) 
@@ -384,13 +386,15 @@ reference_population<- function(inputs,...)
       new_recruits$id<-unlist(recruit_loc$id)
       
       ### GROWTH PARAMETES FOR NEW RECRUITS
-      ln_vals<-lapply(1:nrow(new_recruits),function(m)
-      {
-        mvrnorm(n=1,c(ln_Linf[new_recruits$phi_indx[m]],
-                      ln_k[new_recruits$phi_indx[m]]),
-                ln_vbgf_vcv[,,new_recruits$phi_indx[m]])
+      ln_vals<-lapply(1:nrow(individual_meta),function(m)
+      {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
+        z1<-rtruncnorm(1, qnorm(0.1), qnorm(0.9), mean=0, sd=1)
+        z2<-rtruncnorm(n=1, a=-sqrt(qnorm(0.9)^2-z1^2), b=sqrt(qnorm(0.9)^2-z1^2), 
+                       mean=0, sd=1)
+        X<-t(ln_B[,,individual_meta$phi_indx[m]]%*%c(z1,z2)+
+               c(ln_Linf[individual_meta$phi_indx[m]],ln_k[individual_meta$phi_indx[m]]))
+        return(X)
       })
-      
       ln_vals<-do.call("rbind",ln_vals)
       new_recruits$Linf<-exp(ln_vals[,1])
       new_recruits$k<-exp(ln_vals[,2]) 
