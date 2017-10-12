@@ -24,9 +24,14 @@ outi<-lapply(1:200, function(i)
     atl<-abund.trnd(samp_type=samp_type, pop_num=i, catch_num=j,location=loc)
     sim_dat<-readRDS(file=paste0(loc,"_output/2-catch/catch_dat_",samp_type,"_",i,"-",j,".rds"))
     atl$lgth<-length.dat(sim_dat = sim_dat)
+    # ADD REFERENCE COLUMNS TO LENGTH DATA
+    atl$lgth$samp_type<-samp_type
+    atl$lgth$pop_id<-i
+    atl$lgth$catch_id<-j
+    # SAVE MINIS
     write.csv(atl$trnd, file=paste0(loc,"_output/4-utilities/trnd_mini_",samp_type,"_",i,"-",j,".csv"),row.names=FALSE)
     write.csv(atl$abund, file=paste0(loc,"_output/4-utilities/abund_mini_",samp_type,"_",i,"-",j,".csv"),row.names=FALSE)
-    write.csv(atl$trnd, file=paste0(loc,"_output/4-utilities/lgth_mini_",samp_type,"_",i,"-",j,".csv"),row.names=FALSE)
+    write.csv(atl$lgth, file=paste0(loc,"_output/4-utilities/lgth_mini_",samp_type,"_",i,"-",j,".csv"),row.names=FALSE)
     return(atl)
   })
   ### CLOSE CLUSTERS

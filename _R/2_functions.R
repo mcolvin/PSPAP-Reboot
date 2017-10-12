@@ -1310,20 +1310,28 @@ length.dat<-function(sim_dat=NULL,...)
               lhat=mean(length),
               SE_length=sd(length))
   ### ADD MISSING SEGMENTS
+  sampC<-subset(sim_dat$samp_dat, occasion==1)
   samp_segs<-aggregate(f~b_segment+year+gear,sim_dat$samp_dat, sum)
+  fC<-aggregate(f~b_segment+year+gear,sampC, sum)
+  names(fC)[which(names(fC)=="f")]<-"f1"
+  samp_segs<-merge(samp_segs,fC, by=c("b_segment", "year", "gear"))
   samp_segs<-subset(samp_segs,f!=0)
-  tmpC<-merge(tmpC,samp_segs,all.y=TRUE)
+  tmpC<-merge(tmpC,samp_segs[,c("b_segment", "year", "gear", "f1")],all.y=TRUE)
+  names(tmpC)[which(names(tmpC)=="f1")]<-"effort"
   if(length(which(is.na(tmpC$lhat)))!=0){tmpC[which(is.na(tmpC$lhat)),]$lhat<-0}
   ### ADD ESTIMATOR TYPE
   tmpC$estimator<-"CPUE"
+  tmpC$occasions<-1
   
   ## M0 & Mt ANALYSES
   tmp<-ddply(ch, .(b_segment, year, gear), summarize,
              lhat=mean(length),
              SE_length=sd(length))
   ### ADD MISSING SEGMENTS
-  tmp<-merge(tmp,samp_segs,all.y=TRUE)
+  tmp<-merge(tmp,samp_segs[,c("b_segment", "year", "gear", "f")],all.y=TRUE)
+  names(tmp)[which(names(tmp)=="f")]<-"effort"
   if(length(which(is.na(tmp$lhat)))!=0){tmp[which(is.na(tmp$lhat)),]$lhat<-0}
+  tmp$occasions<-sim_dat$inputs$occasions
   ### EXPAND FOR TWO ESTIMATORS
   tmp<-rbind(tmp,tmp)
   tmp$estimator<-c(rep("M0",nrow(tmp)/2),rep("Mt",nrow(tmp)/2))
@@ -1332,14 +1340,16 @@ length.dat<-function(sim_dat=NULL,...)
   tmp<-rbind(tmpC,tmp)
   tmp$perform<-1
   ### ADD ACTUAL MEAN LENGTHS
-  tmp<-merge(tmp, true_l, by=c("b_segment","year"))
+  tmp<-merge(tmp, true_l, by=c("b_segment","year"), all.x=TRUE)
   ### ADD BIAS
   tmp$bias<-tmp$lhat-tmp$mean_length
   ### ADD PRECISION
   tmp$precision<-tmp$SE_length/tmp$lhat
+  ### ADD DEPLOYMENTS
+  tmp$deployments<-sim_dat$inputs$deployments
   ### FORMULATE OUTPUT
-  tmp<-tmp[,c("b_segment","year","gear","mean_length","lhat","bias","precision",
-              "perform","estimator")]
+  tmp<-tmp[,c("b_segment","year","gear", "mean_length","lhat","bias","precision",
+              "perform","estimator", "effort", "deployments", "occasions")]
   names(tmp)[1]<-"segment"
   return(tmp)
 }
