@@ -795,14 +795,28 @@ CPUE.ests<-function(sim_dat=NULL,...)
 
 
 ## 7. GETTING M0 & Mt ESTIMATES
-M0t.ests<-function(sim_dat=NULL,...)
+M0t.ests<-function(sim_dat=NULL,
+                   max_occ=NULL, #Number of occasions to use for estimate.
+                   ...)
 {
+  # ERROR HANDLING
+  if(sim_dat$inputs$occasions<2)
+  {return(print("Simulated data needs to have at least 2 capture occasions per year."))}
+  
   ## MASSAGE DATA INTO SHAPE 
   ## CAPTURE HISTORIES
   catch<-sim_dat$catch_dat
   catch$ch<-1 #all fish on list were captured
   gears<-unique(catch$gear) #identify gears that caught fish
-  occ<-as.character(unique(catch$occasion))
+  occ<-as.character(unique(catch$occasion)) #identify number of occasions simulated
+  if(!is.null(max_occ)) #modify analysis for less occasions than those simulated, if desired
+  {
+    if(max_occ>sim_dat$inputs$occasions | max_occ<2)
+    {return(print(paste0("max_occ needs to be at least 2 AND less than or equal to",
+                         sim_dat$inputs$occasions)))}
+    occ<-as.character(1:max_occ)
+    catch<-catch[which(catch$occasion %in% occ),]
+  } 
   ch<-lapply(gears,function(g)
   {
     pp<- dcast(catch, 
@@ -814,7 +828,7 @@ M0t.ests<-function(sim_dat=NULL,...)
   ch<-do.call(rbind,ch)
   
   ## PULL SAMPLED BENDS
-  samps<-ddply(subset(sim_dat$samp_dat, occasion==1),.(b_segment,bend_num,year,gear),
+  samps<-ddply(sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),],.(b_segment,bend_num,year,gear),
                  summarize,
                  effort=sum(f))
   ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
@@ -841,6 +855,7 @@ M0t.ests<-function(sim_dat=NULL,...)
                        bend_num==samps$bend_num[x] & 
                        year==samps$year[x] &
                        gear==samps$gear[x])
+    
     ## FIT M0 MODEL TO ESTIMATE ABUNDANCE
     if(nrow(bend_dat)>0){
       tmp<- closedp.t(bend_dat[,occ])## estimate abundance
@@ -862,6 +877,7 @@ M0t.ests<-function(sim_dat=NULL,...)
         bend_num=samps$bend_num[x],
         gear=samps$gear[x],
         effort=samps$effort[x],
+        occasions=max(as.numeric(occ)),
         rkm=samps$length.rkm[x],
         samp_size=nrow(bend_dat),
         Nhat_M0=tmp$parameters$M0[1],
@@ -883,6 +899,7 @@ M0t.ests<-function(sim_dat=NULL,...)
         bend_num=samps$bend_num[x],
         gear=samps$gear[x],
         effort=samps$effort[x],
+        occasions=max(as.numeric(occ)),
         rkm=samps$length.rkm[x],
         samp_size=0,
         Nhat_M0=-99,
@@ -903,15 +920,14 @@ M0t.ests<-function(sim_dat=NULL,...)
   ### CREATE DATA FRAME
   bend_Np<- do.call("rbind", bend_Np)
   ## REORGANIZE DATA FRAME
-  tmp0<-bend_Np[,c(1:12)]
+  tmp0<-bend_Np[,c(1:13)]
   tmp0$estimator<-"M0"
   colnames(tmp0)<-gsub("_M0", "", colnames(tmp0))
-  tmpt<-bend_Np[,c(1:7,13:17)]
+  tmpt<-bend_Np[,c(1:8,14:18)]
   tmpt$estimator<-"Mt"
   colnames(tmpt)<-gsub("_Mt", "", colnames(tmpt))
   bend_Np<-rbind(tmp0,tmpt)
   return(bend_Np)
-  #return(list(est=bend_Np,true=sim_dat$true_vals,inputs=sim_dat$inputs))
 }
 
 
