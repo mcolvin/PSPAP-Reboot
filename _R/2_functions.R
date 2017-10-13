@@ -812,7 +812,7 @@ M0t.ests<-function(sim_dat=NULL,
   if(!is.null(max_occ)) #modify analysis for less occasions than those simulated, if desired
   {
     if(max_occ>sim_dat$inputs$occasions | max_occ<2)
-    {return(print(paste0("max_occ needs to be at least 2 AND less than or equal to",
+    {return(print(paste0("max_occ needs to be at least 2 AND less than or equal to ",
                          sim_dat$inputs$occasions)))}
     occ<-as.character(1:max_occ)
     catch<-catch[which(catch$occasion %in% occ),]
@@ -1124,13 +1124,16 @@ abund.trnd<-function(samp_type=NULL,
       ests<-ddply(tmp,.(segment,year,gear,estimator),
                   summarize,
                   mean_dens=mean(dens,na.rm = TRUE),
-                  n_st=length(which(!is.na(dens))), #samp_size???
+                  n_st=length(which(!is.na(dens))), #no. of bend densities used to calculate segment density estimate
                   v_tmp=sum((1/rkm)^2*SE_Nhat^2,na.rm=TRUE),
-                  N_sst=sum(Nhat,na.rm=TRUE),
-                  d_sst=sum(rkm,na.rm=TRUE),  #samp_rkm??? #CHECK ON THESE!!! WAS rkm_M0 and above just rkm
+                  N_sst=sum(Nhat,na.rm=TRUE), #estimated total abundance of sampled bends w/in segment
+                  d_sst=sum(rkm,na.rm=TRUE),  #total length of sampled bends w/in segment
                   v_tmp2=sum(SE_Nhat^2, na.rm=TRUE),
-                  perform=length(which(fit==0))/length(fit))
-      ests$dens_sst<-ests$N_sst/ests$d_sst
+                  b_st=length(dens), #no. of bends sampled
+                  perform=length(which(fit==0))/length(fit), #proportion of sampled bends used in analysis
+                  effort=sum(effort),
+                  occasions=mean(occasions))
+      ests$dens_sst<-ests$N_sst/ests$d_sst #sampled bend w/in segment density
           # To remove segments that had no bends with successful
           # sampling catch data for the given gear:
           # ests<-subset(ests,n_st!=0)
@@ -1155,7 +1158,8 @@ abund.trnd<-function(samp_type=NULL,
       ests$precision_WM<-sqrt(ests$var_WM)/abs(ests$Nhat_WM)
       ## ADD ABUNDANCE EXTRAS
       ### FLAGS
-      samp<-sim_dat$samp_dat
+      occ<-1:tmp$occasions[1]
+      samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
       colnames(samp)[which(colnames(samp)=="b_segment")]<-"segment"
       samp$p<-samp$q*samp$f
       P<-aggregate(p~segment+bend_num+year+gear+occasion, samp, sum)
@@ -1163,12 +1167,11 @@ abund.trnd<-function(samp_type=NULL,
       fl<-ddply(P, .(segment, year, gear), summarize, 
                 flags=length(which(flag!=0))/length(flag))
       ests<-merge(ests,fl, by=c("segment", "year","gear"), all.x=TRUE)
-      ### CATCHABILITY AND TOTAL EFFORT
+      ### CATCHABILITY FOR NUMBER OF OCCASIONS USED
       q_stats<-ddply(samp, .(segment, year, gear),
                      summarize,
                      q_mean_realized=mean(q),
-                     q_sd_realized=sd(q),
-                     total_effort=sum(f))
+                     q_sd_realized=sd(q))
       ests<-merge(ests, q_stats, by=c("segment","year","gear"), all.x=TRUE)
   
       
@@ -1181,7 +1184,10 @@ abund.trnd<-function(samp_type=NULL,
         out2<-lapply(unique(tmp$estimator), function(e)
         {
           tmp<-subset(tmp, estimator==e)
-          perform<-length(which(tmp$n_st!=0))/length(tmp$n_st)
+          #perform<-length(which(tmp$n_st!=0))/length(tmp$n_st) #PROBABLY WANT A DIFFERENT MEASUREMENT OF PERFORMANCE HERE...PROPORTION OF SEGMENTS x YEARS USED... BUT LOTS OF BEND DATA MIGHT BE EXCLUDED
+          perform<-sum(tmp$n_st)/sum(tmp$b_st) #total no. of bends with usable data/total no. of bends sampled (in an entire year across the entire river, for a particular gear) 
+          #perform<-sum(tmp$n_st)/sum(tmp$b_st)*length(which(tmp$n_st!=0))/length(tmp$n_st) #THIS MIGHT BE BEST
+          effort=sum(tmp$effort)
           tmp<-subset(tmp,!is.na(Nhat_AM))
           if(perform>0 #enough data
             & length(unique(tmp$segment))>1 # more than one segment
@@ -1212,7 +1218,9 @@ abund.trnd<-function(samp_type=NULL,
               ### PVALUE FOR TREND ESTIMATE
               pval_WM=summary(fit_WM)$coefficients['year',4],
               ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
-              perform=perform
+              perform=perform,
+              effort=effort,
+              occasions=max(occ)
             )
           }
           if(perform==0 #no data
@@ -1228,7 +1236,9 @@ abund.trnd<-function(samp_type=NULL,
               trnd_WM=NA,
               se_WM=NA,
               pval_WM=NA,
-              perform=0 #NOT ENOUGH DATA TO CALCULATE TREND
+              perform=0, #NOT ENOUGH DATA TO CALCULATE TREND
+              effort=effort,
+              occasions=max(occ)
             )
           }
           return(tmp2)
@@ -1252,25 +1262,23 @@ abund.trnd<-function(samp_type=NULL,
       ### FLAGS
       fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
       out<-merge(out,fl, by="gear")
-      ### CATCHABILITY AND TOTAL EFFORT
+      ### CATCHABILITY
       q_stats<-ddply(samp, .(gear),
                      summarize,
                      q_mean_realized=mean(q),
-                     q_sd_realized=sd(q),
-                     total_effort=sum(f))
+                     q_sd_realized=sd(q))
       out<-merge(out, q_stats, by="gear")
       # ADD INPUTS
       inputs<-sim_dat$inputs
       in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                          B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
-                         occasions=inputs$occasions, samp_type=inputs$samp_type,
-                         pop_id=pop_num, catch_id=catch_num)
+                         samp_type=inputs$samp_type, pop_id=pop_num, catch_id=catch_num)
       out<-merge(out, in_dat, by="gear", all.x=TRUE)
       ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
       # OUTPUT THE GOODIES
       out<-out[,c("gear", "pop_trnd","trnd_AM","bias_AM", "precision_AM",
                   "pval_AM", "trnd_WM", "bias_WM", "precision_WM", "pval_WM",
-                  "perform", "estimator","flags", "total_effort", "q_mean_realized",
+                  "perform", "estimator","flags", "effort", "q_mean_realized",
                   "q_sd_realized","q_mean_input", "B0_sd_input","deployments","occasions",
                   "samp_type","pop_id", "catch_id")]
       ## REFORMAT M0t TREND OUTPUTS
@@ -1283,7 +1291,7 @@ abund.trnd<-function(samp_type=NULL,
       out<-rbind(tmpA,tmpW)
       ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
                   "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
-                  "estimator","flags", "total_effort", "q_mean_realized","q_sd_realized",
+                  "estimator","flags", "effort", "q_mean_realized","q_sd_realized",
                   "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
                   "pop_id", "catch_id")]
     } 
