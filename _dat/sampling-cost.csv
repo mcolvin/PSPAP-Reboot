@@ -1,0 +1,102 @@
+# Compiled by MEC 20171012
+# Data received from Tim Welker on 20171011
+# Nebraska samples ~the top half of Segment 9 and MDC samples the bottom half.  
+# Segment 1 is small and receives very little sampling effort.
+# Sampling costs do not include data management expenses 
+# (i.e., CRRL and MDC), genetics (Lamar and SIU-Carbondale), 
+# internal administrative/overhead expenses, analyses, etc.
+# see C:\Users\mcolvin\Documents\projects\Pallid Sturgeon\Analysis\PSPAP-Reboot\_dat\cost
+# Original file: Copy of PSPAP_historic funding_for Mike Colvin.xlsx
+#
+fiscalYear,cost,segment,fieldOffice,crew,rpma,comments
+2005,0.00,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2006,391232.33,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2007,364736.33,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2008,369879.57,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2009,425656.00,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2010,409046.97,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2011,419331.45,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2012,413245.60,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2013,330638.88,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2014,381966.84,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2015,181192.85,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2016,210145.17,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2017,214886.99,"1, 2, 3",MT,Montana Fish Wildlife and Parks,2,PSPAP Segment 1-3
+2005,0.00,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2006,0.00,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2007,210728.00,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2008,240536.00,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2009,224992.00,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2010,250243.05,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2011,276510.44,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2012,279302.41,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2013,298848.03,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2014,298635.02,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2015,247192.84,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2016,224630.63,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2017,229247.73,4,MR,Missouri River FWCO,2,PSPAP Segment 4
+2005,,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2006,,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2007,213640.00,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2008,248913.00,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2009,243627.00,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2010,242827.58,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2011,281838.72,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2012,339720.82,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2013,282561.64,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2014,307625.79,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2015,298561.76,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2016,224905.77,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2017,229820.31,"5, 6 ",GP,Great Plains FWCO,3,PSPAP Segment 5-6
+2005,360963.00,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2006,210083.00,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2007,217903.00,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2008,226507.00,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2009,235556.00,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2010,233007.00,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2011,238938.88,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2012,247354.01,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2013,255623.35,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2014,259495.41,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2015,273144.77,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2016,269082.50,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2017,258407.30,7,SD,South Dakota Game Fish and Parks,4,PSPAP Segment 7
+2005,452850.24,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2006,388114.25,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2007,409305.78,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2008,444532.22,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2009,457868.18,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2010,520551.19,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2011,534063.27,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2012,555413.90,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2013,581150.96,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2014,612020.08,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2015,523390.96,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2016,388544.52,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2017,372046.19,"8, 1/2 of 9",NE,Nebraska Game and Parks Commission,4,PSPAP Segment 8-9
+2005,509500.85,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2006,626968.92,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2007,651518.09,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2008,677043.27,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2009,418319.89,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2010,564234.20,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2011,575384.14,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2012,600684.02,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2013,638194.80,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2014,668913.47,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2015,523830.01,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2016,399701.40,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2017,500904.02,"1/2 of 9, 10, 11",MO,Missouri Department of Conservation,4,PSPAP Segment 10-11
+2005,0.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2006,0.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2007,622472.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2008,625997.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2009,604643.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2010,577362.27,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2011,590621.31,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2012,618561.56,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2013,620492.53,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2014,626533.96,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2015,523196.88,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2016,0.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14
+2017,0.00,"13, 14",CF,Columbia FWCO,4,PSPAP Segment 13-14

@@ -1,0 +1,98 @@
+---
+title: "Quantifying cost per bend"
+output:
+  html_document:
+    toc: true
+    theme: united
+date: "19 May, 2017"
+author: M. Colvin
+---
+
+<!--
+
+rmarkdown::render("cost.Rmd")
+-->
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+library(RODBC)
+com4<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")
+dat<-sqlFetch(com4,"cost-summary")
+names(dat)<-tolower(names(dat))
+dat$tmp<-1 # TO SUM UP DEPLOYMENTS
+
+## COST DATA FOR EACH FIELD CREW
+## AND FISCAL YEAR
+cost<-read.csv("_dat/sampling-cost.csv",
+    skip=10)
+names(cost)<-tolower(names(cost))
+cost$year<- cost$fiscalyear-1 ## sampling year, sort of
+cost$cost<-ifelse(cost$cost>0, cost$cost,NA)
+## note: year is the season year, effort after 
+## december 31 is included in the previous year
+deployments<-aggregate(tmp~year+fieldoffice,
+    dat,sum)
+
+depcost<-merge(deployments,cost,
+    by=c("year","fieldoffice"))
+    
+depcost$perdep<- depcost$cost/depcost$tmp
+depcost$lperdep<- log(depcost$perdep)
+
+
+library(plyr)
+tmp<-ddply(depcost,.(fieldoffice),summarize,
+    mnlcost=mean(na.omit(lperdep))),
+    mdcost=median(na.omit(perdep)),
+    sdlcost=sd(na.omit(lperdep)),
+    mncost=min(na.omit(perdep)),
+    mxcost=max(na.omit(perdep)))
+tmp
+
+
+hist(depcost[depcost$fieldoffice=="NE",]$perdep)
+hist(depcost[depcost$fieldoffice=="CF",]$perdep)
+
+plot(lperdep~year,depcost,
+    type='n')
+fo<-unique(depcost$fieldoffice)
+for(i in 1:length(fo))
+    {
+    points(lperdep~year,depcost,
+        subset=fieldoffice==fo[i],
+        type='l',
+        col=i,
+        lwd=2)
+    }
+
+fit<-lm(lperdep~year+fieldoffice+year:fieldoffice,
+    depcost)
+fit<-lm(lperdep~fieldoffice,
+    depcost)
+depcost$ldepcosthat<- predict(fit,depcost)  
+plot(resid(fit)~fitted(fit))
+plot(lperdep~ldepcosthat,depcost)    
+plot(perdep~year,depcost,
+    subset=fieldoffice=="SD")
+    
+plot(perdep~year,depcost,
+    subset=fieldoffice=="MT")
+    
+plot(perdep~year,depcost,
+    subset=fieldoffice=="CF")    
+    
+``` 
+
+
+
+
+
+* The season will begin when water temperatures decline to 55°F or less 
+(in the fall) and will continue through June 30. 
+* The Fish Community Season will be July 1 through October 30 throughout 
+the geographic range of the PSPAP. 
+
+Currently the analysis assumes that the period
+of performance for field crews is the same as 
+the fiscal year. 
+
+
