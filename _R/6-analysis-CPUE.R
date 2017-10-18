@@ -1,5 +1,5 @@
-# CPUE ESTIMATES:
-## 1. CATCH AND EFFORT BY BEND, YEAR, AND GEAR
+# MINIMUM KNOWN ALIVE (MKA) ESTIMATES:
+## 1. CATCH, EFFORT, AND MKA BY BEND, YEAR, AND GEAR
 ## 2. TESTS
 
 source("_R/1_global.R")
@@ -7,9 +7,9 @@ source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
 
-#######################
-## 1. CPUE ESTIMATES ##
-#######################
+######################
+## 1. MKA ESTIMATES ##
+######################
 ptm<-proc.time()
 lapply(1:200, function(i)
 {
@@ -42,17 +42,40 @@ lapply(1:200, function(i)
       {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
       {sim_dat<-readRDS(file=paste0("_output/",catch_list[j]))}
-    # GET CPUE ESTIMATES
-    est<-CPUE.ests(sim_dat=sim_dat)
-    # SAVE ESTIMATES
-    if(pcname=="WF-FGNL842")
-      {saveRDS(est,
-             file=paste0("E:/_output/3-estimates/CPUE_est", 
-                         strsplit(catch_list[j], "catch_dat")[[1]][2]))}
-    if(pcname!="WF-FGNL842")
-      {saveRDS(est,
-             file=paste0("_output/CPUE_est", 
-                         strsplit(catch_list[j], "catch_dat")[[1]][2]))}
+    # SET OCCASIONS TO BE USED
+    occasions<-2:4
+    lapply(occasions, function(y)
+    {
+      # GET CPUE ESTIMATES
+      est<-MKA.ests(sim_dat=sim_dat, max_occ = y)
+      # SAVE ESTIMATES
+      if(pcname=="WF-FGNL842")
+        {
+          if(file.exists(paste0("E:/_output/3-estimates/CPUE_est", 
+                                strsplit(catch_list[j], "catch_dat")[[1]][2])))
+            {
+              old<-readRDS(file=paste0("E:/_output/3-estimates/CPUE_est", 
+                                       strsplit(catch_list[j], "catch_dat")[[1]][2]))
+              est<-rbind(old,est)
+            }
+          saveRDS(est,
+               file=paste0("E:/_output/3-estimates/CPUE_est", 
+                           strsplit(catch_list[j], "catch_dat")[[1]][2]))
+        }
+      if(pcname!="WF-FGNL842")
+        {
+          if(file.exists(paste0("_output/3-estimates/CPUE_est", 
+                                strsplit(catch_list[j], "catch_dat")[[1]][2])))
+            {
+              old<-readRDS(file=paste0("_output/3-estimates/CPUE_est", 
+                                       strsplit(catch_list[j], "catch_dat")[[1]][2]))
+              est<-rbind(old,est)
+            }
+          saveRDS(est,
+                  file=paste0("_output/3-estimates/CPUE_est", 
+                              strsplit(catch_list[j], "catch_dat")[[1]][2]))
+        }
+    })
   })
   stopCluster(cl)
 })
