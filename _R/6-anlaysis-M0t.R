@@ -9,7 +9,7 @@ source("_R/3_load-and-clean.R")
 
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
-lapply(1:400, function(i)
+repeats<-lapply(1:400, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -24,7 +24,7 @@ lapply(1:400, function(i)
                                  pattern=paste0("catch_dat_f_",i,"-")))
     
   }
-  lapply(1:length(catch_list), function(j)
+  out<-lapply(1:length(catch_list), function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
@@ -65,7 +65,22 @@ lapply(1:400, function(i)
                          strsplit(catch_list[j], "catch_dat")[[1]][2]))
       }
     })
+    if(pcname=="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    if(pcname!="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("_output/3-estimates/M0t_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    out<-NULL
+    if(anyDuplicated(est)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    return(out)
   })
+  out<-do.call("rbind",out)
+  return(out)
 })
 proc.time()-ptm
 # CRUNCH FOR 200 RUNS (ABOUT 31 HOURS OR 9.3 MINUTES A PIECE)

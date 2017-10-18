@@ -11,7 +11,7 @@ source("_R/3_load-and-clean.R")
 ## 1. MKA ESTIMATES ##
 ######################
 ptm<-proc.time()
-lapply(1:200, function(i)
+repeats<-lapply(1:200, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -35,13 +35,13 @@ lapply(1:200, function(i)
   clusterEvalQ(cl, source("_R/2_functions.R"))
   #clusterEvalQ(cl, library(MASS))
   clusterEvalQ(cl, library(plyr))
-  parLapply(cl,1:length(catch_list), function(j)
+  out<-parLapply(cl,1:length(catch_list), function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("E:/_output/",catch_list[j]))}
+      {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("_output/",catch_list[j]))}
+      {sim_dat<-readRDS(file=paste0("_output/2-catch/",catch_list[j]))}
     # SET OCCASIONS TO BE USED
     occasions<-3:4
     lapply(occasions, function(y)
@@ -57,7 +57,7 @@ lapply(1:200, function(i)
               old<-readRDS(file=paste0("E:/_output/3-estimates/MKA_est", 
                                        strsplit(catch_list[j], "catch_dat")[[1]][2]))
               est<-rbind(old,est)
-            }
+          }
           saveRDS(est,
                file=paste0("E:/_output/3-estimates/MKA_est", 
                            strsplit(catch_list[j], "catch_dat")[[1]][2]))
@@ -76,8 +76,23 @@ lapply(1:200, function(i)
                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
         }
     })
+    if(pcname=="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("E:/_output/3-estimates/MKA_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    if(pcname!="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("_output/3-estimates/MKA_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    out<-NULL
+    if(anyDuplicated(est)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    return(out)
   })
   stopCluster(cl)
+  out<-do.call("rbind",out)
+  return(out)
 })
 proc.time()-ptm
 
