@@ -39,40 +39,40 @@ lapply(1:200, function(i)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
+      {sim_dat<-readRDS(file=paste0("E:/_output/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
       {sim_dat<-readRDS(file=paste0("_output/",catch_list[j]))}
     # SET OCCASIONS TO BE USED
-    occasions<-2:4
+    occasions<-3:4
     lapply(occasions, function(y)
     {
-      # GET CPUE ESTIMATES
+      # GET MKA ESTIMATES
       est<-MKA.ests(sim_dat=sim_dat, max_occ = y)
       # SAVE ESTIMATES
       if(pcname=="WF-FGNL842")
         {
-          if(file.exists(paste0("E:/_output/3-estimates/CPUE_est", 
+          if(file.exists(paste0("E:/_output/3-estimates/MKA_est", 
                                 strsplit(catch_list[j], "catch_dat")[[1]][2])))
             {
-              old<-readRDS(file=paste0("E:/_output/3-estimates/CPUE_est", 
+              old<-readRDS(file=paste0("E:/_output/3-estimates/MKA_est", 
                                        strsplit(catch_list[j], "catch_dat")[[1]][2]))
               est<-rbind(old,est)
             }
           saveRDS(est,
-               file=paste0("E:/_output/3-estimates/CPUE_est", 
+               file=paste0("E:/_output/3-estimates/MKA_est", 
                            strsplit(catch_list[j], "catch_dat")[[1]][2]))
         }
       if(pcname!="WF-FGNL842")
         {
-          if(file.exists(paste0("_output/3-estimates/CPUE_est", 
+        if(file.exists(paste0("_output/3-estimates/MKA_est", 
                                 strsplit(catch_list[j], "catch_dat")[[1]][2])))
             {
-              old<-readRDS(file=paste0("_output/3-estimates/CPUE_est", 
+              old<-readRDS(file=paste0("_output/3-estimates/MKA_est", 
                                        strsplit(catch_list[j], "catch_dat")[[1]][2]))
               est<-rbind(old,est)
             }
           saveRDS(est,
-                  file=paste0("_output/3-estimates/CPUE_est", 
+                  file=paste0("_output/3-estimates/MKA_est", 
                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
         }
     })
@@ -81,7 +81,7 @@ lapply(1:200, function(i)
 })
 proc.time()-ptm
 
-#est<-readRDS("_output/CPUE_est_r_1-1.rds")
+#est<-readRDS("_output/MKA_est_r_1-1.rds")
 #head(est)
 
 
