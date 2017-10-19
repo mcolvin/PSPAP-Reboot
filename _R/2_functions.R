@@ -767,8 +767,9 @@ catch_data<-function(sim_pop=NULL,inputs,...)
 ## 6. GETTING CPUE ESTIMATES
 ### USES OCCASION 1 DATA ONLY
 MKA.ests<-function(sim_dat=NULL,
-                    max_occ=NULL, #Number of occasions to use for estimate
-                    ....)
+                   max_occ=NULL, #Number of occasions to use for estimate
+                   gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
+                   ....)
 {
   #MASSAGE DATA TO FIT THE NUMBER OF OCCASIONS TO BE USED
   catch<-sim_dat$catch_dat
@@ -783,20 +784,58 @@ MKA.ests<-function(sim_dat=NULL,
   catch<-catch[which(catch$occasion %in% occ),]
   
   ## GET TOTAL CATCH FOR EACH SAMPLED BEND
-  tmp<-aggregate(fish_id~b_segment+bend_num+year+gear,catch, length)
+  if(is.null(gear_combi))
+  {
+    tmp<-aggregate(fish_id~b_segment+bend_num+year+gear, catch, length) 
+  }
+  if(!is.null(gear_combi))
+  {
+    catch<-lapply(1:length(gear_combi),function(x)
+    {
+      out<-catch[which(catch$gear==gear_combi[x] & catch$occasion==x),]
+      return(out)
+    })
+    catch<-do.call("rbind",catch)
+    COMBI<-aggregate(fish_id~b_segment+bend_num+year+gear+occasion, catch, length)
+    names(COMBI)[which(names(COMBI)=="fish_id")]<-"catch"
+    tmp<-aggregate(fish_id~b_segment+bend_num+year, catch, length)
+    tmp$gear<-"COMBI"
+  }
   names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
-  ### ADD SAMPLED BENDS WITH ZERO CATCH
-  sampled<-ddply(sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),],.(b_segment,bend_num,year,gear),
-                 summarize,
-                 effort=sum(f))
-  tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year","gear"),all.y=TRUE)
+  ### ADD SAMPLED BEND OCCASIONS WITH ZERO CATCH
+  samps<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
+  if(is.null(gear_combi))
+  {
+    sampled<-ddply(samps,.(b_segment,bend_num,year,gear),
+                   summarize,
+                   effort=sum(f))
+    tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year","gear"),all.y=TRUE)
+  }
+  if(!is.null(gear_combi))
+  {
+    samps<-lapply(1:length(gear_combi),function(x)
+    {
+      out<-samps[which(samps$gear==gear_combi[x] & samps$occasion==x),]
+      return(out)
+    })
+    samps<-do.call("rbind",samps)
+    sampled<-ddply(samps,.(b_segment,bend_num,year,gear,occasion),
+                   summarize,
+                   effort=sum(f))
+    COMBI<-merge(COMBI,sampled, by=c("b_segment","bend_num", "year","gear", "occasion"), all.y=TRUE)
+    COMBI<-subset(COMBI,effort!=0)
+    sampled<-ddply(sampled, .(b_segment,bend_num,year), summarize, effort=sum(effort))
+    tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year"),all.y=TRUE)
+  }
   tmp[which(is.na(tmp$catch)),]$catch<-rep(0, length(which(is.na(tmp$catch))))
   ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
   tmp<-subset(tmp,effort!=0)
   ## ADD BEND RKM
   bends<-sim_dat$inputs$bends
-  tmp<- merge(tmp,bends[,c("b_segment","bend_num","length.rkm")], by=c("b_segment","bend_num"))
+  tmp<- merge(tmp,bends[,c("b_segment","bend_num","length.rkm")], by=c("b_segment","bend_num"),all.x=TRUE)
+  #############################################
   ## ADD MINIMUM KNOWN ALIVE (FOR max_occ > 1 THIS DEPENDS ON BEING ABLE TO INDIVIDUALLY IDENTIFY FISH)
+  #############################################
   if(max(occ)==1){tmp$alive<-tmp$catch}
   if(max(occ)>1)
   {
