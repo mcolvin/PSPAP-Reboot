@@ -11,7 +11,7 @@ source("_R/3_load-and-clean.R")
 ## 1. MKA ESTIMATES ##
 ######################
 ptm<-proc.time()
-lapply(1:200, function(i)
+lapply(1:400, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -33,17 +33,17 @@ lapply(1:200, function(i)
   ## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
   clusterExport(cl, c("pcname","catch_list"),envir=environment())
   clusterEvalQ(cl, source("_R/2_functions.R"))
-  #clusterEvalQ(cl, library(MASS))
   clusterEvalQ(cl, library(plyr))
+  clusterEvalQ(cl, library(reshape2))
   parLapply(cl,1:length(catch_list), function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("E:/_output/",catch_list[j]))}
+      {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("_output/",catch_list[j]))}
+      {sim_dat<-readRDS(file=paste0("_output/2-catch/",catch_list[j]))}
     # SET OCCASIONS TO BE USED
-    occasions<-3:4
+    occasions<-2:4
     lapply(occasions, function(y)
     {
       # GET MKA ESTIMATES
@@ -81,9 +81,9 @@ lapply(1:200, function(i)
 })
 proc.time()-ptm
 
-#est<-readRDS("_output/MKA_est_r_1-1.rds")
+#est<-readRDS("E:/_output/3-estimates/MKA_est_r_0-2.rds")
 #head(est)
-
+#tail(est)
 
 
 
