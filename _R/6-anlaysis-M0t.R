@@ -9,7 +9,7 @@ source("_R/3_load-and-clean.R")
 
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
-lapply(1:200, function(i)
+repeats<-lapply(1:400, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -19,29 +19,68 @@ lapply(1:200, function(i)
   }
   if(pcname!="WF-FGNL842")
   {
-    catch_list<-dir("_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
-    catch_list<-c(catch_list,dir("_output/2-catch", 
+    catch_list<-dir("D:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("D:/_output/2-catch", 
                                  pattern=paste0("catch_dat_f_",i,"-")))
+    
   }
-  lapply(1:length(catch_list), function(j)
+  out<-lapply(1:length(catch_list), function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
       {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
-      {sim_dat<-readRDS(file=paste0("_output/2-catch/",catch_list[j]))}
-    # GET M0 & Mt ESTIMATES
-    est<-M0t.ests(sim_dat=sim_dat)
-    # SAVE ESTIMATES
+      {sim_dat<-readRDS(file=paste0("D:/_output/2-catch/",catch_list[j]))}
+    # SET OCCASIONS TO BE USED
+    occasions<-2:3
+    lapply(occasions, function(y)
+    {
+      # GET M0 & Mt ESTIMATES
+      est<-M0t.ests(sim_dat=sim_dat, max_occ=y)
+      # SAVE ESTIMATES
+      if(pcname=="WF-FGNL842")
+      {
+        if(file.exists(paste0("E:/_output/3-estimates/M0t_est", 
+                              strsplit(catch_list[j], "catch_dat")[[1]][2])))
+        {
+          old<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
+                                   strsplit(catch_list[j], "catch_dat")[[1]][2]))
+          est<-rbind(old,est)
+        }
+        saveRDS(est,
+               file=paste0("E:/_output/3-estimates/M0t_est", 
+                           strsplit(catch_list[j], "catch_dat")[[1]][2]))
+      }
+      if(pcname!="WF-FGNL842")
+      {
+        if(file.exists(paste0("D:/_output/3-estimates/M0t_est",
+                              strsplit(catch_list[j], "catch_dat")[[1]][2])))
+        {
+          old<-readRDS(file=paste0("D:/_output/3-estimates/M0t_est",
+                                   strsplit(catch_list[j], "catch_dat")[[1]][2]))
+          est<-rbind(old,est)
+        }
+        saveRDS(est,
+             file=paste0("D:/_output/3-estimates/M0t_est",
+                         strsplit(catch_list[j], "catch_dat")[[1]][2]))
+      }
+    })
     if(pcname=="WF-FGNL842")
-    {saveRDS(est,
-             file=paste0("E:/_output/3-estimates/M0t_est", 
-                         strsplit(catch_list[j], "catch_dat")[[1]][2]))}
+    {
+      est<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
     if(pcname!="WF-FGNL842")
-    {saveRDS(est,
-             file=paste0("_output/3-estimates/M0t_est", 
-                         strsplit(catch_list[j], "catch_dat")[[1]][2]))}
+    {
+      est<-readRDS(file=paste0("_output/3-estimates/M0t_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    out<-NULL
+    if(anyDuplicated(est)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    return(out)
   })
+  out<-do.call("rbind",out)
+  return(out)
 })
 proc.time()-ptm
 # CRUNCH FOR 200 RUNS (ABOUT 31 HOURS OR 9.3 MINUTES A PIECE)

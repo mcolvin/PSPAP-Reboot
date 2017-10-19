@@ -55,6 +55,8 @@ if(file.exists(paste0(loc, "_output/4-utilities/trnd_table.csv")))
   trnd_table<-read.csv(file=paste0(loc, "_output/4-utilities/trnd_table.csv"))
   trnd_table<-rbind(trnd_table,trnd)
   write.csv(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.csv"),row.names=FALSE)
+  ## CHECK FOR DUPLICATE DATA
+  anyDuplicated(trnd_table)
 }
 #### ABUNDANCE
 if(file.exists(paste0(loc, "_output/4-utilities/abund_table.csv")))
@@ -62,6 +64,8 @@ if(file.exists(paste0(loc, "_output/4-utilities/abund_table.csv")))
   abund_table<-read.csv(file=paste0(loc, "_output/4-utilities/abund_table.csv"))
   abund_table<-rbind(abund_table,abund)
   write.csv(abund_table,file=paste0(loc, "_output/4-utilities/abund_table.csv"),row.names=FALSE)
+  ## CHECK FOR DUPLICATE DATA
+  anyDuplicated(abund_table)
 }
 #### LENGTH
 if(file.exists(paste0(loc, "_output/4-utilities/lgth_table.csv")))
@@ -69,22 +73,30 @@ if(file.exists(paste0(loc, "_output/4-utilities/lgth_table.csv")))
   lgth_table<-read.csv(file=paste0(loc, "_output/4-utilities/lgth_table.csv"))
   lgth_table<-rbind(lgth_table,lgth)
   write.csv(lgth_table,file=paste0(loc, "_output/4-utilities/lgth_table.csv"),row.names=FALSE)
+  ## CHECK FOR DUPLICATE DATA
+  anyDuplicated(lgth_table)  
 }
 ### IF NO PREVIOUS TABLE EXISTS
 #### TREND
 if(!file.exists(paste0(loc, "_output/4-utilities/trnd_table.csv")))
 {
   write.csv(trnd,file=paste0(loc, "_output/4-utilities/trnd_table.csv"),row.names=FALSE)
+  ## CHECK FOR DUPLICATE DATA
+  anyDuplicated(trnd) 
 }
 #### ABUNDANCE
 if(!file.exists(paste0(loc, "_output/4-utilities/abund_table.csv")))
 {
   write.csv(abund,file=paste0(loc, "_output/4-utilities/abund_table.csv"),row.names=FALSE)
+  ## CHECK FOR DUPLICATE DATA
+  anyDuplicated(abund) 
 }
 #### LENGTH
 if(!file.exists(paste0(loc, "_output/4-utilities/lgth_table.csv")))
 {
   write.csv(lgth,file=paste0(loc, "_output/4-utilities/lgth_table.csv"),row.names=FALSE)
+  ## CHECK FOR DUPLICATE DATA
+  anyDuplicated(lgth) 
 }
 ## MOVE NEW MINIS TO COMPILED FOLDER
 new_minis<-dir(paste0(loc, "_output/4-utilities"), pattern="_mini_")
@@ -93,6 +105,9 @@ lapply(new_minis, function(x)
   file.rename(from=paste0(loc, "_output/4-utilities/", x), 
               to=paste0(loc, "_output/4-utilities/compiled_minis/", x))
 })
+
+
+
 
 
 

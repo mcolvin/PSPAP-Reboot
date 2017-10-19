@@ -861,15 +861,10 @@ M0t.ests<-function(sim_dat=NULL,
   })
   ch<-do.call(rbind,ch)
   
-  ### GET TOTAL CATCH FOR EACH SAMPLED BEND
-  tmp<-aggregate(fish_id~b_segment+bend_num+year+gear,catch, length)
-  names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
-  ### ADD SAMPLED BENDS WITH ZERO CATCH
+  ### PULL SAMPLED BENDS
   samps<-ddply(sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),],.(b_segment,bend_num,year,gear),
                summarize,
                effort=sum(f))
-  samps<-merge(tmp, samps, by=c("b_segment","bend_num","year","gear"),all.y=TRUE)
-  samps[which(is.na(samps$catch)),]$catch<-0
   ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
   samps<-subset(samps,effort!=0)
   ### ADD BEND RKM
@@ -915,7 +910,6 @@ M0t.ests<-function(sim_dat=NULL,
         segment=samps$b_segment[x],
         bend_num=samps$bend_num[x],
         gear=samps$gear[x],
-        catch=samps$catch[x],
         effort=samps$effort[x],
         occasions=max(as.numeric(occ)),
         rkm=samps$length.rkm[x],
@@ -938,7 +932,6 @@ M0t.ests<-function(sim_dat=NULL,
         segment=samps$b_segment[x],
         bend_num=samps$bend_num[x],
         gear=samps$gear[x],
-        catch=samps$catch[x],
         effort=samps$effort[x],
         occasions=max(as.numeric(occ)),
         rkm=samps$length.rkm[x],
@@ -961,10 +954,10 @@ M0t.ests<-function(sim_dat=NULL,
   ### CREATE DATA FRAME
   bend_Np<- do.call("rbind", bend_Np)
   ## REORGANIZE DATA FRAME
-  tmp0<-bend_Np[,c(1:14)]
+  tmp0<-bend_Np[,c(1:13)]
   tmp0$estimator<-"M0"
   colnames(tmp0)<-gsub("_M0", "", colnames(tmp0))
-  tmpt<-bend_Np[,c(1:9,15:19)]
+  tmpt<-bend_Np[,c(1:8,14:18)]
   tmpt$estimator<-"Mt"
   colnames(tmpt)<-gsub("_Mt", "", colnames(tmpt))
   bend_Np<-rbind(tmp0,tmpt)
@@ -1036,7 +1029,7 @@ abund.trnd<-function(samp_type=NULL,
       if(tmp$estimator[1]=="MKA")
       {
         ## ADD ESTIMATED BEND DENSITY
-          tmp$catch_dens<-tmp$alive/tmp$rkm
+        tmp$catch_dens<-tmp$alive/tmp$rkm
         ## GET SEGMENT LEVEL ESTIMATES BY YEAR AND GEAR
         ests<-ddply(tmp,.(segment,year,gear),
                     summarize,
@@ -1094,9 +1087,11 @@ abund.trnd<-function(samp_type=NULL,
         ests<-merge(ests, q_stats, by=c("segment","year","gear"), all.x=TRUE)
       
         # TREND
-        ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+        ## ABUNDANCE TREND
+        ### FIT LINEAR MODEL FOR TREND FOR EACH GEAR
         outA<-lapply(gears,function(g)
         {
+          ### USE DATA+1 TO AVOID ln(0) 
           fit_AM<-lm(log(Nhat_AM+1)~as.factor(segment)+year, ests, subset=gear==g)
           fit_WM<-lm(log(Nhat_WM+1)~as.factor(segment)+year, ests, subset=gear==g)
           tmp2<- data.frame( 
@@ -1123,48 +1118,86 @@ abund.trnd<-function(samp_type=NULL,
           return(tmp2)
         })
         outA<-do.call(rbind,outA)
-        ## ADD POPULATION TREND
-        outA$pop_trnd<-pop_trnd
-        ## CALCULATE TREND BIAS
-        outA$bias_AM<-outA$trnd_AM-outA$pop_trnd
-        outA$bias_WM<-outA$trnd_WM-outA$pop_trnd
-        ## CALCULATE TREND PRECISION
-        outA$precision_AM<-outA$se_AM/abs(outA$trnd_AM)
-        outA$precision_WM<-outA$se_WM/abs(outA$trnd_WM)
-        ## ADD TREND EXTRAS
-        outA$perform<-1
+        ### ADD ESTIMATOR
         outA$estimator<-"MKA"
-        ### FLAGS
+        ### REFORMAT MKA ABUNDANCE OUTPUTS
+        tmpA<-outA[,c(1:4,8,9)]
+        tmpA$estimator<-paste0(tmpA$estimator,"_AM")
+        colnames(tmpA)<-gsub("_AM", "", colnames(tmpA))
+        tmpW<-outA[,c(1,5:9)]
+        tmpW$estimator<-paste0(tmpW$estimator,"_WM")
+        colnames(tmpW)<-gsub("_WM", "", colnames(tmpW))
+        outA<-rbind(tmpA,tmpW)
+        
+        
+        ## CPUE TREND
+        ### ADD SEGMENT-LEVEL CPUE AND LN(CPUE)
+        #### USE CATCH +1 TO AVOID CPUE=0
+        ests$catch1<-ests$catch+1
+        ests$cpue1<-ests$catch1/ests$effort
+        ests$lncpue1<-log(ests$cpue1)
+        ### FIT LINEAR MODEL FOR TREND FOR EACH GEAR
+        outC<-lapply(gears,function(g)
+        {
+          fit<- lm(lncpue1~as.factor(segment)+year, ests, subset=gear==g)
+          tmp2<- data.frame( 
+            # THE GOODIES
+            ## GEAR
+            gear=g,
+            ## TREND ESTIMATE
+            trnd=coef(fit)['year'],
+            ## STANDARD ERROR FOR TREND ESTIMATE
+            se=summary(fit)$coefficients['year',2],
+            ## PVALUE FOR TREND ESTIMATE
+            pval=summary(fit)$coefficients['year',4],
+            ## TOTAL EFFORT
+            effort=sum(ests[which(ests$gear==g),]$effort)
+          )
+          return(tmp2)
+        })
+        outC<-do.call(rbind,outC)
+        # ADD ESTIMATOR
+        outC$estimator<-"CPUE"
+        
+        ## FULL TREND
+        out<-rbind(outA, outC)
+        ### ADD POPULATION TREND
+        out$pop_trnd<-pop_trnd
+        ### CALCULATE TREND BIAS
+        out$bias<-out$trnd-out$pop_trnd
+        ### CALCULATE TREND PRECISION
+        out$precision<-out$se/abs(out$trnd)
+        ### ADD TREND EXTRAS
+        out$perform<-1
+        #### FLAGS
         fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
-        outA<-merge(outA,fl, by="gear")
-        ### CATCHABILITY
+        out<-merge(out,fl, by="gear", all.x=TRUE)
+        #### CATCHABILITY
         q_stats<-ddply(samp, .(gear),
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        outA<-merge(outA, q_stats, by="gear")
+        out<-merge(out, q_stats, by="gear", all.x=TRUE)
+        
         # ADD INPUTS
         inputs<-sim_dat$inputs
         in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
                            occasions=y, samp_type=inputs$samp_type,pop_id=pop_num,
                            catch_id=catch_num)
-        outA<-merge(outA, in_dat, by="gear", all.x=TRUE)
+        out<-merge(out, in_dat, by="gear", all.x=TRUE)
         ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
+        
         # OUTPUT THE GOODIES
-        outA<-outA[,c("gear", "pop_trnd","trnd_AM","bias_AM", "precision_AM",
-                    "pval_AM", "trnd_WM", "bias_WM", "precision_WM", "pval_WM",
-                    "perform", "estimator","flags", "effort", "q_mean_realized",
-                    "q_sd_realized","q_mean_input", "B0_sd_input","deployments","occasions",
-                    "samp_type","pop_id", "catch_id")]
-        ## REFORMAT MKA ABUNDANCE OUTPUTS
-        tmpA<-outA[,c(1:6,11:23)]
-        tmpA$estimator<-paste0(tmpA$estimator,"_AM")
-        colnames(tmpA)<-gsub("_AM", "", colnames(tmpA))
-        tmpW<-outA[,c(1,2,7:23)]
-        tmpW$estimator<-paste0(tmpW$estimator,"_WM")
-        colnames(tmpW)<-gsub("_WM", "", colnames(tmpW))
-        outA<-rbind(tmpA,tmpW)
+        out<-out[, c("gear", "pop_trnd","trnd","bias", "precision", "pval", "perform",
+                       "estimator","flags", "effort", "q_mean_realized", "q_sd_realized",
+                       "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
+                       "pop_id", "catch_id")]
+        ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
+                      "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
+                      "estimator","flags", "effort", "q_mean_realized","q_sd_realized",
+                      "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
+                      "pop_id", "catch_id")]
       }
 
       # M0 & Mt ESTIMATES
@@ -1301,14 +1334,20 @@ abund.trnd<-function(samp_type=NULL,
           return(out2)
         })
         outA<-do.call(rbind,outA)
+        ## REFORMAT M0t TREND OUTPUTS
+        tmpA<-outA[,c(1:5,9,10)]
+        tmpA$estimator<-paste0(tmpA$estimator,"_AM")
+        colnames(tmpA)<-gsub("_AM", "", colnames(tmpA))
+        tmpW<-outA[,c(1,2,6:10)]
+        tmpW$estimator<-paste0(tmpW$estimator,"_WM")
+        colnames(tmpW)<-gsub("_WM", "", colnames(tmpW))
+        outA<-rbind(tmpA,tmpW)
         ## ADD POPULATION TREND
         outA$pop_trnd<-pop_trnd
         ## CALCULATE TREND BIAS
-        outA$bias_AM<-outA$trnd_AM-outA$pop_trnd
-        outA$bias_WM<-outA$trnd_WM-outA$pop_trnd
+        outA$bias<-outA$trnd-outA$pop_trnd
         ## CALCULATE TREND PRECISION
-        outA$precision_AM<-outA$se_AM/abs(outA$trnd_AM)
-        outA$precision_WM<-outA$se_WM/abs(outA$trnd_WM)
+        outA$precision<-outA$se/abs(outA$trnd)
         #######################################
         #  DO WE WANT EXP VERSION OF THIS???  #
         #######################################
@@ -1328,77 +1367,21 @@ abund.trnd<-function(samp_type=NULL,
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
                            occasions=y, samp_type=inputs$samp_type, pop_id=pop_num,
                            catch_id=catch_num)
-       outA<-merge(outA, in_dat, by="gear", all.x=TRUE)
+        outA<-merge(outA, in_dat, by="gear", all.x=TRUE)
         ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
-        # OUTPUT ABUNDANCE TREND
-        outA<-outA[,c("gear", "pop_trnd","trnd_AM","bias_AM", "precision_AM",
-                    "pval_AM", "trnd_WM", "bias_WM", "precision_WM", "pval_WM",
-                    "perform", "estimator","flags", "effort", "q_mean_realized",
-                    "q_sd_realized","q_mean_input", "B0_sd_input","deployments","occasions",
-                    "samp_type","pop_id", "catch_id")]
-        ## REFORMAT M0t TREND OUTPUTS
-        tmpA<-outA[,c(1:6,11:23)]
-        tmpA$estimator<-paste0(tmpA$estimator,"_AM")
-        colnames(tmpA)<-gsub("_AM", "", colnames(tmpA))
-        tmpW<-outA[,c(1,2,7:23)]
-        tmpW$estimator<-paste0(tmpW$estimator,"_WM")
-        colnames(tmpW)<-gsub("_WM", "", colnames(tmpW))
-        outA<-rbind(tmpA,tmpW)
+        # OUTPUT THE GOODIES
+        ## ABUNDANCE
+        ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
+                      "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
+                      "estimator","flags", "effort", "q_mean_realized","q_sd_realized",
+                      "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
+                      "pop_id", "catch_id")]
+        ## TREND
+        out<-outA[,c("gear", "pop_trnd","trnd","bias", "precision", "pval", "perform",
+                     "estimator","flags", "effort", "q_mean_realized", "q_sd_realized",
+                     "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
+                     "pop_id", "catch_id")]
       } 
-      
-      # CPUE TREND
-      ## ADD SEGMENT-LEVEL CPUE AND LN(CPUE)
-      ### USE CATCH +1 TO AVOID CPUE=0
-      ests$catch1<-ests$catch+1
-      ests$cpue1<-ests$catch1/ests$effort
-      ests$lncpue1<-log(ests$cpue1)
-      ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
-      outC<-lapply(gears,function(g)
-      {
-        fit<- lm(lncpue1~as.factor(segment)+year, ests, subset=gear==g)
-        tmp2<- data.frame( 
-          # THE GOODIES
-          ## GEAR
-          gear=g,
-          ## TREND ESTIMATE
-          trnd=coef(fit)['year'],
-          ## STANDARD ERROR FOR TREND ESTIMATE
-          se=summary(fit)$coefficients['year',2],
-          ## PVALUE FOR TREND ESTIMATE
-          pval=summary(fit)$coefficients['year',4],
-          ## TOTAL EFFORT
-          effort=sum(ests[which(ests$gear==g),]$effort)
-        )
-        return(tmp2)
-      })
-      outC<-do.call(rbind,outC)
-      ## ADD POPULATION TREND
-      outC$pop_trnd<-pop_trnd
-      ## CALCULATE TREND BIAS
-      outC$bias<-outC$trnd-outC$pop_trnd
-      ## CALCULATE TREND PRECISION
-      outC$precision<-outC$se/abs(outC$trnd)
-      ## ADD TREND EXTRAS
-      outC$perform<-1
-      outC$estimator<-"CPUE"
-      ### FLAGS
-      outC<-merge(outC,fl, by="gear")
-      ### CATCHABILITY
-      outC<-merge(outC, q_stats, by="gear")
-      ## ADD INPUTS
-      outC<-merge(outC, in_dat, by="gear", all.x=TRUE)
-      # OUTPUT CPUE TREND
-      outC<-outC[, c("gear", "pop_trnd","trnd","bias", "precision", "pval", "perform",
-                    "estimator","flags", "effort", "q_mean_realized", "q_sd_realized",
-                    "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
-                    "pop_id", "catch_id")]
-      # OUTPUT THE GOODIES
-      out<-rbind(outA, outC)
-      ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
-                    "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
-                    "estimator","flags", "effort", "q_mean_realized","q_sd_realized",
-                    "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
-                    "pop_id", "catch_id")]
       return(list(trnd=out, abund=ests))
     })
     # ORGANIZE OUTPUT INTO TWO TABLES
