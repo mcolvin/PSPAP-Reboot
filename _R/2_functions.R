@@ -790,7 +790,7 @@ MKA.ests<-function(sim_dat=NULL,
                  summarize,
                  effort=sum(f))
   tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year","gear"),all.y=TRUE)
-  tmp[which(is.na(tmp$catch)),]$catch<-0
+  tmp[which(is.na(tmp$catch)),]$catch<-rep(0, length(which(is.na(tmp$catch))))
   ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
   tmp<-subset(tmp,effort!=0)
   ## ADD BEND RKM
@@ -815,7 +815,7 @@ MKA.ests<-function(sim_dat=NULL,
     out<-aggregate(fish_id~b_segment+bend_num+year+gear,ch,length)
     names(out)[ncol(out)]<-"alive"
     tmp<-merge(tmp,out,by=c("b_segment","bend_num","year","gear"),all.x=TRUE)
-    tmp[which(is.na(tmp$alive)),]$alive<-0
+    tmp[which(is.na(tmp$alive)),]$alive<-rep(0, length(which(is.na(tmp$alive))))
   }
   ## ADD ESTIMATOR TYPE, NUMBER OF OCCASIONS USED, AND RENAME COLUMNS
   colnames(tmp)[which(colnames(tmp)=="b_segment")]<-"segment"
