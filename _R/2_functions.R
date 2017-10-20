@@ -839,29 +839,65 @@ MKA.ests<-function(sim_dat=NULL,
   if(max(occ)==1){tmp$alive<-tmp$catch}
   if(max(occ)>1)
   {
-    #AVOID DOUBLE COUNTING REPEAT FISH
-    gears<-unique(catch$gear)
-    catch$ch<-1 #all fish in data were caught
-    ch<-lapply(gears,function(g)
+    if(is.null(gear_combi))
     {
-      pp<- dcast(catch, 
-                 year+b_segment+bend_num+fish_id~occasion,
-                 value.var="ch", sum, subset=.(gear==g))
-      pp$gear<-g
-      return(pp)
-    })
-    ch<-do.call(rbind,ch)
-    out<-aggregate(fish_id~b_segment+bend_num+year+gear,ch,length)
-    names(out)[ncol(out)]<-"alive"
-    tmp<-merge(tmp,out,by=c("b_segment","bend_num","year","gear"),all.x=TRUE)
-    tmp[which(is.na(tmp$alive)),]$alive<-rep(0, length(which(is.na(tmp$alive))))
+      #AVOID DOUBLE COUNTING REPEAT FISH
+      gears<-unique(catch$gear)  ###THIS MIGHT STILL WORK FOR GEAR COMBINATIONS SINCE ALL GEARS ARE COMBI
+      catch$ch<-1 #all fish in data were caught
+      ch<-lapply(gears,function(g)
+      {
+        pp<- dcast(catch, 
+                   year+b_segment+bend_num+fish_id~occasion,
+                   value.var="ch", sum, subset=.(gear==g))
+        pp$gear<-g
+        return(pp)
+      })
+      ch<-do.call(rbind,ch)
+      out<-aggregate(fish_id~b_segment+bend_num+year+gear,ch,length)
+      names(out)[ncol(out)]<-"alive"
+      tmp<-merge(tmp,out,by=c("b_segment","bend_num","year","gear"),all.x=TRUE)
+      tmp[which(is.na(tmp$alive)),]$alive<-rep(0, length(which(is.na(tmp$alive))))
+    }
+    if(!is.null(gear_combi))
+    {
+      #AVOID DOUBLE COUNTING REPEAT FISH
+      catch$ch<-1 #all fish in data were caught
+      ch<-dcast(catch, 
+                    year+b_segment+bend_num+fish_id~occasion,
+                    value.var="ch", sum)
+      out<-aggregate(fish_id~b_segment+bend_num+year,ch,length)
+      names(out)[ncol(out)]<-"alive"
+      tmp<-merge(tmp,out,by=c("b_segment","bend_num","year"),all.x=TRUE)
+      tmp[which(is.na(tmp$alive)),]$alive<-rep(0, length(which(is.na(tmp$alive))))
+      out<-lapply(gear_combi,function(g)
+      {
+        pp<- dcast(catch, 
+                   year+b_segment+bend_num+fish_id~occasion,
+                   value.var="ch", sum, subset=.(gear==g))
+        out<-aggregate(fish_id~b_segment+bend_num+year,pp,length)
+        names(out)[ncol(out)]<-"alive"
+        out$gear<-g
+        return(out)
+      })
+      out<-do.call(rbind,out)
+      COMBI<-merge(COMBI,out,by=c("b_segment","bend_num","year", "gear"),all.x=TRUE)
+      COMBI[which(is.na(COMBI$alive)),]$alive<-rep(0, length(which(is.na(COMBI$alive))))
+    }
   }
   ## ADD ESTIMATOR TYPE, NUMBER OF OCCASIONS USED, AND RENAME COLUMNS
   colnames(tmp)[which(colnames(tmp)=="b_segment")]<-"segment"
   colnames(tmp)[which(colnames(tmp)=="length.rkm")]<-"rkm"
   tmp$occasions<-max(occ)
   tmp$estimator<-"MKA"
-  return(tmp)
+  if(!is.null(gear_combi))
+  {
+    colnames(COMBI)[which(colnames(COMBI)=="b_segment")]<-"segment"
+  }
+  if(is.null(gear_combi))
+  {
+    COMBI<-NULL
+  }
+  return(list(ests=tmp, COMBI=COMBI))
 }
 
 
