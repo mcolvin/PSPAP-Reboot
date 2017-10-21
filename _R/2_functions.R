@@ -823,6 +823,7 @@ MKA.ests<-function(sim_dat=NULL,
                    summarize,
                    effort=sum(f))
     COMBI<-merge(COMBI,sampled, by=c("b_segment","bend_num", "year","gear", "occasion"), all.y=TRUE)
+    COMBI[which(is.na(COMBI$catch)),]$catch<-rep(0, length(which(is.na(COMBI$catch))))
     COMBI<-subset(COMBI,effort!=0)
     sampled<-ddply(sampled, .(b_segment,bend_num,year), summarize, effort=sum(effort))
     tmp<-merge(tmp, sampled, by=c("b_segment","bend_num","year"),all.y=TRUE)
@@ -833,9 +834,7 @@ MKA.ests<-function(sim_dat=NULL,
   ## ADD BEND RKM
   bends<-sim_dat$inputs$bends
   tmp<- merge(tmp,bends[,c("b_segment","bend_num","length.rkm")], by=c("b_segment","bend_num"),all.x=TRUE)
-  #############################################
   ## ADD MINIMUM KNOWN ALIVE (FOR max_occ > 1 THIS DEPENDS ON BEING ABLE TO INDIVIDUALLY IDENTIFY FISH)
-  #############################################
   if(max(occ)==1){tmp$alive<-tmp$catch}
   if(max(occ)>1)
   {
