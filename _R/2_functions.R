@@ -771,14 +771,23 @@ MKA.ests<-function(sim_dat=NULL,
                    gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
                    ....)
 {
+  #ERROR HANDLING
+  if(!is.null(max_occ))
+  {
+    if(max_occ>sim_dat$inputs$occasions | max_occ<1)
+    {return(print(paste0("max_occ needs to be at least 1 AND less than or equal to ",
+                          sim_dat$inputs$occasions)))}
+    if(!is.null(gear_combi))
+    {
+      if(length(gear_combi)!=max_occ)
+      {return(print(paste0("gear_combi needs to be of length ",max_occ)))}
+    }
+  }
   #MASSAGE DATA TO FIT THE NUMBER OF OCCASIONS TO BE USED
   catch<-sim_dat$catch_dat
   occ<-1
   if(!is.null(max_occ)) #modify analysis for less occasions than those simulated, if desired
   {
-    if(max_occ>sim_dat$inputs$occasions | max_occ<1)
-    {return(print(paste0("max_occ needs to be at least 1 AND less than or equal to ",
-                         sim_dat$inputs$occasions)))}
     occ<-1:max_occ
   } 
   catch<-catch[which(catch$occasion %in% occ),]
@@ -868,19 +877,6 @@ MKA.ests<-function(sim_dat=NULL,
       names(out)[ncol(out)]<-"alive"
       tmp<-merge(tmp,out,by=c("b_segment","bend_num","year"),all.x=TRUE)
       tmp[which(is.na(tmp$alive)),]$alive<-rep(0, length(which(is.na(tmp$alive))))
-      out<-lapply(gear_combi,function(g)
-      {
-        pp<- dcast(catch, 
-                   year+b_segment+bend_num+fish_id~occasion,
-                   value.var="ch", sum, subset=.(gear==g))
-        out<-aggregate(fish_id~b_segment+bend_num+year,pp,length)
-        names(out)[ncol(out)]<-"alive"
-        out$gear<-g
-        return(out)
-      })
-      out<-do.call(rbind,out)
-      COMBI<-merge(COMBI,out,by=c("b_segment","bend_num","year", "gear"),all.x=TRUE)
-      COMBI[which(is.na(COMBI$alive)),]$alive<-rep(0, length(which(is.na(COMBI$alive))))
     }
   }
   ## ADD ESTIMATOR TYPE, NUMBER OF OCCASIONS USED, AND RENAME COLUMNS
@@ -904,12 +900,25 @@ MKA.ests<-function(sim_dat=NULL,
 
 ## 7. GETTING M0 & Mt ESTIMATES
 M0t.ests<-function(sim_dat=NULL,
-                   max_occ=NULL, #Number of occasions to use for estimate.
+                   max_occ=NULL, #Number of occasions to use for estimate
+                   gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
                    ...)
 {
   # ERROR HANDLING
   if(sim_dat$inputs$occasions<2)
   {return(print("Simulated data needs to have at least 2 capture occasions per year."))}
+  
+  if(!is.null(max_occ))
+  {
+    if(max_occ>sim_dat$inputs$occasions | max_occ<2)
+    {return(print(paste0("max_occ needs to be at least 2 AND less than or equal to ",
+                         sim_dat$inputs$occasions)))}
+    if(!is.null(gear_combi))
+    {
+      if(length(gear_combi)!=max_occ)
+      {return(print(paste0("gear_combi needs to be of length ",max_occ)))}
+    }
+  }
   
   ## MASSAGE DATA INTO SHAPE 
   ## CAPTURE HISTORIES
@@ -925,20 +934,54 @@ M0t.ests<-function(sim_dat=NULL,
     occ<-as.character(1:max_occ)
     catch<-catch[which(catch$occasion %in% occ),]
   } 
-  ch<-lapply(gears,function(g)
+  if(is.null(gear_combi))
   {
-    pp<- dcast(catch, 
+    ch<-lapply(gears,function(g)
+    {
+      pp<- dcast(catch, 
+                 year+b_segment+bend_num+fish_id~occasion,
+                 value.var="ch", sum, subset=.(gear==g))
+      pp$gear<-g
+      return(pp)
+    })
+    ch<-do.call(rbind,ch)
+  }
+  if(!is.null(gear_combi))
+  {
+    catch<-lapply(1:length(gear_combi),function(x)
+    {
+      out<-catch[which(catch$gear==gear_combi[x] & catch$occasion==x),]
+      return(out)
+    })
+    catch<-do.call("rbind",catch)
+    ch<- dcast(catch, 
                year+b_segment+bend_num+fish_id~occasion,
-               value.var="ch", sum, subset=.(gear==g))
-    pp$gear<-g
-    return(pp)
-  })
-  ch<-do.call(rbind,ch)
+               value.var="ch", sum)
+    ch$gear<-"COMBI"
+  }
   
   ### PULL SAMPLED BENDS
-  samps<-ddply(sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),],.(b_segment,bend_num,year,gear),
-               summarize,
-               effort=sum(f))
+  if(is.null(gear_combi))
+  {
+    samps<-ddply(sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),],.(b_segment,bend_num,year,gear),
+                 summarize,
+                 effort=sum(f))
+  }
+  if(!is.null(gear_combi))
+  {
+    samps<-sim_dat$samp_dat
+    samps<-lapply(1:length(gear_combi),function(x)
+    {
+      out<-samps[which(samps$gear==gear_combi[x] & samps$occasion==x),]
+      return(out)
+    })
+    samps<-do.call("rbind",samps)
+    COMBI<-ddply(samps,.(b_segment,bend_num,year,gear,occasion),
+                   summarize,
+                   effort=sum(f))
+    samps<-ddply(samps, .(b_segment,bend_num,year), summarize, effort=sum(f))
+    samps$gear<-"COMBI"
+  }
   ### REMOVE UNUSED GEARS (THIS SHOULD BE ONLY GN18 & GN81 IN RPMA 2)
   samps<-subset(samps,effort!=0)
   ### ADD BEND RKM
@@ -1035,7 +1078,16 @@ M0t.ests<-function(sim_dat=NULL,
   tmpt$estimator<-"Mt"
   colnames(tmpt)<-gsub("_Mt", "", colnames(tmpt))
   bend_Np<-rbind(tmp0,tmpt)
-  return(bend_Np)
+  ## FINALIZE COMBI
+  if(!is.null(gear_combi))
+  {
+    colnames(COMBI)[which(colnames(COMBI)=="b_segment")]<-"segment"
+  }
+  if(is.null(gear_combi))
+  {
+    COMBI<-NULL
+  }
+  return(list(ests=bend_Np, COMBI=COMBI))
 }
 
 
