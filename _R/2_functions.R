@@ -808,7 +808,6 @@ MKA.ests<-function(sim_dat=NULL,
     COMBI<-aggregate(fish_id~b_segment+bend_num+year+gear+occasion, catch, length)
     names(COMBI)[which(names(COMBI)=="fish_id")]<-"catch"
     tmp<-aggregate(fish_id~b_segment+bend_num+year, catch, length)
-    tmp$gear<-"COMBI"
   }
   names(tmp)[which(names(tmp)=="fish_id")]<-"catch"
   ### ADD SAMPLED BEND OCCASIONS WITH ZERO CATCH
@@ -877,6 +876,7 @@ MKA.ests<-function(sim_dat=NULL,
       names(out)[ncol(out)]<-"alive"
       tmp<-merge(tmp,out,by=c("b_segment","bend_num","year"),all.x=TRUE)
       tmp[which(is.na(tmp$alive)),]$alive<-rep(0, length(which(is.na(tmp$alive))))
+      tmp$gear<-"COMBI"
     }
   }
   ## ADD ESTIMATOR TYPE, NUMBER OF OCCASIONS USED, AND RENAME COLUMNS
@@ -1129,7 +1129,9 @@ abund.trnd<-function(samp_type=NULL,
   outt<-lapply(est_list,function(x)
     {
     # PULL ESTIMATOR RESULTS
-    est<-readRDS(file=paste0(location,"_output/3-estimates/",x))
+    data<-readRDS(file=paste0(location,"_output/3-estimates/",x))
+    est<-data$ests
+    COMBI<-data$COMBI
     # FIND ACTUAL SEGMENT ABUNDANCES
     true<-sim_dat$true_vals
     names(true)[1]<-"segment"
@@ -1194,24 +1196,42 @@ abund.trnd<-function(samp_type=NULL,
         ests$precision_AM<-ests$sd_dens/abs(ests$Nhat_AM)
         ests$precision_WM<-ests$Wsd_dens/abs(ests$Nhat_WM)
         ## ADD ABUNDANCE EXTRAS
+        if(is.null(COMBI))
+        {
+          occ<-1:y
+          samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
+          dot<-.(segment,year,gear)
+          by<-c("segment", "year", "gear")
+        }
+        if(!is.null(COMBI))
+        {
+          gear_occ<-unique(COMBI[,c("gear","occasion")])
+          samp<-lapply(1:nrow(gear_occ),function(x)
+          {
+            out<-sim_dat$samp_dat[which(sim_dat$samp_dat$gear==gear_occ[x,1] & 
+                                          sim_dat$samp_dat$occasion==gear_occ[x,2]),]
+            return(out)
+          })
+          samp<-do.call("rbind",samp)
+          dot<-.(segment,year)
+          by<-c("segment", "year")
+        }
         ### FLAGS
-        occ<-1:y
-        samp<-sim_dat$samp_dat
-        samp<-samp[which(samp$occasion %in% occ),]
         colnames(samp)[which(colnames(samp)=="b_segment")]<-"segment"
         samp$p<-samp$q*samp$f
         P<-aggregate(p~segment+bend_num+year+gear+occasion, samp, sum)
         P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
-        fl<-ddply(P, .(segment, year, gear), summarize, 
+        fl<-ddply(P, dot, summarize, 
                   flags=length(which(flag!=0))/length(flag))
-        ests<-merge(ests,fl, by=c("segment", "year","gear"), all.x=TRUE)
+        ests<-merge(ests,fl, by=by, all.x=TRUE)
         ### CATCHABILITY
-        q_stats<-ddply(samp, .(segment, year, gear),
+        q_stats<-ddply(samp, dot,
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        ests<-merge(ests, q_stats, by=c("segment","year","gear"), all.x=TRUE)
-      
+        ests<-merge(ests, q_stats, by=by, all.x=TRUE)
+        
+        
         # TREND
         ## ABUNDANCE TREND
         ### FIT LINEAR MODEL FOR TREND FOR EACH GEAR
@@ -1311,9 +1331,20 @@ abund.trnd<-function(samp_type=NULL,
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
                            occasions=y, samp_type=inputs$samp_type,pop_id=pop_num,
                            catch_id=catch_num)
+        if(!is.null(COMBI))
+        {
+          in_avg<-data.frame(gear="COMBI", 
+                             q_mean_input=mean(in_dat$q_mean_input[
+                               which(in_dat$gear %in% unique(COMBI$gear))]), 
+                             B0_sd_input=mean(in_dat$B0_sd_input[
+                               which(in_dat$gear %in% unique(COMBI$gear))]), 
+                             deployments=unique(inputs$deployments), occasions=y, 
+                             samp_type=inputs$samp_type,pop_id=pop_num, catch_id=catch_num)
+          in_dat<-rbind(in_dat,in_avg)
+        }
         out<-merge(out, in_dat, by="gear", all.x=TRUE)
         ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
-        
+  
         # OUTPUT THE GOODIES
         out<-out[, c("gear", "pop_trnd","trnd","bias", "precision", "pval", "perform",
                        "estimator","flags", "effort", "q_mean_realized", "q_sd_realized",
