@@ -21,8 +21,8 @@ repeats<-lapply(1:400, function(i)
   }
   if(pcname!="WF-FGNL842")
   {
-    catch_list<-dir("_output", pattern=paste0("catch_dat_r_",i,"-"))
-    catch_list<-c(catch_list,dir("_output/", 
+    catch_list<-dir("_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("_output/2-catch", 
                                  pattern=paste0("catch_dat_f_",i,"-")))
   }
   library(parallel)
