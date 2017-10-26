@@ -15,6 +15,11 @@ if(exists("studyArea")==FALSE){studyArea<-FALSE}
 if(exists("effort_data")==FALSE){effort_data<-FALSE}
 
 
+## GEAR CODE
+gear_codes<-data.frame(gear=c("GN14", "GN18", "GN41", "GN81","MF", "OT16", "TLC1",
+                             "TLC2", "TN"),
+                      g_code=1:9)
+
 
 ## PC NAME FOR AUTOMATING FILE DIRECTORY FOR CRUNCH OR NOT...
 pcname<- Sys.info()[['nodename']]     

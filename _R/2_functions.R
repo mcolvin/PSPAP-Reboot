@@ -780,7 +780,7 @@ MKA.ests<-function(sim_dat=NULL,
     if(!is.null(gear_combi))
     {
       if(length(gear_combi)!=max_occ)
-      {return(print(paste0("gear_combi needs to be of length ",max_occ)))}
+      {return(print(paste0("gear_combi needs to be of length ", max_occ)))}
     }
   }
   #MASSAGE DATA TO FIT THE NUMBER OF OCCASIONS TO BE USED
@@ -879,6 +879,14 @@ MKA.ests<-function(sim_dat=NULL,
       tmp$gear<-"COMBI"
     }
   }
+  ## ADD GEAR CODES
+  if(!is.null(gear_combi))
+  {
+    indx<-matrix(which(gear_codes$gear %in% gear_combi), nrow=1, ncol=length(gear_combi))
+    gear_codes<-rbind(gear_codes,data.frame(gear="COMBI", g_code=apply(indx,1,paste0,collapse="")))
+    COMBI$g_code<-apply(indx,1,paste0,collapse="")
+  }
+  tmp<-merge(tmp, gear_codes, by="gear", all.x=TRUE)
   ## ADD ESTIMATOR TYPE, NUMBER OF OCCASIONS USED, AND RENAME COLUMNS
   colnames(tmp)[which(colnames(tmp)=="b_segment")]<-"segment"
   colnames(tmp)[which(colnames(tmp)=="length.rkm")]<-"rkm"
@@ -1078,6 +1086,14 @@ M0t.ests<-function(sim_dat=NULL,
   tmpt$estimator<-"Mt"
   colnames(tmpt)<-gsub("_Mt", "", colnames(tmpt))
   bend_Np<-rbind(tmp0,tmpt)
+  ## ADD GEAR CODES
+  if(!is.null(gear_combi))
+  {
+    indx<-matrix(which(gear_codes$gear %in% gear_combi), nrow=1, ncol=length(gear_combi))
+    gear_codes<-rbind(gear_codes,data.frame(gear="COMBI", g_code=apply(indx,1,paste0,collapse="")))
+    COMBI$g_code<-apply(indx,1,paste0,collapse="")
+  }
+  bend_Np<-merge(bend_Np, gear_codes, by="gear", all.x=TRUE)
   ## FINALIZE COMBI
   if(!is.null(gear_combi))
   {
@@ -1089,6 +1105,9 @@ M0t.ests<-function(sim_dat=NULL,
   }
   return(list(ests=bend_Np, COMBI=COMBI))
 }
+
+
+### NEED TO FIGURE OUT WHERE TO PUT GEAR_CODES AS AN INPUT
 
 
 
@@ -1130,8 +1149,21 @@ abund.trnd<-function(samp_type=NULL,
     {
     # PULL ESTIMATOR RESULTS
     data<-readRDS(file=paste0(location,"_output/3-estimates/",x))
+    if(length(data)!=2){return(print(paste0("Data ", x, "is not of length 2.")))}
     est<-data$ests
     COMBI<-data$COMBI
+    
+    ## ERROR HANDLING
+    if(length(unique(est$occasions))!=1 & !is.null(COMBI))
+    {return(print(paste0("Data ", x, " is a combination of datasets with at least one \n
+                         dataset using a combination of gears.")))}
+    if(!is.null(COMBI))
+    {
+      if(127*length(unique(est$year))*unique(est$occasions)!=nrow(COMBI))
+      {return(print(paste0("Data ", x, " may be a combination of datasets with \n
+                           multiple datasets using a combination of gears.")))}
+    }
+    
     # FIND ACTUAL SEGMENT ABUNDANCES
     true<-sim_dat$true_vals
     names(true)[1]<-"segment"
@@ -1404,22 +1436,40 @@ abund.trnd<-function(samp_type=NULL,
         ests$precision_AM<-sqrt(ests$var_AM)/abs(ests$Nhat_AM)
         ests$precision_WM<-sqrt(ests$var_WM)/abs(ests$Nhat_WM)
         ## ADD ABUNDANCE EXTRAS
+        if(is.null(COMBI))
+        {
+          occ<-1:y
+          samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
+          dot<-.(segment,year,gear)
+          by<-c("segment", "year", "gear")
+        }
+        if(!is.null(COMBI))
+        {
+          gear_occ<-unique(COMBI[,c("gear","occasion")])
+          samp<-lapply(1:nrow(gear_occ),function(x)
+          {
+            out<-sim_dat$samp_dat[which(sim_dat$samp_dat$gear==gear_occ[x,1] & 
+                                          sim_dat$samp_dat$occasion==gear_occ[x,2]),]
+            return(out)
+          })
+          samp<-do.call("rbind",samp)
+          dot<-.(segment,year)
+          by<-c("segment", "year")
+        }
         ### FLAGS
-        occ<-1:y
-        samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
         colnames(samp)[which(colnames(samp)=="b_segment")]<-"segment"
         samp$p<-samp$q*samp$f
         P<-aggregate(p~segment+bend_num+year+gear+occasion, samp, sum)
         P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
-        fl<-ddply(P, .(segment, year, gear), summarize, 
+        fl<-ddply(P, dot, summarize, 
                   flags=length(which(flag!=0))/length(flag))
-        ests<-merge(ests,fl, by=c("segment", "year","gear"), all.x=TRUE)
+        ests<-merge(ests,fl, by=by, all.x=TRUE)
         ### CATCHABILITY FOR NUMBER OF OCCASIONS USED
-        q_stats<-ddply(samp, .(segment, year, gear),
+        q_stats<-ddply(samp, dot,
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        ests<-merge(ests, q_stats, by=c("segment","year","gear"), all.x=TRUE)
+        ests<-merge(ests, q_stats, by=by, all.x=TRUE)
     
     
         # TREND
