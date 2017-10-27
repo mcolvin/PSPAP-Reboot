@@ -1109,7 +1109,7 @@ M0t.ests<-function(sim_dat=NULL,
 }
 
 
-### NEED TO FIGURE OUT WHERE TO PUT GEAR_CODES AS AN INPUT
+
 
 
 
@@ -1342,12 +1342,12 @@ abund.trnd<-function(samp_type=NULL,
         out<-out[, c("gear", "pop_trnd","trnd","bias", "precision", "pval", "perform",
                      "estimator","flags", "effort", "q_mean_realized", "q_sd_realized",
                      "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
-                     "pop_id", "catch_id")]
+                     "pop_id", "catch_id", "g_code")]
         ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
                       "precision_AM", "Nhat_WM", "bias_WM", "precision_WM","perform",
                       "estimator","flags", "effort", "q_mean_realized","q_sd_realized",
                       "q_mean_input", "B0_sd_input","deployments","occasions","samp_type",
-                      "pop_id", "catch_id")]
+                      "pop_id", "catch_id", "g_code")]
         }
           
       # M0 & Mt ESTIMATES
@@ -1598,9 +1598,6 @@ abund.trnd<-function(samp_type=NULL,
           })
         samp<-do.call("rbind",samp)
         colnames(samp)[which(colnames(samp)=="b_segment")]<-"segment"
-        #############################################################
-        # NEED TO FIGURE OUT FLAGS AND HOW TO ADD TO COMBI AND SUCH #
-        #############################################################
         ### FLAGS
         samp$p<-samp$q*samp$f
         P<-aggregate(p~segment+bend_num+year+gear+occasion, samp, sum)
@@ -1614,7 +1611,16 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         ests<-merge(ests, q_stats, by=c("segment", "year"), all.x=TRUE)
-        
+        ## STATS BY GEAR
+        estsC<-aggregate(effort~segment+year+gear+occasion, tmpC, sum)
+        fl<-ddply(P, .(segment,year, gear), summarize, 
+                  flags=length(which(flag!=0))/length(flag))
+        estsC<-merge(estsC,fl, by=c("segment", "year", "gear"), all.x=TRUE)
+        q_stats<-ddply(samp, .(segment,year, gear),
+                       summarize,
+                       q_mean_realized=mean(q),
+                       q_sd_realized=sd(q))
+        estsC<-merge(estsC, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
         
         # TREND
         ## ABUNDANCE TREND
@@ -1662,7 +1668,7 @@ abund.trnd<-function(samp_type=NULL,
         ests$cpue1<-ests$catch1/ests$effort
         ests$lncpue1<-log(ests$cpue1)
         ### FIT LINEAR MODEL FOR TREND
-        fit<- lm(lncpue1~as.factor(segment)+year, ests, subset=gear==g)
+        fit<- lm(lncpue1~as.factor(segment)+year, ests)
         outC<- data.frame( 
           # THE GOODIES
           ## GEAR
@@ -1690,34 +1696,55 @@ abund.trnd<-function(samp_type=NULL,
         ### ADD TREND EXTRAS
         out$perform<-1
         #############################################################
-        # NEED TO FIGURE OUT FLAGS AND HOW TO ADD TO COMBI AND SUCH #
+        # NEED TO FIGURE OUT FLAGS AND HOW TO ADD TO COMBI AND SUCH 
+        # USE FOR COMBI:   
+        # 
+        # fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
+        # out<-merge(out,fl, by="gear", all.x=TRUE)
+        # q_stats<-ddply(samp, .(gear),
+        #                summarize,
+        #                q_mean_realized=mean(q),
+        #                q_sd_realized=sd(q))
+        # out<-merge(out, q_stats, by="gear", all.x=TRUE)
         #############################################################
         #### FLAGS
-        fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
-        out<-merge(out,fl, by="gear", all.x=TRUE)
+        out$flags<-length(which(P$flag!=0))/length(P$flag)
         #### CATCHABILITY
+        out$q_mean_realized<-mean(samp$q)
+        out$q_sd_realized<-sd(samp$q)
+        ## STATS BY GEAR
+        trndC<-aggregate(effort~gear+occasion, tmpC, sum)
+        fl<-ddply(P, .(gear), summarize, 
+                  flags=length(which(flag!=0))/length(flag))
+        trndC<-merge(trndC,fl, by=c("gear"), all.x=TRUE)
         q_stats<-ddply(samp, .(gear),
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        out<-merge(out, q_stats, by="gear", all.x=TRUE)
+        trndC<-merge(trndC, q_stats, by=c("gear"), all.x=TRUE)
         
         # ADD INPUTS
         inputs<-sim_dat$inputs
         in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
-                           occasions=y, samp_type=inputs$samp_type,pop_id=pop_num,
+                           occasions=unique(tmp$occasions), samp_type=inputs$samp_type,pop_id=pop_num,
                            catch_id=catch_num)
         in_avg<-data.frame(gear="COMBI", 
                            q_mean_input=mean(in_dat$q_mean_input[
                              which(in_dat$gear %in% unique(tmpC$gear))]), 
                            B0_sd_input=mean(in_dat$B0_sd_input[
                              which(in_dat$gear %in% unique(tmpC$gear))]), 
-                           deployments=unique(inputs$deployments), occasions=y, 
+                           deployments=unique(inputs$deployments), occasions=unique(tmp$occasions), 
                            samp_type=inputs$samp_type,pop_id=pop_num, catch_id=catch_num)
         in_dat<-rbind(in_dat,in_avg)
         out<-merge(out, in_dat, by="gear", all.x=TRUE)
+        out$g_code<-unique(tmp$g_code)
+        trndC<-merge(trndC, in_dat[,1:3], by="gear", all.x=TRUE)
+        trndC$g_code<-unique(tmp$g_code)
         ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
+        ests$g_code<-unique(tmp$g_code)
+        estsC<-merge(estsC, in_dat[,1:3], by="gear",all.x=TRUE)
+        estsC$g_code<-unique(tmp$g_code)
         
         # OUTPUT THE GOODIES
         out<-out[, c("gear", "pop_trnd","trnd","bias", "precision", "pval", "perform",
@@ -1913,7 +1940,7 @@ abund.trnd<-function(samp_type=NULL,
                      "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
                      "pop_id", "catch_id", "g_code")]
       } 
-      return(list(trnd=out, abund=ests, COMBI=COMBI))
+      return(list(trnd=out, abund=ests, COMBI=list(trnd=trndC, abund=estsC)))
     })  
     # ORGANIZE OUTPUT INTO TWO TABLES
     trnd<-do.call(rbind,lapply(outtt, `[[`, 1))
