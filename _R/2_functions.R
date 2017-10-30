@@ -1532,7 +1532,7 @@ abund.trnd<-function(samp_type=NULL,
                      "estimator","flags", "effort", "q_mean_realized", "q_sd_realized",
                      "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
                      "pop_id", "catch_id", "g_code")]
-        }
+      }
       return(list(trnd=out, abund=ests))
     })
     # MULTI-GEAR DATA       
@@ -1612,15 +1612,17 @@ abund.trnd<-function(samp_type=NULL,
                        q_sd_realized=sd(q))
         ests<-merge(ests, q_stats, by=c("segment", "year"), all.x=TRUE)
         ## STATS BY GEAR
-        estsC<-aggregate(effort~segment+year+gear+occasion, tmpC, sum)
-        fl<-ddply(P, .(segment,year, gear), summarize, 
-                  flags=length(which(flag!=0))/length(flag))
-        estsC<-merge(estsC,fl, by=c("segment", "year", "gear"), all.x=TRUE)
-        q_stats<-ddply(samp, .(segment,year, gear),
+        estsC<-ddply(tmpC, .(segment, year, gear, occasion), summarize,
+                     catch=sum(catch),
+                     effort=sum(effort))
+        fl<-ddply(P, .(segment,year, gear, occasion), summarize, 
+                   flags=length(which(flag!=0))/length(flag))
+        estsC<-merge(estsC,fl, by=c("segment", "year", "gear", "occasion"), all.x=TRUE)
+        q_stats<-ddply(samp, .(segment,year,gear, occasion),
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        estsC<-merge(estsC, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
+        estsC<-merge(estsC, q_stats, by=c("segment", "year", "gear", "occasion"), all.x=TRUE)
         
         # TREND
         ## ABUNDANCE TREND
@@ -1668,17 +1670,17 @@ abund.trnd<-function(samp_type=NULL,
         ests$cpue1<-ests$catch1/ests$effort
         ests$lncpue1<-log(ests$cpue1)
         ### FIT LINEAR MODEL FOR TREND
-        fit<- lm(lncpue1~as.factor(segment)+year, ests)
+        fitC<- lm(lncpue1~as.factor(segment)+year, ests)
         outC<- data.frame( 
           # THE GOODIES
           ## GEAR
           gear="COMBI",
           ## TREND ESTIMATE
-          trnd=coef(fit)['year'],
+          trnd=coef(fitC)['year'],
           ## STANDARD ERROR FOR TREND ESTIMATE
-          se=summary(fit)$coefficients['year',2],
+          se=summary(fitC)$coefficients['year',2],
           ## PVALUE FOR TREND ESTIMATE
-          pval=summary(fit)$coefficients['year',4],
+          pval=summary(fitC)$coefficients['year',4],
           ## TOTAL EFFORT
           effort=sum(ests$effort)
         )
@@ -1695,33 +1697,23 @@ abund.trnd<-function(samp_type=NULL,
         out$precision<-out$se/abs(out$trnd)
         ### ADD TREND EXTRAS
         out$perform<-1
-        #############################################################
-        # NEED TO FIGURE OUT FLAGS AND HOW TO ADD TO COMBI AND SUCH 
-        # USE FOR COMBI:   
-        # 
-        # fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
-        # out<-merge(out,fl, by="gear", all.x=TRUE)
-        # q_stats<-ddply(samp, .(gear),
-        #                summarize,
-        #                q_mean_realized=mean(q),
-        #                q_sd_realized=sd(q))
-        # out<-merge(out, q_stats, by="gear", all.x=TRUE)
-        #############################################################
         #### FLAGS
         out$flags<-length(which(P$flag!=0))/length(P$flag)
         #### CATCHABILITY
         out$q_mean_realized<-mean(samp$q)
         out$q_sd_realized<-sd(samp$q)
         ## STATS BY GEAR
-        trndC<-aggregate(effort~gear+occasion, tmpC, sum)
-        fl<-ddply(P, .(gear), summarize, 
+        trndC<-ddply(tmpC, .(gear, occasion), summarize,
+                     catch=sum(catch),
+                     effort=sum(effort))
+        fl<-ddply(P, .(gear, occasion), summarize, 
                   flags=length(which(flag!=0))/length(flag))
-        trndC<-merge(trndC,fl, by=c("gear"), all.x=TRUE)
-        q_stats<-ddply(samp, .(gear),
+        trndC<-merge(trndC,fl, by=c("gear", "occasion"), all.x=TRUE)
+        q_stats<-ddply(samp, .(gear, occasion),
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        trndC<-merge(trndC, q_stats, by=c("gear"), all.x=TRUE)
+        trndC<-merge(trndC, q_stats, by=c("gear", "occasion"), all.x=TRUE)
         
         # ADD INPUTS
         inputs<-sim_dat$inputs
@@ -1827,24 +1819,35 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         ests<-merge(ests, q_stats, by=c("segment", "year"), all.x=TRUE)
+        ## STATS BY GEAR
+        estsC<-ddply(tmpC, .(segment, year, gear, occasion), summarize,
+                     effort=sum(effort))
+        fl<-ddply(P, .(segment,year, gear, occasion), summarize, 
+                  flags=length(which(flag!=0))/length(flag))
+        estsC<-merge(estsC,fl, by=c("segment", "year", "gear", "occasion"), all.x=TRUE)
+        q_stats<-ddply(samp, .(segment,year,gear, occasion),
+                       summarize,
+                       q_mean_realized=mean(q),
+                       q_sd_realized=sd(q))
+        estsC<-merge(estsC, q_stats, by=c("segment", "year", "gear", "occasion"), all.x=TRUE)
         
         
         # TREND
         ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
-        outA<-lapply(unique(tmp$estimator), function(e)
+        outA<-lapply(unique(ests$estimator), function(e)
           {
-            tmp<-subset(tmp, estimator==e)
-            #perform<-length(which(tmp$n_st!=0))/length(tmp$n_st) #PROBABLY WANT A DIFFERENT MEASUREMENT OF PERFORMANCE HERE...PROPORTION OF SEGMENTS x YEARS USED... BUT LOTS OF BEND DATA MIGHT BE EXCLUDED
-            perform<-sum(tmp$n_st)/sum(tmp$b_st) #total no. of bends with usable data/total no. of bends sampled (in an entire year across the entire river, for a particular gear) 
-            #perform<-sum(tmp$n_st)/sum(tmp$b_st)*length(which(tmp$n_st!=0))/length(tmp$n_st) #THIS MIGHT BE BEST
-            effort=sum(tmp$effort)
-            tmp<-subset(tmp,!is.na(Nhat_AM))
+            dat<-subset(ests, estimator==e)
+            #perform<-length(which(dat$n_st!=0))/length(dat$n_st) #PROBABLY WANT A DIFFERENT MEASUREMENT OF PERFORMANCE HERE...PROPORTION OF SEGMENTS x YEARS USED... BUT LOTS OF BEND DATA MIGHT BE EXCLUDED
+            perform<-sum(dat$n_st)/sum(dat$b_st) #total no. of bends with usable data/total no. of bends sampled (in an entire year across the entire river, for a particular gear) 
+            #perform<-sum(dat$n_st)/sum(dat$b_st)*length(which(dat$n_st!=0))/length(dat$n_st) #THIS MIGHT BE BEST
+            effort=sum(dat$effort)
+            dat<-subset(dat,!is.na(Nhat_AM))
             if(perform>0 #enough data
-               & length(unique(tmp$segment))>1 # more than one segment
-               & length(unique(tmp$year))>=2) # at least two years
+               & length(unique(dat$segment))>1 # more than one segment
+               & length(unique(dat$year))>=2) # at least two years
             {
-              fit_AM<-lm(log(Nhat_AM)~year+as.factor(segment),tmp)
-              fit_WM<-lm(log(Nhat_WM)~year+as.factor(segment),tmp)
+              fit_AM<-lm(log(Nhat_AM)~year+as.factor(segment),dat)
+              fit_WM<-lm(log(Nhat_WM)~year+as.factor(segment),dat)
               tmp2<- data.frame(
                 # THE GOODIES
                 ## GEAR
@@ -1873,8 +1876,8 @@ abund.trnd<-function(samp_type=NULL,
               )
             }
             if(perform==0 #no data
-               | length(unique(tmp$segment))<=1 #or only one segment
-               | length(unique(tmp$year))<2) #or less than two years
+               | length(unique(dat$segment))<=1 #or only one segment
+               | length(unique(dat$year))<2) #or less than two years
             {
               tmp2<- data.frame(
                 gear="COMBI",
@@ -1907,26 +1910,47 @@ abund.trnd<-function(samp_type=NULL,
         ## CALCULATE TREND PRECISION
         outA$precision<-outA$se/abs(outA$trnd)
         ## ADD TREND EXTRAS
-        ##############
-        # WORK ON!!! #
-        ##############
         ### FLAGS
-        fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
-        outA<-merge(outA,fl, by="gear")
+        outA$flags<-length(which(P$flag!=0))/length(P$flag)
         ### CATCHABILITY
-        q_stats<-ddply(samp, .(gear),
+        outA$q_mean_realized<-mean(samp$q)
+        outA$q_sd_realized<-sd(samp$q)
+        ## STATS BY GEAR
+        trndC<-ddply(tmpC, .(gear, occasion), summarize,
+                     effort=sum(effort))
+        fl<-ddply(P, .(gear, occasion), summarize, 
+                  flags=length(which(flag!=0))/length(flag))
+        trndC<-merge(trndC,fl, by=c("gear", "occasion"), all.x=TRUE)
+        q_stats<-ddply(samp, .(gear, occasion),
                        summarize,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
-        outA<-merge(outA, q_stats, by="gear")
+        trndC<-merge(trndC, q_stats, by=c("gear", "occasion"), all.x=TRUE)
+        
         # ADD INPUTS
         inputs<-sim_dat$inputs
         in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
-                           occasions=y, samp_type=inputs$samp_type, pop_id=pop_num,
+                           occasions=unique(tmp$occasions), samp_type=inputs$samp_type,pop_id=pop_num,
                            catch_id=catch_num)
+        in_avg<-data.frame(gear="COMBI", 
+                           q_mean_input=mean(in_dat$q_mean_input[
+                             which(in_dat$gear %in% unique(tmpC$gear))]), 
+                           B0_sd_input=mean(in_dat$B0_sd_input[
+                             which(in_dat$gear %in% unique(tmpC$gear))]), 
+                           deployments=unique(inputs$deployments), occasions=unique(tmp$occasions), 
+                           samp_type=inputs$samp_type,pop_id=pop_num, catch_id=catch_num)
+        in_dat<-rbind(in_dat,in_avg)
         outA<-merge(outA, in_dat, by="gear", all.x=TRUE)
+        outA$g_code<-unique(tmp$g_code)
+        trndC<-merge(trndC, in_dat[,1:3], by="gear", all.x=TRUE)
+        trndC$g_code<-unique(tmp$g_code)
         ests<-merge(ests, in_dat, by="gear",all.x=TRUE)
+        ests$g_code<-unique(tmp$g_code)
+        estsC<-merge(estsC, in_dat[,1:3], by="gear",all.x=TRUE)
+        estsC$g_code<-unique(tmp$g_code)
+        
+
         # OUTPUT THE GOODIES
         ## ABUNDANCE
         ests<-ests[,c("segment", "year","gear", "abundance","Nhat_AM","bias_AM", 
@@ -1940,22 +1964,25 @@ abund.trnd<-function(samp_type=NULL,
                      "q_mean_input", "B0_sd_input","deployments","occasions", "samp_type",
                      "pop_id", "catch_id", "g_code")]
       } 
-      return(list(trnd=out, abund=ests, COMBI=list(trnd=trndC, abund=estsC)))
+      return(list(trnd=out, abund=ests, trndC=trndC, abundC=estsC))
     })  
     # ORGANIZE OUTPUT INTO TWO TABLES
     trnd<-do.call(rbind,lapply(outtt, `[[`, 1))
     abund<-do.call(rbind,lapply(outtt, `[[`, 2))
-    trndC<-do.call(rbind,lapply(outttC, `[[`, 1))
-    abundC<-do.call(rbind,lapply(outttC, `[[`, 2))
-    COMBI<-do.call(rbind, lapply(outttC, `[[`, 3))
-    trnd<-rbind(trnd, trndC)
-    abund<-rbind(abund, abundC)
-    return(list(trnd=trnd,abund=abund, COMBI=COMBI))
+    trnd2<-do.call(rbind,lapply(outttC, `[[`, 1))
+    abund2<-do.call(rbind,lapply(outttC, `[[`, 2))
+    trnd<-rbind(trnd, trnd2)
+    abund<-rbind(abund, abund2)
+    trndC<-do.call(rbind, lapply(outttC, `[[`, 3))
+    abundC<-do.call(rbind, lapply(outttC, `[[`, 4))
+    return(list(trnd=trnd,abund=abund, trndC=trndC, abundC=abundC))
   })
   # ORGANIZE OUTPUT INTO TWO TABLES
   trnd<-do.call(rbind,lapply(outt, `[[`, 1))
   abund<-do.call(rbind,lapply(outt, `[[`, 2))
-  COMBI<-do.call(rbind,lapply(outt, `[[`, 3))
+  COMBI<-list()
+  COMBI$trnd<-do.call(rbind,lapply(outt, `[[`, 3))
+  COMBI$abund<-do.call(rbind,lapply(outt, `[[`, 4))
   return(list(trnd=trnd,abund=abund, COMBI=COMBI))
 }
 
