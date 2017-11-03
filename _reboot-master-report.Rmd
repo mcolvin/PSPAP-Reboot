@@ -21,9 +21,14 @@ To do:
 
 -->
 
+<!--Overview-->
 
+
+<!-- Workshop write up and documentation-->
 ```{r child="_objectives-hierarchy.Rmd", echo=FALSE}
 ```
 
+
+<!--Text from white paper submitted to ISAP-->
 ```{r child="_white-paper.Rmd", echo=FALSE}
 ```
