@@ -41,7 +41,7 @@ depcost$lperdep<- log(depcost$perdep)
 
 library(plyr)
 tmp<-ddply(depcost,.(fieldoffice),summarize,
-    mnlcost=mean(na.omit(lperdep))),
+    mnlcost=mean(na.omit(lperdep)),
     mdcost=median(na.omit(perdep)),
     sdlcost=sd(na.omit(lperdep)),
     mncost=min(na.omit(perdep)),
