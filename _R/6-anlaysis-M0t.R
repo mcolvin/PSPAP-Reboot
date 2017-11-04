@@ -7,9 +7,13 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
+#######################################################################################
+#  FIX f_299-3 & 4 & FIX r_298-3 & 4 DUPLICATES, FIX SIM_DAT f_288-1 & GET ESTIMATES  #
+#######################################################################################
+
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
-repeats<-lapply(1:400, function(i)
+repeats<-lapply(267:210, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -31,6 +35,11 @@ repeats<-lapply(1:400, function(i)
       {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
     if(pcname!="WF-FGNL842")
       {sim_dat<-readRDS(file=paste0("D:/_output/2-catch/",catch_list[j]))}
+    if(all(names(sim_dat$inputs)!="gear_codes"))
+      {
+      sim_dat$inputs$gear_codes<-gear_codes
+      saveRDS(sim_dat,file=paste0("D:/_output/2-catch/",catch_list[j]))
+      }
     # SET OCCASIONS TO BE USED
     occasions<-2:3
     lapply(occasions, function(y)
@@ -58,7 +67,22 @@ repeats<-lapply(1:400, function(i)
         {
           old<-readRDS(file=paste0("D:/_output/3-estimates/M0t_est",
                                    strsplit(catch_list[j], "catch_dat")[[1]][2]))
-          est<-rbind(old,est)
+          if(is.data.frame(old))
+          {
+            if(any(names(old)=="g_code")){return(print("g_codes already present"))}
+            old<-merge(old, gear_codes, by="gear", all.x=TRUE)
+            COMBI<-est$COMBI
+            ests<-est$ests
+            ests<-rbind(old,ests)
+            est<-list(ests=ests, COMBI=COMBI)
+          }
+          if(!is.data.frame(old) & is.list(old))
+          {
+            if(length(old)!=2){return(print("There's a problem with the list length."))}
+            ests<-rbind(old$ests,est$ests)
+            COMBI<-rbind(old$COMBI,est$COMBI)
+            est<-list(ests=ests, COMBI=COMBI)
+          }
         }
         saveRDS(est,
              file=paste0("D:/_output/3-estimates/M0t_est",
@@ -76,7 +100,8 @@ repeats<-lapply(1:400, function(i)
                                strsplit(catch_list[j], "catch_dat")[[1]][2]))
     }
     out<-NULL
-    if(anyDuplicated(est)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    if(anyDuplicated(est$ests)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    if(anyDuplicated(est$COMBI)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
     return(out)
   })
   out<-do.call("rbind",out)
@@ -89,8 +114,41 @@ proc.time()-ptm
 
 
 
-
-
+ptm<-proc.time()
+repeats<-lapply(1:400, function(i)
+{
+  if(pcname=="WF-FGNL842")
+  {
+    catch_list<-dir("E:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("E:/_output/2-catch", 
+                                 pattern=paste0("catch_dat_f_",i,"-")))
+  }
+  if(pcname!="WF-FGNL842")
+  {
+    catch_list<-dir("D:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("D:/_output/2-catch", 
+                                 pattern=paste0("catch_dat_f_",i,"-")))
+    
+  }
+  out<-lapply(1:length(catch_list), function(j)
+  {
+    if(pcname=="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    if(pcname!="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("D:/_output/3-estimates/M0t_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    out<-NULL
+    if(anyDuplicated(est)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    return(out)
+  })
+out<-do.call("rbind",out)
+return(out)
+})
 
 
 
