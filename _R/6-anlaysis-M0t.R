@@ -13,7 +13,7 @@ source("_R/3_load-and-clean.R")
 
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
-repeats<-lapply(267:210, function(i)
+repeats<-lapply(267:250, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
