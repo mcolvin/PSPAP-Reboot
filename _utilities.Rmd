@@ -1,17 +1,17 @@
 ---
-title: "Quantifying cost per bend"
-output:
+title: "White Paper
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
   html_document:
-    toc: true
-    theme: united
-date: "19 May, 2017"
-author: M. Colvin
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: zenburn
 ---
 
-<!--
-
-rmarkdown::render("cost.Rmd")
--->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 library(RODBC)
@@ -41,7 +41,7 @@ depcost$lperdep<- log(depcost$perdep)
 
 library(plyr)
 tmp<-ddply(depcost,.(fieldoffice),summarize,
-    mnlcost=mean(na.omit(lperdep))),
+    mnlcost=mean(na.omit(lperdep)),
     mdcost=median(na.omit(perdep)),
     sdlcost=sd(na.omit(lperdep)),
     mncost=min(na.omit(perdep)),
@@ -84,6 +84,7 @@ plot(perdep~year,depcost,
 
 
 
+## Cost
 
 
 * The season will begin when water temperatures decline to 55°F or less 

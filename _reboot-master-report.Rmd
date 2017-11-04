@@ -1,0 +1,47 @@
+---
+title: "Overview of Pallid Sturgeon Assessment Framework Evaluation"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: zenburn
+---
+
+<!--
+rmarkdown::render("_reboot-master-report.Rmd",
+    output_format="word_document",
+    output_file = paste(format(Sys.time(), '%Y%m%d'),"reboot-master-report.docx",sep="-"))# build page
+
+To do:
+* add overview document
+* add document sections & organize them
+-->
+
+<!--Overview-->
+
+
+
+
+<!--Text from white paper submitted to ISAP-->
+```{r child="_white-paper.Rmd", echo=FALSE}
+```
+
+<!--Methods-->
+
+<!-- Methods: workshop write up and documentation-->
+```{r child="_objectives-hierarchy.Rmd", echo=FALSE}
+```
+
+<!--Methods: reference population-->
+
+<!--Methods: decisions and decision space-->
+
+
+<!--Methods: valuing design outcomes-utilities-->
+```{r child="_utilities.Rmd", echo=FALSE}
+```
