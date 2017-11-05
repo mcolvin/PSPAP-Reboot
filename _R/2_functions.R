@@ -267,10 +267,9 @@ reference_population<- function(inputs,...)
         ### RECRUIT TO POPULATION
         if(sum(recruits_upper[i-1],recruits_lower[i-1])>0)
             {
-            ### ASSIGN A LENGTH AND GROWTH PARAMETERS
             new_recruits<- data.frame(
                 rpma=c(rep(2,recruits_upper[i-1]),rep(4,recruits_lower[i-1])))
-            ### ASSIGN A SEGMENT AND BEND
+            ### ASSIGN AN INITIAL SEGMENT AND BEND LOCATION
             recruit_loc<- lapply(1:nrow(new_recruits),function(x)
                 {
                 bend<- sample(tmp[which(tmp$rpma==new_recruits$rpma[x]),]$b_id,1)
@@ -286,7 +285,7 @@ reference_population<- function(inputs,...)
             new_recruits$phi_indx<- unlist(recruit_loc$phi_indx)
             new_recruits$id<-unlist(recruit_loc$id)
             
-            ### GROWTH PARAMETES FOR NEW RECRUITS
+            ### ASSIGN GROWTH PARAMETES FOR NEW RECRUITS
             ln_vals<-lapply(1:nrow(individual_meta),function(m)
             {#DRAWN FROM MIDDLE 80% OF BIVARIATE NORMAL (ELLIPSE)
               z1<-rtruncnorm(1, -sqrt(-2*log(0.2)), sqrt(-2*log(0.2)), mean=0, sd=1)
