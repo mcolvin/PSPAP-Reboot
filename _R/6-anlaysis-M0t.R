@@ -7,9 +7,9 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-#######################################################################################
-#  FIX f_299-3 & 4 & FIX r_298-3 & 4 DUPLICATES, FIX SIM_DAT f_288-1 & GET ESTIMATES  #
-#######################################################################################
+###############################################
+# GEAR CODES AND REDUCE INPUTS OF ALL SIM_DAT #
+###############################################
 
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
@@ -143,7 +143,7 @@ repeats<-lapply(1:400, function(i)
                                strsplit(catch_list[j], "catch_dat")[[1]][2]))
     }
     out<-NULL
-    if(anyDuplicated(est)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
+    if(anyDuplicated(est$ests)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
     return(out)
   })
 out<-do.call("rbind",out)
