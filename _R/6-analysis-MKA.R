@@ -96,6 +96,9 @@ repeats<-lapply(1:400, function(i)
 })
 proc.time()-ptm
 
+repeats<-do.call("rbind", repeats)
+length(repeats)
+
 #est<-readRDS("E:/_output/3-estimates/MKA_est_r_0-2.rds")
 #head(est)
 #tail(est)
