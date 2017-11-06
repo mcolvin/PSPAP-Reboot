@@ -7,13 +7,15 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-###############################################
-# GEAR CODES AND REDUCE INPUTS OF ALL SIM_DAT #
-###############################################
+#################################################
+# TRANSFER DATA                                 #
+# CHECK FOR REPEATS IN ALL ESTIMATES (AND TIME) #                
+# NEW ABUND.TRND TABLES                         #
+#################################################
 
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
-repeats<-lapply(267:250, function(i)
+lapply(1:400, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -28,7 +30,7 @@ repeats<-lapply(267:250, function(i)
                                  pattern=paste0("catch_dat_f_",i,"-")))
     
   }
-  out<-lapply(1:length(catch_list), function(j)
+  lapply(1:length(catch_list), function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
@@ -89,23 +91,7 @@ repeats<-lapply(267:250, function(i)
                          strsplit(catch_list[j], "catch_dat")[[1]][2]))
       }
     })
-    if(pcname=="WF-FGNL842")
-    {
-      est<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
-                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
-    }
-    if(pcname!="WF-FGNL842")
-    {
-      est<-readRDS(file=paste0("D:/_output/3-estimates/M0t_est", 
-                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
-    }
-    out<-NULL
-    if(anyDuplicated(est$ests)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
-    if(anyDuplicated(est$COMBI)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
-    return(out)
   })
-  out<-do.call("rbind",out)
-  return(out)
 })
 proc.time()-ptm
 # CRUNCH FOR 200 RUNS (ABOUT 31 HOURS OR 9.3 MINUTES A PIECE)
@@ -114,41 +100,6 @@ proc.time()-ptm
 
 
 
-ptm<-proc.time()
-repeats<-lapply(1:400, function(i)
-{
-  if(pcname=="WF-FGNL842")
-  {
-    catch_list<-dir("E:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
-    catch_list<-c(catch_list,dir("E:/_output/2-catch", 
-                                 pattern=paste0("catch_dat_f_",i,"-")))
-  }
-  if(pcname!="WF-FGNL842")
-  {
-    catch_list<-dir("D:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
-    catch_list<-c(catch_list,dir("D:/_output/2-catch", 
-                                 pattern=paste0("catch_dat_f_",i,"-")))
-    
-  }
-  out<-lapply(1:length(catch_list), function(j)
-  {
-    if(pcname=="WF-FGNL842")
-    {
-      est<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
-                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
-    }
-    if(pcname!="WF-FGNL842")
-    {
-      est<-readRDS(file=paste0("D:/_output/3-estimates/M0t_est", 
-                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
-    }
-    out<-NULL
-    if(anyDuplicated(est$ests)>0){out<-strsplit(catch_list[j], "catch_dat")[[1]][2]}
-    return(out)
-  })
-out<-do.call("rbind",out)
-return(out)
-})
 
 
 
@@ -156,8 +107,6 @@ return(out)
 
 
 
-
-# 
 # ## RUN COMMENTED IF ONLY RESULTS FROM A PARTICULAR REFERENCE
 # ## POPULATION ARE DESIRED
 # ### READ IN ALL AVAILABLE REFERENCE POPULATIONS
