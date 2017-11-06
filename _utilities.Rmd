@@ -12,64 +12,72 @@ output:
     highlight: zenburn
 ---
 
+<!--
+To do:
+1. utility for model
+-->
+
+# Fundamental objectives
+
+## Quantify PS recruitment to age 1.
+ 
+## Provide estimates with associated uncertainty needed to run the PS population model
+
+## Quantify PS population trend
+
+## Maintain compatibility with legacy data
+
+
+## Cost
+
+Cost is the ultimate PSPAP constraint. Designs exceeding cost 
+containments will not be considered. Significant uncertainty exists in 
+costs because of several factors. First, field crews tend to become more 
+efficient over time and therefore recent PSPAP costs may not represent 
+the actual costs. However, if the next iteration of the PSPAP uses similar 
+sampling units (i.e., bends within segments) to the current PSPAP, 
+then costs for field sampling will likely be similar. 
+
+
+### Estimating cost to sample a bend
+
+Estimating cost for a day of sampling is difficult. It is the function 
+of several factors, including but not limited to the number of 
+personnel, pay rates, other personnel expenses, travel, time sampling, 
+and gear maintenance. Additionally, the cost of sampling varies among years
+and costs may be non linearly related if there is economy of scale (i.e.,
+it may cost less per sampling unit if many are done). 
+
+1. Annual funding provided to each field crew
+1. Calculate the number of bends sampled in a year
+1. Divide the cost by the total to get a field crew specific
+cost per bend. 
+1. Model or empirical distribution
+
+
+* The season will begin when water temperatures decline to 55°F or less 
+(in the fall) and will continue through June 30. 
+* The Fish Community Season will be July 1 through October 30 throughout 
+the geographic range of the PSPAP. 
+
+### Important assumptions
+
+Currently the analysis assumes that the period
+of performance for field crews is the same as 
+the fiscal year. 
+
+  
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
-library(RODBC)
-com4<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")
-dat<-sqlFetch(com4,"cost-summary")
-names(dat)<-tolower(names(dat))
-dat$tmp<-1 # TO SUM UP DEPLOYMENTS
 
-## COST DATA FOR EACH FIELD CREW
-## AND FISCAL YEAR
-cost<-read.csv("_dat/sampling-cost.csv",
-    skip=10)
-names(cost)<-tolower(names(cost))
-cost$year<- cost$fiscalyear-1 ## sampling year, sort of
-cost$cost<-ifelse(cost$cost>0, cost$cost,NA)
-## note: year is the season year, effort after 
-## december 31 is included in the previous year
-deployments<-aggregate(tmp~year+fieldoffice,
-    dat,sum)
-
-depcost<-merge(deployments,cost,
-    by=c("year","fieldoffice"))
-    
-depcost$perdep<- depcost$cost/depcost$tmp
-depcost$lperdep<- log(depcost$perdep)
-
-
-library(plyr)
-tmp<-ddply(depcost,.(fieldoffice),summarize,
-    mnlcost=mean(na.omit(lperdep)),
-    mdcost=median(na.omit(perdep)),
-    sdlcost=sd(na.omit(lperdep)),
-    mncost=min(na.omit(perdep)),
-    mxcost=max(na.omit(perdep)))
-tmp
-
-
+source("_R/6-analysis-cost.R")
 hist(depcost[depcost$fieldoffice=="NE",]$perdep)
 hist(depcost[depcost$fieldoffice=="CF",]$perdep)
 
 plot(lperdep~year,depcost,
     type='n')
-fo<-unique(depcost$fieldoffice)
-for(i in 1:length(fo))
-    {
-    points(lperdep~year,depcost,
-        subset=fieldoffice==fo[i],
-        type='l',
-        col=i,
-        lwd=2)
-    }
-
-fit<-lm(lperdep~year+fieldoffice+year:fieldoffice,
-    depcost)
-fit<-lm(lperdep~fieldoffice,
-    depcost)
-depcost$ldepcosthat<- predict(fit,depcost)  
-plot(resid(fit)~fitted(fit))
+    
+    plot(resid(fit)~fitted(fit))
 plot(lperdep~ldepcosthat,depcost)    
 plot(perdep~year,depcost,
     subset=fieldoffice=="SD")
@@ -78,22 +86,93 @@ plot(perdep~year,depcost,
     subset=fieldoffice=="MT")
     
 plot(perdep~year,depcost,
-    subset=fieldoffice=="CF")    
-    
+    subset=fieldoffice=="CF")  
 ``` 
 
 
 
-## Cost
 
 
-* The season will begin when water temperatures decline to 55°F or less 
-(in the fall) and will continue through June 30. 
-* The Fish Community Season will be July 1 through October 30 throughout 
-the geographic range of the PSPAP. 
+Quantify PS abundance or relative abundance	 
+Quantify catch rates of age 0 and age 1 PS	 
+Age at maturity	 
+Age structure	 
+Blood	 
 
-Currently the analysis assumes that the period
-of performance for field crews is the same as 
-the fiscal year. 
+Catch effort	 
+Competition with invasive species	 
+Contaminants	 
+Didson	 
+Diet	 
+Disease	 
+Drift and dspersal	 
+ 
+Egg quality	 
+Egg sample	 
+Estimate Effective population size	 
+Evaluate annual trends in Native forage fish	 
+Fecundity	 
+Fin ray	 
+Fish communities	 
+Fish condition	 
+Foraging habitat	 
+Free embryo collection	 
+Genetic composition	 
+Growth	 
+Habitat selection	 
+ 
+Hybridization	 
+	 
+IRC habitat	 
+ 
+Local adaptation	 
+ 
+Microchemistry	 
+Model-based estimates of abundance of age 0 and age 1 PS	 
+Model-based estimates of survival of hatchery and naturally reproducing PS to age 1	 
+Movement	 
+	 
+Population estimates for PS for all size and age classes, particularly ages 2 to 3	 
+Population structure and other characteristics	 
+Predation	 
+RNA Stress markers	 
+Reproductive cycling	 
+Reproductive readiness	 
+Robust design	 
+Sex	 
+Sex ratio	 
+Spawning aggregation and synchrony	 
+Spawning habitat	 
+Stable isotopes	 
+Stocking program reports	 
+ 
+Stress	 
+Survival	 
+	 
+	 
+	 
+Use of Mississippi and tributaries	 
+Zooplankton density	 
+catch rates of all PS by size class	 
+
+
+Hydroacoustic monitoring
+N mixture model	 
+PIT tag fish
+Trawling
+ultrasound
+Telemetry River sweep
+CJS	 
+Calibrated Population Model	
+Measure fish length and weight
+Take a Tissue sample	
+Lavage	 
+Stomach removal	
+EDNA	
+Hatchery report and data	
+Closed population estimators
+Smaller gill mesh
+Use trammel nets
+
 
 
