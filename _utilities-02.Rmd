@@ -1,0 +1,47 @@
+
+
+
+### Linking monitoring designs and objectives
+
+We can combine the utility values now such that monitoring designs 
+resulting in a trend estimate with low bias, good precision, and good 
+performance have higher values (i.e., approaching 1) and estimates of 
+the trend that is biased, imprecise with poor performance approach 0. 
+Values approach 1 because each of the scaled metrics is weighted. For 
+example, if each metric is valued equally, then the weights would be 
+1/3. Alternatively, if really precise estimates of trend were desired 
+the weight for scaled trend could be 0.5 and the remaining metrics 
+weighted at 0.25. Suppose this last weighting scheme is the case and the 
+output from 2 monitoring programs, a catch effort based and capture 
+recapture program, are the values below. 
+
+
+* Catch effort
+    * Proportional bias = -60, scaled = `r round(u_bias(-60),3)`
+    * Precision = 112, scaled = `r round(u_cv(112),3)`
+    * Performance = 100, scaled = `r round(u_perf(100),3)`
+* Capture recapture
+    * Proportional bias = 5, scaled = `r round(u_bias(5),3)`
+    * Precision = 115, scaled = `r round(u_cv(115),3)`
+    * Performance = 90, scaled = `r round(u_perf(90),3)`
+
+The scaled utility for the catch effort program is:
+
+
+$$`r round(0.25*u_bias(-60)+0.50*u_cv(112)+0.25*u_perf(100),3)`= 
+0.25\cdot `r round(u_bias(-60),3)`+
+0.50 \cdot `r round(u_cv(112),3)`+
+0.25\cdot`r round(u_perf(100),3)`,$$
+
+and the scaled utility for the capture recapture program is 
+
+$$`r round(0.25*u_bias(5)+0.50*u_cv(115)+0.25*u_perf(90),3)`= 
+0.25\cdot `r round(u_bias(5),3)`+
+0.50 \cdot `r round(u_cv(115),3)`+
+0.25\cdot`r round(u_perf(90),3)`.$$
+
+The combined utility values indicate that the capture recapture program 
+has slightly more value to achieve the objective of _quantifing 
+population trend_. 
+
+
