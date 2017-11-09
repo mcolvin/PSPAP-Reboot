@@ -1,12 +1,152 @@
+#1. REMOVE REPEAT DATA
+#   A. CHECK & REPLACE KNOWN REPEATS
+#   B. RUN THROUGH ALL AND REMOVE REPEATS SIMULTANEOUSLY
+#2. MAKE ABUNDANCE, TREND, AND LENGTH TABLE
+
 
 source("_R/1_global.r")
+source("_R/2_functions.r")
+
+##########################################
+#         1. REMOVE REPEAT DATA          #
+##########################################
+## A.
+# FIND REPEATS
+ptm<-proc.time()
+repeats<-lapply(1:200, function(i)
+{
+  if(pcname=="WF-FGNL842")
+  {
+    est_list<-dir("E:/_output/3-estimates", pattern=paste0("_est_r_",i,"-"))
+    est_list<-c(est_list,dir("E:/_output/3-estimates", 
+                             pattern=paste0("_est_f_",i,"-")))
+  }
+  if(pcname!="WF-FGNL842")
+  {
+    est_list<-dir("D:/_output/3-estimates", pattern=paste0("_est_r_",i,"-"))
+    est_list<-c(est_list,dir("D:/_output/3-estimates", 
+                             pattern=paste0("_est_f_",i,"-")))
+    
+  }
+  library(parallel)
+  ## USE ALL CORES
+  numCores<-detectCores()
+  ## INITIATE CLUSTER
+  cl<-makeCluster(numCores)
+  ## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+  clusterExport(cl, c("pcname","est_list"),envir=environment())
+  out<-parLapply(cl, 1:length(est_list), function(j)
+  {
+    outt<-NULL
+    if(pcname=="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("E:/_output/3-estimates/", est_list[j]))
+    }
+    if(pcname!="WF-FGNL842")
+    {
+      est<-readRDS(file=paste0("D:/_output/3-estimates/", est_list[j]))
+    }
+    if(anyDuplicated(est$ests)>0){outt<-est_list[j]}
+    if(anyDuplicated(est$COMBI)>0){outt<-est_list[j]}
+    return(outt)
+  })
+  stopCluster(cl)
+  out<-do.call("rbind",out)
+  return(out)
+})
+repeats<-do.call("rbind", repeats)
+proc.time()-ptm
+# FOR HALF THE DATA:
+# user    system    elapsed 
+# 8.25    4.93      1461.65
+
+# REMOVE REPEATS FOUND ABOVE
+library(parallel)
+## USE ALL CORES
+numCores<-detectCores()
+## INITIATE CLUSTER
+cl<-makeCluster(numCores)
+## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+clusterExport(cl, c("pcname","repeats"),envir=environment())
+parLapply(cl, 1:length(repeats), function(j)
+{
+  if(pcname=="WF-FGNL842")
+  {
+    est<-readRDS(file=paste0("E:/_output/3-estimates/", repeats[j]))
+    est$ests<-est$ests[!duplicated(est$ests),]
+    if(!is.null(est$COMBI)){est$COMBI<-est$COMBI[!duplicated(est$COMBI),]}
+    saveRDS(est,file=paste0("E:/_output/3-estimates/", repeats[j]))
+  }
+  if(pcname!="WF-FGNL842")
+  {
+    est<-readRDS(file=paste0("D:/_output/3-estimates/", repeats[j]))
+    est$ests<-est$ests[!duplicated(est$ests),]
+    if(!is.null(est$COMBI)){est$COMBI<-est$COMBI[!duplicated(est$COMBI),]}
+    saveRDS(est,file=paste0("D:/_output/3-estimates/", repeats[j]))
+  }
+})
+stopCluster(cl)
+
+
+# ##B.
+# ptm<-proc.time()
+# lapply(1:400, function(i)
+# {
+#   if(pcname=="WF-FGNL842")
+#   {
+#     est_list<-dir("E:/_output/3-estimates", pattern=paste0("_est_r_",i,"-"))
+#     est_list<-c(est_list,dir("E:/_output/3-estimates", 
+#                              pattern=paste0("_est_f_",i,"-")))
+#   }
+#   if(pcname!="WF-FGNL842")
+#   {
+#     est_list<-dir("D:/_output/3-estimates", pattern=paste0("_est_r_",i,"-"))
+#     est_list<-c(est_list,dir("D:/_output/3-estimates", 
+#                              pattern=paste0("_est_f_",i,"-")))
+#     
+#   }
+#   library(parallel)
+#   ## USE ALL CORES
+#   numCores<-detectCores()
+#   ## INITIATE CLUSTER
+#   cl<-makeCluster(numCores)
+#   ## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+#   clusterExport(cl, c("gear_codes","est_list"),envir=environment())
+#   parLapply(cl, 1:length(est_list), function(j)
+#   {
+#     if(pcname=="WF-FGNL842")
+#     {
+#       est<-readRDS(file=paste0("E:/_output/3-estimates/", est_list[j]))
+#       est$ests<-est$ests[!duplicated(est$ests),]
+#       saveRDS(est,file=paste0("E:/_output/3-estimates/", est_list[j]))
+#     }
+#     if(pcname!="WF-FGNL842")
+#     {
+#       est<-readRDS(file=paste0("D:/_output/3-estimates/", est_list[j]))
+#       est$ests<-est$ests[!duplicated(est$ests),]
+#       saveRDS(est,file=paste0("D:/_output/3-estimates/", est_list[j]))
+#     }
+#     if(!is.null(est$COMBI)){return(print("COMBI not NULL."))}
+#   })
+#   stopCluster(cl)
+# })
+# proc.time()-ptm
+
+
+##########################################
+#         2. MAKE OUTPUT TABLES          #
+##########################################
+
+#########################################################################
+# f_373 DIDN'T WORK... RERUN LENGTH TABLE ALL...problem! #
+#########################################################################
 
 # MAKE OUTPUT TABLES FROM ESTIMATES AND SAVE MINI TABLES ALONG THE WAY
-samp_type<-"r"
+samp_type<-"f"
 if(pcname=="WF-FGNL842"){loc<-"E:/"}
 #if(pcname!="WF-FGNL842"){loc<-"D:/"}
 if(pcname!="WF-FGNL842"){loc<-NULL}
-outi<-lapply(1:200, function(i)
+outi<-lapply(373:373, function(i)
 {
   # RUN IN PARALLEL
   library(parallel)
@@ -25,9 +165,9 @@ outi<-lapply(1:200, function(i)
     sim_dat<-readRDS(file=paste0(loc,"_output/2-catch/catch_dat_",samp_type,"_",i,"-",j,".rds"))
     atl$lgth<-length.dat(sim_dat = sim_dat)
     # ADD REFERENCE COLUMNS TO LENGTH DATA
-    atl$lgth$samp_type<-samp_type
     atl$lgth$pop_id<-i
     atl$lgth$catch_id<-j
+    atl$lgth<-atl$lgth[,c(1:18,20,21,19)]
     # SAVE MINIS
     write.csv(atl$trnd, file=paste0(loc,"_output/4-utilities/trnd_mini_",samp_type,"_",i,"-",j,".csv"),row.names=FALSE)
     write.csv(atl$abund, file=paste0(loc,"_output/4-utilities/abund_mini_",samp_type,"_",i,"-",j,".csv"),row.names=FALSE)
@@ -38,15 +178,18 @@ outi<-lapply(1:200, function(i)
   stopCluster(cl)
   trnd<-do.call(rbind,lapply(outj, `[[`, 1))
   abund<-do.call(rbind,lapply(outj, `[[`, 2))
-  lgth<-do.call(rbind,lapply(outj, `[[`, 3))
-  return(list(trnd=trnd, abund=abund, lgth=lgth))
+  COMBI<-do.call(rbind,lapply(outj, `[[`, 3))
+  lgth<-do.call(rbind,lapply(outj, `[[`, 4))
+  return(list(trnd=trnd, abund=abund, COMBI=COMBI, lgth=lgth))
 })
 
 # SAVE COMPILED TABLES & MOVE MINIS TO COMPILED FOLDER
 ## COMPILE NEW RESULTS
 trnd<-do.call(rbind,lapply(outi, `[[`, 1))
 abund<-do.call(rbind,lapply(outi, `[[`, 2))
-lgth<-do.call(rbind,lapply(outi, `[[`, 3))
+COMBI<-do.call(rbind,lapply(outi, `[[`, 3))
+if(ncol(COMBI)==0){COMBI<-NULL}
+lgth<-do.call(rbind,lapply(outi, `[[`, 4))
 ## ADD TO MASTER TABLE
 ### IF PREVIOUS TABLE EXISTS
 #### TREND
@@ -107,6 +250,64 @@ lapply(new_minis, function(x)
 })
 
 
+
+###################################
+#  GIVEN AN OUTI FAIL, USE MINIS  #
+###################################
+# TREND
+outi<-lapply(201:372, function(i)
+{
+  outj<-lapply(1:4, function(j)
+  {
+    trnd_new<-read.csv(file=paste0(loc, "_output/4-utilities/trnd_mini_",
+                                    samp_type,"_",i,"-",j,".csv"))
+    return(trnd_new)
+  })
+  outj<-do.call(rbind,outj)
+  return(outj)
+})
+outi<-do.call("rbind",outi)
+
+trnd_table<-read.csv(file=paste0(loc, "_output/4-utilities/trnd_table.csv"))
+trnd_table<-rbind(trnd_table,outi)
+write.csv(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.csv"),row.names=FALSE)
+
+
+
+
+# ABUNDANCE
+outi<-lapply(1:200, function(i)
+{
+  outj<-lapply(1:4, function(j)
+  {
+    abund_new<-read.csv(file=paste0(loc, "_output/4-utilities/compiled_minis/abund_mini_",
+                                    samp_type,"_",i,"-",j,".csv"))
+    return(abund_new)
+  })
+  outj<-do.call(rbind,outj)
+  return(outj)
+})
+outi<-do.call("rbind",outi)
+
+write.csv(outi,file=paste0(loc, "_output/4-utilities/abund_table_f_1.csv"),row.names=FALSE)
+#write.csv(outi,file=paste0(loc, "_output/4-utilities/abund_table_f_2.csv"),row.names=FALSE)
+
+# LENGTH
+outi<-lapply(201:400, function(i)
+{
+  outj<-lapply(1:4, function(j)
+  {
+    lgth_new<-read.csv(file=paste0(loc, "_output/4-utilities/lgth_mini_",
+                                    samp_type,"_",i,"-",j,".csv"))
+    return(lgth_new)
+  })
+  outj<-do.call(rbind,outj)
+  return(outj)
+})
+outi<-do.call(rbind,outi)    
+
+lgth_table<-rbind(lgth_table,outi)
+write.csv(lgth_table,file=paste0(loc, "_output/4-utilities/lgth_table.csv"),row.names=FALSE)
 
 
 

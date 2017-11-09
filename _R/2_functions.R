@@ -1162,7 +1162,7 @@ abund.trnd<-function(samp_type=NULL,
     {
     # PULL ESTIMATOR RESULTS
     data<-readRDS(file=paste0(location,"_output/3-estimates/",x))
-    if(length(data)!=2){return(print(paste0("Data ", x, "is not of length 2.")))}
+    if(length(data)!=2){return(print(paste0("Data ", x, " is not of length 2.")))}
     est<-data$ests[which(data$ests$gear!="COMBI"),]
     estC<-data$ests[which(data$ests$gear=="COMBI"),]
     datC<-data$COMBI
@@ -1989,75 +1989,90 @@ abund.trnd<-function(samp_type=NULL,
 
 
 ## 9. GETTING LENGTH ESTIMATES
-length.dat<-function(sim_dat=NULL,...)
+length.dat<-function(sim_dat=NULL,
+                     max_occ=NULL,
+                     #gear_combi=NULL,  ##NEEDS TO BE ADDED
+                     ...)
 {
   # FIND ACTUAL SEGMENT-LEVEL MEAN LENGTH
   true_l<-sim_dat$true_vals[,c("b_segment", "year", "mean_length")]
 
   # PULL LENGTH DATA AND INPUTS
-  ## MASSAGE DATA INTO CAPTURE HISTORIES 
   catch<-sim_dat$catch_dat
   catch$ch<-1 #all fish on list were captured
   gears<-unique(catch$gear) #identify gears that caught fish
-  occ<-as.character(unique(catch$occasion))
-  ch<-lapply(gears,function(g)
-  {
-    pp<- dcast(catch, 
-               year+b_segment+bend_num+length+fish_id~occasion,
-               value.var="ch", sum, subset=.(gear==g))
-    pp$gear<-g
-    return(pp)
-  })
-  ch<-do.call(rbind,ch)
+  if(is.null(max_occ)){occasions<-1:max(unique(catch$occasion))}
+  if(!is.null(max_occ)){occasions<-max_occ}
+  # CALCULATE MEAN LENGTH FOR EACH GIVEN OCCASION NUMBER
+  out<-lapply(occasions,function(y)
+    {
+    ## PULL DATA FOR GIVEN OCCASIONS
+    occ<-as.character(1:y)
+    catch<-catch[which(catch$occasion %in% occ),] 
+    ## MASSAGE DATA INTO CAPTURE HISTORIES
+    ch<-lapply(gears,function(g)
+    {
+      pp<- dcast(catch, 
+                 year+b_segment+bend_num+length+fish_id~occasion,
+                 value.var="ch", sum, subset=.(gear==g))
+      pp$gear<-g
+      return(pp)
+    })
+    ch<-do.call(rbind,ch)
     
-  # CALCULATE MEAN LENGTH
-  ## CPUE 
-  tmpC<-ddply(subset(ch,`1`==1), .(b_segment, year, gear), summarize,
-              lhat=mean(length),
-              SE_length=sd(length))
-  ### ADD MISSING SEGMENTS
-  sampC<-subset(sim_dat$samp_dat, occasion==1)
-  samp_segs<-aggregate(f~b_segment+year+gear,sim_dat$samp_dat, sum)
-  fC<-aggregate(f~b_segment+year+gear,sampC, sum)
-  names(fC)[which(names(fC)=="f")]<-"f1"
-  samp_segs<-merge(samp_segs,fC, by=c("b_segment", "year", "gear"))
-  samp_segs<-subset(samp_segs,f!=0)
-  tmpC<-merge(tmpC,samp_segs[,c("b_segment", "year", "gear", "f1")],all.y=TRUE)
-  names(tmpC)[which(names(tmpC)=="f1")]<-"effort"
-  if(length(which(is.na(tmpC$lhat)))!=0){tmpC[which(is.na(tmpC$lhat)),]$lhat<-0}
-  ### ADD ESTIMATOR TYPE
-  tmpC$estimator<-"CPUE"
-  tmpC$occasions<-1
+    ## CALCULATE MEAN LENGTH
+    tmp<-ddply(ch, .(b_segment, year, gear), summarize,
+               lhat=mean(length),
+               SE_length=sd(length))
+    ### ADD MISSING SEGMENTS
+    samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
+    samp_segs<-aggregate(f~b_segment+year+gear,samp, sum)
+    samp_segs<-subset(samp_segs,f!=0)
+    tmp<-merge(tmp,samp_segs,by=c("b_segment","year", "gear"),all.y=TRUE)
+    names(tmp)[which(names(tmp)=="f")]<-"effort"
+    if(length(which(is.na(tmp$lhat)))!=0){tmp[which(is.na(tmp$lhat)),]$lhat<-0}
+    ### ADD PERFORMANCE, ESTIMATOR TYPE, & NUMBER OF OCCASIONS
+    tmp$perform<-1
+    tmp$estimator<-"MEAN"
+    tmp$occasions<-y
+    ### ADD FLAGS
+    samp$p<-samp$q*samp$f
+    P<-aggregate(p~b_segment+bend_num+year+gear+occasion, samp, sum)
+    P$flag<-ifelse(P$p<0.4,0,ifelse(P$p<=1,1,2))
+    fl<-ddply(P, .(b_segment,year,gear), summarize, 
+              flags=length(which(flag!=0))/length(flag))
+    tmp<-merge(tmp,fl, by=c("b_segment", "year", "gear"), all.x=TRUE)
+    ### CATCHABILITY
+    q_stats<-ddply(samp, .(b_segment,year,gear),
+                   summarize,
+                   q_mean_realized=mean(q),
+                   q_sd_realized=sd(q))
+    tmp<-merge(tmp, q_stats, by=c("b_segment", "year", "gear"), all.x=TRUE)
+    return(tmp)
+  })
+  out<-do.call("rbind", out)
   
-  ## M0 & Mt ANALYSES
-  tmp<-ddply(ch, .(b_segment, year, gear), summarize,
-             lhat=mean(length),
-             SE_length=sd(length))
-  ### ADD MISSING SEGMENTS
-  tmp<-merge(tmp,samp_segs[,c("b_segment", "year", "gear", "f")],all.y=TRUE)
-  names(tmp)[which(names(tmp)=="f")]<-"effort"
-  if(length(which(is.na(tmp$lhat)))!=0){tmp[which(is.na(tmp$lhat)),]$lhat<-0}
-  tmp$occasions<-sim_dat$inputs$occasions
-  ### EXPAND FOR TWO ESTIMATORS
-  tmp<-rbind(tmp,tmp)
-  tmp$estimator<-c(rep("M0",nrow(tmp)/2),rep("Mt",nrow(tmp)/2))
-  
-  ## COMBINE AND ADD BIAS AND PRECISION
-  tmp<-rbind(tmpC,tmp)
-  tmp$perform<-1
-  ### ADD ACTUAL MEAN LENGTHS
-  tmp<-merge(tmp, true_l, by=c("b_segment","year"), all.x=TRUE)
-  ### ADD BIAS
-  tmp$bias<-tmp$lhat-tmp$mean_length
-  ### ADD PRECISION
-  tmp$precision<-tmp$SE_length/tmp$lhat
-  ### ADD DEPLOYMENTS
-  tmp$deployments<-sim_dat$inputs$deployments
+  # ADD BIAS AND PRECISION
+  ## ADD ACTUAL MEAN LENGTHS
+  out<-merge(out, true_l, by=c("b_segment","year"), all.x=TRUE)
+  ## ADD BIAS
+  out$bias<-out$lhat-out$mean_length
+  ## ADD PRECISION
+  out$precision<-out$SE_length/out$lhat
+  # ADD INPUTS
+  inputs<-sim_dat$inputs
+  in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
+                     B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
+                     samp_type=inputs$samp_type)
+  in_dat<-merge(in_dat,inputs$gear_codes, by="gear")
+  out<-merge(out,in_dat, by=c("gear"), all.x=TRUE)
   ### FORMULATE OUTPUT
-  tmp<-tmp[,c("b_segment","year","gear", "mean_length","lhat","bias","precision",
-              "perform","estimator", "effort", "deployments", "occasions")]
-  names(tmp)[1]<-"segment"
-  return(tmp)
+  out<-out[,c("b_segment","year","gear", "mean_length","lhat","bias","precision",
+              "perform","estimator", "flags", "effort", "q_mean_realized",
+              "q_sd_realized","q_mean_input", "B0_sd_input","deployments",
+              "occasions","samp_type","g_code")]
+  names(out)[1]<-"segment"
+  return(out)
 }
 
 
