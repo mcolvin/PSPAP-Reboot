@@ -137,16 +137,16 @@ stopCluster(cl)
 #         2. MAKE OUTPUT TABLES          #
 ##########################################
 
-#########################################################################
-# f_373 DIDN'T WORK... RERUN LENGTH TABLE ALL...problem! #
-#########################################################################
+####################################
+# _r_265-2 ISSUES...NEED TO RUN!!! #
+####################################
 
 # MAKE OUTPUT TABLES FROM ESTIMATES AND SAVE MINI TABLES ALONG THE WAY
-samp_type<-"f"
+samp_type<-"r"
 if(pcname=="WF-FGNL842"){loc<-"E:/"}
 #if(pcname!="WF-FGNL842"){loc<-"D:/"}
 if(pcname!="WF-FGNL842"){loc<-NULL}
-outi<-lapply(373:373, function(i)
+outi<-lapply(266:400, function(i)
 {
   # RUN IN PARALLEL
   library(parallel)
@@ -195,27 +195,27 @@ lgth<-do.call(rbind,lapply(outi, `[[`, 4))
 #### TREND
 if(file.exists(paste0(loc, "_output/4-utilities/trnd_table.csv")))
 {
-  trnd_table<-read.csv(file=paste0(loc, "_output/4-utilities/trnd_table.csv"))
+  trnd_table<-readRDS(file=paste0(loc, "_output/4-utilities/trnd_table.rds"))
   trnd_table<-rbind(trnd_table,trnd)
-  write.csv(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.csv"),row.names=FALSE)
+  saveRDS(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.rds"))
   ## CHECK FOR DUPLICATE DATA
   anyDuplicated(trnd_table)
 }
 #### ABUNDANCE
 if(file.exists(paste0(loc, "_output/4-utilities/abund_table.csv")))
 {
-  abund_table<-read.csv(file=paste0(loc, "_output/4-utilities/abund_table.csv"))
+  abund_table<-readRDS(file=paste0(loc, "_output/4-utilities/abund_table.rds"))
   abund_table<-rbind(abund_table,abund)
-  write.csv(abund_table,file=paste0(loc, "_output/4-utilities/abund_table.csv"),row.names=FALSE)
+  saveRDS(abund_table,file=paste0(loc, "_output/4-utilities/abund_table.rds"))
   ## CHECK FOR DUPLICATE DATA
   anyDuplicated(abund_table)
 }
 #### LENGTH
 if(file.exists(paste0(loc, "_output/4-utilities/lgth_table.csv")))
 {
-  lgth_table<-read.csv(file=paste0(loc, "_output/4-utilities/lgth_table.csv"))
+  lgth_table<-readRDS(file=paste0(loc, "_output/4-utilities/lgth_table.rds"))
   lgth_table<-rbind(lgth_table,lgth)
-  write.csv(lgth_table,file=paste0(loc, "_output/4-utilities/lgth_table.csv"),row.names=FALSE)
+  saveRDS(lgth_table,file=paste0(loc, "_output/4-utilities/lgth_table.rds"))
   ## CHECK FOR DUPLICATE DATA
   anyDuplicated(lgth_table)  
 }
@@ -267,20 +267,18 @@ outi<-lapply(201:372, function(i)
   return(outj)
 })
 outi<-do.call("rbind",outi)
-
-trnd_table<-read.csv(file=paste0(loc, "_output/4-utilities/trnd_table.csv"))
+trnd_table<-readRDS(file=paste0(loc, "_output/4-utilities/trnd_table.rds"))
 trnd_table<-rbind(trnd_table,outi)
-write.csv(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.csv"),row.names=FALSE)
-
-
+trnd_table<-trnd_table[!duplicated(trnd_table),]
+saveRDS(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.rds"))
 
 
 # ABUNDANCE
 outi<-lapply(1:200, function(i)
 {
-  outj<-lapply(1:4, function(j)
+  outj<-lapply(3:4, function(j)
   {
-    abund_new<-read.csv(file=paste0(loc, "_output/4-utilities/compiled_minis/abund_mini_",
+    abund_new<-read.csv(file=paste0(loc, "_output/4-utilities/abund_mini_",
                                     samp_type,"_",i,"-",j,".csv"))
     return(abund_new)
   })
@@ -288,14 +286,20 @@ outi<-lapply(1:200, function(i)
   return(outj)
 })
 outi<-do.call("rbind",outi)
+abund_table<-readRDS("E:/_output/4-utilities/abund_table.rds")
+abund_table<-rbind(abund_table,outi)
+abund_table<-abund_table[!duplicated(abund_table),]
+saveRDS(abund_table,file=paste0(loc, "_output/4-utilities/abund_table.rds"))
 
-write.csv(outi,file=paste0(loc, "_output/4-utilities/abund_table_f_1.csv"),row.names=FALSE)
-#write.csv(outi,file=paste0(loc, "_output/4-utilities/abund_table_f_2.csv"),row.names=FALSE)
+
+
+
+
 
 # LENGTH
 outi<-lapply(201:400, function(i)
 {
-  outj<-lapply(1:4, function(j)
+  outj<-lapply(3:4, function(j)
   {
     lgth_new<-read.csv(file=paste0(loc, "_output/4-utilities/lgth_mini_",
                                     samp_type,"_",i,"-",j,".csv"))
@@ -305,10 +309,10 @@ outi<-lapply(201:400, function(i)
   return(outj)
 })
 outi<-do.call(rbind,outi)    
-
+lgth_table<-readRDS(file=paste0(loc, "_output/4-utilities/lgth_table.rds"))
 lgth_table<-rbind(lgth_table,outi)
-write.csv(lgth_table,file=paste0(loc, "_output/4-utilities/lgth_table.csv"),row.names=FALSE)
-
+lgth_table<-lgth_table[!duplicated(lgth_table),]
+saveRDS(lgth_table,file=paste0(loc, "_output/4-utilities/lgth_table.rds"))
 
 
 
