@@ -8,8 +8,6 @@ source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
 #################################################
-# TRANSFER DATA                                 #
-# CHECK FOR REPEATS IN ALL ESTIMATES (AND TIME) #                
 # NEW ABUND.TRND TABLES                         #
 #################################################
 
@@ -43,7 +41,7 @@ lapply(1:400, function(i)
       saveRDS(sim_dat,file=paste0("D:/_output/2-catch/",catch_list[j]))
       }
     # SET OCCASIONS TO BE USED
-    occasions<-2:3
+    occasions<-2:4
     lapply(occasions, function(y)
     {
       # GET M0 & Mt ESTIMATES
@@ -56,7 +54,22 @@ lapply(1:400, function(i)
         {
           old<-readRDS(file=paste0("E:/_output/3-estimates/M0t_est", 
                                    strsplit(catch_list[j], "catch_dat")[[1]][2]))
-          est<-rbind(old,est)
+          if(is.data.frame(old))
+          {
+            if(any(names(old)=="g_code")){return(print("g_codes already present"))}
+            old<-merge(old, gear_codes, by="gear", all.x=TRUE)
+            COMBI<-est$COMBI
+            ests<-est$ests
+            ests<-rbind(old,ests)
+            est<-list(ests=ests, COMBI=COMBI)
+          }
+          if(!is.data.frame(old) & is.list(old))
+          {
+            if(length(old)!=2){return(print("There's a problem with the list length."))}
+            ests<-rbind(old$ests,est$ests)
+            COMBI<-rbind(old$COMBI,est$COMBI)
+            est<-list(ests=ests, COMBI=COMBI)
+          }
         }
         saveRDS(est,
                file=paste0("E:/_output/3-estimates/M0t_est", 
