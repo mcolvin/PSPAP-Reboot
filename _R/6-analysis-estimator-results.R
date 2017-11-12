@@ -157,6 +157,9 @@ outi<-lapply(1:200, function(i)
   clusterEvalQ(cl, library(reshape2))
   outj<-parLapply(cl,1:4, function(j)
   {
+    #####################################################################
+    # ADD RECRUITMENT TO abund.trnd and lgth PRIOR TO RUNNING AGAIN!!!! #
+    #####################################################################
     atl<-abund.trnd(samp_type=samp_type, pop_num=i, catch_num=j,location=loc)
     sim_dat<-readRDS(file=paste0(loc,"_output/2-catch/catch_dat_",samp_type,"_",i,"-",j,".rds"))
     atl$lgth<-length.dat(sim_dat = sim_dat)
