@@ -137,16 +137,12 @@ stopCluster(cl)
 #         2. MAKE OUTPUT TABLES          #
 ##########################################
 
-####################################
-# _r_265-2 ISSUES...NEED TO RUN!!! #
-####################################
-
 # MAKE OUTPUT TABLES FROM ESTIMATES AND SAVE MINI TABLES ALONG THE WAY
 samp_type<-"r"
 if(pcname=="WF-FGNL842"){loc<-"E:/"}
 #if(pcname!="WF-FGNL842"){loc<-"D:/"}
 if(pcname!="WF-FGNL842"){loc<-NULL}
-outi<-lapply(266:400, function(i)
+outi<-lapply(1:200, function(i)
 {
   # RUN IN PARALLEL
   library(parallel)
@@ -255,7 +251,7 @@ lapply(new_minis, function(x)
 #  GIVEN AN OUTI FAIL, USE MINIS  #
 ###################################
 # TREND
-outi<-lapply(201:372, function(i)
+outi<-lapply(201:373, function(i)
 {
   outj<-lapply(1:4, function(j)
   {
@@ -274,9 +270,9 @@ saveRDS(trnd_table,file=paste0(loc, "_output/4-utilities/trnd_table.rds"))
 
 
 # ABUNDANCE
-outi<-lapply(1:200, function(i)
+outi<-lapply(201:373, function(i)
 {
-  outj<-lapply(3:4, function(j)
+  outj<-lapply(1:4, function(j)
   {
     abund_new<-read.csv(file=paste0(loc, "_output/4-utilities/abund_mini_",
                                     samp_type,"_",i,"-",j,".csv"))
@@ -297,9 +293,9 @@ saveRDS(abund_table,file=paste0(loc, "_output/4-utilities/abund_table.rds"))
 
 
 # LENGTH
-outi<-lapply(201:400, function(i)
+outi<-lapply(201:373, function(i)
 {
-  outj<-lapply(3:4, function(j)
+  outj<-lapply(1:4, function(j)
   {
     lgth_new<-read.csv(file=paste0(loc, "_output/4-utilities/lgth_mini_",
                                     samp_type,"_",i,"-",j,".csv"))
