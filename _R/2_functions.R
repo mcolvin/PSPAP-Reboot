@@ -4,14 +4,17 @@
 ###  2. dfitfunuB
 ## RELATIVE ABUNDANCE (CPUE)
 ###  3. reference_population
-###  4. catch_counts
-###  5. bend_samples
-###  6. samp_dat
-###  7. get.trnd
+###  4. bend_samples
+###  5. catch_counts
+###  6. MKA.ests
+###  7. M0t.ests
+###  8. RD.ests
+###  9. abund.trnd
+### 10. length.dat
 ## CAPTURE RECAPTURE FUNCTIONS
-###  8. sim_ch
-###  9. estimate
-### 10. plot_metrics
+### 11. sim_ch
+### 12. estimate
+### 13. plot_metrics
 
 # EFFORT DISTRIBUTIONS
 ## FIT DISTRIBUTIONS TO EFFORT DATA 
@@ -763,8 +766,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
 
 
 
-## 6. GETTING CPUE ESTIMATES
-### USES OCCASION 1 DATA ONLY
+## 6. GETTING CATCH AND  MKA ESTIMATES
 MKA.ests<-function(sim_dat=NULL,
                    max_occ=NULL, #Number of occasions to use for estimate
                    gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
@@ -1111,9 +1113,200 @@ M0t.ests<-function(sim_dat=NULL,
 
 
 
+#8. RD ESTIMATOR
+RD.ests<-function(sim_dat=NULL,
+                  max_occ=NULL, #Number of occasions to use for estimate
+                  gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
+                  ...)
+{
+  # MASSAGE DATA INTO SHAPE 
+  ## PULL DESIRED DATA
+  inputs<-sim_dat$inputs
+  catch<-sim_dat$catch_dat
+  samp<-sim_dat$samp_dat
+  if(is.null(max_occ)){max_occ<-inputs$occasions}
+  if(max_occ>sim_dat$inputs$occasions | max_occ<2)
+  {return(print(paste0("max_occ needs to be at least 2 AND less than or equal to ",
+                       inputs$occasions)))}
+  occ<-as.character(1:max_occ)
+  catch<-catch[which(catch$occasion %in% occ),] #use the number of occasions to limit the data used
+  samp<-samp[which(samp$occasion %in% occ),]
+  ## OCCASIONS INPUT
+  nsec<-rep(max_occ,inputs$nyears)
+  ends<-cumsum(nsec) # last sampling occasion each year
+  occs<- rep(0,sum(nsec))
+  occs[ends]<-1# last occasion in primary
+  occs<- occs[-length(occs)]# drop last 1 for processing
+  ## CAPTURE HISTORIES INPUT BY BASIN
+  catch$basin<-ifelse(catch$b_segment %in% c(1, 2, 3, 4), "UB", "LB")
+  catch$st_code<-ifelse(catch$basin=="UB",catch$b_segment, catch$b_segment-6)
+  if(any(catch$st_code==7)){catch[which(catch$st_code==7),]$st_code<-5}
+  if(any(catch$st_code==8)){catch[which(catch$st_code==8),]$st_code<-6}
+  if(is.null(gear_combi))
+  {
+    ch<-lapply(c("UB", "LB"), function(b)
+    {
+      dat<-catch[which(catch$basin==b),]
+      gears<-unique(dat$gear)
+      gears<-setdiff(gears, c("MF","OT16"))
+      bg<-lapply(gears,function(g)
+      {
+        pp<- dcast(dat, 
+                   fish_id~year+occasion,
+                   value.var="st_code", subset=.(gear==g))
+        pp$gear<-g
+        return(pp)
+      })
+      bg<-do.call(rbind,bg)
+      for(i in 2:(ncol(bg)-1))
+      {
+        bg[which(is.na(bg[,i])),i]<-0
+      }
+      tmp<-matrix(0, nrow=nrow(bg), ncol=max_occ*inputs$nyears)
+      for(i in 1:ncol(tmp))
+      {
+        tmp[,i]<-bg[,i+1]
+      }
+      bg$ch<-apply(tmp,1,paste0,collapse="")
+      bg$freq<-1
+      bg<-bg[,c("ch", "freq","gear")]
+      return(bg)
+    })
+  }
+  if(!is.null(gear_combi)){return(print("Different gear combinations not supported 
+                                        at this time."))}
+  # if(!is.null(gear_combi))
+  # {
+  #   catch<-lapply(1:length(gear_combi),function(x)
+  #   {
+  #     out<-catch[which(catch$gear==gear_combi[x] & catch$occasion==x),]
+  #     return(out)
+  #   })
+  #   catch<-do.call("rbind",catch)
+  #   ch<- dcast(catch,
+  #              fish_id~year+occasion,
+  #              value.var="id", sum)
+  #   ch$gear<-"COMBI"
+  # }
+  
+  library(RMark)# NEED TO COMMUNICATION TO PROGRAM MARK
+  
+  # SET UP DESIGN MATRIX AND CAPTURE HISTORIES FOR PROGRAM MARK
+  ptm<-proc.time()
+  out<-lapply(1:length(ch), function(b)  # LOOP OVER BASINS
+  {
+    dat<-ch[[b]]
+    gears<-unique(dat$gear)
+    if(length(ch)==1){states<-unique(catch$st_code)}
+    if(length(ch)==2)
+    {
+      if(b==1){states<-unique(catch[which(catch$basin=="UB"),]$st_code)}
+      if(b==2){states<-unique(catch[which(catch$basin=="LB"),]$st_code)}
+    }
+    if(length(ch)!=1 & length(ch)!=2){return(print("Issue with capture history length."))}
+    outg<-lapply(gears, function(g) #LOOP OVER GEARS
+    {
+      datg<-dat[which(dat$gear==g),1:2]
+      crdms<-process.data(data=datg, # CAPTURE HISTORIES FOR EACH FISH
+                          model="CRDMS",  # MODEL TYPE
+                          time.interval=occs, # FUNKY INPUTS TO DEFINE PRIMARY AND SECONDARY OCCASIONS
+                          strata.labels=c(as.character(states), "U")) #DEFINE STATES
+      # MAKE ADJUSTMENTS 
+      ## Change Psi parameters that are obtained by subtraction so that probability 
+      ##  of moving to the unobservable state is determined by subtraction
+      crdms.ddl<-make.design.data(data=crdms,
+                                  parameters=list(Psi=list(
+                                    subtract.stratum=rep("U",length(states)+1))))
+      
+      ## Create grouping index for unobserved p and c (i.e., always zero)
+      up<-as.numeric(row.names(crdms.ddl$p[crdms.ddl$p$stratum=="U",]))
+      uc<-as.numeric(row.names(crdms.ddl$c[crdms.ddl$c$stratum=="U",]))
+      
+      # SET UP THE FORMULA AND UNDERLYING DESIGN MATRIX ASSUMING CONSTANT SURVIVAL 
+      S=list(formula=~1)# SURVIVAL
+      
+      # SET UP THE FORMULA AND UNDERLYING DESIGN MATRIX FOR CAPTURE PROBABILITY
+      # RD CAN DO CAPTURE (P) AND RECAPTURE (C) PROBABILITY
+      # WE ALLOW P TO CHANGE WITH OCCASION AND STRATA BUT ASSUME C=P AT A GIVEN TIME
+      # AND PLACE.  THUS, WE FIX C = P USING THE SHARE STATEMENT:  SHARE = TRUE
+      p=list(formula=~1, share=TRUE,
+             fixed=list(index=up,value=0)) #p set to zero for unobs
+      
+      
+      # f0 IS THE THE NUMBER OF FISH NEVER ENCOUNTERED
+      # AS A LINEAR COMBINATION, NEED TO ALLOW IT TO VARY 
+      # AMONG EACH PRIMARY OCCASION WHICH IS DONE BY SETTING UP 
+      # A DESIGN MATRIX THAT WILL ESTIMATE AN EFFECT OF EACH PRIMARY 
+      # OCCASION, THEN TOTAL ABUNDANDANCE IS DERIVED AS THE LINEAR COMBO 
+      # OF THE INTERCEPT, TIME SPECIFIC EFFECT AND NUMBER OF TAGGED FISH
+      # CAPTURED AT THAT TIME
+      # Default: f0<- list(formula=~session)  # NUMBER NOT ENCOUNTERED
+      
+      
+      # MARKOV MOVEMENT HETEROGENEOUS IN TIME
+      # SIMULATED MOVEMENT RATES DEPENDENT ON CURRENT STATE 
+      # MOVEMENT RATES DIFFER BASED ON WHICH STATE THE FISH IS HEADED TO
+      Psi=list(formula=~-1+stratum:tostratum)
+      # DO WE WANT THIS DEPENDENT ON ANYTHING ELSE...E.G. TIME??? 
+      # ARE WE GOING TO HAVE A WAY TO COMPARED MODELS AND CHOOSE "BEST" OR WEIGHT???
+      
+      # FIT THE MODEL USING PROGRAM MARK
+      fit<-mark(data=crdms,
+                ddl=crdms.ddl,
+                model="CRDMS",
+                time.intervals = time.intervals,
+                model.parameters=list(S=S,
+                                      p=p,
+                                      c = list(fixed=list(index=uc, value=0)),
+                                      Psi=Psi),
+                threads=2,
+                brief=TRUE)
+      indx<-lapply(states,grep, x=datg$ch)
+      samp_size<-lapply(indx,length)
+      samp_size<-rep(unlist(samp_size),each=inputs$nyears)
+      params<-fit$results$real[which(!duplicated(fit$results$real$estimate)),]
+      params<-params[which(params$fixed!="Fixed"),1:4]
+      if(length(which(params$note!="                    "))>0){return(print("NOTES!"))}
+      n<-length(states)*inputs$nyears
+      ests<-data.frame(gear=rep(g,n),
+                       state=rep(states, each=inputs$nyears), 
+                       year=rep(1:inputs$nyears, length(states)),
+                       state_samp_size=samp_size,
+                       basin_samp_size=rep(sum(datg$freq),n),
+                       Nhat=fit$results$derived$`N Population Size`$estimate[1:n],
+                       SE_Nhat=fit$results$derived$`N Population Size`$se[1:n],
+                       LC_Nhat=fit$results$derived$`N Population Size`$lcl[1:n],
+                       UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
+                       fit=fit$output)
+      ests$basin<-ifelse(b==1, "LB","UB")
+      ss<-ddply(catch, .(basin, st_code, year, gear, b_segment), summarize, 
+                no_of_bends=length(unique(bend_num)))
+      names(ss)[2]<-"state"
+      names(ss)[5]<-"segment"
+      ests<-merge(ests,ss,by=c("basin","state","year","gear"), all.x=TRUE)
+      keep<-list(abundance=ests,
+                 parameters=cbind(gear=rep(g,nrow(params)),params,
+                                  fit=rep(fit$output,nrow(params))),
+                 model=data.frame(fit_type=fit$model.name, fit=fit$output))
+      return(keep) # REALLY NEED A TABLE OUTPUT BASED ON FIT, I WOULD THINK
+    })
+    abund<-do.call(rbind,lapply(outg, `[[`, 1))
+    param<-do.call(rbind,lapply(outg, `[[`, 2))
+    model<-do.call(rbind,lapply(outg, `[[`, 3))
+    outg<-list(abundance=abund,parameters=param, model=model)
+    return(outg)
+  })
+  out<-list(UB=out[[1]],LB=out[[2]])
+  fit<-NA; cleanup(ask=FALSE)
+  return(out)
+  }
 
 
-## 8. GETTING ABUNDANCE AND TREND ESTIMATES
+
+
+
+
+## 9. GETTING ABUNDANCE AND TREND ESTIMATES
 abund.trnd<-function(samp_type=NULL, 
                      pop_num=NULL, 
                      catch_num=NULL,
@@ -1988,7 +2181,7 @@ abund.trnd<-function(samp_type=NULL,
 
 
 
-## 9. GETTING LENGTH ESTIMATES
+## 10. GETTING LENGTH ESTIMATES
 length.dat<-function(sim_dat=NULL,
                      max_occ=NULL,
                      #gear_combi=NULL,  ##NEEDS TO BE ADDED

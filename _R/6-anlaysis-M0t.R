@@ -7,10 +7,6 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-#################################################
-# NEW ABUND.TRND TABLES                         #
-#################################################
-
 # DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
 ptm<-proc.time()
 lapply(1:400, function(i)
