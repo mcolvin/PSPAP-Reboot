@@ -1142,6 +1142,10 @@ RD.ests<-function(sim_dat=NULL,
   catch$st_code<-ifelse(catch$basin=="UB",catch$b_segment, catch$b_segment-6)
   if(any(catch$st_code==7)){catch[which(catch$st_code==7),]$st_code<-5}
   if(any(catch$st_code==8)){catch[which(catch$st_code==8),]$st_code<-6}
+  ss<-ddply(catch, .(basin, st_code, year, gear, b_segment), summarize, 
+            no_of_bends=length(unique(bend_num)))
+  names(ss)[2]<-"state"
+  names(ss)[5]<-"segment"
   if(is.null(gear_combi))
   {
     ch<-lapply(c("UB", "LB"), function(b)
@@ -1196,7 +1200,8 @@ RD.ests<-function(sim_dat=NULL,
   out<-lapply(1:length(ch), function(b)  # LOOP OVER BASINS
   {
     dat<-ch[[b]]
-    gears<-unique(dat$gear)
+    #gears<-unique(dat$gear)
+    gears<-c("GN14", "TLC1", "TN")
     if(length(ch)==1){states<-unique(catch$st_code)}
     if(length(ch)==2)
     {
@@ -1279,16 +1284,13 @@ RD.ests<-function(sim_dat=NULL,
                        UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
                        fit=fit$output)
       ests$basin<-ifelse(b==1, "LB","UB")
-      ss<-ddply(catch, .(basin, st_code, year, gear, b_segment), summarize, 
-                no_of_bends=length(unique(bend_num)))
-      names(ss)[2]<-"state"
-      names(ss)[5]<-"segment"
       ests<-merge(ests,ss,by=c("basin","state","year","gear"), all.x=TRUE)
       keep<-list(abundance=ests,
                  parameters=cbind(gear=rep(g,nrow(params)),params,
                                   fit=rep(fit$output,nrow(params))),
                  model=data.frame(fit_type=fit$model.name, fit=fit$output))
-      return(keep) # REALLY NEED A TABLE OUTPUT BASED ON FIT, I WOULD THINK
+      return(keep)
+      fit<-NA; cleanup(ask=FALSE)
     })
     abund<-do.call(rbind,lapply(outg, `[[`, 1))
     param<-do.call(rbind,lapply(outg, `[[`, 2))
@@ -1297,7 +1299,6 @@ RD.ests<-function(sim_dat=NULL,
     return(outg)
   })
   out<-list(UB=out[[1]],LB=out[[2]])
-  fit<-NA; cleanup(ask=FALSE)
   return(out)
   }
 
