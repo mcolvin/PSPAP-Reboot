@@ -5,7 +5,7 @@ source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
 ptm<-proc.time()
-lapply(1:1, function(i)
+lapply(1:400, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -15,7 +15,17 @@ lapply(1:1, function(i)
   {
     catch_list<-dir("D:/_output/2-catch", pattern=paste0("catch_dat_f_",i,"-"))
   }
-  lapply(1:length(catch_list), function(j)
+  library(parallel)
+  ## USE ALL CORES
+  numCores<-detectCores()
+  ## INITIATE CLUSTER
+  cl<-makeCluster(numCores)
+  ## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+  clusterExport(cl, c("pcname","catch_list"),envir=environment())
+  clusterEvalQ(cl, source("_R/2_functions.R"))
+  clusterEvalQ(cl, library(plyr))
+  clusterEvalQ(cl, library(reshape2))
+  parLapply(cl,1:length(catch_list), function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
@@ -57,5 +67,6 @@ lapply(1:1, function(i)
       }
     })
   })
+  stopCluster(cl)
 })
 proc.time()-ptm
