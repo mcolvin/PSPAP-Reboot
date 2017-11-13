@@ -68,8 +68,8 @@ if(n==1)
     tmp<-ddply(bends,.(basin,b_segment),summarize,
         n_bends=length(id),
         min_rkm=min(length.rkm),
-        mean_rkm=min(length.rkm),
-        maximum_rkm=min(length.rkm))     
+        mean_rkm=mean(length.rkm),
+        maximum_rkm=max(length.rkm))     
     return(format(tmp,digits=2))
     }
 if(n==2)
@@ -78,10 +78,10 @@ if(n==2)
     summarize,
     #min_dens=min(d_lower, na.rm=TRUE),
     #max_dens=max(d_upper, na.rm=TRUE),
-    mean_dens=density_mean[which.max(as.numeric(year))],
-    max_year=max(as.numeric(year)),
     min_mean=min(density_mean, na.rm=TRUE),
-    max_mean=max(density_mean, na.rm=TRUE))
+    max_mean=max(density_mean, na.rm=TRUE),
+    mean_dens=density_mean[which.max(as.numeric(year))],
+    max_year=max(as.numeric(year)))
   #tmp$min_dens<-mapply(min, tmp$min_dens, tmp$min_mean, na.rm=TRUE)
   #tmp$max_dens<-mapply(max, tmp$max_dens, tmp$max_mean, na.rm=TRUE)
   tmp$segs<-1
