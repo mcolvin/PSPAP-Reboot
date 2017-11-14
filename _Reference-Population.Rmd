@@ -1,6 +1,8 @@
 ---
 title: "Creating a reference population"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+  - \usepackage{amsmath}
 output: 
   html_document:
     theme: readable
@@ -8,11 +10,11 @@ output:
 ---
 
 ```{r, warning=FALSE, echo=FALSE}
-source("R/1_global.R")
-source("R/2_functions.R")
-source("R/3_load-and-clean.R")
-#source("R/4_figures.R")
-source("R/5_tables.R")
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
+#source("_R/4_figures.R")
+source("_R/5_tables.R")
 ```
 
 <!--
@@ -24,80 +26,109 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 -->
 
 # Overview
-
 A reference population of known pallid sturgeon abundance is needed to 
 evaluate varying monitoring designs and their ability to achieve the 
 fundamental objectives identified during the first population assessment 
-program workshop. 
+program workshop (See Section ??).  To keep track of bend-level abundance, the reference population provides data on the annual survival and movement of each fish in the population (including new recruits). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individual growth was also simulated. 
 
-
-
-
-# Objectives
+### Objectives
 
 The objectives of this analysis were to:
 
-1. Create a spatially explicit pallid sturgeon population with known
-bend-level abundances, and
-2. Simulate the reference population for 20 years with varying but known
-survival and recruitment
+1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and
+2. Simulate the reference population for 10 years with varying but known annual
+survival, growth, movement, and recruitment.
 
+### Major Assumptions
+1. Survival is homogeneous among individuals.
+2. Individual fish growth follows a von Bertalanffy growth equation.
+3. There is no movement within years.
+4. Movement within a basin can occur between years.  
+5. Recruitment occurs at the basin-level and is stochastic.
+
+
+(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE)
 
 # Methods
 
-## Spatial extent and grain
-
+### Spatial extent and grain
 This analysis was constrained to generate reference pallid sturgeon populations
-for segments and bend within Missouri River RPMAs 2 and 4. Bends of varying length
-were used to generate the spatial distribution of pallid sturgeon (Table 1).
+for segments and bends within the upper basin (segments 1-4) and lower basin (segments 7-10, 13 and 14) of the Missouri River. Bends of varying length were used to generate the spatial distribution of pallid sturgeon (Table 1).
 
 
+### Population Initialization
+The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature.
 
-## Creating a reference population
+#### Bend Abundance
+We populated each river bend with pallids based on reported expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:
 
-### Density formulation
-We randomly assigned the number of pallid sturgeon occupying each bend given
-reported segment level densities by origin (Table 2). The number of pallid sturgeon
-assigned to a bend was stochastically generated from a Poisson distribution given the 
-segment density accounting for bend length as:
 
-$$N_{segment,bend}\sim Poisson(\lambda_{segment,origin}\cdot Length_{segment,bend}) \text{(1)}$$
+$$\hspace{1.75in} N_{segment,bend}\sim Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot l_{segment,bend}\right), \hspace{1.75in}\text{(1)}$$
 
 where 
  
 * $N$ is the number of pallid sturgeon within each bend,
 * $\lambda$ is the segment and origin specific density in fish per RKM,
-* $Length$ is bend length in RKM,
-* $segment$ indexes segment within RPMA,
-* $bend$ indexes bend with segment,
-* $origin$ indexes whether pallid sturgeon were hatchery or natural origin, and
-* $bend$ indexes bend within segment. 
-
-## Abundance formulation
-
-We also used an abundance formulation to provide additional analysis flexibility.
-This approach required an segment and origin specific abundance as a vector of 
-bend-specific probabilities 
+* $l$ is bend length in RKM,
+* $segment$ indexes segment within universe,
+* $bend$ indexes bend within segment, and
+* $origin$ indexes whether pallid sturgeon were hatchery or natural origin.
 
 
-$$N_{segment,bend}\sim Multinomial(Abundance_{segment,origin}, p_{segment,bend}) \text{(2)}$$
+POISSON JUSTIFICATION HERE 
+<!--SHOULD BE ABLE TO DERIVE THIS POISSON DISTRIBUTION WITH THE FOLLOWING ASSUMPTIONS:
 
-where 
- 
-* $N$ is the number of pallid sturgeon within each bend,
-* $Abundance$ is the segment and origin specific total pallid sturgeon abundance,
-* $p$ is the bend specific location probability,
-* $segment$ indexes segment within RPMA,
-* $bend$ indexes bend with segment,
-* $origin$ indexes whether pallid sturgeon were hatchery or natural origin, and
-* $bend$ indexes bend within segment. 
+1. The probability of 1 pallid being in a column of water with length $dl$ and the width of the river at RKM $l$ is $\alpha$.
+2. The probability of 2 or more pallids in a column of water w/ length $dl$ is neglible $o(\varepsilon)$.  
+3. The number of pallids in disjoint (non-overlapping) water columns $dl_1$ and $dl_2$ are independent.  In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other. 
 
-## Assumptions
+(WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS.)-->
 
-1. No movement 
-2. No recruitment
-3. Survival homogenous among individuals
+#### Individual Length & Growth Parameters
+We randomly assigned an initial length to each individual fish.  Initial lengths were generated from a segment specific distribution constructed from recent length data in the PSPAP database.  (FURTHER DESCRIPTION HERE)
 
+Additionally, we assigned individual von Bertalanffy growth parameters $L_\infty$ and $k$, or the asymptotic length and Brody growth coefficient of a fish's growth trajectory, respectively, to each fish.  Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database.  (FURTHER DESCRIPTION HERE)
+
+To avoid unrealistic growth parameter values we truncated each bivariate normal distribution (one for each basin) to the middle 80%.  All points $(L_\infty, k)$ of the truncated distribution are contained on or within an ellipse centered at $\mathbf{\mu}=(\mu_{L_\infty}, \mu_k)$, the basin specific mean values for $L_\infty$ and $k$.  Since the R package $\texttt{tmvtnorm}$ truncates multivariate normal distributions to rectangular regions, as opposed to elliptical regions, we used a different approach to randomly draw points from the desired elliptical region.  
+
+In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse.  The truncation process was acheived using $\texttt{rtruncnorm}$ twice in R, once for the normal distribution associated with $L_\infty$ and then again for the normal distribution associated with $k$ conditional on $L_\infty$.  For more details see Appendix ??.  
+
+
+### Simulating Annual Transitions
+After initializing the reference population, we track all individual fish for 10 years, recording individual survival status, bend location, and length on a yearly basis.  Additionally, new recruits may be added to the population and tracked.  
+
+#### Survival & Growth
+Survival is homogenous with all fish in the river having an equal probability, $\phi$, of annual survival indpendent of individual age, length, sex, origin, location, and year. Annual growth is projected by individualized von Bertalanffy growth curves as 
+$$\hspace{2.5in} L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \hspace{2.5in}\text{(2)}$$
+where $L(t)$ is the individual's length during year $t$ and each fish has its own randomly generated asymptotic length, $L_\infty$, and Brody growth rate, $k$, as described in the previous section on initializing the population.  
+
+
+#### Movement
+Within basin movement occurs between years and is considered at the bend-level.  Pallids may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend.  Movement probabilities are based on current bend location with the probability of being in bend $j$ the following year increasing as the distance between the fish's current bend and bend $j$ decreases.  In particular, 
+$$\mathbb{P}\Big(B(t)=b_j \hspace{2pt} | \hspace{2pt} B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$ 
+and
+
+$$f(i,k)=
+\begin{cases} 
+      1, & k=i \\
+      e^{\beta_0-\beta_1 d(b_i, b_k)}, & k\neq i
+   \end{cases},$$
+where $d(b_i, b_k)$ is the distance in RKM from the center of bend $i$ to the center of bend $k$ and $\beta_0$ and $\beta_1$ are basin specific parameters.  
+
+(NEED JUSTIFICATION FOR THIS)
+
+To account for the uncertain nature of movement probabilities, we vary $\beta_0$ and $\beta_1$ from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity.
+
+
+#### Recruitment
+Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 years).  During years when recruitment occurs the number of recruits is drawn from a basin specific Poisson distribution.  (JUSTIFICATION FOR POISSON HERE.)  
+
+Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters.  Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population.  Initial length was chosen as 200mm, because (REASON HERE).  Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.        
+
+
+
+
+<!-- NOT SURE ABOUT THESE SECTIONS...
 # Results 
 
 * Number of bends for each RPMA
@@ -107,9 +138,10 @@ where
 * Virtual versus power analysis of a post-hoc glm to get trend
 
 How did wildhaber and adam do it did they do virtual or just trend.
-
+-->
 
 # Figures
+FUNCTIONAL IMAGE HERE
 
 
 # Tables
@@ -119,25 +151,26 @@ Table 1. Summary of bends within PSPAP Missouri river segments.
  
 ```{r,echo=FALSE}
 tbl<-tables(1)
-tbl$basin<- ifelse(tbl$basin=="lower",4,2)
+tbl$basin<- ifelse(tbl$basin=="lower","LB","UB")
 tbl$b_segment<-as.numeric(tbl$b_segment)
 tbl<- tbl[order(tbl$b_segment),]
 tbl[duplicated(tbl$basin),]$basin<-""
 kable(tbl,row.names=FALSE,
-    col.names=c("RPMA","Segment","Number of bends",
+    col.names=c("Basin","Segment","Number of bends",
         "Minimum length (km)", "Mean length (km)","Maximum length (km)"),
     align="lccccc")
 ```
 
-Table 2. Segment and river level densities by origin. 
+Table 2. Segment and river level densities by origin: hatchery (H) and natural/wild (W).  Minimum and maximum densities were taken from data across a few recent years (when available), while mean densities are those reported in the literature from the most recent year's data.   
 
 ```{r,warning=FALSE, echo=FALSE}
 tbl2<-tables(2)
 tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
+tbl2$rpma<-ifelse(tbl2$rpma==2, "UB", "LB")
 tbl2[duplicated(tbl2$rpma),]$rpma<-""
 tbl2[duplicated(tbl2$segments),]$segments<-""
 kable(tbl2,row.names=FALSE,
-    col.names=c("RPMA","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Maximum Density (fish/rkm)", "Mean Density (fish/rkm)", "Mean Density Year", "References"),
+    col.names=c("Basin","Segments", "Fish Type", "Minimum Density (fish/rkm)", "Maximum Density (fish/rkm)", "Mean Density (fish/rkm)", "Most Recent Year", "References"),
     align="llcccccc")
 ```
   

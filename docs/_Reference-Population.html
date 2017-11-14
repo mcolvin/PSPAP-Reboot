@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Creating a reference population</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Creating a reference population</h1>
+<h4 class="date"><em>14 November, 2017</em></h4>
+
+</div>
+
+
+<pre><code>## 
+## Attaching package: &#39;maps&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:plyr&#39;:
+## 
+##     ozone</code></pre>
+<pre><code>## rgeos version: 0.3-23, (SVN revision 546)
+##  GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+##  Linking to sp version: 1.2-4 
+##  Polygon checking: TRUE</code></pre>
+<pre><code>## Loading required package: sp</code></pre>
+<pre><code>## Checking rgeos availability: TRUE</code></pre>
+<pre><code>## rgdal: version: 1.2-7, (SVN revision 660)
+##  Geospatial Data Abstraction Library extensions to R successfully loaded
+##  Loaded GDAL runtime: GDAL 2.0.1, released 2015/09/15
+##  Path to GDAL shared files: C:/Users/sreynolds/Documents/R/win-library/3.3/rgdal/gdal
+##  Loaded PROJ.4 runtime: Rel. 4.9.2, 08 September 2015, [PJ_VERSION: 492]
+##  Path to PROJ.4 shared files: C:/Users/sreynolds/Documents/R/win-library/3.3/rgdal/proj
+##  Linking to sp version: 1.2-4</code></pre>
+<!--
+rmarkdown::render("index.Rmd",output_format='html_document')# build page
+
+??? 
+* How static are habitats within bend... markov matrices of units
+* Don't actually measure habitat dimensions? WTF?
+-->
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>A reference population of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). To keep track of bend-level abundance, the reference population provides data on the annual survival and movement of each fish in the population (including new recruits). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individual growth was also simulated.</p>
+<div id="objectives" class="section level3">
+<h3>Objectives</h3>
+<p>The objectives of this analysis were to:</p>
+<ol style="list-style-type: decimal">
+<li>Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and</li>
+<li>Simulate the reference population for 10 years with varying but known annual survival, growth, movement, and recruitment.</li>
+</ol>
+</div>
+<div id="major-assumptions" class="section level3">
+<h3>Major Assumptions</h3>
+<ol style="list-style-type: decimal">
+<li>Survival is homogeneous among individuals.</li>
+<li>Individual fish growth follows a von Bertalanffy growth equation.</li>
+<li>There is no movement within years.</li>
+<li>Movement within a basin can occur between years.<br />
+</li>
+<li>Recruitment occurs at the basin-level and is stochastic.</li>
+</ol>
+<p>(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE)</p>
+</div>
+</div>
+<div id="methods" class="section level1">
+<h1>Methods</h1>
+<div id="spatial-extent-and-grain" class="section level3">
+<h3>Spatial extent and grain</h3>
+<p>This analysis was constrained to generate reference pallid sturgeon populations for segments and bends within the upper basin (segments 1-4) and lower basin (segments 7-10, 13 and 14) of the Missouri River. Bends of varying length were used to generate the spatial distribution of pallid sturgeon (Table 1).</p>
+</div>
+<div id="population-initialization" class="section level3">
+<h3>Population Initialization</h3>
+<p>The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature.</p>
+<div id="bend-abundance" class="section level4">
+<h4>Bend Abundance</h4>
+<p>We populated each river bend with pallids based on reported expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:</p>
+<p><span class="math display">\[\hspace{1.75in} N_{segment,bend}\sim Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot l_{segment,bend}\right), \hspace{1.75in}\text{(1)}\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(N\)</span> is the number of pallid sturgeon within each bend,</li>
+<li><span class="math inline">\(\lambda\)</span> is the segment and origin specific density in fish per RKM,</li>
+<li><span class="math inline">\(l\)</span> is bend length in RKM,</li>
+<li><span class="math inline">\(segment\)</span> indexes segment within universe,</li>
+<li><span class="math inline">\(bend\)</span> indexes bend within segment, and</li>
+<li><span class="math inline">\(origin\)</span> indexes whether pallid sturgeon were hatchery or natural origin.</li>
+</ul>
+<p>POISSON JUSTIFICATION HERE <!--SHOULD BE ABLE TO DERIVE THIS POISSON DISTRIBUTION WITH THE FOLLOWING ASSUMPTIONS:
+
+1. The probability of 1 pallid being in a column of water with length $dl$ and the width of the river at RKM $l$ is $\alpha$.
+2. The probability of 2 or more pallids in a column of water w/ length $dl$ is neglible $o(\varepsilon)$.  
+3. The number of pallids in disjoint (non-overlapping) water columns $dl_1$ and $dl_2$ are independent.  In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other. 
+
+(WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS.)--></p>
+</div>
+<div id="individual-length-growth-parameters" class="section level4">
+<h4>Individual Length &amp; Growth Parameters</h4>
+<p>We randomly assigned an initial length to each individual fish. Initial lengths were generated from a segment specific distribution constructed from recent length data in the PSPAP database. (FURTHER DESCRIPTION HERE)</p>
+<p>Additionally, we assigned individual von Bertalanffy growth parameters <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>, or the asymptotic length and Brody growth coefficient of a fish’s growth trajectory, respectively, to each fish. Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database. (FURTHER DESCRIPTION HERE)</p>
+<p>To avoid unrealistic growth parameter values we truncated each bivariate normal distribution (one for each basin) to the middle 80%. All points <span class="math inline">\((L_\infty, k)\)</span> of the truncated distribution are contained on or within an ellipse centered at <span class="math inline">\(\mathbf{\mu}=(\mu_{L_\infty}, \mu_k)\)</span>, the basin specific mean values for <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>. Since the R package <span class="math inline">\(\texttt{tmvtnorm}\)</span> truncates multivariate normal distributions to rectangular regions, as opposed to elliptical regions, we used a different approach to randomly draw points from the desired elliptical region.</p>
+<p>In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse. The truncation process was acheived using <span class="math inline">\(\texttt{rtruncnorm}\)</span> twice in R, once for the normal distribution associated with <span class="math inline">\(L_\infty\)</span> and then again for the normal distribution associated with <span class="math inline">\(k\)</span> conditional on <span class="math inline">\(L_\infty\)</span>. For more details see Appendix ??.</p>
+</div>
+</div>
+<div id="simulating-annual-transitions" class="section level3">
+<h3>Simulating Annual Transitions</h3>
+<p>After initializing the reference population, we track all individual fish for 10 years, recording individual survival status, bend location, and length on a yearly basis. Additionally, new recruits may be added to the population and tracked.</p>
+<div id="survival-growth" class="section level4">
+<h4>Survival &amp; Growth</h4>
+<p>Survival is homogenous with all fish in the river having an equal probability, <span class="math inline">\(\phi\)</span>, of annual survival indpendent of individual age, length, sex, origin, location, and year. Annual growth is projected by individualized von Bertalanffy growth curves as <span class="math display">\[\hspace{2.5in} L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \hspace{2.5in}\text{(2)}\]</span> where <span class="math inline">\(L(t)\)</span> is the individual’s length during year <span class="math inline">\(t\)</span> and each fish has its own randomly generated asymptotic length, <span class="math inline">\(L_\infty\)</span>, and Brody growth rate, <span class="math inline">\(k\)</span>, as described in the previous section on initializing the population.</p>
+</div>
+<div id="movement" class="section level4">
+<h4>Movement</h4>
+<p>Within basin movement occurs between years and is considered at the bend-level. Pallids may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend location with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular, <span class="math display">\[\mathbb{P}\Big(B(t)=b_j \hspace{2pt} | \hspace{2pt} B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},\]</span> and</p>
+<p><span class="math display">\[f(i,k)=
+\begin{cases} 
+      1, &amp; k=i \\
+      e^{\beta_0-\beta_1 d(b_i, b_k)}, &amp; k\neq i
+   \end{cases},\]</span> where <span class="math inline">\(d(b_i, b_k)\)</span> is the distance in RKM from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span> and <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are basin specific parameters.</p>
+<p>(NEED JUSTIFICATION FOR THIS)</p>
+<p>To account for the uncertain nature of movement probabilities, we vary <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity.</p>
+</div>
+<div id="recruitment" class="section level4">
+<h4>Recruitment</h4>
+<p>Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 years). During years when recruitment occurs the number of recruits is drawn from a basin specific Poisson distribution. (JUSTIFICATION FOR POISSON HERE.)</p>
+<p>Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters. Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population. Initial length was chosen as 200mm, because (REASON HERE). Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.</p>
+<!-- NOT SURE ABOUT THESE SECTIONS...
+# Results 
+
+* Number of bends for each RPMA
+
+
+# Discussion
+* Virtual versus power analysis of a post-hoc glm to get trend
+
+How did wildhaber and adam do it did they do virtual or just trend.
+-->
+</div>
+</div>
+</div>
+<div id="figures" class="section level1">
+<h1>Figures</h1>
+<p>FUNCTIONAL IMAGE HERE</p>
+</div>
+<div id="tables" class="section level1">
+<h1>Tables</h1>
+<p>Table 1. Summary of bends within PSPAP Missouri river segments.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Basin</th>
+<th align="center">Segment</th>
+<th align="center">Number of bends</th>
+<th align="center">Minimum length (km)</th>
+<th align="center">Mean length (km)</th>
+<th align="center">Maximum length (km)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">UB</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">7.89</td>
+<td align="center">7.9</td>
+<td align="center">7.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">2</td>
+<td align="center">40</td>
+<td align="center">0.64</td>
+<td align="center">2.2</td>
+<td align="center">3.9</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">3</td>
+<td align="center">91</td>
+<td align="center">0.64</td>
+<td align="center">2.0</td>
+<td align="center">7.1</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">4</td>
+<td align="center">24</td>
+<td align="center">0.97</td>
+<td align="center">3.3</td>
+<td align="center">8.0</td>
+</tr>
+<tr class="odd">
+<td align="left">LB</td>
+<td align="center">7</td>
+<td align="center">34</td>
+<td align="center">0.16</td>
+<td align="center">2.6</td>
+<td align="center">7.9</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">8</td>
+<td align="center">61</td>
+<td align="center">1.13</td>
+<td align="center">4.0</td>
+<td align="center">9.2</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">9</td>
+<td align="center">80</td>
+<td align="center">1.13</td>
+<td align="center">4.4</td>
+<td align="center">11.7</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">10</td>
+<td align="center">39</td>
+<td align="center">1.61</td>
+<td align="center">4.7</td>
+<td align="center">10.3</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">13</td>
+<td align="center">45</td>
+<td align="center">1.77</td>
+<td align="center">4.1</td>
+<td align="center">10.6</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">14</td>
+<td align="center">56</td>
+<td align="center">1.45</td>
+<td align="center">3.9</td>
+<td align="center">19.0</td>
+</tr>
+</tbody>
+</table>
+<p>Table 2. Segment and river level densities by origin: hatchery (H) and natural/wild (W). Minimum and maximum densities were taken from data across a few recent years (when available), while mean densities are those reported in the literature from the most recent year’s data.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Basin</th>
+<th align="left">Segments</th>
+<th align="center">Fish Type</th>
+<th align="center">Minimum Density (fish/rkm)</th>
+<th align="center">Maximum Density (fish/rkm)</th>
+<th align="center">Mean Density (fish/rkm)</th>
+<th align="center">Most Recent Year</th>
+<th align="center">References</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">UB</td>
+<td align="left">1-4</td>
+<td align="center">H</td>
+<td align="center">91.57</td>
+<td align="center">91.57</td>
+<td align="center">91.57</td>
+<td align="center">2013</td>
+<td align="center">[1]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">0.28</td>
+<td align="center">0.37</td>
+<td align="center">0.28</td>
+<td align="center">2008*</td>
+<td align="center">[2]-[4]</td>
+</tr>
+<tr class="odd">
+<td align="left">LB</td>
+<td align="left">7-9</td>
+<td align="center">H</td>
+<td align="center">28.62</td>
+<td align="center">32.30</td>
+<td align="center">32.30</td>
+<td align="center">2010</td>
+<td align="center">[5]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">5.43</td>
+<td align="center">8.88</td>
+<td align="center">5.70</td>
+<td align="center">2010</td>
+<td align="center">[5]</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">10, 13, 14</td>
+<td align="center">H</td>
+<td align="center">5.53</td>
+<td align="center">10.17</td>
+<td align="center">5.53</td>
+<td align="center">2013</td>
+<td align="center">[6]</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"></td>
+<td align="center">W</td>
+<td align="center">0.56</td>
+<td align="center">0.93</td>
+<td align="center">0.93</td>
+<td align="center">2013</td>
+<td align="center">[6]</td>
+</tr>
+</tbody>
+</table>
+<p>*Estimated year of data collection based on reference date.</p>
+</div>
+<div id="code" class="section level1">
+<h1>Code</h1>
+<p>Box 1. Function used to simulate reference populations given pallid sturgeon density, survival, and spatial structure.</p>
+<pre><code>## function (inputs, ...) 
+## {
+##     segs &lt;- inputs$segs
+##     bends &lt;- inputs$bends
+##     fish_density &lt;- inputs$fish_density
+##     nyears &lt;- inputs$nyears
+##     phi &lt;- inputs$phi
+##     initial_length &lt;- inputs$initial_length
+##     mv_beta0 &lt;- inputs$mv_beta0
+##     mv_beta1 &lt;- inputs$mv_beta1
+##     dis &lt;- inputs$dis
+##     if (dim(phi)[1] != length(segs) | dim(phi)[2] != nyears - 
+##         1) {
+##         return(print(&quot;Survival(phi) needs to be a matrix \n\n        with rows equal to the number of segments \n\n        and the same number of columns as years-1 to simulate&quot;))
+##     }
+##     if (nrow(fish_density) != length(segs)) {
+##         return(print(&quot;Initial fish density (fish_density) needs to be \n\n        a dataframe of densities by segment with number of \n\n        rows equal to the number of segments.&quot;))
+##     }
+##     if (dim(inputs$lower$vcv)[1] != 2 | dim(inputs$lower$vcv)[2] != 
+##         2) {
+##         return(&quot;The lower variance covariance \n\n        matrix needs to be 2x2 square&quot;)
+##     }
+##     if (dim(inputs$upper$vcv)[1] != 2 | dim(inputs$upper$vcv)[2] != 
+##         2) {
+##         return(&quot;The upper variance covariance \n\n        matrix needs to be 2x2 square&quot;)
+##     }
+##     tmp &lt;- subset(bends, b_segment %in% segs)
+##     tmp &lt;- tmp[order(tmp$id), ]
+##     bends_in_segs &lt;- aggregate(bend_num ~ b_segment, tmp, length)
+##     bends_in_segs$phi_indx &lt;- 1:nrow(bends_in_segs)
+##     tmp &lt;- merge(tmp, bends_in_segs[, -2], by = &quot;b_segment&quot;, 
+##         all.x = TRUE)
+##     tmp &lt;- merge(tmp, fish_density, by = c(&quot;rpma&quot;, &quot;b_segment&quot;), 
+##         all.x = TRUE)
+##     tmp$N_ini &lt;- rpois(nrow(tmp), lambda = tmp$expected_dens * 
+##         tmp$length.rkm)
+##     tmp &lt;- tmp[order(tmp$id), ]
+##     individual_meta &lt;- as.data.frame(lapply(tmp, function(x) rep(x, 
+##         tmp$N_ini)))
+##     individual_meta$fish_id &lt;- 1:nrow(individual_meta)
+##     ln_Linf &lt;- ifelse(segs %in% c(1:4), inputs$upper$ln_Linf_mu, 
+##         inputs$lower$ln_Linf_mu)
+##     ln_k &lt;- ifelse(segs %in% c(1:4), inputs$upper$ln_k_mu, inputs$lower$ln_k_mu)
+##     ln_B &lt;- array(0, dim = c(2, 2, length(segs)))
+##     for (i in 1:length(segs)) {
+##         if (segs[i] %in% c(1:4)) {
+##             ln_B[, , i] &lt;- eigen(inputs$upper$vcv)$vectors %*% 
+##                 matrix(c(sqrt(eigen(inputs$upper$vcv)$values[1]), 
+##                   0, 0, sqrt(eigen(inputs$upper$vcv)$values[2])), 
+##                   2, 2)
+##         }
+##         if (segs[i] %in% c(7:10, 13, 14)) {
+##             ln_B[, , i] &lt;- eigen(inputs$lower$vcv)$vectors %*% 
+##                 matrix(c(sqrt(eigen(inputs$lower$vcv)$values[1]), 
+##                   0, 0, sqrt(eigen(inputs$lower$vcv)$values[2])), 
+##                   2, 2)
+##         }
+##     }
+##     ln_vals &lt;- lapply(1:nrow(individual_meta), function(m) {
+##         z1 &lt;- rtruncnorm(1, -sqrt(-2 * log(0.2)), sqrt(-2 * log(0.2)), 
+##             mean = 0, sd = 1)
+##         z2 &lt;- rtruncnorm(n = 1, a = -sqrt(-2 * log(0.2) - z1^2), 
+##             b = sqrt(-2 * log(0.2) - z1^2), mean = 0, sd = 1)
+##         X &lt;- t(ln_B[, , individual_meta$phi_indx[m]] %*% c(z1, 
+##             z2) + c(ln_Linf[individual_meta$phi_indx[m]], ln_k[individual_meta$phi_indx[m]]))
+##         return(X)
+##     })
+##     ln_vals &lt;- do.call(&quot;rbind&quot;, ln_vals)
+##     individual_meta$Linf &lt;- exp(ln_vals[, 1])
+##     individual_meta$k &lt;- exp(ln_vals[, 2])
+##     individual_meta$yr_ini &lt;- 0
+##     Z &lt;- matrix(0, nrow = nrow(individual_meta), ncol = nyears)
+##     Z[, 1] &lt;- 1
+##     l &lt;- matrix(0, nrow = nrow(individual_meta), ncol = nyears)
+##     for (i in unique(individual_meta$b_segment)) {
+##         l_ini &lt;- approxfun(initial_length[initial_length$segment == 
+##             i, ]$quantile, initial_length[initial_length$segment == 
+##             i, ]$val, rule = 2)
+##         indx &lt;- which(individual_meta$b_segment == i)
+##         l[indx, 1] &lt;- l_ini(runif(length(indx)))
+##     }
+##     l[, 1] &lt;- ifelse(l[, 1] &gt;= individual_meta$Linf, individual_meta$Linf * 
+##         0.95, l[, 1])
+##     BND &lt;- matrix(0, nrow = nrow(individual_meta), ncol = nyears)
+##     BND[, 1] &lt;- individual_meta$id
+##     bends2segs &lt;- ddply(individual_meta, .(id), summarize, rpma = mean(rpma), 
+##         b_id = mean(b_id), phi_indx = mean(phi_indx))
+##     bends2segs &lt;- merge(data.frame(id = tmp$id[which(tmp$N_ini == 
+##         0)], rpma = tmp$rpma[which(tmp$N_ini == 0)], b_id = tmp$b_id[which(tmp$N_ini == 
+##         0)], phi_indx = tmp$phi_indx[which(tmp$N_ini == 0)]), 
+##         bends2segs, by = c(&quot;id&quot;, &quot;rpma&quot;, &quot;b_id&quot;, &quot;phi_indx&quot;), 
+##         all = TRUE)
+##     r_freq_upper &lt;- rbinom(nyears, 1, 1/inputs$upper$r_freq)
+##     r_freq_lower &lt;- rbinom(nyears, 1, 1/inputs$lower$r_freq)
+##     recruits_upper &lt;- r_freq_upper * rpois(nyears, exp(inputs$upper$r_beta0))
+##     recruits_lower &lt;- r_freq_lower * rpois(nyears, exp(inputs$lower$r_beta0))
+##     r_dat &lt;- data.frame(rpma = c(rep(2, nyears), rep(4, nyears)), 
+##         year = rep(1:nyears, 2), r_year = c(r_freq_upper, r_freq_lower), 
+##         age_0 = c(recruits_upper, recruits_lower))
+##     for (i in 2:nyears) {
+##         if (sum(recruits_upper[i - 1], recruits_lower[i - 1]) &gt; 
+##             0) {
+##             new_recruits &lt;- data.frame(rpma = c(rep(2, recruits_upper[i - 
+##                 1]), rep(4, recruits_lower[i - 1])))
+##             recruit_loc &lt;- lapply(1:nrow(new_recruits), function(x) {
+##                 bend &lt;- sample(tmp[which(tmp$rpma == new_recruits$rpma[x]), 
+##                   ]$b_id, 1)
+##                 segment &lt;- tmp[which(tmp$b_id == bend &amp; tmp$rpma == 
+##                   new_recruits$rpma[x]), ]$b_segment
+##                 phi_indx &lt;- tmp[which(tmp$b_id == bend &amp; tmp$rpma == 
+##                   new_recruits$rpma[x]), ]$phi_indx
+##                 id &lt;- tmp[which(tmp$b_id == bend &amp; tmp$rpma == 
+##                   new_recruits$rpma[x]), ]$id
+##                 return(list(b_id = bend, b_segment = segment, 
+##                   phi_indx = phi_indx, id = id))
+##             })
+##             recruit_loc &lt;- as.data.frame(do.call(&quot;rbind&quot;, recruit_loc))
+##             new_recruits$b_segment &lt;- unlist(recruit_loc$b_segment)
+##             new_recruits$b_id &lt;- unlist(recruit_loc$b_id)
+##             new_recruits$phi_indx &lt;- unlist(recruit_loc$phi_indx)
+##             new_recruits$id &lt;- unlist(recruit_loc$id)
+##             ln_vals &lt;- lapply(1:nrow(individual_meta), function(m) {
+##                 z1 &lt;- rtruncnorm(1, -sqrt(-2 * log(0.2)), sqrt(-2 * 
+##                   log(0.2)), mean = 0, sd = 1)
+##                 z2 &lt;- rtruncnorm(n = 1, a = -sqrt(-2 * log(0.2) - 
+##                   z1^2), b = sqrt(-2 * log(0.2) - z1^2), mean = 0, 
+##                   sd = 1)
+##                 X &lt;- t(ln_B[, , individual_meta$phi_indx[m]] %*% 
+##                   c(z1, z2) + c(ln_Linf[individual_meta$phi_indx[m]], 
+##                   ln_k[individual_meta$phi_indx[m]]))
+##                 return(X)
+##             })
+##             ln_vals &lt;- do.call(&quot;rbind&quot;, ln_vals)
+##             new_recruits$Linf &lt;- exp(ln_vals[, 1])
+##             new_recruits$k &lt;- exp(ln_vals[, 2])
+##             new_recruits$fish_id &lt;- (max(individual_meta$fish_id) + 
+##                 1):(max(individual_meta$fish_id) + sum(recruits_upper[i - 
+##                 1], recruits_lower[i - 1]))
+##             new_recruits$yr_ini &lt;- i - 1
+##             individual_meta &lt;- rbind.fill(individual_meta, new_recruits)
+##             BND_recruits &lt;- l_recruits &lt;- Z_recruits &lt;- matrix(0, 
+##                 nrow = sum(recruits_upper[i - 1], recruits_lower[i - 
+##                   1]), ncol = nyears)
+##             Z_recruits[, i - 1] &lt;- 1
+##             Z &lt;- rbind(Z, Z_recruits)
+##             l_recruits[, i - 1] &lt;- 200
+##             l &lt;- rbind(l, l_recruits)
+##             BND_recruits[, i - 1] &lt;- new_recruits$id
+##             BND &lt;- rbind(BND, BND_recruits)
+##         }
+##         for (m in 1:nrow(Z)) {
+##             seg_indx &lt;- ifelse(Z[m, i - 1] &gt; 0, bends2segs$phi_indx[which(bends2segs$id == 
+##                 BND[m, i - 1])], 1)
+##             b_indx &lt;- ifelse(Z[m, i - 1] &gt; 0, bends2segs$b_id[which(bends2segs$id == 
+##                 BND[m, i - 1])], 1)
+##             Z[m, i] &lt;- rbinom(1, size = 1, prob = phi[seg_indx, 
+##                 i - 1] * Z[m, i - 1])
+##             l[m, i] &lt;- (l[m, i - 1] + (individual_meta$Linf[m] - 
+##                 l[m, i - 1]) * (1 - exp(-individual_meta$k[m]))) * 
+##                 Z[m, i]
+##             if (individual_meta$rpma[m] == 2 &amp; Z[m, i] &gt; 0) {
+##                 y &lt;- exp(mv_beta0[1] + mv_beta1[1] * dis$rpma2[b_indx, 
+##                   ])
+##                 y[which(dis$rpma2[b_indx, ] == 0)] &lt;- 1
+##                 p &lt;- y/sum(y)
+##                 BND[m, i] &lt;- sample(x = subset(tmp, rpma == 2)$id, 
+##                   size = 1, prob = p)
+##             }
+##             if (individual_meta$rpma[m] == 4 &amp; Z[m, i] &gt; 0) {
+##                 y &lt;- exp(mv_beta0[2] + mv_beta1[2] * dis$rpma4[b_indx, 
+##                   ])
+##                 y[which(dis$rpma4[b_indx, ] == 0)] &lt;- 1
+##                 p &lt;- y/sum(y)
+##                 BND[m, i] &lt;- sample(x = subset(tmp, rpma == 4)$id, 
+##                   size = 1, prob = p)
+##             }
+##         }
+##     }
+##     if (sum(recruits_upper[nyears], recruits_lower[nyears]) &gt; 
+##         0) {
+##         new_recruits &lt;- data.frame(rpma = c(rep(2, recruits_upper[nyears]), 
+##             rep(4, recruits_lower[nyears])))
+##         recruit_loc &lt;- lapply(1:nrow(new_recruits), function(x) {
+##             bend &lt;- sample(tmp[which(tmp$rpma == new_recruits$rpma[x]), 
+##                 ]$b_id, 1)
+##             segment &lt;- tmp[which(tmp$b_id == bend &amp; tmp$rpma == 
+##                 new_recruits$rpma[x]), ]$b_segment
+##             phi_indx &lt;- tmp[which(tmp$b_id == bend &amp; tmp$rpma == 
+##                 new_recruits$rpma[x]), ]$phi_indx
+##             id &lt;- tmp[which(tmp$b_id == bend &amp; tmp$rpma == new_recruits$rpma[x]), 
+##                 ]$id
+##             return(list(b_id = bend, b_segment = segment, phi_indx = phi_indx, 
+##                 id = id))
+##         })
+##         recruit_loc &lt;- as.data.frame(do.call(&quot;rbind&quot;, recruit_loc))
+##         new_recruits$b_segment &lt;- unlist(recruit_loc$b_segment)
+##         new_recruits$b_id &lt;- unlist(recruit_loc$b_id)
+##         new_recruits$phi_indx &lt;- unlist(recruit_loc$phi_indx)
+##         new_recruits$id &lt;- unlist(recruit_loc$id)
+##         ln_vals &lt;- lapply(1:nrow(individual_meta), function(m) {
+##             z1 &lt;- rtruncnorm(1, -sqrt(-2 * log(0.2)), sqrt(-2 * 
+##                 log(0.2)), mean = 0, sd = 1)
+##             z2 &lt;- rtruncnorm(n = 1, a = -sqrt(-2 * log(0.2) - 
+##                 z1^2), b = sqrt(-2 * log(0.2) - z1^2), mean = 0, 
+##                 sd = 1)
+##             X &lt;- t(ln_B[, , individual_meta$phi_indx[m]] %*% 
+##                 c(z1, z2) + c(ln_Linf[individual_meta$phi_indx[m]], 
+##                 ln_k[individual_meta$phi_indx[m]]))
+##             return(X)
+##         })
+##         ln_vals &lt;- do.call(&quot;rbind&quot;, ln_vals)
+##         new_recruits$Linf &lt;- exp(ln_vals[, 1])
+##         new_recruits$k &lt;- exp(ln_vals[, 2])
+##         new_recruits$fish_id &lt;- (max(individual_meta$fish_id) + 
+##             1):(max(individual_meta$fish_id) + sum(recruits_upper[nyears], 
+##             recruits_lower[nyears]))
+##         new_recruits$yr_ini &lt;- nyears
+##         individual_meta &lt;- rbind.fill(individual_meta, new_recruits)
+##         BND_recruits &lt;- l_recruits &lt;- Z_recruits &lt;- matrix(0, 
+##             nrow = sum(recruits_upper[nyears], recruits_lower[nyears]), 
+##             ncol = nyears)
+##         Z_recruits[, nyears] &lt;- 1
+##         Z &lt;- rbind(Z, Z_recruits)
+##         l_recruits[, nyears] &lt;- 200
+##         l &lt;- rbind(l, l_recruits)
+##         BND_recruits[, nyears] &lt;- new_recruits$id
+##         BND &lt;- rbind(BND, BND_recruits)
+##     }
+##     l[l == 0] &lt;- NA
+##     BND[BND == 0] &lt;- NA
+##     out &lt;- aggregate(Z[, 1], by = list(id = BND[, 1]), sum)
+##     names(out)[2] &lt;- &quot;yr_1&quot;
+##     for (i in 2:nyears) {
+##         app &lt;- aggregate(Z[, i], by = list(id = BND[, i]), sum)
+##         names(app)[2] &lt;- paste(&quot;yr&quot;, i, sep = &quot;_&quot;)
+##         out &lt;- merge(out, app, by = &quot;id&quot;, all = TRUE)
+##     }
+##     out &lt;- merge(out, data.frame(id = tmp$id), by = &quot;id&quot;, all = TRUE)
+##     out[is.na(out)] &lt;- 0
+##     if (nrow(out) != nrow(tmp)) {
+##         return(print(&quot;ERROR IN BEND ABUNDANCE MERGE&quot;))
+##     }
+##     out &lt;- out[order(out$id), ]
+##     out &lt;- list(out = as.matrix(out[, -c(1)]), bendMeta = tmp, 
+##         individual_meta = individual_meta, Z = Z, BND = BND, 
+##         l = l, r_dat = r_dat, inputs = inputs)
+##     return(out)
+## }</code></pre>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
