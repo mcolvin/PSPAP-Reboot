@@ -33,11 +33,11 @@ lapply(1:400, function(i)
     if(pcname!="WF-FGNL842")
     {sim_dat<-readRDS(file=paste0("D:/_output/2-catch/",catch_list[j]))}
     # SET OCCASIONS TO BE USED
-    occasions<-2:4
+    occasions<-2:3
     lapply(occasions, function(y)
     {
       # GET RD ESTIMATES
-      est<-RD.ests(sim_dat=sim_dat, max_occ=y)
+      est<-try(RD.ests(sim_dat=sim_dat, max_occ=y), silent=TRUE)
       # SAVE ESTIMATES
       if(pcname=="WF-FGNL842")
       {
