@@ -1296,10 +1296,13 @@ RD.ests<-function(sim_dat=NULL,
     abund<-do.call(rbind,lapply(outg, `[[`, 1))
     param<-do.call(rbind,lapply(outg, `[[`, 2))
     model<-do.call(rbind,lapply(outg, `[[`, 3))
-    outg<-list(abundance=abund,parameters=param, model=model)
+    outg<-list(abundance=abund, parameters=param, model=model)
     return(outg)
   })
-  out<-list(UB=out[[1]],LB=out[[2]])
+  abund<-do.call(rbind,lapply(out, `[[`, 1))
+  param<-do.call(rbind,lapply(out, `[[`, 2))
+  model<-do.call(rbind,lapply(out, `[[`, 3))
+  out<-list(abundance=abund,parameters=param, model=model)
   return(out)
   }
 

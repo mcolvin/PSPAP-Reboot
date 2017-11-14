@@ -46,7 +46,9 @@ lapply(1:400, function(i)
         {
           old<-readRDS(file=paste0("E:/_output/3-estimates/RD_est", 
                                    strsplit(catch_list[j], "catch_dat")[[1]][2]))
-          est<-rbind(old,est)
+          est$abundance<-rbind(old$abundance,est$abundance)
+          est$parameters<-rbind(old$parameters,est$parameters)
+          est$model<-rbind(old$model,est$model)
         }
         saveRDS(est,
                 file=paste0("E:/_output/3-estimates/RD_est", 
@@ -59,7 +61,9 @@ lapply(1:400, function(i)
         {
           old<-readRDS(file=paste0("D:/_output/3-estimates/RD_est", 
                                    strsplit(catch_list[j], "catch_dat")[[1]][2]))
-          est<-rbind(old,est)
+          est$abundance<-rbind(old$abundance,est$abundance)
+          est$parameters<-rbind(old$parameters,est$parameters)
+          est$model<-rbind(old$model,est$model)
         }
         saveRDS(est,
                 file=paste0("D:/_output/3-estimates/RD_est", 
