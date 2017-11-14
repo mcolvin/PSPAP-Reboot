@@ -1196,12 +1196,12 @@ RD.ests<-function(sim_dat=NULL,
   library(RMark)# NEED TO COMMUNICATION TO PROGRAM MARK
   
   # SET UP DESIGN MATRIX AND CAPTURE HISTORIES FOR PROGRAM MARK
-  ptm<-proc.time()
   out<-lapply(1:length(ch), function(b)  # LOOP OVER BASINS
   {
     dat<-ch[[b]]
     #gears<-unique(dat$gear)
-    gears<-c("GN14", "TLC1", "TN")
+    #gears<-c("GN14","TLC1", "TN")
+    gears<-"TLC1"
     if(length(ch)==1){states<-unique(catch$st_code)}
     if(length(ch)==2)
     {
@@ -1283,8 +1283,9 @@ RD.ests<-function(sim_dat=NULL,
                        LC_Nhat=fit$results$derived$`N Population Size`$lcl[1:n],
                        UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
                        fit=fit$output)
-      ests$basin<-ifelse(b==1, "LB","UB")
+      ests$basin<-ifelse(b==1, "UB","LB")
       ests<-merge(ests,ss,by=c("basin","state","year","gear"), all.x=TRUE)
+      ests$occasions<-max_occ
       keep<-list(abundance=ests,
                  parameters=cbind(gear=rep(g,nrow(params)),params,
                                   fit=rep(fit$output,nrow(params))),
