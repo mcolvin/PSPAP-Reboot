@@ -1116,13 +1116,17 @@ M0t.ests<-function(sim_dat=NULL,
 
 
 #8. RD ESTIMATOR
-RD.ests<-function(sim_dat=NULL,
+RD.ests<-function(pop_num=NULL,
+                  catch_num=NULL,
+                  location=NULL,
                   max_occ=NULL, #Number of occasions to use for estimate
                   gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
                   ...)
 {
   # MASSAGE DATA INTO SHAPE 
-  ## PULL DESIRED DATA
+  ## PULL SIMULATED DATA
+  sim_dat<-readRDS(paste0(location, "_output/2-catch/catch_dat_f_", pop_num,
+                          "-", catch_num, ".rds"))
   inputs<-sim_dat$inputs
   catch<-sim_dat$catch_dat
   samp<-sim_dat$samp_dat
@@ -1257,39 +1261,59 @@ RD.ests<-function(sim_dat=NULL,
       # ARE WE GOING TO HAVE A WAY TO COMPARED MODELS AND CHOOSE "BEST" OR WEIGHT???
       
       # FIT THE MODEL USING PROGRAM MARK
-      fit<-mark(data=crdms,
-                ddl=crdms.ddl,
-                model="CRDMS",
-                time.intervals = time.intervals,
-                model.parameters=list(S=S,
-                                      p=p,
-                                      c = list(fixed=list(index=uc, value=0)),
-                                      Psi=Psi),
-                threads=2,
-                brief=TRUE)
+      fit<-try(mark(data=crdms,
+                    ddl=crdms.ddl,
+                    model="CRDMS",
+                    time.intervals = time.intervals,
+                    model.parameters=list(S=S,
+                                          p=p,
+                                          c = list(fixed=list(index=uc, value=0)),
+                                          Psi=Psi),
+                    threads=2,
+                    brief=TRUE))
       indx<-lapply(states,grep, x=datg$ch)
       samp_size<-lapply(indx,length)
       samp_size<-rep(unlist(samp_size),each=inputs$nyears)
-      params<-fit$results$real[which(!duplicated(fit$results$real$estimate)),]
-      params<-params[which(params$fixed!="Fixed"),1:4]
-      if(length(which(params$note!="                    "))>0){return(print("NOTES!"))}
       n<-length(states)*inputs$nyears
-      ests<-data.frame(gear=rep(g,n),
-                       state=rep(states, each=inputs$nyears), 
-                       year=rep(1:inputs$nyears, length(states)),
-                       state_samp_size=samp_size,
-                       basin_samp_size=rep(sum(datg$freq),n),
-                       Nhat=fit$results$derived$`N Population Size`$estimate[1:n],
-                       SE_Nhat=fit$results$derived$`N Population Size`$se[1:n],
-                       LC_Nhat=fit$results$derived$`N Population Size`$lcl[1:n],
-                       UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
-                       fit=fit$output)
+      if(is.class(fit)!="try-error")
+      {
+        saveRDS(fit, paste0(location, "_output/6-MARK/fit_", pop_num, "-", 
+                            catch_num, "-occ", max_occ, ".rds"))
+        params<-fit$results$real[which(!duplicated(fit$results$real$estimate)),]
+        params<-params[which(params$fixed!="Fixed"),1:4]
+        if(length(which(params$note!="                    "))>0){return(print("NOTES!"))}
+        params<-cbind(gear=rep(g,nrow(params)),params,
+                      fit=rep(fit$output,nrow(params)))
+        ests<-data.frame(gear=rep(g,n),
+                         state=rep(states, each=inputs$nyears), 
+                         year=rep(1:inputs$nyears, length(states)),
+                         state_samp_size=samp_size,
+                         basin_samp_size=rep(sum(datg$freq),n),
+                         Nhat=fit$results$derived$`N Population Size`$estimate[1:n],
+                         SE_Nhat=fit$results$derived$`N Population Size`$se[1:n],
+                         LC_Nhat=fit$results$derived$`N Population Size`$lcl[1:n],
+                         UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
+                         fit=rep(fit$output,n))
+      }
+      if(is.class(fit)=="try-error")
+      {
+        params<-NULL
+        ests<-data.frame(gear=rep(g,n),
+                         state=rep(states, each=inputs$nyears), 
+                         year=rep(1:inputs$nyears, length(states)),
+                         state_samp_size=samp_size,
+                         basin_samp_size=rep(sum(datg$freq),n),
+                         Nhat=rep(NA,n),
+                         SE_Nhat=rep(NA,n),
+                         LC_Nhat=rep(NA,n),
+                         UC_Nhat=rep(NA,n),
+                         fit=rep(NA,n))
+      }
       ests$basin<-ifelse(b==1, "UB","LB")
       ests<-merge(ests,ss,by=c("basin","state","year","gear"), all.x=TRUE)
       ests$occasions<-max_occ
       keep<-list(abundance=ests,
-                 parameters=cbind(gear=rep(g,nrow(params)),params,
-                                  fit=rep(fit$output,nrow(params))),
+                 parameters=params,
                  model=data.frame(fit_type=fit$model.name, fit=fit$output))
       return(keep)
       fit<-NA; cleanup(ask=FALSE)
@@ -1307,6 +1331,7 @@ RD.ests<-function(sim_dat=NULL,
   out<-list(ests=abund, COMBI=NULL, parameters=param, model=model)
   return(out)
   }
+
 
 
 
