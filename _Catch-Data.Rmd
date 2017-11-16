@@ -1,0 +1,30 @@
+---
+title: "Simulating Catch Data"
+header-includes:
+  - \usepackage{amsmath}
+output: 
+  html_document:
+    theme: readable
+    highlight: tango
+---
+
+# Overview
+Simulated catch data is a key component of evaluating varying monitoring designs 
+and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). Estimates of the population abundance and trend can be derived from the simulated catch data and, because the catch data is simulated using the known reference populations, the accuracy and  precision of the estimate can be calculated.  The catchability and capture probability of a gear are important elements of simulating catch data.  Since these values are highly uncertain, we simulate catch data over a range of gear catchabilities.
+
+### Objectives
+
+The objectives of this analysis were to:
+
+1. Simulate 10 years of bend-level capture histories for various sampling strategies, and
+2. Allow gear catchability to vary over a wide range of values in order to evaluate its effect on estimation accuracy and precision.
+
+### Major Assumptions
+1.
+2.
+3.
+
+
+(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE)
+
+# Methods
