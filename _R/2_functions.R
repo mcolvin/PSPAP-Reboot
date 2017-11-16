@@ -555,7 +555,8 @@ catch_data<-function(sim_pop=NULL,inputs,...)
     B0_sd=inputs$B0_sd
     deployments=inputs$deployments
     effort=inputs$effort
-    occasions=inputs$occasions    
+    occasions=inputs$occasions
+    gear_codes=gear_codes
     
     
     # USE SIM_POP TO DEFINE VARIABLES
@@ -667,7 +668,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
                 ## EXPAND FOR INDIVIDUALS
                 tmp1<-merge(tmp1,data.frame(fish_id=indx),all=TRUE)
                 ## ADD INDIVIDUAL LENGTHS
-                tmp1$length<-l[indx,yr]
+                tmp1$length<-l[tmp1$fish_id,yr]
                 ## EXPAND FOR GEARS
                 tmp1<-tmp1[rep(seq_len(nrow(tmp1)), each=length(gears)),]
                 tmp1$gear<-rep(gears, times=length(indx))
@@ -720,13 +721,13 @@ catch_data<-function(sim_pop=NULL,inputs,...)
         })
     tmp1<-tmp1[order(tmp1$b_segment,tmp1$year),]
     tmp1$abundance<-c(s_abund)
-    # SEGMENT MEAN LENGTH BY YEAR
+    # MEAN LENGTH BY SEGMENT & YEAR
     s_length<-sapply(1:max(tmp$phi_indx), function(i)
     {
       r<-which(tmp$phi_indx==i) #find ids (bends) in segment
       seg_i<-sapply(1:ncol(BND),function(yr)
         {
-          z<-which(BND[,yr] %in% r)
+          z<-which(BND[,yr] %in% r) #find fish in these bends
           if(length(z)==0) out<-NA
           if(length(z)!=0) out<-mean(l[z,yr])
           return(out)
