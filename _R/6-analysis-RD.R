@@ -4,9 +4,9 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-####################################################################
-# RUN 2-2,4 FOR ALL GEARS; ADD COMBI & ESTIMATOR TO ALL 2-1,3 RUNS #
-####################################################################
+#############################################################################
+# 1-2 HAS OCC 3 ONLY; 1-2 Occ3, 2-3 all, & 2-1 all, do not have "fit" saved #
+#############################################################################
 
 
 if(pcname=="WF-FGNL842")
@@ -27,7 +27,7 @@ lapply(1:400, function(i)
     lapply(occasions, function(y)
     {
       # GET RD ESTIMATES
-      est<-try(RD.ests(pop_num=1, catch_num = j, location = loc, max_occ=y), silent=TRUE)
+      est<-try(RD.ests(pop_num=i, catch_num = j, location = loc, max_occ=y), silent=TRUE)
       # SAVE ESTIMATES
       if(pcname=="WF-FGNL842")
       {

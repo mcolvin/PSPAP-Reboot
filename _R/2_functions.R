@@ -1269,7 +1269,7 @@ RD.ests<-function(pop_num=NULL,
                                           p=p,
                                           c = list(fixed=list(index=uc, value=0)),
                                           Psi=Psi),
-                    threads=3,
+                    threads=4,
                     brief=TRUE))
       indx<-lapply(states,grep, x=datg$ch)
       samp_size<-lapply(indx,length)
