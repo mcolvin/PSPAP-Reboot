@@ -4,6 +4,10 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
+####################################################################
+# RUN 2-2,4 FOR ALL GEARS; ADD COMBI & ESTIMATOR TO ALL 2-1,3 RUNS #
+####################################################################
+
 
 if(pcname=="WF-FGNL842")
 {
