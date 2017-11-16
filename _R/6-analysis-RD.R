@@ -1,9 +1,5 @@
 # RD ANALYSIS
 
-####################################################################
-# RUN 2-2,4 FOR ALL GEARS; ADD COMBI & ESTIMATOR TO ALL 2-1,3 RUNS #
-####################################################################
-
 source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
@@ -30,7 +26,7 @@ lapply(400:398, function(i)
   # clusterEvalQ(cl, library(plyr))
   # clusterEvalQ(cl, library(reshape2))
   # parLapply(cl,1:length(catch_list), function(j)
-  lapply(c(1,2,4), function(j)
+  lapply(1:4, function(j)
   {
     # READ IN DATA
     if(pcname=="WF-FGNL842")
@@ -38,7 +34,7 @@ lapply(400:398, function(i)
     if(pcname!="WF-FGNL842")
     {sim_dat<-readRDS(file=paste0("D:/_output/2-catch/",catch_list[j]))}
     # SET OCCASIONS TO BE USED
-    occasions<-2:4
+    occasions<-2:3
     lapply(occasions, function(y)
     {
       # GET RD ESTIMATES
@@ -51,7 +47,8 @@ lapply(400:398, function(i)
         {
           old<-readRDS(file=paste0("E:/_output/3-estimates/RD_est", 
                                    strsplit(catch_list[j], "catch_dat")[[1]][2]))
-          est$abundance<-rbind(old$abundance,est$abundance)
+          est$ests<-rbind(old$ests,est$ests)
+          est$COMBI<-rbind(old$COMBI,est$COMBI)
           est$parameters<-rbind(old$parameters,est$parameters)
           est$model<-rbind(old$model,est$model)
           rm(old)
@@ -68,7 +65,8 @@ lapply(400:398, function(i)
         {
           old<-readRDS(file=paste0("D:/_output/3-estimates/RD_est", 
                                    strsplit(catch_list[j], "catch_dat")[[1]][2]))
-          est$abundance<-rbind(old$abundance,est$abundance)
+          est$ests<-rbind(old$ests,est$ests)
+          est$COMBI<-rbind(old$COMBI,est$COMBI)
           est$parameters<-rbind(old$parameters,est$parameters)
           est$model<-rbind(old$model,est$model)
           rm(old)
