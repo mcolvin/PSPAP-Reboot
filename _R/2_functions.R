@@ -1114,6 +1114,7 @@ M0t.ests<-function(sim_dat=NULL,
 
 
 
+
 #8. RD ESTIMATOR
 RD.ests<-function(sim_dat=NULL,
                   max_occ=NULL, #Number of occasions to use for estimate
@@ -1201,8 +1202,7 @@ RD.ests<-function(sim_dat=NULL,
   {
     dat<-ch[[b]]
     #gears<-unique(dat$gear)
-    #gears<-c("GN14","TLC1", "TN")
-    gears<-"TLC1"
+    gears<-c("GN14","TLC1", "TN")
     if(length(ch)==1){states<-unique(catch$st_code)}
     if(length(ch)==2)
     {
@@ -1301,9 +1301,10 @@ RD.ests<-function(sim_dat=NULL,
     return(outg)
   })
   abund<-do.call(rbind,lapply(out, `[[`, 1))
+  abund$estimator<-"CRDMS"
   param<-do.call(rbind,lapply(out, `[[`, 2))
   model<-do.call(rbind,lapply(out, `[[`, 3))
-  out<-list(abundance=abund,parameters=param, model=model)
+  out<-list(ests=abund, COMBI=NULL, parameters=param, model=model)
   return(out)
   }
 
