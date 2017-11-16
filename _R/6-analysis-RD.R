@@ -5,8 +5,10 @@ source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
 ##########################################################
-# 400-1 and 400-2 have occ 3 only & 400-3 has occ 2 only #
+# 400-2 have occ 3 only & 400-3 has occ 2 only #
 ##########################################################
+# TRY class(fit)[1] #
+#####################
 if(pcname=="WF-FGNL842")
 {
   loc<-"E:/"
@@ -29,11 +31,11 @@ lapply(400:398, function(i)
       # SAVE ESTIMATES
       if(pcname=="WF-FGNL842")
       {
-        if(file.exists(paste0("E:/_output/3-estimates/RD_est", 
-                              strsplit(catch_list[j], "catch_dat")[[1]][2])))
+        if(file.exists(paste0("E:/_output/3-estimates/RD_est_f_", 
+                              i, "-", j, ".rds")))
         {
-          old<-readRDS(file=paste0("E:/_output/3-estimates/RD_est", 
-                                   strsplit(catch_list[j], "catch_dat")[[1]][2]))
+          old<-readRDS(file=paste0("E:/_output/3-estimates/RD_est_f_", 
+                                   i, "-", j, ".rds"))
           est$ests<-rbind(old$ests,est$ests)
           est$COMBI<-rbind(old$COMBI,est$COMBI)
           est$parameters<-rbind(old$parameters,est$parameters)
@@ -42,16 +44,16 @@ lapply(400:398, function(i)
         }
         if(class(est)!="try-error")
         {saveRDS(est,
-                 file=paste0("E:/_output/3-estimates/RD_est", 
-                             strsplit(catch_list[j], "catch_dat")[[1]][2]))}
+                 file=paste0("E:/_output/3-estimates/RD_est_f_", 
+                             i, "-", j, ".rds"))}
       }
       if(pcname!="WF-FGNL842")
       {
-        if(file.exists(paste0("D:/_output/3-estimates/RD_est", 
-                              strsplit(catch_list[j], "catch_dat")[[1]][2])))
+        if(file.exists(paste0("D:/_output/3-estimates/RD_est_f_", 
+                              i, "-", j, ".rds")))
         {
-          old<-readRDS(file=paste0("D:/_output/3-estimates/RD_est", 
-                                   strsplit(catch_list[j], "catch_dat")[[1]][2]))
+          old<-readRDS(file=paste0("D:/_output/3-estimates/RD_est_f_", 
+                                   i, "-", j, ".rds"))
           est$ests<-rbind(old$ests,est$ests)
           est$COMBI<-rbind(old$COMBI,est$COMBI)
           est$parameters<-rbind(old$parameters,est$parameters)
@@ -60,8 +62,8 @@ lapply(400:398, function(i)
         }
         if(class(est)!="try-error")
         {saveRDS(est,
-                 file=paste0("D:/_output/3-estimates/RD_est", 
-                             strsplit(catch_list[j], "catch_dat")[[1]][2]))}
+                 file=paste0("D:/_output/3-estimates/RD_est_f_", 
+                             i, "-", j, ".rds"))}
       }
       rm(est)
     })

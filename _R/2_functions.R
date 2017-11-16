@@ -1275,7 +1275,7 @@ RD.ests<-function(pop_num=NULL,
       samp_size<-lapply(indx,length)
       samp_size<-rep(unlist(samp_size),each=inputs$nyears)
       n<-length(states)*inputs$nyears
-      if(class(fit)!="try-error")
+      if(class(fit)[1]!="try-error")
       {
         saveRDS(fit, paste0(location, "_output/6-MARK/", fit$output,"_", pop_num, "-", 
                             catch_num, "-occ", max_occ, ".rds"))
@@ -1295,7 +1295,7 @@ RD.ests<-function(pop_num=NULL,
                          UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
                          fit=rep(fit$output,n))
       }
-      if(class(fit)=="try-error")
+      if(class(fit)[1]=="try-error")
       {
         params<-NULL
         ests<-data.frame(gear=rep(g,n),
