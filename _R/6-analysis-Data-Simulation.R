@@ -102,7 +102,7 @@ inputs$gears<-c("GN14", "GN18", "GN41", "GN81","MF", "OT16", "TLC1", "TLC2", "TN
 inputs$deployments<-rep(8,9)
 inputs$occasions<-4
 inputs$effort<-effort
-inputs$gear_code<-gear_code
+inputs$gear_codes<-gear_codes
 
 # RUN W/O PARALLEL (CATCH_DAT ALREADY MAKES USE OF PARALLEL)
 ptm<-proc.time()
