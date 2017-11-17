@@ -38,7 +38,7 @@ tmp<- subset(tmp, weight>0)
 ## LOOK AT ONLY PS
 tmp<-subset(tmp,species=="PDSG")
 ## FIT ln(weight) as a linear model of ln(length) 
-## WHICH ASSUMES w=C*l^{beta_1}... WOULDN'T WE EXPECT A CERTAIN VALUE FOR beta_1 BASED ON DEB???
+## WHICH ASSUMES w=C*l^{beta_1}... WOULD WE EXPECT A CERTAIN VALUE FOR beta_1 BASED ON DEB???
 tmp$llength<-log(tmp$length)
 tmp$lweight<-log(tmp$weight)
 fit<-lm(lweight~llength,tmp)
@@ -49,7 +49,7 @@ tmp<- subset(tmp, residual> -1.5)
 tmp<- subset(tmp, residual< 1.5)
 ## REMOVE VERY SMALL FISH (ASSUME AGE-0, AND THEREFORE FALL INTO CATEGORY OF RECRUITS)
 tmp<- subset(tmp, length>=200)
-## USE ONLY THE PAST 2 YEARS OF DATA (2015 & 2016)
+## USE ONLY THE PAST 2 YEARS OF DATA (2015 & 2016...2017???)
 tmp<- subset(tmp, year>=2015)
 
 
