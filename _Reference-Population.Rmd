@@ -36,18 +36,22 @@ program workshop (See Section ??).  To keep track of bend-level abundance, the r
 The objectives of this analysis were to:
 
 1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and
-2. Simulate the reference population for 10 years with varying but known annual
+2. Simulate reference population dynamics for 10 years with varying but known annual
 survival, growth, movement, and recruitment.
 
 ### Major Assumptions
-1. Survival is homogeneous among individuals.
+1. Survival probability is homogeneous among all individuals and independent of space and time.
 2. Individual fish growth follows a von Bertalanffy growth equation.
 3. There is no movement within years.
 4. Movement within a basin can occur between years.  
 5. Recruitment occurs at the basin-level and is stochastic.
 
+<!--(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE... WOULD LIKE TO SAY SOMETHING LIKE:-->
 
-(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE)
+Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (CITATIONS...NOT SURE IF THIS IS TRUE; NEED TO ASK MIKE AND LOOK AT LITERATURE).  Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation.  Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions---if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable.  Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon.  For a more detailed examination of these assumptions see the "Discussion" section below.
+
+<!--...BUT  NEED TO LOOK INTO!/CHAT WITH MIKE ABOUT.)-->
+
 
 # Methods
 
@@ -75,19 +79,18 @@ where
 * $origin$ indexes whether pallid sturgeon were hatchery or natural origin.
 
 
-POISSON JUSTIFICATION HERE 
-<!--SHOULD BE ABLE TO DERIVE THIS POISSON DISTRIBUTION WITH THE FOLLOWING ASSUMPTIONS:
+Generating bend abundances from a Poisson distribution allows for variation in bend densities among bends within segment while guaranteeing that the bend is populated with a whole number of fish.  Additionally, one could derive a spatial Poisson distribution with the following assumptions:
 
 1. The probability of 1 pallid being in a column of water with length $dl$ and the width of the river at RKM $l$ is $\alpha$.
 2. The probability of 2 or more pallids in a column of water w/ length $dl$ is neglible $o(\varepsilon)$.  
 3. The number of pallids in disjoint (non-overlapping) water columns $dl_1$ and $dl_2$ are independent.  In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other. 
 
-(WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS.)-->
+<!--WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS.-->
 
 #### Individual Length & Growth Parameters
-We randomly assigned an initial length to each individual fish.  Initial lengths were generated from a segment specific distribution constructed from recent length data in the PSPAP database.  (FURTHER DESCRIPTION HERE)
+We randomly assigned an initial length to each individual fish.  Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) length data in the PSPAP database.  After removing outliers...(DESCRIBE FURTHER, CHAT WITH MIKE ABOUT REASONING.)  
 
-Additionally, we assigned individual von Bertalanffy growth parameters $L_\infty$ and $k$, or the asymptotic length and Brody growth coefficient of a fish's growth trajectory, respectively, to each fish.  Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database.  (FURTHER DESCRIPTION HERE)
+Additionally, we assigned individual von Bertalanffy growth parameters $L_\infty$ and $k$, or the asymptotic length and Brody growth coefficient of a fish's growth trajectory, respectively, to each fish.  Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database.  (FURTHER DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE)
 
 To avoid unrealistic growth parameter values we truncated each bivariate normal distribution (one for each basin) to the middle 80%.  All points $(L_\infty, k)$ of the truncated distribution are contained on or within an ellipse centered at $\mathbf{\mu}=(\mu_{L_\infty}, \mu_k)$, the basin specific mean values for $L_\infty$ and $k$.  Since the R package $\texttt{tmvtnorm}$ truncates multivariate normal distributions to rectangular regions, as opposed to elliptical regions, we used a different approach to randomly draw points from the desired elliptical region.  
 
@@ -98,7 +101,9 @@ In short, we first drew points from the middle 80% of a standard bivariate norma
 After initializing the reference population, we track all individual fish for 10 years, recording individual survival status, bend location, and length on a yearly basis.  Additionally, new recruits may be added to the population and tracked.  
 
 #### Survival & Growth
-Survival is homogenous with all fish in the river having an equal probability, $\phi$, of annual survival indpendent of individual age, length, sex, origin, location, and year. Annual growth is projected by individualized von Bertalanffy growth curves as 
+Survival is stochastic but simulated with a survival probability that is homogeneous among individuals with all fish in the river having an equal probability, $\phi$, of surviving the year.  Survival probability is indpendent of individual age, length, sex, origin, location, and year.  In other words, each year individual fish survival is a Bernoulli trial with fixed probability of success, $\phi$. 
+
+Annual growth is projected by individualized von Bertalanffy growth curves as 
 $$\hspace{2.5in} L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \hspace{2.5in}\text{(2)}$$
 where $L(t)$ is the individual's length during year $t$ and each fish has its own randomly generated asymptotic length, $L_\infty$, and Brody growth rate, $k$, as described in the previous section on initializing the population.  
 
@@ -115,7 +120,7 @@ $$f(i,k)=
    \end{cases},$$
 where $d(b_i, b_k)$ is the distance in RKM from the center of bend $i$ to the center of bend $k$ and $\beta_0$ and $\beta_1$ are basin specific parameters.  
 
-(NEED JUSTIFICATION FOR THIS)
+(NEED JUSTIFICATION FOR THIS...CHAT WITH MIKE/LOOK INTO LITERATURE)
 
 To account for the uncertain nature of movement probabilities, we vary $\beta_0$ and $\beta_1$ from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity.
 
@@ -126,7 +131,10 @@ Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 y
 Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters.  Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population.  Initial length was chosen as 200mm, because (REASON HERE).  Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.        
 
 
+# Discussion
+There were several assumptions made in the simulation of the reference populations.  While the major assumptions are reasonable for the given objectives, a further discussion of some assumptions 
 
+Additionally, since it is unclear how closely assumptions 3 and 4 are met in reality, we explore and discuss the consequences of breaking these movement assumptions on estimator outputs in Appendix ??. 
 
 <!-- NOT SURE ABOUT THESE SECTIONS...
 # Results 
