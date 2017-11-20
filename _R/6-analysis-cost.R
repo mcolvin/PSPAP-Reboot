@@ -5,8 +5,7 @@
 #######################################################################
 library(RODBC);library(plyr)
 
-# MOVE COST SUMMARY OUT OF DBASE TO CSV AND DOCUMENT
-# THE SHIT OUT OF IT
+# IMPORT EFFORT FOR LINKING TO COST
 com4<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")
 dat<-sqlFetch(com4,"cost-summary")
 
@@ -34,27 +33,19 @@ depcost$lperdep<- log(depcost$perdep)
 
 
 tmp<-ddply(depcost,.(fieldoffice),summarize,
-    mnlcost=mean(na.omit(lperdep)),
+    mnlcost=mean(na.omit(perdep)),
     mdcost=median(na.omit(perdep)),
-    sdlcost=sd(na.omit(lperdep)),
+    sdlcost=sd(na.omit(perdep)),
     mncost=min(na.omit(perdep)),
     mxcost=max(na.omit(perdep)))
 
+## Summary of deployments by year
 
-fo<-unique(depcost$fieldoffice)
-for(i in 1:length(fo))
-    {
-    points(lperdep~year,depcost,
-        subset=fieldoffice==fo[i],
-        type='l',
-        col=i,
-        lwd=2)
-    }
 
-fit<-lm(lperdep~year+fieldoffice+year:fieldoffice,
-    depcost)
-fit<-lm(lperdep~fieldoffice,
-    depcost)
-depcost$ldepcosthat<- predict(fit,depcost)  
-  
-    
+
+
+
+
+
+
+
