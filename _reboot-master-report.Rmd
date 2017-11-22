@@ -10,6 +10,9 @@ output:
     highlight: zenburn 
   word_document:
     highlight: zenburn
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
 ---
 
 <!--
@@ -39,7 +42,11 @@ To do:
 ```
 
 <!--Methods: reference population-->
+```{r child="_Reference-Population.Rmd", echo=FALSE}
+```
 
+```{r child="_Catch-Data.Rmd", echo=FALSE}
+```
 <!--Methods: decisions and decision space-->
 
 

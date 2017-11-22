@@ -10,6 +10,9 @@ output:
     highlight: zenburn 
   word_document:
     highlight: zenburn
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
 ---
 
 <!--
@@ -17,6 +20,9 @@ To do:
 1. utility for model
 -->
 
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+source("_R/6-analysis-cost.R")
+```
 
 # Valuing fundamental objectives
 
