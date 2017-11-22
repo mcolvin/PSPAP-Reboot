@@ -6,9 +6,17 @@ output:
   html_document:
     theme: readable
     highlight: tango
+  word_document:  
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
 ---
 
+<!--
+rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
+-->
 # Overview
+
 Simulated catch data is essential to deriving estimates of population abundance and trend using various estimators.  It is because we can compare the estimates from simulated catch data to the underlying reference population, that we are able to evaluate estimator accuracy and precision.  Therefore, simulating catch data is a key component of evaluating varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??).
 
 The catchability and capture probability of particular gears are important elements of simulating catch data.  Since these values are highly uncertain, we simulate catch data over a range of gear catchabilities.

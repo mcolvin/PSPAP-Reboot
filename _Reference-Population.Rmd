@@ -7,6 +7,10 @@ output:
   html_document:
     theme: readable
     highlight: tango
+  word_document:  
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
 ---
 
 ```{r, warning=FALSE, echo=FALSE}
@@ -18,7 +22,8 @@ source("_R/5_tables.R")
 ```
 
 <!--
-rmarkdown::render("index.Rmd",output_format='html_document')# build page
+rmarkdown::render("_Reference-Population.Rmd",output_format='html_document')# build page
+rmarkdown::render("_Reference-Population.Rmd",output_format='word_document')# build page
 
 ??? 
 * How static are habitats within bend... markov matrices of units
@@ -26,24 +31,21 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 -->
 
 # Overview
-A reference population of known pallid sturgeon abundance is needed to 
-evaluate varying monitoring designs and their ability to achieve the 
-fundamental objectives identified during the first population assessment 
-program workshop (See Section ??).  To keep track of bend-level abundance, the reference population provides data on the annual survival and movement of each fish in the population (including new recruits). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individual growth was also simulated. 
+A reference population of known pallid sturgeon abundance was needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). The reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level. Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated. 
+
 
 ### Objectives
 
 The objectives of this analysis were to:
-
-1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and
-2. Simulate reference population dynamics for 10 years with varying but known annual
-survival, growth, movement, and recruitment.
+1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and 
+2. Simulate reference population dynamics for 10 years with varying but known annual survival, growth, movement, and recruitment. 
 
 ### Major Assumptions
+
 1. Survival probability is homogeneous among all individuals and independent of space and time.
 2. Individual fish growth follows a von Bertalanffy growth equation.
 3. There is no movement within years.
-4. Movement within a basin can occur between years.  
+4. Movement within a basin can occur between years.
 5. Recruitment occurs at the basin-level and is stochastic.
 
 <!--(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE... WOULD LIKE TO SAY SOMETHING LIKE:-->
@@ -56,18 +58,21 @@ Assumptions 1 and 2 are reasonable simplifications for the purposes of this eval
 # Methods
 
 ### Spatial extent and grain
+
 This analysis was constrained to generate reference pallid sturgeon populations
 for segments and bends within the upper basin (segments 1-4) and lower basin (segments 7-10, 13 and 14) of the Missouri River. Bends of varying length were used to generate the spatial distribution of pallid sturgeon (Table 1).
 
 
 ### Population Initialization
-The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature.
+
+The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature. Population initialization required xx steps: 1. initializing bend-level abundance, 2. initializing lengths and growth parameters of individuals within each bend, 3. assigning demographic rates (i.e., sex, origin). 
 
 #### Bend Abundance
-We populated each river bend with pallids based on reported expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:
+
+We populated each river bend with pallid sturgeon based on expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:
 
 
-$$\hspace{1.75in} N_{segment,bend}\sim Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot l_{segment,bend}\right), \hspace{1.75in}\text{(1)}$$
+$$N_{segment,bend}\sim Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot l_{segment,bend}\right),\text{(1)}$$
 
 where 
  
@@ -78,39 +83,44 @@ where
 * $bend$ indexes bend within segment, and
 * $origin$ indexes whether pallid sturgeon were hatchery or natural origin.
 
-
 Generating bend abundances from a Poisson distribution allows for variation in bend densities among bends within segment while guaranteeing that the bend is populated with a whole number of fish.  Additionally, one could derive a spatial Poisson distribution with the following assumptions:
 
 1. The probability of 1 pallid being in a column of water with length $dl$ and the width of the river at RKM $l$ is $\alpha$.
-2. The probability of 2 or more pallids in a column of water w/ length $dl$ is neglible $o(\varepsilon)$.  
-3. The number of pallids in disjoint (non-overlapping) water columns $dl_1$ and $dl_2$ are independent.  In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other. 
+2. The probability of 2 or more pallid sturgeon in a column of water w/ length $dl$ is negligible $o(\varepsilon)$.
+3. The number of pallid sturgeon in disjoint (non-overlapping) water columns $dl_1$ and $dl_2$ are independent.  In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other. 
 
-<!--WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS.-->
+<!--WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS. MECNOTE-we can get widths-->
 
-#### Individual Length & Growth Parameters
-We randomly assigned an initial length to each individual fish.  Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) length data in the PSPAP database.  After removing outliers...(DESCRIBE FURTHER, CHAT WITH MIKE ABOUT REASONING.)  
 
-Additionally, we assigned individual von Bertalanffy growth parameters $L_\infty$ and $k$, or the asymptotic length and Brody growth coefficient of a fish's growth trajectory, respectively, to each fish.  Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database.  (FURTHER DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE)
+#### Assigning length and growth parameters to individuals
+
+We randomly assigned an initial length to each individual fish.  Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) length data in the PSPAP database.  After removing outliers. (DESCRIBE FURTHER, CHAT WITH MIKE ABOUT REASONING.)
+
+Additionally, we assigned individual von Bertalanffy growth parameters $L_\infty$ and $k$, or the asymptotic length and Brody growth coefficient of a fish's growth trajectory, respectively, to each fish.  Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database.  (FURTHER DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE) <!--MECNOTE: on my todo list now-->
 
 To avoid unrealistic growth parameter values we truncated each bivariate normal distribution (one for each basin) to the middle 80%.  All points $(L_\infty, k)$ of the truncated distribution are contained on or within an ellipse centered at $\mathbf{\mu}=(\mu_{L_\infty}, \mu_k)$, the basin specific mean values for $L_\infty$ and $k$.  Since the R package $\texttt{tmvtnorm}$ truncates multivariate normal distributions to rectangular regions, as opposed to elliptical regions, we used a different approach to randomly draw points from the desired elliptical region.  
 
-In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse.  The truncation process was acheived using $\texttt{rtruncnorm}$ twice in R, once for the normal distribution associated with $L_\infty$ and then again for the normal distribution associated with $k$ conditional on $L_\infty$.  For more details see Appendix ??.  
+In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse.  The truncation process was achieved using $\texttt{rtruncnorm}$ twice in R, once for the normal distribution associated with $L_\infty$ and then again for the normal distribution associated with $k$ conditional on $L_\infty$.  For more details see Appendix ??.  
 
 
 ### Simulating Annual Transitions
 After initializing the reference population, we track all individual fish for 10 years, recording individual survival status, bend location, and length on a yearly basis.  Additionally, new recruits may be added to the population and tracked.  
 
 #### Survival & Growth
-Survival is stochastic but simulated with a survival probability that is homogeneous among individuals with all fish in the river having an equal probability, $\phi$, of surviving the year.  Survival probability is indpendent of individual age, length, sex, origin, location, and year.  In other words, each year individual fish survival is a Bernoulli trial with fixed probability of success, $\phi$. 
+Survival is stochastic but simulated with a survival probability that is homogeneous among individuals with all fish in the river having an equal probability, $\phi$, of surviving the year.  Survival probability is independent of individual age, length, sex, origin, location, and year.  In other words, each year individual fish survival is a Bernoulli trial with fixed probability of success, $\phi$. 
 
-Annual growth is projected by individualized von Bertalanffy growth curves as 
-$$\hspace{2.5in} L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \hspace{2.5in}\text{(2)}$$
+Annual growth is projected by individual von Bertalanffy growth curves as
+ 
+$$ L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \text{(2)}$$
+
 where $L(t)$ is the individual's length during year $t$ and each fish has its own randomly generated asymptotic length, $L_\infty$, and Brody growth rate, $k$, as described in the previous section on initializing the population.  
 
 
 #### Movement
-Within basin movement occurs between years and is considered at the bend-level.  Pallids may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend.  Movement probabilities are based on current bend location with the probability of being in bend $j$ the following year increasing as the distance between the fish's current bend and bend $j$ decreases.  In particular, 
-$$\mathbb{P}\Big(B(t)=b_j \hspace{2pt} | \hspace{2pt} B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$ 
+Within basin movement occurs between years and is considered at the bend-level.  Pallid sturgeon may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend.  Movement probabilities are based on current bend location with the probability of being in bend $j$ the following year increasing as the distance between the fish's current bend and bend $j$ decreases.  In particular, 
+
+$$\mathbb{P}\Big(B(t)=b_j  |  B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$ 
+
 and
 
 $$f(i,k)=
@@ -126,8 +136,8 @@ To account for the uncertain nature of movement probabilities, we vary $\beta_0$
 
 
 #### Recruitment
-Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 years).  During years when recruitment occurs the number of recruits is drawn from a basin specific Poisson distribution.  (JUSTIFICATION FOR POISSON HERE.)  
 
+Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 years).  During years when recruitment occurs the number of recruits is drawn from a basin specific Poisson distribution.<!--JUSTIFICATION FOR POISSON HERE-->  
 Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters.  Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population.  Initial length was chosen as 200mm, because (REASON HERE).  Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.        
 
 
@@ -146,6 +156,11 @@ Additionally, since it is unclear how closely assumptions 3 and 4 are met in rea
 * Virtual versus power analysis of a post-hoc glm to get trend
 
 How did wildhaber and adam do it did they do virtual or just trend.
+
+They did essentially the same thing, evaluating what the change in cpue
+was rather than actually doing trend. In other words what is the power to 
+detect a 10% decrease in the mean where mean cpue was estimated for each 
+year but not as a function of year.
 -->
 
 # Figures
