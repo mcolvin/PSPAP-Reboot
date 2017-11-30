@@ -188,7 +188,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Creating a reference population</h1>
-<h4 class="date"><em>17 November, 2017</em></h4>
+<h4 class="date"><em>29 November, 2017</em></h4>
 
 </div>
 
@@ -212,7 +212,10 @@ $(document).ready(function () {
 ##  Path to PROJ.4 shared files: C:/Users/sreynolds/Documents/R/win-library/3.3/rgdal/proj
 ##  Linking to sp version: 1.2-4</code></pre>
 <!--
-rmarkdown::render("index.Rmd",output_format='html_document')# build page
+rmarkdown::render("_Reference-Population.Rmd",output_format='html_document')# 
+build page
+rmarkdown::render("_Reference-Population.Rmd",output_format='word_document')# 
+build page
 
 ??? 
 * How static are habitats within bend... markov matrices of units
@@ -220,14 +223,10 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 -->
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>A reference population of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). To keep track of bend-level abundance, the reference population provides data on the annual survival and movement of each fish in the population (including new recruits). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individual growth was also simulated.</p>
+<p>A reference population of known pallid sturgeon abundance was needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). The reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level. Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated.</p>
 <div id="objectives" class="section level3">
 <h3>Objectives</h3>
-<p>The objectives of this analysis were to:</p>
-<ol style="list-style-type: decimal">
-<li>Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and</li>
-<li>Simulate reference population dynamics for 10 years with varying but known annual survival, growth, movement, and recruitment.</li>
-</ol>
+<p>The objectives of this analysis were to: 1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and 2. Simulate reference population dynamics for 10 years with varying but known annual survival, growth, movement, and recruitment.</p>
 </div>
 <div id="major-assumptions" class="section level3">
 <h3>Major Assumptions</h3>
@@ -235,12 +234,12 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 <li>Survival probability is homogeneous among all individuals and independent of space and time.</li>
 <li>Individual fish growth follows a von Bertalanffy growth equation.</li>
 <li>There is no movement within years.</li>
-<li>Movement within a basin can occur between years.<br />
-</li>
+<li>Movement within a basin can occur between years.</li>
 <li>Recruitment occurs at the basin-level and is stochastic.</li>
 </ol>
-<!--(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE... WOULD LIKE TO SAY SOMETHING LIKE:-->
-<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (CITATIONS…NOT SURE IF THIS IS TRUE; NEED TO ASK MIKE AND LOOK AT LITERATURE). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon. For a more detailed examination of these assumptions see the “Discussion” section below.</p>
+<!--(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE... WOULD LIKE TO SAY 
+SOMETHING LIKE:-->
+<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (CITATIONS… NOT SURE IF THIS IS TRUE; NEED TO ASK MIKE AND LOOK AT LITERATURE). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon. For a more detailed examination of these assumptions see the “Discussion” section below.</p>
 <!--...BUT  NEED TO LOOK INTO!/CHAT WITH MIKE ABOUT.)-->
 </div>
 </div>
@@ -252,11 +251,13 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 </div>
 <div id="population-initialization" class="section level3">
 <h3>Population Initialization</h3>
-<p>The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature.</p>
+<p>The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature. Population initialization required xx steps: 1. initializing bend-level abundance, 2. initializing lengths and growth parameters of individuals within each bend, 3. assigning demographic rates (i.e., sex, origin).</p>
 <div id="bend-abundance" class="section level4">
 <h4>Bend Abundance</h4>
-<p>We populated each river bend with pallids based on reported expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:</p>
-<p><span class="math display">\[\hspace{1.75in} N_{segment,bend}\sim Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot l_{segment,bend}\right), \hspace{1.75in}\text{(1)}\]</span></p>
+<p>We populated each river bend with pallid sturgeon based on expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:</p>
+<p><span class="math display">\[N_{segment,bend}\sim 
+Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot 
+l_{segment,bend}\right),\text{(1)}\]</span></p>
 <p>where</p>
 <ul>
 <li><span class="math inline">\(N\)</span> is the number of pallid sturgeon within each bend,</li>
@@ -269,18 +270,21 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 <p>Generating bend abundances from a Poisson distribution allows for variation in bend densities among bends within segment while guaranteeing that the bend is populated with a whole number of fish. Additionally, one could derive a spatial Poisson distribution with the following assumptions:</p>
 <ol style="list-style-type: decimal">
 <li>The probability of 1 pallid being in a column of water with length <span class="math inline">\(dl\)</span> and the width of the river at RKM <span class="math inline">\(l\)</span> is <span class="math inline">\(\alpha\)</span>.</li>
-<li>The probability of 2 or more pallids in a column of water w/ length <span class="math inline">\(dl\)</span> is neglible <span class="math inline">\(o(\varepsilon)\)</span>.<br />
-</li>
-<li>The number of pallids in disjoint (non-overlapping) water columns <span class="math inline">\(dl_1\)</span> and <span class="math inline">\(dl_2\)</span> are independent. In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other.</li>
+<li>The probability of 2 or more pallid sturgeon in a column of water with length <span class="math inline">\(dl\)</span> is negligible <span class="math inline">\(o(\varepsilon)\)</span>.</li>
+<li>The number of pallid sturgeon in disjoint (non-overlapping) water columns <span class="math inline">\(dl_1\)</span> and <span class="math inline">\(dl_2\)</span> are independent. In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other.</li>
 </ol>
-<!--WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS.-->
+<!--WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN 
+APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS. 
+MECNOTE-we can 
+get widths-->
 </div>
-<div id="individual-length-growth-parameters" class="section level4">
-<h4>Individual Length &amp; Growth Parameters</h4>
-<p>We randomly assigned an initial length to each individual fish. Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) length data in the PSPAP database. After removing outliers…(DESCRIBE FURTHER, CHAT WITH MIKE ABOUT.)</p>
-<p>Additionally, we assigned individual von Bertalanffy growth parameters <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>, or the asymptotic length and Brody growth coefficient of a fish’s growth trajectory, respectively, to each fish. Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database. (FURTHER DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE)</p>
+<div id="assigning-length-and-growth-parameters-to-individuals" class="section level4">
+<h4>Assigning length and growth parameters to individuals</h4>
+<p>We randomly assigned an initial length to each individual fish. Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) length data in the PSPAP database. After removing outliers. (DESCRIBE FURTHER, CHAT WITH MIKE ABOUT REASONING.)</p>
+<p>Additionally, we assigned individual von Bertalanffy growth parameters <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>, or the asymptotic length and Brody growth coefficient of a fish’s growth trajectory, respectively, to each fish. Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database. (FURTHER DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE) <!--MECNOTE:
+on my todo list now--></p>
 <p>To avoid unrealistic growth parameter values we truncated each bivariate normal distribution (one for each basin) to the middle 80%. All points <span class="math inline">\((L_\infty, k)\)</span> of the truncated distribution are contained on or within an ellipse centered at <span class="math inline">\(\mathbf{\mu}=(\mu_{L_\infty}, \mu_k)\)</span>, the basin specific mean values for <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>. Since the R package <span class="math inline">\(\texttt{tmvtnorm}\)</span> truncates multivariate normal distributions to rectangular regions, as opposed to elliptical regions, we used a different approach to randomly draw points from the desired elliptical region.</p>
-<p>In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse. The truncation process was acheived using <span class="math inline">\(\texttt{rtruncnorm}\)</span> twice in R, once for the normal distribution associated with <span class="math inline">\(L_\infty\)</span> and then again for the normal distribution associated with <span class="math inline">\(k\)</span> conditional on <span class="math inline">\(L_\infty\)</span>. For more details see Appendix ??.</p>
+<p>In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse. The truncation process was achieved using <span class="math inline">\(\texttt{rtruncnorm}\)</span> twice in R, once for the normal distribution associated with <span class="math inline">\(L_\infty\)</span> and then again for the normal distribution associated with <span class="math inline">\(k\)</span> conditional on <span class="math inline">\(L_\infty\)</span>. For more details see Appendix ??.</p>
 </div>
 </div>
 <div id="simulating-annual-transitions" class="section level3">
@@ -288,24 +292,27 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 <p>After initializing the reference population, we track all individual fish for 10 years, recording individual survival status, bend location, and length on a yearly basis. Additionally, new recruits may be added to the population and tracked.</p>
 <div id="survival-growth" class="section level4">
 <h4>Survival &amp; Growth</h4>
-<p>Survival is stochastic but simulated with a survival probability that is homogeneous among individuals with all fish in the river having an equal probability, <span class="math inline">\(\phi\)</span>, of surviving the year. Survival probability is indpendent of individual age, length, sex, origin, location, and year. In other words, each year individual fish survival is a Bernoulli trial with fixed probability of success, <span class="math inline">\(\phi\)</span>.</p>
-<p>Annual growth is projected by individualized von Bertalanffy growth curves as <span class="math display">\[\hspace{2.5in} L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \hspace{2.5in}\text{(2)}\]</span> where <span class="math inline">\(L(t)\)</span> is the individual’s length during year <span class="math inline">\(t\)</span> and each fish has its own randomly generated asymptotic length, <span class="math inline">\(L_\infty\)</span>, and Brody growth rate, <span class="math inline">\(k\)</span>, as described in the previous section on initializing the population.</p>
+<p>Survival is stochastic but simulated with a survival probability that is homogeneous among individuals with all fish in the river having an equal probability, <span class="math inline">\(\phi\)</span>, of surviving the year. Survival probability is independent of individual age, length, sex, origin, location, and year. In other words, each year individual fish survival is a Bernoulli trial with fixed probability of success, <span class="math inline">\(\phi\)</span>.</p>
+<p>Annual growth is projected by individual von Bertalanffy growth curves as</p>
+<p><span class="math display">\[ L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \text{(2)}\]</span></p>
+<p>where <span class="math inline">\(L(t)\)</span> is the individual’s length during year <span class="math inline">\(t\)</span> and each fish has its own randomly generated asymptotic length, <span class="math inline">\(L_\infty\)</span>, and Brody growth rate, <span class="math inline">\(k\)</span>, as described in the previous section on initializing the population.</p>
 </div>
 <div id="movement" class="section level4">
 <h4>Movement</h4>
-<p>Within basin movement occurs between years and is considered at the bend-level. Pallids may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend location with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular, <span class="math display">\[\mathbb{P}\Big(B(t)=b_j \hspace{2pt} | \hspace{2pt} B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},\]</span> and</p>
+<p>Within basin movement occurs between years and is considered at the bend-level. Pallid sturgeon may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend location with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular,</p>
+<p><span class="math display">\[\mathbb{P}\Big(B(t)=b_j  |  B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},\]</span></p>
+<p>and</p>
 <p><span class="math display">\[f(i,k)=
 \begin{cases} 
       1, &amp; k=i \\
       e^{\beta_0-\beta_1 d(b_i, b_k)}, &amp; k\neq i
    \end{cases},\]</span> where <span class="math inline">\(d(b_i, b_k)\)</span> is the distance in RKM from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span> and <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are basin specific parameters.</p>
-<p>(NEED JUSTIFICATION FOR THIS)</p>
+<p>(NEED JUSTIFICATION FOR THIS…CHAT WITH MIKE/LOOK INTO LITERATURE)</p>
 <p>To account for the uncertain nature of movement probabilities, we vary <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity.</p>
 </div>
 <div id="recruitment" class="section level4">
 <h4>Recruitment</h4>
-<p>Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 years). During years when recruitment occurs the number of recruits is drawn from a basin specific Poisson distribution. (JUSTIFICATION FOR POISSON HERE.)</p>
-<p>Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters. Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population. Initial length was chosen as 200mm, because (REASON HERE). Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.</p>
+<p>Recruitment occurs randomly with a fixed expected frequency (e.g. once every 3 years). During years when recruitment occurs the number of recruits is drawn from a basin specific Poisson distribution. <!--JUSTIFICATION FOR POISSON HERE--> Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters. Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population. Initial length was chosen as 200mm, because (REASON HERE). Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.</p>
 </div>
 </div>
 </div>
@@ -323,6 +330,11 @@ rmarkdown::render("index.Rmd",output_format='html_document')# build page
 * Virtual versus power analysis of a post-hoc glm to get trend
 
 How did wildhaber and adam do it did they do virtual or just trend.
+
+They did essentially the same thing, evaluating what the change in cpue
+was rather than actually doing trend. In other words what is the power to 
+detect a 10% decrease in the mean where mean cpue was estimated for each 
+year but not as a function of year.
 -->
 </div>
 <div id="figures" class="section level1">
