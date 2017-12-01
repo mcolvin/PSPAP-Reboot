@@ -4,7 +4,7 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-### NEED TO FIX 396-4 and 395-4 and 392-3 occ3
+### NEED TO FIX 396-4 and 395-4 and 392-3, and 390-3 for occ3 
 
 if(pcname=="WF-FGNL842")
 {
@@ -15,7 +15,7 @@ if(pcname!="WF-FGNL842")
   loc<-"D:/"
 }
 ptm<-proc.time()
-lapply(394:390, function(i)
+lapply(389:388, function(i)
 {
   lapply(3:4, function(j)
   {
