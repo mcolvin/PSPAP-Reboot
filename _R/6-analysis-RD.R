@@ -14,6 +14,9 @@ if(pcname!="WF-FGNL842")
 {
   loc<-"D:/"
 }
+
+setwd("D:/_output/6-MARK/MARK")
+
 ptm<-proc.time()
 lapply(389:388, function(i)
 {
