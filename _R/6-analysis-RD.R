@@ -4,7 +4,7 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-### NEED TO FIX 396-4 and 395-4 and 392-3, and 390-3 for occ3 
+### NEED TO FIX 396-4 and 395-4 and 392-3, and 390-3 for occ3, 388-4 
 
 if(pcname=="WF-FGNL842")
 {
