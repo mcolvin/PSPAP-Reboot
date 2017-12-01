@@ -7,6 +7,8 @@ source("_R/3_load-and-clean.R")
 #########################################################
 # 1-2 Occ3, 2-3 all, & 2-1 all, do not have "fit" saved #
 #########################################################
+# NEED 57-4 #  
+#############
 
 
 if(pcname=="WF-FGNL842")
@@ -18,7 +20,7 @@ if(pcname!="WF-FGNL842")
   loc<-"D:/"
 }
 ptm<-proc.time()
-lapply(4:100, function(i)
+lapply(58:100, function(i)
 {
   lapply(3:4, function(j)
   {
