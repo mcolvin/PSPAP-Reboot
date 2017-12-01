@@ -10,6 +10,9 @@ output:
     highlight: zenburn 
   word_document:
     highlight: zenburn
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
 ---
 
 <!--
@@ -17,97 +20,62 @@ To do:
 1. utility for model
 -->
 
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+source("_R/6-analysis-cost.R")
+```
 
 # Valuing fundamental objectives
 
+## Objectives hierarchy and attributes
+
 The objectives identified by stakeholders can be valued in 
-varying ways which in turn are used to calculate the expected
+varying ways which in turn are used to calculate the 
 value of a monitoring design. Some objectives 
 
-Objectives hierarchy and attributes
-The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each numbered objective in bold are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers.
-Quantify PS recruitment to age-1 (Natural origin)
-    Power to detect age-1 natural origin recruits if recruitment occurs
-    Segment level age-1 abundance
-        bias
-        precision
-    Estimate age-1 recruitment rate (natural origin)
-        bias
-        precision
-Quantify PS population trend (natural and hatchery origin)
-    Estimate RPMA level population growth rate λ
-        bias
-        precision
-    Provide relevant PS model inputs
-    Estimate segment-level abundance, origin and stage specific
-        bias
-        precision
-        spatial distribution
-Survival (RPMA level)
-    bias
-    precision
-Fecundity (RPMA level)
-    bias
-    precision
-Growth (RPMA)
-    bias
-    precision
-Movement
-    fidelity
-    among segment movement
-Population structure and characteristics (segment level)
-    Size structure
-        bias
-        precision
-    Sex ratio (segment level)
-        bias
-        precision
-Maintain compatibility with legacy PSPAP data
-    Proportion of randomly selected bends within segment
-    Gears similarity: proportion of standard gears used by design
-    Effort similarity: deviation from average effort
-Stay below cost constraints
-    Minimize costs
+The numbered objectives correspond to fundamental objectives identified 
+during the workshop. Bulleted lists within each numbered objective in 
+bold are measurable attributes that can be used to quantify each 
+objective. For example there are 3 attributes under objective 1 that can 
+be quantified for each monitoring alternative. Assuming these attributes 
+are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet 
+may receive a weight of 33% if each attribute is equally important to 
+decision makers. Alternatively these values can be weighted to reflect 
+perceived importance by decision makers. 
 
 
+### 1. Quantify PS recruitment to age-1 (Natural origin)
 
-# Fundamental objectives
-
-## Quantify PS recruitment to age 1.
-
-### Bias
-
-### Precision
-
-### Performance
-
+1. Power to detect age-1 natural origin recruits if recruitment occurs
+1. Segment level age-1 abundance
+    1. bias
+    1. precision
+1. Estimate age-1 recruitment rate (natural origin)
+    1. bias
+    1. precision
 
 
-## Provide estimates with associated uncertainty needed to run the PS population model
+### 2. Quantify PS population trend (natural and hatchery origin)
 
+In simulating population monitoring designs, we are using 3 metrics to 
+quantify how a monitoring design meets the objective of _quantifying 
+population trend_. Specifically, the estimates from a monitoring 
+program, as it relates to trend are evaluated by estimating basin level 
+population growth rate $\lambda$. 
 
-
-## Quantify PS population trend
-
-
-In simulating population monitoring designs, we are using 3
-metrics to quantify how a monitoring design meets the objective of _quantifying
-population trend_. Specifically, the 
-estimates from a monitoring program, as it relates to trend are evaluated 
-by calculating:  
-
-1. **Bias: How does an estimate compare to the true value.** Bias is 
+1. **Bias: How does a trend estimate compare to the true trend.** Bias is 
 calculated as the true value minus the estimated value. We then divide 
 the bias by the true value to be able to combine estimates of varying 
 magnitude (i.e., survival, abundance), recall the previous post that 
-used proportional bias. 
-2. **Precision: How precise are estimated values.** Precision is 
+used proportional bias.
+
+2. **Precision: How precise are estimated trend values.** Precision is 
 specified as the coefficient of variation (CV) calculated as the 
 standard error of the estimate divided by the parameter estimate. There 
 is no real threshold for what is optimal for estimator precision 
 regarding decision making. Generally speaking, the more precise an 
 estimate, the better. There are other alternatives to CV. However, CV is 
 commonly used in fisheries and therefore likely to be familiar. 
+
 3. **Performance: How likely is an estimator successful.** In some 
 cases, an estimator like the Robust Design may not have enough 
 information for the estimator to provide an actual estimate. This 
@@ -124,7 +92,183 @@ can be an issue at low abundances or capture probability, but that does
 not preclude us from calculating CPUE. However, if capture probability 
 is low, then there may be instances where a capture recapture estimator 
 just does not work, and estimates cannot be made because the capture 
-recapture histories are just too sparse! 
+recapture histories are just too sparse.
+
+
+### 3.  Maintain compatibility with legacy PSPAP data
+
+1. Proportion of randomly selected bends within segment
+1. Gears similarity: proportion of standard gears used by design
+1. Effort similarity: deviation from average effort
+
+### 4. Provide relevant PS model inputs
+
+
+### 5. ## Remain in cost constraints 
+
+Cost is the ultimate PSPAP constraint. Designs exceeding cost 
+containments will not be considered. Significant uncertainty exists in 
+costs because of several factors. First, field crews tend to become more 
+efficient over time and therefore recent PSPAP costs may not represent 
+the actual costs. However, if the next iteration of the PSPAP uses similar 
+sampling units (i.e., bends within segments) to the current PSPAP, 
+then costs for field sampling will likely be similar. 
+
+Minimize costs and stay within cost constraints. The expected cost 
+for each design will be calculated. The expected cost can be used 2 
+ways. First it can screen for designs that exceed cost constrains. 
+Second, it can be used in an absolute sense to quantify design cost. 
+Lastly,it can be used relatively by dividing the value by the expected 
+cost of the current PSPAP and therefore values less than 1 are cheaper 
+and values greater than 1 are more expensive. 1. Designs exceeding cost 
+constraints not considered 
+
+#### Estimating cost per gear deployment
+
+Estimating cost for a day of sampling is difficult. It is the function 
+of several factors, including but not limited to the number of 
+personnel, pay rates, other personnel expenses, travel, time sampling, 
+and gear maintenance. Additionally, the cost of sampling varies among years
+and costs may be nonlinearly related if there is economy of scale (i.e.,
+it may cost less per sampling unit if many are done). 
+
+There are 7 field offices that have conducted PSPAP sampling since 2003.
+Annually the USACE provides funding to these field offices to perform
+PSPAP sampling. Annual values vary from 
+
+Table X.1. Field office affiliations and Missouri River segments
+assigned for PSPAP sampling.
+| Field office                             	| Segment          	|
+|------------------------------------------	|------------------	|
+| Montana Fish Wildlife and Parks (MT)     	| 1, 2, 3          	|
+| Missouri River FWCO (MR)                 	| 4                	|
+| Great Plains FWCO (GP)                   	| 5, 6             	|
+| South Dakota Game Fish and Parks (SD)    	| 7                	|
+| Nebraska Game and Parks Commission (NE)  	| 8, 1/2 of 9      	|
+| Missouri Department of Conservation (MO) 	| 1/2 of 9, 10, 11 	|
+| Columbia FWCO (CF)                       	| 13, 14           	|
+
+
+1. Annual funding provided to each field crew
+1. Calculate the number of bends sampled in a year
+1. Divide the cost by the total to get a field crew specific
+cost per bend. 
+1. Model or empirical distribution
+
+
+
+* The season will begin when water temperatures decline to 12.8C or less 
+(in the fall) and will continue through June 30. 
+* The Fish Community Season will be July 1 through October 30 throughout 
+the geographic range of the PSPAP. 
+
+
+Table X.2.  
+```{r,echo=FALSE,as.is=TRUE}
+knitr::kable(tmp,
+    row.names=FALSE,
+    col.names=c("Field crew", "Mean cost","Median cost", "Std. deviation",
+        "Minimum cost","Maximum cost"),align=c("lccccc"),
+    digits=2)
+```
+
+
+#### Important assumptions
+
+Currently the analysis assumes that the period of performance for field 
+crews is the same as the fiscal year. Discussions with USACE contracting 
+and PSPAP personnel suggested this was a reasonable assumption. 
+
+
+
+This was an example outlining how alternative monitoring programs can be 
+objectively evaluated and compared in the context of meeting agency 
+objectives. Many uncertainties remain in Pallid Sturgeon population 
+dynamics and capture that will need to be accounted for. Additionally, 
+the weighting of utility values can be a treacherous territory and how 
+metrics are weighted can drive outcomes. However, sensitivity analyses 
+can be conducted to evaluate the influence of weighting on outcomes. 
+This process of evaluating alternative monitoring programs is designed 
+purposely to be as objective as possible and therefore formally linking 
+the outcomes of alternative monitoring designs to agency objectives with 
+quantifiable metrics is necessary. 
+  
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+source("_R/6-analysis-cost.R")
+
+
+
+
+
+fit<-lm(lperdep~year+fieldoffice+year:fieldoffice,
+    depcost)
+fit<-lm(lperdep~fieldoffice,
+    depcost)
+depcost$ldepcosthat<- predict(fit,depcost)  
+  
+    
+
+hist(depcost[depcost$fieldoffice=="NE",]$perdep)
+hist(depcost[depcost$fieldoffice=="CF",]$perdep)
+
+plot(lperdep~year,depcost,type='n')
+ fo<-unique(depcost$fieldoffice)
+for(i in 1:length(fo))
+    {
+    points(lperdep~year,depcost,
+        subset=fieldoffice==fo[i],
+        type='l',
+        col=i,
+        lwd=2)
+    }
+
+    
+plot(resid(fit)~fitted(fit))
+plot(lperdep~ldepcosthat,depcost)    
+plot(perdep~year,depcost,
+    subset=fieldoffice=="SD")
+    
+plot(perdep~year,depcost,
+    subset=fieldoffice=="MT")
+    
+plot(perdep~year,depcost,
+    subset=fieldoffice=="CF")  
+``` 
+
+
+
+
+1. Survival (RPMA level)
+    1. bias
+    1. precision
+1. Fecundity (RPMA level)
+    1. bias
+    1. precision
+1. Growth (RPMA)
+    1. bias
+    1. precision
+1. Movement
+    1. fidelity
+    1. among segment movement
+1. Population structure and characteristics (segment level)
+    1. Size structure
+        1. bias
+        1. precision
+    1. Sex ratio (segment level)
+        1. bias
+        1. precision
+
+
+### 3. Estimate segment-level abundance, origin and stage specific
+
+1. bias
+
+1. precision
+
+1. spatial distribution
+ 
+
 
 
 ### Valuing the fundamental objective
@@ -140,9 +284,10 @@ large numbers (worst), and conformance is constrained between 0 (worst)
 and 100 (best). 
 
 
-To convert the 3 metrics to a common scale we can use methods like proportional scaling
-which normalized values to a specified minimum and maximum. For example, we can scale
-the bias to values varying from 0 to 1 as:
+To convert the 3 metrics to a common scale we can use methods like 
+proportional scaling which normalized values to a specified minimum and 
+maximum. For example, we can scale the bias to values varying from 0 to 
+1 as: 
 
 $$U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},$$
 
@@ -203,89 +348,7 @@ plot(pbias_u~pbias,type='l',xlab="Performance",
 
 
 
-### Bias
 
-### Precision
-
-### Performance
-
-
-## Maintain compatibility with legacy data
-
-* number of random bends selected - incorporate gear type?
-
-
-## Remain in cost constraints 
-
-Cost is the ultimate PSPAP constraint. Designs exceeding cost 
-containments will not be considered. Significant uncertainty exists in 
-costs because of several factors. First, field crews tend to become more 
-efficient over time and therefore recent PSPAP costs may not represent 
-the actual costs. However, if the next iteration of the PSPAP uses similar 
-sampling units (i.e., bends within segments) to the current PSPAP, 
-then costs for field sampling will likely be similar. 
-
-
-### Estimating cost to sample a bend
-
-Estimating cost for a day of sampling is difficult. It is the function 
-of several factors, including but not limited to the number of 
-personnel, pay rates, other personnel expenses, travel, time sampling, 
-and gear maintenance. Additionally, the cost of sampling varies among years
-and costs may be non linearly related if there is economy of scale (i.e.,
-it may cost less per sampling unit if many are done). 
-
-1. Annual funding provided to each field crew
-1. Calculate the number of bends sampled in a year
-1. Divide the cost by the total to get a field crew specific
-cost per bend. 
-1. Model or empirical distribution
-
-
-* The season will begin when water temperatures decline to 55°F or less 
-(in the fall) and will continue through June 30. 
-* The Fish Community Season will be July 1 through October 30 throughout 
-the geographic range of the PSPAP. 
-
-### Important assumptions
-
-Currently the analysis assumes that the period
-of performance for field crews is the same as 
-the fiscal year. 
-
-This was an example outlining how alternative monitoring programs can be 
-objectively evaluated and compared in the context of meeting agency 
-objectives. Many uncertainties remain in Pallid Sturgeon population 
-dynamics and capture that will need to be accounted for. Additionally, 
-the weighting of utility values can be a treacherous territory and how 
-metrics are weighted can drive outcomes. However, sensitivity analyses 
-can be conducted to evaluate the influence of weighting on outcomes. 
-This process of evaluating alternative monitoring programs is designed 
-purposely to be as objective as possible and therefore formally linking 
-the outcomes of alternative monitoring designs to agency objectives with 
-quantifiable metrics is necessary. 
-  
-
-```{r,echo=FALSE,warning=FALSE, message=FALSE}
-
-source("_R/6-analysis-cost.R")
-hist(depcost[depcost$fieldoffice=="NE",]$perdep)
-hist(depcost[depcost$fieldoffice=="CF",]$perdep)
-
-plot(lperdep~year,depcost,
-    type='n')
-    
-    plot(resid(fit)~fitted(fit))
-plot(lperdep~ldepcosthat,depcost)    
-plot(perdep~year,depcost,
-    subset=fieldoffice=="SD")
-    
-plot(perdep~year,depcost,
-    subset=fieldoffice=="MT")
-    
-plot(perdep~year,depcost,
-    subset=fieldoffice=="CF")  
-``` 
 
 
 

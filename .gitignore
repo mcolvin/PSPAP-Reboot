@@ -30,8 +30,8 @@ _photos/
 
 # OFFICE FILES
 *.xlsx
-*.docx
-*.doc
+#*.docx
+#*.doc
 *.pptx
 *.accdb
 
