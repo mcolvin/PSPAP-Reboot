@@ -1277,8 +1277,8 @@ RD.ests<-function(pop_num=NULL,
       n<-length(states)*inputs$nyears
       if(class(fit)[1]!="try-error")
       {
-        saveRDS(fit, paste0(location, "_output/6-MARK/", fit$output,"_", pop_num, "-", 
-                            catch_num, "-occ", max_occ, ".rds"))
+        saveRDS(fit, paste0(location, "_output/6-MARK/", pop_num, "-", 
+                            catch_num, "-occ", max_occ,"_", fit$output, ".rds"))
         params<-fit$results$real[which(!duplicated(fit$results$real$estimate)),]
         params<-params[which(params$fixed!="Fixed"),1:4]
         if(length(which(params$note!="                    "))>0){return(print("NOTES!"))}

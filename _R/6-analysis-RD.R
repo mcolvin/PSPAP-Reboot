@@ -4,7 +4,13 @@ source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
 
-### NEED TO FIX 396-4 and 395-4 and 392-3, and 390-3 for occ3, 388-4 
+### NEED TO FIX:
+#### 388-4 
+#### 382 ISSUES!
+#### 395-4 RUN LB OCCASION 2
+#### 392-3 RUN ALL OCCASION 3... BUT LOOK AT ERRORS FIRST!
+#### 390-3 RUN ALL OCCASION 3... BUT LOOK AT ERRORS FIRST!
+#### MARK187 FOR 391 is MISSING!!!  LOOK INTO
 
 if(pcname=="WF-FGNL842")
 {
@@ -15,10 +21,11 @@ if(pcname!="WF-FGNL842")
   loc<-"D:/"
 }
 
+
 setwd("D:/_output/6-MARK/MARK")
 
 ptm<-proc.time()
-lapply(389:388, function(i)
+lapply(382:380, function(i)
 {
   lapply(3:4, function(j)
   {
