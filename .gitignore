@@ -50,6 +50,7 @@ _photos/
 *.vcv
 *.out
 *.tmp
+*.0
 
 # BUG FILES
 inits*.txt
