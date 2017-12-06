@@ -13,7 +13,7 @@ output:
     reference_docx: tmp.docx
 ---
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, warning=FALSE, include=FALSE}
 source("_R/1_global.R")
 source("_R/2_functions.R")
 source("_R/3_load-and-clean.R")
@@ -35,12 +35,15 @@ build page
 
 
 # Overview
-A reference population of known pallid sturgeon abundance was needed to 
+<!-- IF WE NEED A MORE DETAILED INTRO WE CAN SAY SOMETHING LIKE:
+We used a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and Peterson 2013). The development and parameterization of the BDN required two steps (see ??).  The second step was to stochastically simulate the outcomes of the alternative monitoring designs. In short, the process that we used (and continue to use) to generate monitoring design outcomes involves four steps (see ??), the first of which is to simulate known reference pallid sturgeon populations. Therefore...pick up with what follows-->
+
+A set of reference populations of known pallid sturgeon abundance is needed to 
 evaluate varying monitoring designs and their ability to achieve the 
 fundamental objectives identified during the first population assessment
-program workshop (See Section ??). The reference population provides 
+program workshop (See Section ??). A reference population provides 
 data on the annual survival and movement of each fish in the population
-(including new recruits) at the bend-level. Since fish length may 
+(including new recruits) at the bend-level (Figure 1). Since fish length may 
 influence sampling effectiveness (e.g. gear selectivity), data on 
 individuals (e.g., growth) was also simulated. 
 
@@ -51,7 +54,7 @@ The objectives of this analysis were to:
 1. Create a spatially explicit pallid sturgeon population with known 
 bend-level annual abundances, and 
 2. Simulate reference population dynamics for 10 years with varying but 
-known annual survival, growth, movement, and recruitment. 
+known annual survival, individual growth, movement, and recruitment. 
 
 ### Major Assumptions
 
@@ -76,7 +79,7 @@ recruitment is expected to vary from year to year and fish are expected
 to migrate to spawning habitats within basin (and not necessarily stay 
 in particular bends), assumption 5 is appropriate for studying pallid 
 sturgeon.  For a more detailed examination of these assumptions see the 
-"Discussion" section below.
+"Discussion" section.
 
 <!--...BUT  NEED TO LOOK INTO!/CHAT WITH MIKE ABOUT.)-->
 
@@ -206,25 +209,25 @@ the population.
 Within basin movement occurs between years and is considered at the 
 bend-level.  Pallid sturgeon may move from one bend to another bend 
 within the same segment, from one bend to another bend within a 
-different segment (but same basin), or stay within the same bend.  Movement probabilities are based on current bend location with the
+different segment (but same basin), or stay within the same bend.  Movement probabilities are based on current bend locations with the
 probability of being in bend $j$ the following year increasing as the
 distance between the fish's current bend and bend $j$ decreases.  In 
 particular, 
 
-$$\mathbb{P}\Big(B(t)=b_j  |  B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$ 
+$$\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{e^{-\beta d(i, j)}}{\sum_k e^{-\beta d(i, k)}},$$
 
-and
-
-$$f(i,k)=
+<!--
+$$\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$ 
 \begin{cases} 
       1, & k=i \\
-      e^{\beta_0-\beta_1 d(b_i, b_k)}, & k\neq i
+      e^{\beta_0-\beta_1 d(i, k)}, & k\neq i
    \end{cases},$$
-where $d(b_i, b_k)$ is the distance in RKM from the center of bend $i$ 
-to the center of bend $k$ and $\beta_0$ and $\beta_1$ are basin specific 
-parameters.  
+-->
+where $i$, $j$, and $k$ are particular bends, $B(t)$ is the individual's bend location in year $t$,  $d(i, k)$ is the distance in river kilometers (RKM) from the center of bend $i$ 
+to the center of bend $k$, and $\beta$ is a basin specific 
+parameter.  
 
-(NEED JUSTIFICATION FOR THIS...CHAT WITH MIKE/LOOK INTO LITERATURE)
+(NEED JUSTIFICATION FOR THIS...CHAT WITH MIKE/LOOK INTO LITERATURE) (Figure 2)
 
 To account for the uncertain nature of movement probabilities, we vary 
 $\beta_0$ and $\beta_1$ from simulation to simulation, allowing the 
