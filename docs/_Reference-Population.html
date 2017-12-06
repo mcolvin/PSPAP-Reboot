@@ -188,29 +188,11 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Creating a reference population</h1>
-<h4 class="date"><em>29 November, 2017</em></h4>
+<h4 class="date"><em>06 December, 2017</em></h4>
 
 </div>
 
 
-<pre><code>## 
-## Attaching package: &#39;maps&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:plyr&#39;:
-## 
-##     ozone</code></pre>
-<pre><code>## rgeos version: 0.3-23, (SVN revision 546)
-##  GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
-##  Linking to sp version: 1.2-4 
-##  Polygon checking: TRUE</code></pre>
-<pre><code>## Loading required package: sp</code></pre>
-<pre><code>## Checking rgeos availability: TRUE</code></pre>
-<pre><code>## rgdal: version: 1.2-7, (SVN revision 660)
-##  Geospatial Data Abstraction Library extensions to R successfully loaded
-##  Loaded GDAL runtime: GDAL 2.0.1, released 2015/09/15
-##  Path to GDAL shared files: C:/Users/sreynolds/Documents/R/win-library/3.3/rgdal/gdal
-##  Loaded PROJ.4 runtime: Rel. 4.9.2, 08 September 2015, [PJ_VERSION: 492]
-##  Path to PROJ.4 shared files: C:/Users/sreynolds/Documents/R/win-library/3.3/rgdal/proj
-##  Linking to sp version: 1.2-4</code></pre>
 <!--
 rmarkdown::render("_Reference-Population.Rmd",output_format='html_document')# 
 build page
@@ -223,10 +205,12 @@ build page
 -->
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>A reference population of known pallid sturgeon abundance was needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). The reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level. Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated.</p>
+<!-- IF WE NEED A MORE DETAILED INTRO WE CAN SAY SOMETHING LIKE:
+We used a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and Peterson 2013). The development and parameterization of the BDN required two steps (see ??).  The second step was to stochastically simulate the outcomes of the alternative monitoring designs. In short, the process that we used (and continue to use) to generate monitoring design outcomes involves four steps (see ??), the first of which is to simulate known reference pallid sturgeon populations. Therefore...pick up with what follows-->
+<p>A set of reference populations of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). A reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level (Figure 1). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated.</p>
 <div id="objectives" class="section level3">
 <h3>Objectives</h3>
-<p>The objectives of this analysis were to: 1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and 2. Simulate reference population dynamics for 10 years with varying but known annual survival, growth, movement, and recruitment.</p>
+<p>The objectives of this analysis were to: 1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and 2. Simulate reference population dynamics for 10 years with varying but known annual survival, individual growth, movement, and recruitment.</p>
 </div>
 <div id="major-assumptions" class="section level3">
 <h3>Major Assumptions</h3>
@@ -239,7 +223,7 @@ build page
 </ol>
 <!--(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE... WOULD LIKE TO SAY 
 SOMETHING LIKE:-->
-<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (CITATIONS… NOT SURE IF THIS IS TRUE; NEED TO ASK MIKE AND LOOK AT LITERATURE). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon. For a more detailed examination of these assumptions see the “Discussion” section below.</p>
+<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (CITATIONS… NOT SURE IF THIS IS TRUE; NEED TO ASK MIKE AND LOOK AT LITERATURE). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon. For a more detailed examination of these assumptions see the “Discussion” section.</p>
 <!--...BUT  NEED TO LOOK INTO!/CHAT WITH MIKE ABOUT.)-->
 </div>
 </div>
@@ -299,15 +283,17 @@ on my todo list now--></p>
 </div>
 <div id="movement" class="section level4">
 <h4>Movement</h4>
-<p>Within basin movement occurs between years and is considered at the bend-level. Pallid sturgeon may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend location with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular,</p>
-<p><span class="math display">\[\mathbb{P}\Big(B(t)=b_j  |  B(t-1)=b_i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},\]</span></p>
-<p>and</p>
-<p><span class="math display">\[f(i,k)=
+<p>Within basin movement occurs between years and is considered at the bend-level. Pallid sturgeon may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend locations with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular,</p>
+<p><span class="math display">\[\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{e^{-\beta d(i, j)}}{\sum_k e^{-\beta d(i, k)}},\]</span></p>
+<!--
+$$\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$ 
 \begin{cases} 
-      1, &amp; k=i \\
-      e^{\beta_0-\beta_1 d(b_i, b_k)}, &amp; k\neq i
-   \end{cases},\]</span> where <span class="math inline">\(d(b_i, b_k)\)</span> is the distance in RKM from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span> and <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are basin specific parameters.</p>
-<p>(NEED JUSTIFICATION FOR THIS…CHAT WITH MIKE/LOOK INTO LITERATURE)</p>
+      1, & k=i \\
+      e^{\beta_0-\beta_1 d(i, k)}, & k\neq i
+   \end{cases},$$
+-->
+<p>where <span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>, and <span class="math inline">\(k\)</span> are particular bends, <span class="math inline">\(B(t)\)</span> is the individual’s bend location in year <span class="math inline">\(t\)</span>, <span class="math inline">\(d(i, k)\)</span> is the distance in river kilometers (RKM) from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span>, and <span class="math inline">\(\beta\)</span> is a basin specific parameter.</p>
+<p>(NEED JUSTIFICATION FOR THIS…CHAT WITH MIKE/LOOK INTO LITERATURE) (Figure 2)</p>
 <p>To account for the uncertain nature of movement probabilities, we vary <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity.</p>
 </div>
 <div id="recruitment" class="section level4">
