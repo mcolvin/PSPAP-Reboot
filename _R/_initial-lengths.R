@@ -30,7 +30,7 @@ fish$tagnumber<- toupper(fish$tagnumber)
 tmp<- merge(eff,fish,by.x="uniqueidentifier",by.y="uniqueid")
 
 # SUBSET OUT FISH THAT ARE OUTLIERS 
-## REMOVE FISH WHERE WEIGHT AND LENGTH ARE NA OR NON-POSITIVE
+## REMOVE FISH WHERE WEIGHT OR LENGTH ARE NA OR NON-POSITIVE
 tmp<-subset(tmp, !is.na(length))
 tmp<-subset(tmp, !is.na(weight))
 tmp<- subset(tmp, length>0)
