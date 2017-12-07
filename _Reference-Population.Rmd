@@ -52,9 +52,12 @@ individuals (e.g., growth) was also simulated.
 
 The objectives of this analysis were to:
 1. Create a spatially explicit pallid sturgeon population with known 
-bend-level annual abundances, and 
+bend-level annual abundances, 
 2. Simulate reference population dynamics for 10 years with varying but 
-known annual survival, individual growth, movement, and recruitment. 
+known annual survival, individual growth, movement, and recruitment, and
+3. Allow movement and recruitment to vary over a wide range of biologically 
+reasonable conditions in order to better understand their relationship with
+monitoring design outcomes.
 
 ### Major Assumptions
 
