@@ -27,14 +27,47 @@ The objectives of this analysis were to:
 
 1. Simulate 10 years of catch data for various sampling strategies using bends as the spatial scale, 
 2. Include information in the catch data that could be reasonably assessed by sampling crews in the field and is relevant to meeting fundamental or sub-objectives, and
-3. Allow gear catchability to vary over a wide range of values in order to evaluate its effect on estimation accuracy and precision.
+3. Allow gear catchability to vary over a wide range of values in order to evaluate its effect on monitoring design outcomes.
 
 ### Major Assumptions
-1. 
-2.
-3.
+1. All fish can be uniquely identified.  
+2. Fish ids are not lost or overlooked.
+3. The sampling protocol is followed without exception. 
+4. Expected catch, $C$ can be approximated as $C=qfN$, a function of gear catchability, $q$,
+effort described as the time in minutes a gear is deployed, $f$, and the population size, $N$.
+5. Gear deployments are independent of one another and do not interact. 
+<!--Currently we have the following, but are planning to make simulations with selective gears.
+6. Gears are not size selective.
+-->
 
+Assumptions 1 and 2, while unlikely to be perfectly met, are reasonable assumptions 
+for working with pallid sturgeon (ref) and are typical assumptions made when working 
+with capture-recapture data (ref).  For a well designed sampling protocol, 
+assumption 3 is also a reasonable, although we recognized that it may not be perfectly 
+met due to safety or other unforeseen issues. 
 
-(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE)
+Describing expected catch as in assumption 4: 
+$C=qfN=pN$, where $p$ is the capture probability and $p=qf$, is also a commonly made assumption (ref).  This equation is likely a good approximation for small effort 
+values ($f$); however, it is clear that as effort increases without bound, capture 
+probability ($p$) will become greater than 1 for fixed $q$.  In other words, the model 
+$C=qfN$ breaks down for large effort values, and therefore, we must be cautious drawing 
+conclusions from outcomes that were generated from large effort values.
+
+To understand assumption 5, it is important to first describe the sampling relationship 
+among years, occasions, deployments, and bends.  In short, each year so many bends will 
+be selected to be sampled.  During a particular year, each selected bend will be sampled 
+on several occasions.  Occasions are short periods of time, say 24 hours, during which 
+multiple deployments of a gear are used to sample the population throughout the bend.  Using 
+this terminology assumption 4 means both that there is a zero probability that the same 
+fish will be caught by two separate deployments (within  the same occasion), and that 
+any single deployment does not affect the probability that a fish is caught by any other 
+deployment within the same sampling occasion.  For some gear types these assumptions are 
+very likely met, while with others there are some caveats that we examine in THE DISCUSSION/APPENDIX ??.
 
 # Methods
+### Spatial and temporal extent and gra
+
+1. Select which bends to sample each year.
+2. Determine the capture probability of each sampling occasion
+
+
