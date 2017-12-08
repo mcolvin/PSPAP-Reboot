@@ -26,6 +26,7 @@ To do:
 * add document sections & organize them
 -->
 
+
 <!--Overview-->
 
 
@@ -53,3 +54,19 @@ To do:
 <!--Methods: valuing design outcomes-utilities-->
 ```{r child="_utilities.Rmd", echo=FALSE}
 ```
+
+
+# Results 
+  * Number of bends for each RPMA
+
+<!--
+# Discussion
+  * Virtual versus power analysis of a post-hoc glm to get trend
+
+How did wildhaber and adam do it did they do virtual or just trend.
+
+They did essentially the same thing, evaluating what the change in cpue
+was rather than actually doing trend. In other words what is the power to 
+detect a 10% decrease in the mean where mean cpue was estimated for each 
+year but not as a function of year.
+-->
