@@ -11,6 +11,7 @@ source("_R/3_load-and-clean.R")
 #### 392-3 RUN ALL OCCASION 3... BUT LOOK AT ERRORS FIRST!
 #### 390-3 RUN ALL OCCASION 3... BUT LOOK AT ERRORS FIRST!
 #### MARK187 FOR 391 is MISSING!!!  LOOK INTO
+#### 380-3_occ2
 
 if(pcname=="WF-FGNL842")
 {
@@ -25,7 +26,7 @@ if(pcname!="WF-FGNL842")
 setwd("D:/_output/6-MARK/MARK")
 
 ptm<-proc.time()
-lapply(382:380, function(i)
+lapply(379:3, function(i)
 {
   lapply(3:4, function(j)
   {
