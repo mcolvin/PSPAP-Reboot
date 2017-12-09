@@ -188,7 +188,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Creating a reference population</h1>
-<h4 class="date"><em>06 December, 2017</em></h4>
+<h4 class="date"><em>08 December, 2017</em></h4>
 
 </div>
 
@@ -198,10 +198,6 @@ rmarkdown::render("_Reference-Population.Rmd",output_format='html_document')#
 build page
 rmarkdown::render("_Reference-Population.Rmd",output_format='word_document')# 
 build page
-
-??? 
-* How static are habitats within bend... markov matrices of units
-* Don't actually measure habitat dimensions? WTF?
 -->
 <div id="overview" class="section level1">
 <h1>Overview</h1>
@@ -210,7 +206,7 @@ We used a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitori
 <p>A set of reference populations of known pallid sturgeon abundance is needed to evaluate varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??). A reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level (Figure 1). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated.</p>
 <div id="objectives" class="section level3">
 <h3>Objectives</h3>
-<p>The objectives of this analysis were to: 1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, and 2. Simulate reference population dynamics for 10 years with varying but known annual survival, individual growth, movement, and recruitment.</p>
+<p>The objectives of this analysis were to: 1. Create a spatially explicit pallid sturgeon population with known bend-level annual abundances, 2. Simulate reference population dynamics for 10 years with varying but known annual survival, individual growth, movement, and recruitment, and 3. Allow movement and recruitment to vary over a wide range of biologically reasonable conditions in order to better understand their relationship with monitoring design outcomes.</p>
 </div>
 <div id="major-assumptions" class="section level3">
 <h3>Major Assumptions</h3>
@@ -221,10 +217,8 @@ We used a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitori
 <li>Movement within a basin can occur between years.</li>
 <li>Recruitment occurs at the basin-level and is stochastic.</li>
 </ol>
-<!--(DISCUSS THE VALIDITY OF EACH ASSUMPTION HERE... WOULD LIKE TO SAY 
-SOMETHING LIKE:-->
-<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (CITATIONS… NOT SURE IF THIS IS TRUE; NEED TO ASK MIKE AND LOOK AT LITERATURE). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon. For a more detailed examination of these assumptions see the “Discussion” section.</p>
-<!--...BUT  NEED TO LOOK INTO!/CHAT WITH MIKE ABOUT.)-->
+<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (Cite Kirk, Holan &amp; Wu, &amp; Rotella). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. However, since it is unclear how closely assumptions 3 and 4 are met in reality, we explore and discuss the consequences of breaking these movement assumptions on estimator outputs in Appendix ??.<br />
+Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon.</p>
 </div>
 </div>
 <div id="methods" class="section level1">
@@ -285,7 +279,7 @@ on my todo list now--></p>
 <div id="movement" class="section level4">
 <h4>Movement</h4>
 <p>Within basin movement occurs between years and is considered at the bend-level. Pallid sturgeon may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend locations with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular,</p>
-<p><span class="math display">\[\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{e^{-\beta d(i, j)}}{\sum_k e^{-\beta d(i, k)}},\]</span></p>
+<p><span class="math display">\[\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{e^{-\beta d(i, j)}}{\sum_k e^{-\beta d(i, k)}}, \qquad \text{(3)}\]</span></p>
 <!--
 $$\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$
 and 
@@ -294,37 +288,15 @@ $$\begin{cases}
       e^{\beta_0-\beta_1 d(i, k)}, & k\neq i
    \end{cases},$$
 -->
-<p>where <span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>, and <span class="math inline">\(k\)</span> are particular bends, <span class="math inline">\(B(t)\)</span> is the individual’s bend location in year <span class="math inline">\(t\)</span>, <span class="math inline">\(d(i, k)\)</span> is the distance in river kilometers (RKM) from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span>, and <span class="math inline">\(\beta\)</span> is a basin specific parameter.</p>
-<p>(NEED JUSTIFICATION FOR THIS…I HAVE SOME IDEAS FOR WHAT WE MIGHT WANT TO DO WITH MOVEMENT MOVING FORWARD)</p>
-<p>To account for the uncertain nature of movement probabilities, we vary <span class="math inline">\(\beta\)</span> from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity. Lastly, we also simulated reference populations that do not move, i.e. individuals always remain within the same bend during the sampling season.</p>
+<p>where <span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>, and <span class="math inline">\(k\)</span> are particular bends, <span class="math inline">\(B(t)\)</span> is the individual’s bend location in year <span class="math inline">\(t\)</span>, <span class="math inline">\(d(i, k)\)</span> is the distance in river kilometers (RKM) from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span>, and <span class="math inline">\(\beta\)</span> is a basin specific parameter[^3].</p>
+<p>Currently, we have simulated reference populations that do not move (individuals can always be found in the same bend from one sampling season to the next), as well as reference populations with very little between year movement (<span class="math inline">\(\beta=1\)</span>; high site fidelity). This allows for an evaluation of whether there are any stark discontinuities in optimal monitoring decisions between the simplified case of no movement and the case of very little between year movement. Additionally, to account for the uncertain nature of movement probabilities, we plan to vary <span class="math inline">\(\beta\)</span> from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity (Figure 2). Since (3) is discontinuous in terms of river kilometer, a similar bend-level conditional probability distribution that is derived from movement probabilities that are continuous in space is also being considered as a movement model.</p>
 </div>
 <div id="recruitment" class="section level4">
 <h4>Recruitment</h4>
-<p>Each year recruitment was determined by two factors: (1) whether or not spawning that led to successful recruitment occurred and (2) given recruitment occurred, how many age-0 fish survived to age-1 (number of recruits). Recruitment years occurred with a fixed expected frequency (e.g. once every 3 years) and were determined each year as the result of a Bernoulli trial (e.g. probability of success 1/3). During years when recruitment occurred, the number of recruits is drawn from a basin specific Poisson distribution. Assuming that spawning results in a large number of free embryos and that survival to age-1 is rare, then a Poisson distribution is a good approximation for the number of recruits.</p>
+<p>Each year recruitment was determined by two factors: (1) whether or not spawning that led to successful recruitment occurred and (2) given recruitment occurred, how many age-0 fish survived to age-1 (number of recruits). Recruitment years occurred with a fixed expected frequency (e.g. once every 3 years) and were determined each year as the result of a Bernoulli trial (e.g. probability of success 1/3). During years when recruitment occurred, the number of recruits is drawn from a basin specific Poisson distribution. Assuming that spawning results in a large number of free embryos and that survival to age-1 is rare, then a Poisson distribution mathematically provides a good approximation for the number of recruits. Furthermore, the use of a Poisson distribution aligns well with how actual recruit data may be analyzed (?), as well as with the set-up of the collaborative population model.</p>
 <p>Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters. Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population. Initial length was chosen as 200mm, because (REASON HERE). Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.</p>
 </div>
 </div>
-</div>
-<div id="discussion" class="section level1">
-<h1>Discussion</h1>
-<p>There were several assumptions made in the simulation of the reference populations. While the major assumptions are reasonable for the given objectives, a further discussion of some assumptions</p>
-<p>Additionally, since it is unclear how closely assumptions 3 and 4 are met in reality, we explore and discuss the consequences of breaking these movement assumptions on estimator outputs in Appendix ??.</p>
-<!-- NOT SURE ABOUT THESE SECTIONS...
-# Results 
-
-* Number of bends for each RPMA
-
-
-# Discussion
-* Virtual versus power analysis of a post-hoc glm to get trend
-
-How did wildhaber and adam do it did they do virtual or just trend.
-
-They did essentially the same thing, evaluating what the change in cpue
-was rather than actually doing trend. In other words what is the power to 
-detect a 10% decrease in the mean where mean cpue was estimated for each 
-year but not as a function of year.
--->
 </div>
 <div id="figures" class="section level1">
 <h1>Figures</h1>
