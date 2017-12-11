@@ -280,6 +280,7 @@ individual growth parameters.
 # Figures
 ![Figure 1.](images/PopSim.jpg)
 
+![Figure 2.](images/Movement.jpeg)
 
 # Tables
 
