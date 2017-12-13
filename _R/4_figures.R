@@ -144,29 +144,30 @@ figures_effort<- function(n){
         }
 
 
-if(n==2){
+if(n==2)
+  {
     ########### figures from effort analysis
     ########### need to modify and clean up
     # LOOK AT EFFORT BY GEAR
     par(mfrow=c(1,2),mar=c(4,4,3,2))
-      datLB<-subset(dat, standard_gear=="yes" & basin=="LB")
-  LBgears<-unlist(lapply(unlist(levels(datLB$gear)), function(x) 
+    datLB<-subset(dat, standard_gear=="yes" & basin=="LB")
+    LBgears<-unlist(lapply(unlist(levels(datLB$gear)), function(x) 
     {
       lg<-subset(datLB, gear==x)
       if(nrow(lg)!=0) return(x)
-    }
-  ))
-      datLBgear<-subset(datLB, gear==LBgears[x])
-      #Make Sure There's Only One Gear ID
-      if(length(levels(as.factor(datLBgear$gear_id)))>1) print("Warning: Multiple Gear IDs for this Gear")
-      #Make Plots    
-      hist(datLBgear$effort,  xlab="Effort (in minutes)", main=paste("LB ", LBgears[x], " Effort"))
-      boxplot(datLBgear$effort, ylab="Effort (in minutes)", main=paste("LB ", LBgears[x], " Effort"))
-      #barplot(datLBgear$effort,  ylab="Effort (in minutes)", main=paste("LB ", LBgears[x], " Effort"))
-    }
+    }))
+    datLBgear<-subset(datLB, gear==LBgears[x]) #NEED TO DEFINE x
+    #Make Sure There's Only One Gear ID
+    if(length(levels(as.factor(datLBgear$gear_id)))>1) print("Warning: Multiple Gear IDs for this Gear")
+    #Make Plots    
+    hist(datLBgear$effort,  xlab="Effort (in minutes)", main=paste("LB ", LBgears[x], " Effort"))
+    boxplot(datLBgear$effort, ylab="Effort (in minutes)", main=paste("LB ", LBgears[x], " Effort"))
+    #barplot(datLBgear$effort,  ylab="Effort (in minutes)", main=paste("LB ", LBgears[x], " Effort"))
+  }
 
-if(n==3){
-    datUBgear<-subset(datUB, gear==UBgears[x])
+if(n==3)
+  {
+    datUBgear<-subset(datUB, gear==UBgears[x]) #NEED TO DEFINE datUB, UBgears, and x
     #Make Sure There's Only One Gear ID
     if(length(levels(as.factor(datUBgear$gear_id)))>1) print("Warning: Multiple Gear IDs for this Gear")
     #Make Plots    
@@ -192,7 +193,7 @@ if(n==3){
       py<-dgamma(px, shape=s, rate=r)
       points(px,py, xlab="Effort", ylab="Normal Function", main="PDF")
     }
-    #fitfigsLB(18)
+    fitfigsLB(18)
 
     fitfigsUB<-function(x)
     {
@@ -207,9 +208,33 @@ if(n==3){
       plot(density(datUBgear$effort), xlab="Effort", ylab=paste(LBgears[x],"Data"), main="PDF")
       px<-seq(min(datUBgear$effort), max(datUBgear$effort),floor((max(datUBgear$effort)-min(datUBgear$effort))/25))
       py<-dgamma(px, shape=s, rate=r)
-      points(px,py, xlab="Effort", ylab="Normal Function", main="PDF")
+      plot(px,py, add=TRUE, col="red", type="l")
+      curve(dgamma, shape=s, rate=r, min(datUBgear$effort),max(datUBgear$effort), add=TRUE)
     }
-    #fitfigsUB(1)
+    
+    # # Fit parameters (to avoid errors, set lower bounds to zero)
+    # 
+    # fit.params <- fitdistr(x, "gamma", lower = c(0, 0))
+    
+    # Plot using density points
+    den<-density(datUBgear$effort)
+    dat<-data.frame(x = den$x, y = den$y, type="Data")
+    dat2<-data.frame(x = dat$x, y=dgamma(dat$x,s, r), type="Gamma Fit")
+    dat<-rbind(dat, dat2)
+    ggplot(data = dat, aes(x = x,y = y,color=factor(type))) + 
+      scale_colour_manual(values=c("black","red"))+
+      geom_point(size = 1) +     
+      #geom_line(aes(x=dat$x, y=dgamma(dat$x,s, r)), color="red", size = 1) + 
+      theme_classic()+
+      xlab("Effort (minutes)") +
+      ylab("Density") +
+      ggtitle("Trotline (TLC1) Effort Distribution")+
+      theme(plot.title = element_text(hjust = 0.5), 
+            legend.title = element_blank())+
+      guides(colour = guide_legend(override.aes = list(size=3)))
+    
+    
+    fitfigsUB(5)
 
 
 

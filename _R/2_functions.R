@@ -30,7 +30,7 @@ dfitfun<-function(dat=NULL)
       }))
       # TO ONLY REMOVE GEARS THAT GIVE FIT ERRORS: 
       # oust<-c("TLC7", "TLC8", "TLS3")
-      oust<-c("MF", "TLC3", "TLC4", "TLC5", "TLC6","TLC7", "TLC8", "TLS1", "TLS2", "TLS3",
+      oust<-c("TLC3", "TLC4", "TLC5", "TLC6","TLC7", "TLC8", "TLS1", "TLS2", "TLS3",
               "TLO1")
       gears<-setdiff(gears, oust)
       outg<-lapply(gears, function(g)

@@ -247,10 +247,8 @@ rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 <h3>Individual Captures</h3>
 <p>Once the bends to be sampled were selected for each of the 10 years, 10 years of catch data can be simulated. Each year, catch was simulated spatially at the bend level and temporally at the sampling occasion level. We defined a sampling occasion as a short time period (e.g. 24 hours) within a year during which the given bend was sampled. The fixed number of sampling occasions per year per sampled bend was given as part of the monitoring design of interest. In particular, we simulated catch data for monitoring designs that included 1-4 sampling occasions per year for each sampled bend. Additionally, in order to thoroughly sample a bend during a sampling occasion, several gear deployments are used to capture fish. Currently simulations all utilize 8 gear deployments per sampling occasion; however, future analysis will include catch data simulated for a range of deployment numbers.</p>
 <p>For a particular sampled bend during a particular year, each fish located in the given bend had a probability, <span class="math inline">\(p_{occ}\)</span>, of being captured during occasion <span class="math inline">\(occ\)</span>. This occasion level capture probability varied from bend to bend and occasion to occasion, as it was calculated from individualized deployment catchability and effort values.<br />
-For each of the 8 deployments within occasion <span class="math inline">\(occ\)</span>, an effort value <span class="math inline">\(f\)</span> was generated from a gear and basin specific gamma distribution, and a catchability value <span class="math inline">\(q\)</span> was generated from a gear specific distribution. Deployment specific capture probabilities, <span class="math inline">\(p\)</span>, were calculated as <span class="math inline">\(p=q\cdot f\)</span>, and the 8 within occasion deployment capture probabilities were summed to obtain occasion level <span class="math inline">\(p_{occ}\)</span>. Therefore, if a fish was located in the given sampled bend during the given year, its capture was a Bernoulli trial with probability of success <span class="math inline">\(p_{occ}\)</span>, resulting in total occasion level catch numbers for the particular bend being binomially distributed. When a fish is successfully caught, fish id, location (bend), timing (occasion within year) of catch, gear used, and other important individual attributes (e.g., length, weight, sex) are recorded, simulating a complete capture history at the bend and occasion levels for the given sampling design.</p>
-<!-- DOES THIS MAKE MORE SENSE THAN ABOVE??? (THIS CAME FROM THE SUMMARY COMMENTED OUT BELOW)
-In other words, for a particular bend and year, a Bernoulli trial simulated whether or not an individual fish was captured during each occassion, producing a within year capture history for each fish.  Fish that were never captured had their capture histories removed from the data.  Fish that were captured had their individual attributes for the given year recorded from the reference population data.
--->
+For each of the 8 deployments within occasion <span class="math inline">\(occ\)</span>, an effort value <span class="math inline">\(f\)</span> was generated from a gear and basin specific gamma distribution, and a catchability value <span class="math inline">\(q\)</span> was generated from a gear specific distribution. Deployment specific capture probabilities, <span class="math inline">\(p\)</span>, were calculated as <span class="math inline">\(p=q\cdot f\)</span>, and the 8 within occasion deployment capture probabilities were summed (and bounded at 1) to obtain occasion level <span class="math inline">\(p_{occ}\)</span>.<br />
+Therefore, if a fish was located in the given sampled bend during the given year, its capture was a Bernoulli trial with probability of success <span class="math inline">\(p_{occ}\)</span>, resulting in total occasion level catch numbers for the particular bend being binomially distributed.</p>
 <div id="effort-distributions" class="section level4">
 <h4>Effort Distributions</h4>
 <p>Distributions for deployment level effort (<span class="math inline">\(f\)</span>) were generated using the PSPAP database. We defined effort as the time (in minutes) that a gear was set, dragged, or pulled for during a single deployment<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Since effort was calculated using the start and stop times, all PSPAP data without a start or stop time was excluded from this analysis. The relevant data entries were then merged with the gear data and a stop date column was added to take into account gears that were set over night. Effort was calculated in minutes as the difference between the stop time and the start time with any discrepancies in the set date and stop date taken into account by using the <code>strptime</code> function in R to link the start and stop times to their corresponding set and stop dates, respectively. Before generating the effort distributions, all entries resulting in negative effort values were removed.</p>
@@ -258,14 +256,18 @@ In other words, for a particular bend and year, a Bernoulli trial simulated whet
 </div>
 <div id="catchability-distributions" class="section level4">
 <h4>Catchability Distributions</h4>
-<p>Deployment catchability values (<span class="math inline">\(q\)</span>), or the probability of catching a single fish with one unit of effort are a source of uncertainty.</p>
+<p>Gear specific catchability distributions were set up such that the log-odds of catchability (<span class="math inline">\(q\)</span>) was normally distributed: <span class="math display">\[\ln\left(\frac{q}{1-q}\right)\sim \mathcal{N}\left(\mu, \beta_0\right),\]</span> where <span class="math inline">\(\mu=\ln\frac{\mu_q}{1-\mu_q}\)</span> and <span class="math inline">\(\mu_q\)</span> is the expected catchability of the gear. Because deployment catchability values, or the probability of catching a single fish with one unit of effort, are a source of uncertainty we allowed the choices of <span class="math inline">\(\mu_q\)</span> and <span class="math inline">\(\beta_0\)</span> to vary for among catch data simulations (CITE A TABLE OR SOMETHING THAT LISTS RANGES OF PARAMS).</p>
 </div>
-<div id="gear-selectivity" class="section level4">
-<h4>Gear Selectivity</h4>
-<p>as well as the number of gear deployments within a particular occasion. Additionally, each sampling design can be implemented with varying gears: gill nets, trammel nets, otter trawls, trotlines, or a combination of these. The catch is simulated from gear-specific catchability values which were bounded to produce plausible overall capture probabilities where catchability is defined as the probability of capture 1 fish per unit effort (Hubert and Fabrizio 2007).</p>
+<div id="gear-selection-and-size-selectivity" class="section level4">
+<h4>Gear Selection and Size Selectivity</h4>
+<p>The choice of monitoring design also indicates which gears should be used in sampling.<br />
+This is important as different gears will have different catch rates and associated costs of deployment. Currently, catch simulations include catch data from gill nets, trammel nets, otter trawls, trotlines, or a combination of these.</p>
+<p>Additionally, gears may be size selective. In this case different gears will interact with the size distribution of the reference population to produce different catch data outcomes. Because gear selectivity is not precisely known, we are currently accounting for size selectivity by comparing the catch data results simulated under various selction curves. See Appendix ?? for details.</p>
 </div>
 <div id="individual-measurements" class="section level4">
 <h4>Individual Measurements</h4>
+<p>For a particular bend and year, a Bernoulli trial simulated whether or not an individual fish was captured during each occassion, producing a within year capture history for each fish. Fish that were never captured had their capture histories removed from the data. Fish that were captured had their individual attributes for the given year recorded from the reference population data. Specifically, whenever a fish is successfuly caught its fish id, location (bend), timing (occasion within year) of catch, gear used, and length are recorded.</p>
+<p>We have primarily focused on measuring length, as it is vital to the metrics for sub-objective 2<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> as outlined in Section 4.1.1 of the 2016 AM plan. Additionally, we are currently working on including fish sex, origin (natural or hatchery), and age due to their importance to sub-objective metrics and to understanding effective populations size. Several other individual measurements were voiced to be of interest to stakeholders at the 2017 MRNRC PSPAP Workshop. These measurements may be considered as part of future analyses.</p>
 <!-- USEFUL TO PUT SOMEWHERE???  
 In summary, the catch data simulator generates which bends are sampled during year $y$ where $y=1, 2, \ldots, 10$.  Using the reference population, we identify which fish were in sampled bend $b$ during year $y$.  Each of the identified individual fish had probability $p_{occ}$ of being captured in bend $b$ during sampling occasion $occ$ within year $y$, where $occ=1, 2, \ldots, occ_{max}$ and $occ_{max}$ is the number of sampling occasions per year per bend specified by the monitoring design.  A Bernoulli trial simulated whether or not an individual fish was captured during each occassion, producing a within year capture history for each fish.  Fish that were never captured had their capture histories removed from the data.  Fish that were captured had their individual attributes for year $y$ recorded from the reference population data.  This process was repeated for every sampled bend $b$ in year $y$, as well as for every year $y$, producing 10 years of catch data. Notice that $p_{occ}$ is different for each occasion, bend, and year but is the same probabilty value for all fish located within bend $b$ in year $y$ during sampling occasion $occ$.  In other words capture probability was location and time dependent but not dependent on past behavior or individual attributes (e.g. size).      
 -->
@@ -281,6 +283,10 @@ In summary, the catch data simulator generates which bends are sampled during ye
 <div class="figure">
 <img src="images/CatchSim.jpg" alt="Figure 2." style="width:80.0%" />
 <p class="caption">Figure 2.</p>
+</div>
+<div class="figure">
+<img src="images/EffortDistEx.jpeg" alt="Figure 3." />
+<p class="caption">Figure 3.</p>
 </div>
 </div>
 <div id="tables" class="section level1">
@@ -405,6 +411,19 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 </tr>
 <tr class="odd">
 <td align="left">LB</td>
+<td align="center">MF</td>
+<td align="center">41</td>
+<td align="center">7411</td>
+<td align="center">1278</td>
+<td align="center">126</td>
+<td align="left">729</td>
+<td align="center">2106</td>
+<td align="center">1288</td>
+<td align="center">103.412037</td>
+<td align="center">0.0808979</td>
+</tr>
+<tr class="even">
+<td align="left">LB</td>
 <td align="center">OT16</td>
 <td align="center">52</td>
 <td align="center">606</td>
@@ -416,7 +435,7 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <td align="center">1.986635</td>
 <td align="center">0.7149057</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LB</td>
 <td align="center">TLC1</td>
 <td align="center">87</td>
@@ -429,7 +448,7 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <td align="center">500.663839</td>
 <td align="center">0.3746263</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">LB</td>
 <td align="center">TLC2</td>
 <td align="center">87</td>
@@ -442,7 +461,7 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <td align="center">122.773069</td>
 <td align="center">0.1017996</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">LB</td>
 <td align="center">TN</td>
 <td align="center">65</td>
@@ -455,7 +474,7 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <td align="center">2.568699</td>
 <td align="center">0.6765714</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">UB</td>
 <td align="center">GN14</td>
 <td align="center">18</td>
@@ -468,7 +487,7 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <td align="center">29.735758</td>
 <td align="center">0.0263068</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">UB</td>
 <td align="center">GN41</td>
 <td align="center">18</td>
@@ -480,6 +499,19 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <td align="center">1138</td>
 <td align="center">30.634266</td>
 <td align="center">0.0270084</td>
+</tr>
+<tr class="even">
+<td align="left">UB</td>
+<td align="center">MF</td>
+<td align="center">41</td>
+<td align="center">4281</td>
+<td align="center">1182</td>
+<td align="center">142</td>
+<td align="left">698</td>
+<td align="center">1708</td>
+<td align="center">1180</td>
+<td align="center">69.168422</td>
+<td align="center">0.0584990</td>
 </tr>
 <tr class="odd">
 <td align="left">UB</td>
@@ -730,7 +762,8 @@ The shape and rate columns are the results of fitting a gamma distribution to th
 <hr />
 <ol>
 <li id="fn1"><p>This is a general measurement of effort that can be calculated for all gear types. However, we recognize that gear set time is more relavent to measuring effort for passive gears and we plan to further incorporate effort values based on distance or area metrics when considering active gears.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>DEFINE STANDARD GEAR TYPES HERE<a href="#fnref2">↩</a></p></li>
+<li id="fn2"><p>We use the term “standard gear” as defined in the USACE’s 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (CITATION). <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.--><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Sub-objective 2 metric: ``Population estimates for pallid sturgeon for all size and age classes, particularly for ages 2 to 3 to assess recent trends in recruitment; catch rates of all pallid sturgeon by size class (to maintain legacy data).<a href="#fnref3">↩</a></p></li>
 </ol>
 </div>
 
