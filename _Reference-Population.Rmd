@@ -34,7 +34,7 @@ build page
 <!-- IF WE NEED A MORE DETAILED INTRO WE CAN SAY SOMETHING LIKE:
 We used a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and Peterson 2013). The development and parameterization of the BDN required two steps (see ??).  The second step was to stochastically simulate the outcomes of the alternative monitoring designs. In short, the process that we used (and continue to use) to generate monitoring design outcomes involves four steps (see ??), the first of which is to simulate known reference pallid sturgeon populations. Therefore...pick up with what follows-->
 
-A set of reference populations of known pallid sturgeon abundance is needed to 
+A set of reference populations of known pallid sturgeon abundance was needed to 
 evaluate varying monitoring designs and their ability to achieve the 
 fundamental objectives identified during the first population assessment
 program workshop (See Section ??). A reference population provides 
@@ -47,7 +47,7 @@ individuals (e.g., growth) was also simulated.
 ### Objectives
 
 The objectives of this analysis were to:
-1. Create a spatially explicit pallid sturgeon population with known 
+1. Create a set of spatially explicit pallid sturgeon population with known 
 bend-level annual abundances, 
 2. Simulate reference population dynamics for 10 years with varying but 
 known annual survival, individual growth, movement, and recruitment, and
