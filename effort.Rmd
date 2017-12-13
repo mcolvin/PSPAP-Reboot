@@ -14,15 +14,15 @@ rmarkdown::render("index.Rmd")
 -->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
-source("R/1_global.R")
-source("R/2_functions.R")
+source("_R/1_global.R")
+source("_R/2_functions.R")
 #effort_data<- FALSE
-#source("R/3_load-and-clean.R")
-dat<- readRDS("output/effort-data.Rds")
+#source("_R/3_load-and-clean.R")
+dat<- readRDS("_output/effort-data.Rds")
 
-source("R/4_figures.R")
-source("R/5_tables.R")
-#source("R/6_analysis-effort.R")
+source("_R/4_figures.R")
+source("_R/5_tables.R")
+#source("_R/6_analysis-effort.R")
 common<-UBcommon<-c("GN14","GN41","MF","OT16","TLC1","TLC2","TN")
 LBcommon<-c("GN18","GN81","TLC4","TLS1","TLS2")
 # datS<-subset(dat,standard_gear=="yes")

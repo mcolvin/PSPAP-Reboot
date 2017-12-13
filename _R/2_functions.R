@@ -1,60 +1,58 @@
 # FUNCTIONS IN THIS SCRIPT
 ## EFFORT DISTRIBUTIONS
-###  1. dfitfunLB
-###  2. dfitfunuB
-## RELATIVE ABUNDANCE (CPUE)
-###  3. reference_population
-###  4. bend_samples
-###  5. catch_counts
-###  6. MKA.ests
-###  7. M0t.ests
-###  8. RD.ests
-###  9. abund.trnd
-### 10. length.dat
+###  1. dfitfun
+## ESTIMATING ABUNDANCE, TREND, AND LENGTH
+###  2. reference_population
+###  3. bend_samples
+###  4. catch_counts
+###  5. MKA.ests
+###  6. M0t.ests
+###  7. RD.ests
+###  8. abund.trnd
+###  9. length.dat
 ## CAPTURE RECAPTURE FUNCTIONS
-### 11. sim_ch
-### 12. estimate
-### 13. plot_metrics
+### 10. sim_ch
+### 11. estimate
+### 12. plot_metrics
 
 # EFFORT DISTRIBUTIONS
-## FIT DISTRIBUTIONS TO EFFORT DATA 
-dfitfun<-function(x,dat,basin,gears)
+## 1. FUNCTION TO FIT GAMMA DISTRIBUTIONS TO EFFORT DATA 
+dfitfun<-function(dat=NULL)
   {
-    datBgear<-subset(dat, basin==basin & gear==gears[x])
-    dfit<-fitdistr(datBgear$effort, "gamma")
-    #Define Shape and Rate Based on Distribution Fitting
-    s<-as.numeric(unlist(dfit)[1])
-    r<-as.numeric(unlist(dfit)[2])
-    return(c(s,r))
+    dat<-dat[which(dat$standard_gear=="yes"),]
+    out<-lapply(c("LB","UB"),function(b)
+    {
+      dat<-dat[which(dat$basin==b),]
+      gears<-unlist(lapply(unlist(levels(dat$gear)), function(x) 
+      {
+        lg<-subset(dat, gear==x)
+        if(nrow(lg)!=0) return(x)
+      }))
+      # TO ONLY REMOVE GEARS THAT GIVE FIT ERRORS: 
+      # oust<-c("TLC7", "TLC8", "TLS3")
+      oust<-c("MF", "TLC3", "TLC4", "TLC5", "TLC6","TLC7", "TLC8", "TLS1", "TLS2", "TLS3",
+              "TLO1")
+      gears<-setdiff(gears, oust)
+      outg<-lapply(gears, function(g)
+      {
+        datg<-dat[which(dat$gear==g),]
+        dfit<-fitdistr(datg$effort, "gamma")
+        #Define Shape and Rate Based on Distribution Fitting
+        s<-as.numeric(unlist(dfit)[1])
+        r<-as.numeric(unlist(dfit)[2])
+        return(data.frame(gear=g, gamma_shape=s, gamma_rate=r))
+      })
+      outg<-do.call(rbind,outg)
+      outg$basin<-b
+      return(outg)
+    })
+    out<-do.call(rbind,out)
+    return(out)
   }
 
 
-## 1.  
-dfitfunLB<-function(x)
-    {
-    datLBgear<-subset(datLB, gear==LBgears[x])
-    dfit<-fitdistr(datLBgear$effort, "gamma")
-    #Define Shape and Rate Based on Distribution Fitting
-    s<-as.numeric(unlist(dfit)[1])
-    r<-as.numeric(unlist(dfit)[2])
-    return(c(s,r))
-    }
-
-## 2.
-dfitfunUB<-function(x)
-    {
-    datUBgear<-subset(datUB, gear==UBgears[x])
-    dfit<-fitdistr(datUBgear$effort, "gamma")
-    #Define Shape and Rate Based on Distribution Fitting
-    s<-as.numeric(unlist(dfit)[1])
-    r<-as.numeric(unlist(dfit)[2])
-    return(c(s,r))
-    }
-
-
-
 # RELATIVE ABUNDANCE (CPUE)
-## 3. FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
+## 2. FUNCTION TO DISTRIBUTE FISH AMONG SEGEMENTS
 ## AND THEN BENDS
 reference_population<- function(inputs,...)
     {
@@ -460,7 +458,7 @@ reference_population<- function(inputs,...)
 
 
 
-## 4. FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT 
+## 3. FUNCTION TO DETERMINE WHICH BENDS WITHIN A SEGMENT 
 ## TO SAMPLE
 bend_samples<-function(sim_pop=NULL,
     samp_type=NULL)
@@ -545,7 +543,7 @@ bend_samples<-function(sim_pop=NULL,
 
 
 
-## 5. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
+## 4. FUNCTION TO DETERMINE EFFORT & CATCHABILITY OF EACH DEPLOYMENT AND 
 ##    RESULTING CAPTURE HISTORIES OF FISH IN SAMPLED BENDS
 catch_data<-function(sim_pop=NULL,inputs,...)
     {
@@ -767,7 +765,7 @@ catch_data<-function(sim_pop=NULL,inputs,...)
 
 
 
-## 6. GETTING CATCH AND  MKA ESTIMATES
+## 5. GETTING CATCH AND  MKA ESTIMATES
 MKA.ests<-function(sim_dat=NULL,
                    max_occ=NULL, #Number of occasions to use for estimate
                    gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
@@ -909,7 +907,7 @@ MKA.ests<-function(sim_dat=NULL,
 
 
 
-## 7. GETTING M0 & Mt ESTIMATES
+## 6. GETTING M0 & Mt ESTIMATES
 M0t.ests<-function(sim_dat=NULL,
                    max_occ=NULL, #Number of occasions to use for estimate
                    gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
@@ -1115,7 +1113,7 @@ M0t.ests<-function(sim_dat=NULL,
 
 
 
-#8. RD ESTIMATOR
+#7. RD ESTIMATOR
 RD.ests<-function(pop_num=NULL,
                   catch_num=NULL,
                   location=NULL,
@@ -1338,7 +1336,7 @@ RD.ests<-function(pop_num=NULL,
 
 
 
-## 9. GETTING ABUNDANCE AND TREND ESTIMATES
+## 8. GETTING ABUNDANCE AND TREND ESTIMATES
 abund.trnd<-function(samp_type=NULL, 
                      pop_num=NULL, 
                      catch_num=NULL,
@@ -2331,7 +2329,7 @@ abund.trnd<-function(samp_type=NULL,
 
 
 
-## 10. GETTING LENGTH ESTIMATES
+## 9. GETTING LENGTH ESTIMATES
 length.dat<-function(sim_dat=NULL,
                      max_occ=NULL,
                      #gear_combi=NULL,  ##NEEDS TO BE ADDED
