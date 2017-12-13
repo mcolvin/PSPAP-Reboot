@@ -116,7 +116,7 @@ if(effort_data==TRUE)# long time to run, set to true in Rmd to run
     {
     ## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
     #com3<- odbcConnectAccess2007("C:/Users/mcolvin/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
-    # com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+    com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
     dat<-sqlFetch(com3, "Gear-Specific-Effort")
     ## CONVERT TO CHARACTER
     dat$STARTTIME<- as.character(dat$STARTTIME)
@@ -207,15 +207,15 @@ if(effort_data==TRUE)# long time to run, set to true in Rmd to run
     ##FIX TYPO IN COLUMN NAME
     colnames(dat)[14]<-"standard_gear"
 
-    dat$gearC<-as.factor(unlist(lapply(dat$gear, function(x) 
-        {
-        ifelse(any(common==x), 
-            x<-paste0(x,"*"),
-            ifelse((dat$basin=="LB" && any(LBcommon==x))||(dat$basin=="UB" && x=="TLO1"),x<-paste0(x,"*"),
-                unlist(levels(dat$gear))[x]))
-        }
-    )))
-    saveRDS(dat,"output/effort-data.Rds")
+    # dat$gearC<-as.factor(unlist(lapply(dat$gear, function(x) 
+    #     {
+    #     ifelse(any(common==x), 
+    #         x<-paste0(x,"*"),
+    #         ifelse((dat$basin=="LB" && any(LBcommon==x))||(dat$basin=="UB" && x=="TLO1"),x<-paste0(x,"*"),
+    #             unlist(levels(dat$gear))[x]))
+    #     }
+    # )))
+    saveRDS(dat,"_output/effort-data.Rds")
     }
 
 ######################### STUDY AREA ###########
