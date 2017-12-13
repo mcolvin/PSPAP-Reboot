@@ -3,6 +3,28 @@
 ###########################
 # FIT GAMMA DISTRIBUTIONS #
 ###########################
+## 1.  
+dfitfunLB<-function(x)
+{
+  datLBgear<-subset(datLB, gear==LBgears[x])
+  dfit<-fitdistr(datLBgear$effort, "gamma")
+  #Define Shape and Rate Based on Distribution Fitting
+  s<-as.numeric(unlist(dfit)[1])
+  r<-as.numeric(unlist(dfit)[2])
+  return(c(s,r))
+}
+
+## 2.
+dfitfunUB<-function(x)
+{
+  datUBgear<-subset(datUB, gear==UBgears[x])
+  dfit<-fitdistr(datUBgear$effort, "gamma")
+  #Define Shape and Rate Based on Distribution Fitting
+  s<-as.numeric(unlist(dfit)[1])
+  r<-as.numeric(unlist(dfit)[2])
+  return(c(s,r))
+}
+
 
 # FIND STANDARD LOWER & UPPER BASIN GEARS
 datLB<-subset(dat, standard_gear=="yes" & basin=="LB")
@@ -35,26 +57,34 @@ ratesUB<-c(valuesUB[(2*c(1:length(UBgears)))])
 shapes<-c(shapesLB[1:12],NA,NA,shapesLB[13:14],NA,shapesLB[15],shapesUB)
 rates<-c(ratesLB[1:12],NA,NA,ratesLB[13:14],NA,ratesLB[15],ratesUB)
 
+
 #######################################################
 # WRITE A TABLE OF EFFORT DATA FOR EACH GEAR BY BASIN #
-#######################################################
+####################################################################
+# SAME AS THE TABLE IN "_R/5_tables.R" tables_effort(n=4, dat=dat) #
+####################################################################  
+  # datS<-subset(dat,standard_gear=="yes") #ONLY STANDARD GEARS
+  # datS$tmp<-1 #TO SUM FOR COUNTS
+  # eft<-dcast(datS, basin+gear+gear_id~"observations", value.var="tmp", sum)
+  # eft$mean_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),mean)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),mean)[,2]))
+  # eft$sd_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),sd)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),sd)[,2]))
+  # eft$min_effort<-c(aggregate(datLB$effort,by=list(datLB$gear),min)[,2],aggregate(datUB$effort,by=list(datUB$gear),min)[,2])
+  # eft$max_effort<-c(aggregate(datLB$effort,by=list(datLB$gear),max)[,2],aggregate(datUB$effort,by=list(datUB$gear),max)[,2])
+  # eft$median_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),median)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),median)[,2]))
+  # eft$gamma_shape<-shapes
+  # eft$gamma_rate<-rates
+  # eft<-subset(eft,observations>=10)
+  # write.table(eft, file="C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/01-PSPAP-Background/analysis-effort/output/effort_dat.csv")
+  # 
+  # #read.table("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/01-PSPAP-Background/analysis-effort/output/effort_dat.csv")
 
-  datS<-subset(dat,standard_gear=="yes") #ONLY STANDARD GEARS
-  datS$tmp<-1 #TO SUM FOR COUNTS
-  eft<-dcast(datS, basin+gear+gear_id~"observations", value.var="tmp", sum)
-  eft$mean_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),mean)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),mean)[,2]))
-  eft$sd_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),sd)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),sd)[,2]))
-  eft$min_effort<-c(aggregate(datLB$effort,by=list(datLB$gear),min)[,2],aggregate(datUB$effort,by=list(datUB$gear),min)[,2])
-  eft$max_effort<-c(aggregate(datLB$effort,by=list(datLB$gear),max)[,2],aggregate(datUB$effort,by=list(datUB$gear),max)[,2])
-  eft$median_effort<-c(round(aggregate(datLB$effort,by=list(datLB$gear),median)[,2]),round(aggregate(datUB$effort,by=list(datUB$gear),median)[,2]))
-  eft$gamma_shape<-shapes
-  eft$gamma_rate<-rates
-  eft<-subset(eft,observations>=10)
-  write.table(eft, file="C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/01-PSPAP-Background/analysis-effort/output/effort_dat.csv")
-  
-  #read.table("C:/Users/sreynolds/Documents/GitHub/PSPAP-Reboot/01-PSPAP-Background/analysis-effort/output/effort_dat.csv")
-
-#MIN AND MAX DEPLOYMENTS OF A GEAR BY BASIN OVER ENTIRE PSPAP
+##################################
+# CODE USED IN WRITE UP ANALYSIS #
+##################################  
+run_code<-FALSE #KEEP FROM RUNNING DURING SOURCING
+if(run_code==TRUE)
+{
+  #MIN AND MAX DEPLOYMENTS OF A GEAR BY BASIN OVER ENTIRE PSPAP
   max(tables(4)$observations)
   which.max(tables(4)$observations)
   tables(4)[20,]
@@ -143,7 +173,7 @@ max(tables(4)$mean_effort[13:20])
 tables(4)[which(tables(4)$mean_effort==1182),]
 max(tables(4)$median_effort[13:20])
 tables(4)[which(tables(4)$median_effort==1180),]
-  
+}  
   
   
 
