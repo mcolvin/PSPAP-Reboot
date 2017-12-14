@@ -1330,7 +1330,7 @@ RD.ests<-function(pop_num=NULL,
   model<-do.call(rbind,lapply(out, `[[`, 3))
   out<-list(ests=abund, COMBI=NULL, parameters=param, model=model)
   return(out)
-  }
+}
 
 
 

@@ -8,7 +8,9 @@ source("_R/3_load-and-clean.R")
 # 1-2 Occ3, 2-3 all, & 2-1 all, do not have "fit" saved #
 #########################################################
 # NEED 57-4 #  
-#############
+###########################################################
+# 275 Occ2 UB needs to be added to final estimator output #
+###########################################################
 
 
 if(pcname=="WF-FGNL842")
@@ -23,7 +25,7 @@ if(pcname!="WF-FGNL842")
 setwd("E:/_output/6-MARK/MARK")
 
 ptm<-proc.time()
-lapply(250:300, function(i)
+lapply(276:325, function(i)
 {
   #lapply(3:4, function(j)
   #{
