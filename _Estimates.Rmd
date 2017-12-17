@@ -1,0 +1,101 @@
+---
+title: "Generating AM Sub-Objective Metrics"
+header-includes:
+  - \usepackage{amsmath, graphicx}
+output: 
+  html_document:
+    theme: readable
+    highlight: tango
+  word_document:  
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
+---
+
+<!--
+rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
+-->
+
+
+```{r, warning=FALSE, include=FALSE}
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
+source("_R/5_tables.R")
+```
+
+
+# Overview
+The need to redesign the PSPAP was triggered by the recognition that the 
+current PSPAP may not allow evaluation of whether the pallid sturgeon 
+fundamental objectives identified in the AM plan were achieved on an 
+annual basis or estimated with any level of certainty. Specifically, 
+sub-objectives listed in section 4.1.1. of the AM plan specify 1) 
+increase pallid sturgeon recruitment to age-1, and 2) maintain or 
+increase numbers of pallid sturgeon as an interim measure until 
+sufficient and sustained natural recruitment occurs, both of which are 
+needed to achieve the fundamental objective set by the USFWS to preclude 
+species jeopardy. These two sub-objectives are redefined as fundamental 
+objectives in the context of the monitoring program to quantify 
+recruitment to age-1 and quantify pallid sturgeon population trend and 
+abundance.
+
+Metrics to assess achievement of the first sub-objective (increase 
+pallid sturgeon recruitment to age-1) are particularly challenging 
+because of the rarity of the species and existing technical difficulties 
+with capturing age-1 (and age-2, age-3) fish and in accurately 
+determining ages. As direct assessment of recruitment to age-1 is 
+unlikely to be successful, the PSPAP v. 2.0 process has proceeded with 
+the assumption that recruitment will need to be assessed through 
+estimates of abundance and trend of older fish, determination of 
+hatchery or wild origin, and back-calculation of age-1 recruitment rates 
+through a well-calibrated and validated population model.  As reported in 
+Section 4.1.1 of the AM plan, metrics for assessing the second 
+sub-objective (maintain or increase numbers of pallid sturgeon as an 
+interim measure) include population estimates for pallid sturgeon for all 
+size and age classes, where age classes are estimated by the population model.
+
+As indicated above, estimates of population abundance and trend are key to 
+assessing both AMP pallid sturgeon sub-objectives.  Moreover, the objective 
+of the PSPAP redesign effort is to identify monitoring designs (sampling 
+designs and abundance and trend estimators) that will give optimal estimates 
+given budget constraints.  Therefore, both the generation and the assessment
+of abundance and trend estimates play a key role in this analysis. Here 
+we focus on the generation of the abundance and trend estimates, i.e.
+the metrics for assessing the AM sub-objectives, leaving the assessment of 
+these estimates to the following section.      
+
+### Objectives
+The objectives of this analysis were to:
+
+1. Apply various abundance estimators to each of the simulated catch 
+data (that were generated from several different sampling strategies) to produce
+abundance estimates at the bend level.
+<!--2. Assess abundance and trend estimates using values of estimator bias, precision,
+and performance.--> 
+2. Use various trend estimators to generate a measure of the population trend over
+a 10-year period by basin. 
+3. Use length data and various abundance estimators to generate population estimates 
+for each length class.   
+
+### Major Assumptions
+We made the typical assumptions associated with the use of each 
+individual estimator.  In general, these assumptions match the assumptions used
+to produce the reference populations (SECTION) and simulated catch data (SECTION).  
+Any major assumptions additional to those previously discussed are included in
+the Methods Section discussion of the particular estimator to which it applies.
+
+# Methods
+### Scope and Spatial Scale
+Since accurately identifying fish age in the field is challenging and the AM plan 
+specifies that age classes are to be estimated by the collaborative population model, 
+we limit our current focus to overall population estimates for pallid sturgeon, 
+as well as population estimates by size class.
+
+The methods and scale varies based on the particular abundance estimator, each of which is discussed   Whenever possible, population estimates were made at the bend level and then 
+aggregated to the segment level.  There were a few cases, where we could not achieve 
+this spatial scale of estimation and the details of how 
+
+<!--
+???CAN WE DISCUSS EACH SEPERATELY IS THERE ENOUGH TO SAY...THINK ABOUT DOING FOR EACH
+-->
