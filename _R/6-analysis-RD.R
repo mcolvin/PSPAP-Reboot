@@ -26,10 +26,11 @@ if(pcname!="WF-FGNL842")
 setwd("D:/_output/6-MARK/MARK")
 
 ptm<-proc.time()
-lapply(379:3, function(i)
+lapply(365:360, function(i)
 {
-  lapply(3:4, function(j)
-  {
+  #lapply(3:4, function(j)
+  #{
+  j<-3
     # SET OCCASIONS TO BE USED
     occasions<-2:3
     lapply(occasions, function(y)
@@ -55,6 +56,6 @@ lapply(379:3, function(i)
       }
       rm(est)
     })
-  })
+  #})
 })
 proc.time()-ptm
