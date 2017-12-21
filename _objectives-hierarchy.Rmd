@@ -1,21 +1,19 @@
 ---
 title: "PSPAP Workshop Objectives hierarchy"
 date: "Workshop held March 21, 2017"
-output:  
+output: 
   html_document:
     theme: readable
     highlight: tango
-  pdf_document:
-    highlight: zenburn 
-  word_document:
-    highlight: zenburn
+  word_document:  
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp.docx
 ---
 
 <!--
 rmarkdown::render("objectives-hierarchy.Rmd",
-    output_format="word_document",
-    output_file = paste(format(Sys.time(), '%Y%m%d'),"objectives-hierarchy.docx",sep="-"),
-    output_dir="./drafts")# build page
+    output_format="word_document")# build page
 * 20170417 added comments received from Tim Welker
 * 20170417 Sent to Joe, Craig, and Wayne for clarifications and inputs along with timeline
 -->
