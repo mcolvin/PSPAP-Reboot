@@ -2,20 +2,18 @@
 title: "White Paper"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 author: "Missouri River Pallid Sturgeon Technical Team"
-output:  
+output: 
   html_document:
     theme: readable
     highlight: tango
-  pdf_document:
-    highlight: zenburn 
-  word_document:
-    highlight: zenburn
+  word_document:  
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
 ---
 
 <!--
-rmarkdown::render("_reboot-master-report.Rmd",
-    output_format="word_document",
-    output_file = paste(format(Sys.time(), '%Y%m%d'),"reboot-master-report.docx",sep="-"))# build page
+rmarkdown::render("_white-paper.Rmd",output_format="word_document")# build page
 
     
 * added content from submitted white paper to ISAP
@@ -26,6 +24,7 @@ To do:
 -->
 
 # Evaluation context for the PSPAP V. 2.0
+
 Redesign of the Pallid Sturgeon Population Assessment Program (PSPAP) to 
 PSPAP v. 2.0 is intended to update population assessment to support 
 adaptive management of the Missouri River Recovery Program (MRRP). PSPAP 
@@ -36,6 +35,8 @@ other components: effectiveness monitoring, focused research studies,
 and the collaborative population model. These four components define the 
 information framework needed to understand and predict population 
 responses to management action (fig. 1). 
+
+ 
 
 1. Pallid Sturgeon Population Assessment Program v. 2.0. The fundamental 
 objective of PSPAP v. 2.0 is to provide essential population-level 
@@ -109,7 +110,8 @@ Communicate progress through PSPAP v. 2.0 blog.
 * August 31, 2017: Webinar to document progress, elicit additional 
 information on objectives hierarchy and sampling logistics. 
 * October 2017: Complete white paper for ISAP review.
-* Late Fall 2017: Meeting to present design results to agencies, stakeholders.
+* Late Fall 2017: Meeting to present design results to agencies, 
+stakeholders. 
 * December 2017: Deliver draft PSPAP v. 2.0 sample-design report. 
 * Winter 2017-2018: Agency review, ISAP review, and revisions
 * Spring 2018: Implement the design on a pilot basis.
@@ -153,8 +155,8 @@ and trend data, but the assessment can be enhanced, and better linked to
 management actions, through incorporation of monitoring data into the 
 collaborative population model. 
 
-
 # Redesign objectives
+
 The objective of the redesign effort is to identify sampling designs and 
 abundance and trend estimators that will give optimal estimates given 
 budget constraints. Our approach is to compare metrics of estimator 
@@ -171,7 +173,8 @@ computing time to run estimators and various simulations with sufficient
 numbers of replications to fully characterize the potential outcomes. 
 
 
-# PSPAP stakeholders and eliciting monitoring objectives 
+# PSPAP stakeholders and eliciting monitoring objectives
+
 Many state and federal agencies contracted to collect pallid sturgeon 
 population assessment data will be affected by changes to the current 
 PSPAP design, as well as consulting groups and management agencies 
@@ -212,7 +215,8 @@ methods below provide a limited overview of the process.
 [^1]: PSPAP stakeholders are differentiated from MRRP stakeholders. PSPAP stakeholders are agencies, institutions, or individuals that have been actively involved in pallid sturgeon population assessments, or that regularly use the data from population assessments. MRRP stakeholders are groups with a stake in management of the Missouri River as represented on MRRIC.
 
 
-## 1) Translate nodes in influence diagram to quantifiable metrics 
+## 1) Translate nodes in influence diagram to quantifiable metrics
+
 The influence diagram was modified to develop a BDN. Specifically, nodes 
 in the influence diagram were classified as nature, decision, or utility 
 nodes. Nature nodes represent quantifiable metrics and the range of 
@@ -310,6 +314,7 @@ the catch data, and compare the estimates to the “true” values used to
 generate the reference population. 
 
 ### 1. Simulate a reference PS population
+
 The pallid sturgeon reference population is initialized using data from 
 the PSPAP database and the pallid sturgeon literature. Each river bend 
 is populated with pallid sturgeon based on expected segment[^2]-level 
@@ -336,6 +341,7 @@ generalized from the collaborative pallid sturgeon population model
 [^2]: Basin refers to the upper basin mainstem rivers (Upper Missouri River and Yellowstone River) and lower basin mainstem rivers (Lower Missouri River downstream from Gavins Point Dam, potential tributaries, and the Middle Mississippi River to an unspecified extent downstream from the confluence with the Missouri River).
 
 ### 2. Simulate sampling catch data
+
 For each of the simulated reference populations, various sampling 
 designs can be implemented to obtain simulated catch data. All sampling 
 designs include segments 2-4, 7-10, 13, and 14, and at a minimum, the 
@@ -357,6 +363,7 @@ the probability of capture 1 fish per unit effort (Hubert and Fabrizio
 2007). 
 
 ### 3. Estimate metrics from the catch data
+
 Once a sampling design is selected, 10 years of occasion-level catch 
 data are simulated for each of the selected bends. Each fish within a 
 selected bend has a probability, P, of being captured. This 
@@ -375,6 +382,7 @@ simulating a complete capture history at the bend level for the given
 sampling design. 
 
 ### 4. Compare the estimates to the “true” values
+
 Several catch data simulations are being evaluated per reference 
 population. All estimators are applied to each of the catch data 
 simulations except where sampling design limits the use of an estimator, 

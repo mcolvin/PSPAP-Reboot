@@ -293,15 +293,20 @@ dependent on past behavior or individual attributes (e.g. size).
 ##### page break
 
 # Figures
-![Figure 1.](images/MonitoringDesign.jpg){width=35%}
+
+```{r,echo=FALSE}
+knitr::include_graphics("images/MonitoringDesign.jpg")
+```
 
 ##### page break
-
-![Figure 2.](images/CatchSim.jpg){width=80%}
+```{r,echo=FALSE}
+knitr::include_graphics("images/CatchSim.jpg")
+```
 
 ##### page break
-
-![Figure 3.](images/EffortDistEx.jpeg)
+```{r,echo=FALSE}
+knitr::include_graphics("images/EffortDistEx.jpeg")
+```
 
 ##### page break
 
