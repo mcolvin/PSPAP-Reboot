@@ -11,7 +11,7 @@ output:
     fig_height: 6.5 
     reference_docx: tmp.docx
 ---
-
+C:\Users\mcolvin\Google Drive
 <!--
 rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
@@ -24,7 +24,7 @@ effort_data<-TRUE   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO 
 source("_R/3_load-and-clean.R")
 source("_R/5_tables.R")
 ```
-
+file.path(Sys.getenv("USERPROFILE"),"Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
 
 # Overview
 

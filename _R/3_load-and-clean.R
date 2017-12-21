@@ -116,7 +116,8 @@ if(effort_data==TRUE)# long time to run, set to true in Rmd to run
     {
     ## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
     #com3<- odbcConnectAccess2007("C:/Users/mcolvin/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
-    com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+    #com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
+    com3<- odbcConnectAccess2007(file.path(Sys.getenv("USERPROFILE"),"Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb"))
     dat<-sqlFetch(com3, "Gear-Specific-Effort")
     ## CONVERT TO CHARACTER
     dat$STARTTIME<- as.character(dat$STARTTIME)
