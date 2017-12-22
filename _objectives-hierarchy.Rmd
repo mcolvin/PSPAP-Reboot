@@ -1,14 +1,18 @@
 ---
 title: "PSPAP Workshop Objectives hierarchy"
-date: "Workshop held March 21, 2017"
-output: 
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
   html_document:
     theme: readable
     highlight: tango
-  word_document:  
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
     fig_width: 6.5  
     fig_height: 6.5 
-    reference_docx: tmp.docx
+    reference_docx: tmp-editing.docx
 ---
 
 <!--
