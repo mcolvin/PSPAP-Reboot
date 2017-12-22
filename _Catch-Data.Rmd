@@ -16,11 +16,10 @@ output:
 rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
 
-
-```{r, warning=FALSE,include=FALSE,echo=FALSE}
+```{r, warning=FALSE,include=FALSE,echo=FALSE,eval=FALSE}
 source("_R/1_global.R")
 source("_R/2_functions.R")
-effort_data<-TRUE   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
+# effort_data<-   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
 source("_R/3_load-and-clean.R")
 source("_R/5_tables.R")
 ```
@@ -290,6 +289,7 @@ located within bend $b$ in year $y$ during sampling occasion $occ$. In
 other words capture probability was location and time dependent but not 
 dependent on past behavior or individual attributes (e.g. size). 
 --> 
+
 ##### page break
 
 # Figures
@@ -299,11 +299,13 @@ knitr::include_graphics("images/MonitoringDesign.jpg")
 ```
 
 ##### page break
+
 ```{r,echo=FALSE}
 knitr::include_graphics("images/CatchSim.jpg")
 ```
 
 ##### page break
+
 ```{r,echo=FALSE}
 knitr::include_graphics("images/EffortDistEx.jpeg")
 ```
@@ -327,34 +329,15 @@ measured in minutes. The shape and rate columns are the results of
 fitting a gamma distribution to the data. 
 
 
-```{r,warning=FALSE, echo=FALSE}
-tbl<-tables_effort(n=4, dat=dat)
+```{r,warning=FALSE,echo=FALSE}
+#tbl<-tables_effort(n=4, dat=dat)
+#write.csv(tbl,"_output/effortAndGearSummary.csv",row.names=FALSE)
+tbl<-read.csv("_output/effortAndGearSummary.csv") 
 kable(tbl,row.names=FALSE,
     col.names=c("Basin","Gear","Gear ID", "No. of Observations", 
         "Mean Effort",
         "SD of Effort", "Minimum Effort", "Maximum Effort", 
         "Median Effort","Shape", "Rate"),
     align="lccccc")
-```
-##### page break
-
-# Code
-
-Box 1. Function used to simulate which bends are sampled each year given 
-a sampling strategy. 
-
-```{r,echo=FALSE}
-print(bend_samples)
-```
-
-##### page break
-
-Box 2. Function used to simulate the catch data given a sampling 
-strategy. Note, this function calls the function "bend_samples", which 
-is the function defined in Box 1. 
-
-
-```{r,echo=FALSE}
-print(catch_data)
 ```
 
