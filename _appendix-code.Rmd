@@ -1,0 +1,54 @@
+---
+title: "Simulating Catch Data"
+header-includes:
+  - \usepackage{amsmath, graphicx}
+output: 
+  html_document:
+    theme: readable
+    highlight: tango
+  word_document:  
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx # swap to tmp.docx for publication
+---
+
+<!--
+rmarkdown::render("_appendix-code.Rmd",output_format='word_document')# build page
+-->
+
+
+
+
+
+Box 1. Function used to simulate reference populations given pallid 
+sturgeon density, survival, and spatial structure. 
+
+
+```{r,echo=FALSE}
+print(reference_population)
+```
+
+
+##### page break
+
+
+
+Box 1. Function used to simulate which bends are sampled each year given 
+a sampling strategy. 
+
+```{r,echo=FALSE}
+print(bend_samples)
+```
+
+##### page break
+
+Box 2. Function used to simulate the catch data given a sampling 
+strategy. Note, this function calls the function "bend_samples", which 
+is the function defined in Box 1. 
+
+
+```{r,echo=FALSE}
+print(catch_data)
+```
+
+
