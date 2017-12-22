@@ -1,5 +1,5 @@
 ---
-title: "White Paper
+title: "Simulating Catch Data"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 author: "Missouri River Pallid Sturgeon Technical Team"
 output:  
@@ -9,7 +9,7 @@ output:
   pdf_document:
     highlight: zenburn 
   word_document:
-    highlight: zenburn
+    highlight: monochrome
     fig_width: 6.5  
     fig_height: 6.5 
     reference_docx: tmp-editing.docx

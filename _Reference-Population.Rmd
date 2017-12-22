@@ -1,16 +1,18 @@
 ---
 title: "Creating a reference population"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-header-includes:
-  - \usepackage{amsmath}
-output: 
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
   html_document:
     theme: readable
     highlight: tango
-  word_document:  
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
     fig_width: 6.5  
     fig_height: 6.5 
-    reference_docx: tmp.docx
+    reference_docx: tmp-editing.docx
 ---
 
 ```{r, warning=FALSE, include=FALSE}
