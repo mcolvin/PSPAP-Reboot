@@ -23,8 +23,10 @@ rmarkdown::render("objectives-hierarchy.Rmd",
 -->
 
 
+## Eliciting stakeholder objectives
 
-# Objectives hierarchy and attributes
+
+### Objectives hierarchy and attributes
 
 The numbered objectives correspond to fundamental objectives identified 
 during the workshop. Bulleted lists within each numbered objective in 

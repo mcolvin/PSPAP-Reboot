@@ -26,9 +26,22 @@ rmarkdown::render("_reboot-master-report.Rmd",
 ```{r child="_white-paper.Rmd", echo=FALSE}
 ```
 
-<!--Methods-->
+<!--Executive summary-->
 
-<!-- Methods: workshop write up and documentation-->
+
+# Introduction
+
+
+
+# Methods
+
+<!--Methodological overview: a couple of paragraphs overviewing 
+the process-->
+
+```{r child="_methods-overview.Rmd", echo=FALSE}
+```
+
+<!-- Methods: Eliciting stakeholder objectives-->
 ```{r child="_objectives-hierarchy.Rmd", echo=FALSE}
 ```
 
@@ -50,6 +63,8 @@ rmarkdown::render("_reboot-master-report.Rmd",
 ```{r child="_appendix-code.Rmd",echo=FALSE,eval=FALSE}
 print("# Appendix 1. Code")
 ```
+
+# Results
 
 
 
