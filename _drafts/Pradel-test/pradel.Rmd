@@ -52,12 +52,12 @@ computer but may fail miserably in the field.
 To test the approach we need to simulate some data from some known parameters.  
 The Pradel model estimates $\phi$, $p$, and $f$, where these values represent survival, capture probability, and recruitment rate.
 
-For the simualion I simulated 10 occasions, coudld be 10 years, 10 months, so on.
+For the simualion I simulated 10 occasions, could be 10 years, 10 months, so on.
 
 * Survival $\phi$ was set at 0.8
 * Capture probability $p$ was set at 0.3
 * Recruitment rate $f$ was set at 0.195 (i.e., Recruits = $f$*Abundance)
-* Intial population was set to be 2000 critters
+* Initial population was set to be 2000 critters
 
 ```{r}
 # SIMULATE POPULATION AND CAPTURE HISTORIES
@@ -72,7 +72,7 @@ for(i in 2:n_occ)
 	R<- c(R,rpois(1,n[i-1]*f))
 	n<- c(n, rbinom(1,n[i-1],phi)+R[i])	
 	}
-super_n<- sum(R) # total population
+super_n<- sum(R) # total number of individuals ever alive during time period considered
 # WHEN DO CRITTERS RECRUIT TO THE POPULATION?
 ent<-rep(c(1:length(R)),R)
 ch<-Z<- matrix(0,super_n,n_occ)
@@ -157,7 +157,7 @@ m1<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.dot,Lambda=Lambda.dot
 ```
 
 Neat, the lambdas for each year are `r round(exp(coef(m1)[3,1]),5)` with 
-a 95% CIs of `r round(exp(coef(m1)[3,2:3]),5)`. That seems reasonable 
+a 95% CIs of `r round(exp(coef(m1)[3,3:4]),5)`. That seems reasonable 
 the population looks to be decreasing over time and hence lambda < 1. 
 
 
