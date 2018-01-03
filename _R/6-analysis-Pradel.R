@@ -1,11 +1,13 @@
 # PRADEL ANALYSIS
 
+source("_R/1_global.R")
+
 loc<-"D:/"
 setwd("D:/_output/6-MARK/Pradel/MARK")
 
 samp_type<-"r"
 ptm<-proc.time()
-lapply(201:210, function(i)
+lapply(201:202, function(i)
 {
   lapply(3:4, function(j)
   {
@@ -19,18 +21,16 @@ lapply(201:210, function(i)
       # SAVE ESTIMATES
       if(class(est)!="try-error")
       {
-        if(file.exists(paste0(loc, "_output/3-estimates/Pradel_est_", samp_type, "_",
-                              i, "-", j,".rds")))
+        if(file.exists(paste0(loc, "_output/3-estimates/Pradel_est_", est_type, "_",
+                              samp_type, "_", i, "-", j,".rds")))
         {
-        old<-readRDS(file=paste0(loc, "_output/3-estimates/Pradel_est_", samp_type, "_",
-                                 i, "-", j, ".rds"))
-        est$const<-rbind(old$const,est$const)
-        est$p.time<-rbind(old$p.time,est$p.time)
-        est$f.time<-rbind(old$f.time,est$f.time)
+        old<-readRDS(file=paste0(loc, "_output/3-estimates/Pradel_est_", est_type, "_", 
+                                 samp_type, "_", i, "-", j, ".rds"))
+        est<-rbind(old,est)
         rm(old)
       }
-      saveRDS(est, file=paste0(loc,"_output/3-estimates/RD_est_", samp_type, "_", i,
-                               "-", j, ".rds"))
+      saveRDS(est, file=paste0(loc,"_output/3-estimates/Pradel_est_", est_type, "_", 
+                               samp_type, "_", i, "-", j, ".rds"))
       }
     rm(est)
     })
