@@ -2524,7 +2524,7 @@ Pradel.ests<-function(pop_num=NULL,
           np1<-ifelse(is.null(m1$results$npar.unadjusted), 
                       m1$results$npar, m1$results$npar.unadjusted) 
           ests1<-data.frame(param=c("phi", "p","f"), m1$results$real[,1:4], 
-                            param_diff=m1$results$npar-np1, 
+                            param_diff=m1$results$npar-np1, est_type<-"constant", 
                             output=m1$output, samp_size=nrow(dat), segment=s, 
                             gear=g, occasions=max_occ)
           rownames(ests1)<-c()
@@ -2532,8 +2532,8 @@ Pradel.ests<-function(pop_num=NULL,
         if(class(m1)[1]=="try-error")
         {
           ests1<-data.frame(param=c("phi", "p","f"), estimate=NA, se=NA, lcl=NA, 
-                            ucl=NA, param_diff=NA, output="error",samp_size=nrow(dat), 
-                            segment=s, gear=g, occasions=max_occ)
+                            ucl=NA, param_diff=NA, est_type<-"constant", output="error",
+                            samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
         }
         pvec<-paste("p", 1:sim_dat$inputs$nyears, sep="_")
         fvec<-paste("f", 1:(sim_dat$inputs$nyears-1), sep="_")
@@ -2545,7 +2545,7 @@ Pradel.ests<-function(pop_num=NULL,
           np2<-ifelse(is.null(m2$results$npar.unadjusted), 
                       m2$results$npar, m2$results$npar.unadjusted) 
           ests2<-data.frame(param=c("phi", pvec,"f"), m2$results$real[,1:4],
-                            param_diff=m2$results$npar-np2, 
+                            param_diff=m2$results$npar-np2, est_type<-"p.time",
                             output=m2$output, samp_size=nrow(dat), segment=s, 
                             gear=g,occasions=max_occ)
           rownames(ests2)<-c()
@@ -2553,8 +2553,8 @@ Pradel.ests<-function(pop_num=NULL,
         if(class(m2)[1]=="try-error")
         {
           ests2<-data.frame(param=c("phi", pvec,"f"), estimate=NA, se=NA, lcl=NA, 
-                            ucl=NA, param_diff=NA, output="error", samp_size=nrow(dat), 
-                            segment=s, gear=g, occasions=max_occ)
+                            ucl=NA, param_diff=NA, est_type<-"p.time", output="error", 
+                            samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
         }
         if(class(m3)[1]!="try-error")
         {
@@ -2564,7 +2564,7 @@ Pradel.ests<-function(pop_num=NULL,
           np3<-ifelse(is.null(m3$results$npar.unadjusted), 
                       m3$results$npar, m3$results$npar.unadjusted)
           ests3<-data.frame(param=c("phi", "p", fvec), m3$results$real[,1:4],
-                            param_diff=m3$results$npar-np3, 
+                            param_diff=m3$results$npar-np3, est_type<-"f.time",
                             output=m3$output, samp_size=nrow(dat), segment=s, 
                             gear=g, occasions=max_occ)
           rownames(ests3)<-c()
@@ -2572,8 +2572,8 @@ Pradel.ests<-function(pop_num=NULL,
         if(class(m3)[1]=="try-error")
         {
           ests3<-data.frame(param=c("phi", "p",fvec), estimate=NA, se=NA, lcl=NA, 
-                            ucl=NA, param_diff=NA, output="error", samp_size=nrow(dat), 
-                            segment=s, gear=g, occasions=max_occ)
+                            ucl=NA, param_diff=NA, est_type<-"f.time", output="error",
+                            samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
         }
       }
       if(nrow(dat)==0)
@@ -2581,14 +2581,14 @@ Pradel.ests<-function(pop_num=NULL,
         pvec<-paste("p", 1:sim_dat$inputs$nyears, sep="_")
         fvec<-paste("f", 1:(sim_dat$inputs$nyears-1), sep="_")
         ests1<-data.frame(param=c("phi", "p","f"), estimate=NA, se=NA, lcl=NA, 
-                          ucl=NA, param_diff=NA, output=NA, samp_size=0, segment=s, 
-                          gear=g, occasions=max_occ)
+                          ucl=NA, param_diff=NA, est_type<-"constant", output=NA, 
+                          samp_size=0, segment=s, gear=g, occasions=max_occ)
         ests2<-data.frame(param=c("phi", pvec,"f"), estimate=NA, se=NA, lcl=NA, 
-                          ucl=NA, param_diff=NA, output=NA, samp_size=0, segment=s, 
-                          gear=g, occasions=max_occ)
+                          ucl=NA, param_diff=NA, est_type<-"p.time", output=NA, 
+                          samp_size=0, segment=s, gear=g, occasions=max_occ)
         ests3<-data.frame(param=c("phi", "p",fvec), estimate=NA, se=NA, lcl=NA, 
-                          ucl=NA, param_diff=NA, output=NA, samp_size=0, segment=s, 
-                          gear=g, occasions=max_occ)
+                          ucl=NA, param_diff=NA, est_type<-"f.time", output=NA, 
+                          samp_size=0, segment=s, gear=g, occasions=max_occ)
       }
       return(list(const=ests1,p.time=ests2, f.time=ests3))
     })
