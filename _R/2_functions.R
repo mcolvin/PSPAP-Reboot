@@ -2460,19 +2460,6 @@ Pradel.ests<-function(pop_num=NULL,
     ch$ch <- 1
     ch <- dcast(ch,b_segment+gear+fish_id~year, value.var="ch", sum)
   }
-  # if(!is.null(gear_combi))
-  # {
-  #   catch<-lapply(1:length(gear_combi),function(x)
-  #   {
-  #     out<-catch[which(catch$gear==gear_combi[x] & catch$occasion==x),]
-  #     return(out)
-  #   })
-  #   catch<-do.call("rbind",catch)
-  #   ch<- dcast(catch, 
-  #              year+b_segment+bend_num+fish_id~occasion,
-  #              value.var="ch", sum)
-  #   ch$gear<-"COMBI"
-  # }
   tmp<-matrix(0, nrow=nrow(ch), ncol=sim_dat$inputs$nyears)
   for(i in 1:ncol(tmp))
   {
@@ -2497,70 +2484,70 @@ Pradel.ests<-function(pop_num=NULL,
         # FIT PRADEL RECRUITMENT MODELS
         Phi.dot=list(formula=~1)
         p.dot=list(formula=~1)
-        p.time=list(formula=~time)
-        f.dot=list(formula=~1)
+        # p.time=list(formula=~time)
+        # f.dot=list(formula=~1)
         f.time=list(formula=~time)
-        m1<-try(mark(data=ch_proc,
-                     ddl=ddl,
-                     model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot),
-                     threads=3,
-                     brief=TRUE))
-        m2<-try(mark(data=ch_proc,
-                     ddl=ddl,
-                     model.parameters=list(Phi=Phi.dot,p=p.time,f=f.dot),
-                     threads=3,
-                     brief=TRUE))
+        # m1<-try(mark(data=ch_proc,
+        #              ddl=ddl,
+        #              model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.dot),
+        #              threads=3,
+        #              brief=TRUE))
+        # m2<-try(mark(data=ch_proc,
+        #              ddl=ddl,
+        #              model.parameters=list(Phi=Phi.dot,p=p.time,f=f.dot),
+        #              threads=3,
+        #              brief=TRUE))
         m3<-try(mark(data=ch_proc,
                      ddl=ddl,
                      model.parameters=list(Phi=Phi.dot,p=p.dot,f=f.time),
                      threads=3,
                      brief=TRUE))
-        #m4<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.time,f=f.time))
-        if(class(m1)[1]!="try-error")
-        {
-          saveRDS(m1, paste0(location, "_output/6-MARK/Pradel/", pop_num, "-", 
-                             catch_num, "_", samp_type, "-occ", max_occ,"_", g, "_", s,
-                             "_", m1$output, ".rds"))
-          np1<-ifelse(is.null(m1$results$npar.unadjusted), 
-                      m1$results$npar, m1$results$npar.unadjusted) 
-          ests1<-data.frame(param=c("phi", "p","f"), m1$results$real[,1:4], 
-                            param_diff=m1$results$npar-np1, est_type<-"constant", 
-                            output=m1$output, samp_size=nrow(dat), segment=s, 
-                            gear=g, occasions=max_occ)
-          rownames(ests1)<-c()
-        }
-        if(class(m1)[1]=="try-error")
-        {
-          ests1<-data.frame(param=c("phi", "p","f"), estimate=NA, se=NA, lcl=NA, 
-                            ucl=NA, param_diff=NA, est_type<-"constant", output="error",
-                            samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
-        }
-        pvec<-paste("p", 1:sim_dat$inputs$nyears, sep="_")
+        # m4<-mark(ch_proc,ddl,model.parameters=list(Phi=Phi.dot,p=p.time,f=f.time))
+        # if(class(m1)[1]!="try-error")
+        # {
+        #   saveRDS(m1, paste0(location, "_output/6-MARK/Pradel/", pop_num, "-", 
+        #                      catch_num, "_", samp_type, "-occ", max_occ,"_", g, "_", s,
+        #                      "_const.rds"))
+        #   np1<-ifelse(is.null(m1$results$npar.unadjusted), 
+        #               m1$results$npar, m1$results$npar.unadjusted) 
+        #   ests1<-data.frame(param=c("phi", "p","f"), m1$results$real[,1:4], 
+        #                     param_diff=m1$results$npar-np1, est_type<-"constant", 
+        #                     output=m1$output, samp_size=nrow(dat), segment=s, 
+        #                     gear=g, occasions=max_occ)
+        #   rownames(ests1)<-c()
+        # }
+        # if(class(m1)[1]=="try-error")
+        # {
+        #   ests1<-data.frame(param=c("phi", "p","f"), estimate=NA, se=NA, lcl=NA, 
+        #                     ucl=NA, param_diff=NA, est_type<-"constant", output="error",
+        #                     samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
+        # }
+        # pvec<-paste("p", 1:sim_dat$inputs$nyears, sep="_")
         fvec<-paste("f", 1:(sim_dat$inputs$nyears-1), sep="_")
-        if(class(m2)[1]!="try-error")
-        {
-          saveRDS(m2, paste0(location, "_output/6-MARK/Pradel/", pop_num, "-", 
-                             catch_num, "_", samp_type, "-occ", max_occ,"_", g, "_", s, 
-                             "_", m2$output, ".rds"))
-          np2<-ifelse(is.null(m2$results$npar.unadjusted), 
-                      m2$results$npar, m2$results$npar.unadjusted) 
-          ests2<-data.frame(param=c("phi", pvec,"f"), m2$results$real[,1:4],
-                            param_diff=m2$results$npar-np2, est_type<-"p.time",
-                            output=m2$output, samp_size=nrow(dat), segment=s, 
-                            gear=g,occasions=max_occ)
-          rownames(ests2)<-c()
-        }
-        if(class(m2)[1]=="try-error")
-        {
-          ests2<-data.frame(param=c("phi", pvec,"f"), estimate=NA, se=NA, lcl=NA, 
-                            ucl=NA, param_diff=NA, est_type<-"p.time", output="error", 
-                            samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
-        }
+        # if(class(m2)[1]!="try-error")
+        # {
+        #   saveRDS(m2, paste0(location, "_output/6-MARK/Pradel/", pop_num, "-", 
+        #                      catch_num, "_", samp_type, "-occ", max_occ,"_", g, "_", s, 
+        #                      "_ptime.rds"))
+        #   np2<-ifelse(is.null(m2$results$npar.unadjusted), 
+        #               m2$results$npar, m2$results$npar.unadjusted) 
+        #   ests2<-data.frame(param=c("phi", pvec,"f"), m2$results$real[,1:4],
+        #                     param_diff=m2$results$npar-np2, est_type<-"p.time",
+        #                     output=m2$output, samp_size=nrow(dat), segment=s, 
+        #                     gear=g,occasions=max_occ)
+        #   rownames(ests2)<-c()
+        # }
+        # if(class(m2)[1]=="try-error")
+        # {
+        #   ests2<-data.frame(param=c("phi", pvec,"f"), estimate=NA, se=NA, lcl=NA, 
+        #                     ucl=NA, param_diff=NA, est_type<-"p.time", output="error", 
+        #                     samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
+        # }
         if(class(m3)[1]!="try-error")
         {
           saveRDS(m3, paste0(location, "_output/6-MARK/Pradel/", pop_num, "-", 
                              catch_num, "_", samp_type, "-occ", max_occ,"_", g, "_", s, 
-                             "_", m3$output, ".rds"))
+                             "_ftime.rds"))
           np3<-ifelse(is.null(m3$results$npar.unadjusted), 
                       m3$results$npar, m3$results$npar.unadjusted)
           ests3<-data.frame(param=c("phi", "p", fvec), m3$results$real[,1:4],
@@ -2575,32 +2562,38 @@ Pradel.ests<-function(pop_num=NULL,
                             ucl=NA, param_diff=NA, est_type<-"f.time", output="error",
                             samp_size=nrow(dat), segment=s, gear=g, occasions=max_occ)
         }
+        #m1<-m2<-m3<-NA; cleanup(ask=FALSE)
       }
       if(nrow(dat)==0)
       {
         pvec<-paste("p", 1:sim_dat$inputs$nyears, sep="_")
         fvec<-paste("f", 1:(sim_dat$inputs$nyears-1), sep="_")
-        ests1<-data.frame(param=c("phi", "p","f"), estimate=NA, se=NA, lcl=NA, 
-                          ucl=NA, param_diff=NA, est_type<-"constant", output=NA, 
-                          samp_size=0, segment=s, gear=g, occasions=max_occ)
-        ests2<-data.frame(param=c("phi", pvec,"f"), estimate=NA, se=NA, lcl=NA, 
-                          ucl=NA, param_diff=NA, est_type<-"p.time", output=NA, 
-                          samp_size=0, segment=s, gear=g, occasions=max_occ)
+        # ests1<-data.frame(param=c("phi", "p","f"), estimate=NA, se=NA, lcl=NA, 
+        #                   ucl=NA, param_diff=NA, est_type<-"constant", output=NA, 
+        #                   samp_size=0, segment=s, gear=g, occasions=max_occ)
+        # ests2<-data.frame(param=c("phi", pvec,"f"), estimate=NA, se=NA, lcl=NA, 
+        #                   ucl=NA, param_diff=NA, est_type<-"p.time", output=NA, 
+        #                   samp_size=0, segment=s, gear=g, occasions=max_occ)
         ests3<-data.frame(param=c("phi", "p",fvec), estimate=NA, se=NA, lcl=NA, 
                           ucl=NA, param_diff=NA, est_type<-"f.time", output=NA, 
                           samp_size=0, segment=s, gear=g, occasions=max_occ)
       }
-      return(list(const=ests1,p.time=ests2, f.time=ests3))
+      # return(list(const=ests1,p.time=ests2, f.time=ests3))
+      return(ests3)
     })
-    ests1<-do.call(rbind,lapply(outs, `[[`, 1))
-    ests2<-do.call(rbind,lapply(outs, `[[`, 2))
-    ests3<-do.call(rbind,lapply(outs, `[[`, 3))
-    return(list(const=ests1, p.time=ests2, f.time=ests3))
+    # ests1<-do.call(rbind,lapply(outs, `[[`, 1))
+    # ests2<-do.call(rbind,lapply(outs, `[[`, 2))
+    # ests3<-do.call(rbind,lapply(outs, `[[`, 3))
+    # return(list(const=ests1, p.time=ests2, f.time=ests3))
+    ests3<-do.call(rbind, outs)
+    return(ests3)
   })
-  ests1<-do.call(rbind,lapply(outg, `[[`, 1))
-  ests2<-do.call(rbind,lapply(outg, `[[`, 2))
-  ests3<-do.call(rbind,lapply(outg, `[[`, 3))
-  return(list(const=ests1, p.time=ests2, f.time=ests3))
+  # ests1<-do.call(rbind,lapply(outg, `[[`, 1))
+  # ests2<-do.call(rbind,lapply(outg, `[[`, 2))
+  # ests3<-do.call(rbind,lapply(outg, `[[`, 3))
+  # return(list(const=ests1, p.time=ests2, f.time=ests3))
+  ests3<-do.call(rbind, outg)
+  return(ests3)
 }
 
 
