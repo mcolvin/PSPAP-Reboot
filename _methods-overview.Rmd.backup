@@ -1,0 +1,41 @@
+---
+title: "PSPAP Rebood Methods Overview"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
+---
+
+<!--
+rmarkdown::render("methods-overview.Rmd",
+    output_format="word_document")# build page
+-->
+
+## Overview
+
+1. Trigger
+2. Problem
+3. Stakeholder identification
+4. Objectives elicitation and structuring
+5. Decision model development
+6. Parameterization 
+7. Ancillary objectives
+    1. Identification
+    2. Valuation
+    3. Optimization
+
+
+
+
+
+
+  

@@ -1,0 +1,48 @@
+---
+title: "Simulating Catch Data"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
+---
+
+<!--
+To do:
+1. utility for model
+-->
+
+## Trend
+
+```{r,echo=FALSE,warning=FALSE, message=FALSE}
+library(plyr)
+dat<-readRDS("_output/trnd_table.rds")
+head(dat)
+
+```
+
+
+## Abundance
+```{r}
+library(plyr)
+dat<-readRDS("_output/abund_table.rds")
+dat<-rbind.fill(dat,readRDS("_output/RD_abund_table.rds"))
+head(dat)
+```
+
+## Mean length
+
+```{r}
+dat<-readRDS("_output/lgth_table.rds")
+
+```
+
+
