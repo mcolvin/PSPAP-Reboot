@@ -1,0 +1,19 @@
+---
+title: BDN Nodes
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+bibliography: PSref.bib
+csl: ecology.csl  
+---
+
+
+## Fundamental objectives
+
+1. Quantify PS recruitment to age 1. 
+1. Provide relevant model inputs 
+1. Quantify PS population trend
+1. Maintain compatibility with legacy data 
+1. Remain in cost constraints 
+
