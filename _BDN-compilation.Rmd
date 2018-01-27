@@ -20,6 +20,18 @@ To do:
 1. utility for model
 -->
 
+
+
+```{r}
+source("_R/1_global.R")
+source("_R/2_functions.R")
+source("_R/3_load-and-clean.R")
+source("_R/4_figures.R")
+source("_R/5_tables.R")
+```
+
+
+
 ## Trend
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
