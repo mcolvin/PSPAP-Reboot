@@ -15,16 +15,15 @@ output:
     reference_docx: tmp-editing.docx
 ---
 <!--
-rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
--->
-
-```{r, warning=FALSE,include=FALSE,echo=FALSE,eval=FALSE}
 source("_R/1_global.R")
 source("_R/2_functions.R")
 # effort_data<-   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
 source("_R/3_load-and-clean.R")
 source("_R/5_tables.R")
-```
+rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
+-->
+
+
 
 # Overview
 
