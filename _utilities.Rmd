@@ -22,6 +22,15 @@ To do:
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 source("_R/6-analysis-cost.R")
+pbias<- c(-300:300)
+pbias_u<- (max(abs(pbias))-abs(pbias))/(max(abs(pbias))-min(abs(pbias)))
+u_bias<- approxfun(pbias,pbias_u)
+pbias<- c(10:300)
+pbias_u<- (max(pbias)-pbias)/(max(pbias)-min(pbias))
+u_cv<- approxfun(pbias,pbias_u)
+pbias<- c(30:100)
+pbias_u<- (pbias-min(pbias))/(max(pbias)-min(pbias))
+u_perf<- approxfun(pbias,pbias_u)
 ```
 
 # Valuing fundamental objectives
