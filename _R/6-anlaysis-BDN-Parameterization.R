@@ -137,6 +137,7 @@ outcomes<- do.call("rbind",outt)
 stopCluster(cl = cl)
 
 
+
 outcomes<-cbind(combos,outcomes)
 
 
