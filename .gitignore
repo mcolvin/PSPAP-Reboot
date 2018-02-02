@@ -8,7 +8,7 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 _literature/
-_archive/
+_archive/docs
 _site/
 analyses/_site/
 analyses/_data/
