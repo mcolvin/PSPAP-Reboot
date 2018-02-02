@@ -1,16 +1,27 @@
 ---
-title: "Quantifying effort and distribution of PSPAP gears"
-output:
+title: "Effort Distribution"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
   html_document:
-    toc: true
-    theme: united
-date: "19 May, 2017"
-author: Colvin
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
 ---
 
 <!--
-
-rmarkdown::render("index.Rmd")
+source("_R/1_global.R")
+source("_R/2_functions.R")
+# effort_data<-   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
+source("_R/3_load-and-clean.R")
+source("_R/5_tables.R")
+rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
 
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
