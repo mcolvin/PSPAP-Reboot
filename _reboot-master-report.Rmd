@@ -33,7 +33,7 @@ source("_R/3_load-and-clean.R")
 source("_R/5_tables.R")
 ```
 
-```{r child="_white-paper.Rmd", echo=FALSE}
+```{r child="_Report-introduction.Rmd", echo=FALSE}
 ```
 
 <!--Executive summary-->
