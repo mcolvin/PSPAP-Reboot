@@ -31,10 +31,9 @@ To do:
 Redesign of the Pallid Sturgeon Population Assessment Program (PSPAP) to 
 PSPAP v. 2.0 is intended to update population assessment to support 
 adaptive management of the Missouri River Recovery Program (MRRP). PSPAP 
-v. 2.0 is considered a necessary part of the pallid sturgeon 
-monitoring strategy, but it is not considered sufficient for 
-monitoring needs. Instead, it is designed to complement three 
-other components: 
+v. 2.0 is considered a necessary part of the pallid sturgeon monitoring 
+strategy, but it is not considered sufficient for monitoring needs. 
+Instead, it is designed to complement three other components: 
 
 1. effectiveness monitoring, 
 2. focused research studies, and 
@@ -110,8 +109,9 @@ objectives and accounting for uncertainty (Conroy and Peterson 2013).
 
 The need to redesign the PSPAP was triggered by the recognition that the 
 current PSPAP may not allow evaluation of whether pallid sturgeon 
-fundamental objectives identified in the Missouri River Adaptive Management plan (hereafter AM plan) were achieved on an 
-annual basis or estimated with any level of certainty. Specifically, <!-- link Wildhaber and Schaughpahg papers here-->
+fundamental objectives identified in the Missouri River Adaptive 
+Management plan (hereafter AM plan) were achieved on an annual basis or 
+estimated with any level of certainty. Specifically,  <!-- link Wildhaber and Schaughpahg papers here-->
 sub-objectives listed in section 4.1.1. of the AM plan specify 
 
 1. increase pallid sturgeon recruitment to age-1, and 
