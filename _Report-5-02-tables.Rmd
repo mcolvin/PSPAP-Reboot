@@ -1,0 +1,188 @@
+---
+title: "Tables"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
+---
+
+<!--
+rmarkdown::render("_Report-5-02-tables",output_format='word_document')# build page
+-->
+
+
+
+Table 1. Summary of bends within PSPAP Missouri river segments.
+ 
+```{r,echo=FALSE,eval=TRUE}
+tbl<-tables(1)
+tbl$basin<- ifelse(tbl$basin=="lower","LB","UB")
+tbl$b_segment<-as.numeric(tbl$b_segment)
+tbl<- tbl[order(tbl$b_segment),]
+tbl[duplicated(tbl$basin),]$basin<-""
+kable(tbl,row.names=FALSE,
+    col.names=c("Basin","Segment","Number of bends",
+        "Minimum length (km)", "Mean length (km)","Maximum length (km)"),
+    align="lccccc")
+```
+
+##### Page Break
+
+Table 2. Segment and river level densities by origin: hatchery (H) and 
+natural/wild (W).  Minimum and maximum densities were taken from data 
+across a few recent years (when available), while mean densities are 
+those reported in the literature from the most recent year's data.   
+
+```{r,warning=FALSE, echo=FALSE,eval=TRUE}
+tbl2<-tables(2)
+tbl2$max_year[which(tbl2$max_year==2008)]<-"2008*"
+tbl2$rpma<-ifelse(tbl2$rpma==2, "UB", "LB")
+tbl2[duplicated(tbl2$rpma),]$rpma<-""
+tbl2[duplicated(tbl2$segments),]$segments<-""
+kable(tbl2,row.names=FALSE,
+    col.names=c("Basin","Segments", "Fish Type", "Minimum Density (fish/rkm)",
+                "Maximum Density (fish/rkm)", "Mean Density (fish/rkm)", 
+                "Most Recent Year", "References"),
+    align="llcccccc")
+```
+  
+*Estimated year of data collection based on reference date.    
+
+
+
+##### page break
+
+
+Table 3. Number of Bends Sampled per Segment
+```{r, echo=FALSE,eval=TRUE}
+no_bends<-data.frame(Segment=c(2:4,7:10,13,14), 
+    No_Bends=c(12, 21, 12, 12, 15, 20, 10, 11, 14))
+kable(no_bends, row.names=FALSE, 
+      col.names=c("Segment", "No. of Sampled Bends"))
+```
+
+##### page break
+
+Table 4. Summary of effort data by gear and basin, where effort is 
+measured in minutes. The shape and rate columns are the results of 
+fitting a gamma distribution to the data. 
+
+
+```{r,warning=FALSE,echo=FALSE,eval=TRUE}
+#tbl<-tables_effort(n=4, dat=dat)
+#write.csv(tbl,"_output/effortAndGearSummary.csv",row.names=FALSE)
+tbl<-read.csv("_output/effortAndGearSummary.csv") 
+kable(tbl,row.names=FALSE,
+    col.names=c("Basin","Gear","Gear ID", "No. of Observations", 
+        "Mean Effort",
+        "SD of Effort", "Minimum Effort", "Maximum Effort", 
+        "Median Effort","Shape", "Rate"),
+    align="lccccc")
+```
+
+Table X.1. Field office affiliations and Missouri River segments
+assigned for PSPAP sampling.
+
+| Field office                             	| Segment          	|
+|------------------------------------------	|------------------	|
+| Montana Fish Wildlife and Parks (MT)     	| 1, 2, 3          	|
+| Missouri River FWCO (MR)                 	| 4                	|
+| Great Plains FWCO (GP)                   	| 5, 6             	|
+| South Dakota Game Fish and Parks (SD)    	| 7                	|
+| Nebraska Game and Parks Commission (NE)  	| 8, 1/2 of 9      	|
+| Missouri Department of Conservation (MO) 	| 1/2 of 9, 10, 11 	|
+| Columbia FWCO (CF)                       	| 13, 14           	|
+
+
+
+Table X.2.  
+
+```{r,echo=FALSE,as.is=TRUE,eval=TRUE}
+knitr::kable(tmp,
+    row.names=FALSE,
+    col.names=c("Field crew", "Mean cost","Median cost", "Std. deviation",
+        "Minimum cost","Maximum cost"),align=c("lccccc"),
+    digits=2)
+```
+
+Table x.3.
+
+Missouri River segments and RPMAs.
+
+| RPMA | Segment | Upstream Rkm | Downstream Rkm | Length (Km) | Description                                                          |
+|:----:|:-------:|:------------:|:--------------:|:-----------:|----------------------------------------------------------------------|
+|   2  |    1    |     2851     |     2832.4     |     18.6    | Fort Peck Dam downstream to the Milk River Confluence                |
+|   2  |    2    |    2832.4    |     2737.5     |     94.9    | Milk River Confluence downstream to Wolf Point, Montana              |
+|   2  |    3    |    2737.5    |      2546      |    191.5    | Wolf Point, Montana downstream to the Yellowstone River Confluence   |
+|   2  |    4    |     2546     |     2523.45    |    22.55    | Yellowstone River Confluence to the headwaters of Lake Sakakawea     |
+|   3  |    5    |    1416.2    |     1359.9     |     56.3    | Fort Randall Dam to the Niobrara River Confluence                    |
+|   3  |    6    |    1359.9    |      1327      |     32.9    | Niobrara River/ Confluence to the headwaters of Lewis and Clark Lake |
+|   4  |    7    |    1305.2    |      1207      |     98.2    | Gavins Point Dam to Ponca, Nebraska                                  |
+|   4  |    8    |     1207     |      958.4     |    248.6    | Ponca, Nebraska to the Platte River Confluence                       |
+|   4  |    9    |     958.4    |      591.4     |     367     | Platte River Confluence to the Kansas River Confluence               |
+|   4  |    10   |     591.4    |      402.3     |    189.1    | Kansas River Confluence downstream to the Grand River Confluence     |
+|   4  |    13   |     402.3    |      209.2     |    193.1    | Grand River to Osage River, Missouri (confluence)                    |
+|   4  |    14   |     209.2    |        0       |    209.2    | Osage River to the mouth, Missouri     
+
+
+## Effort Tables
+
+Table 1. Summary of frequency of use for each gear type by year. An 
+asterisk (*) following a gear name indicates that the data from this 
+gear was used in the effort analysis (summarized in Table 4). 
+
+```{r,echo=FALSE,eval=FALSE}
+## NEED TO FIX BASIN IN THIS ONE.
+kable(tables_effort(1,dat=dat),
+    col.names=c("Basin","PSPAP gear code", "Gear id",2003:2016),
+    row.names=FALSE)
+   
+```
+
+
+Table 2. Frequency of use (number of deployments) for each standard gear 
+type by bend (within river segment) and year. An asterisk (*) following 
+a gear name indicates that the data from this gear was used in the 
+effort analysis (summarized in Table 4). 
+
+```{r,echo=FALSE,eval=FALSE}
+## NEED TO FIX STANDARD GEAR HERE
+kable(tables_effort(2,dat=dat),
+    col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id",2003:2016),
+    row.names =FALSE)
+   
+```
+
+Table 3. Summary of the number of deployments for each standard gear 
+type by bend (within river segment) per year. An asterisk (*) following 
+a gear name indicates that the data from this gear was used in the 
+effort analysis (summarized in Table 4). 
+
+```{r,echo=FALSE,eval=FALSE}
+## NEED TO FIX STANDARD GEAR HERE
+kable(tables_effort(3,dat=dat),
+    col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id", "Minimum","Maximum","Mean","Median", "Total Deployments"),
+    row.names =FALSE)
+   
+```
+
+Table 4. Summary of effort data (minutes of use per catch trial) for 
+each common gear type. 
+
+```{r,echo=FALSE,eval=TRUE}
+effort_summary<- read.table("_output/effort_dat.csv",sep=" ") # from table 4
+kable(effort_summary, #tables_effort(4,dat=dat),
+    col.names=c("Basin","PSPAP gear code", "Gear id","No. of Obs.","Mean Effort", "Standard Deviation","Minimum","Maximum", "Median", "Gamma_Shape", "Gamma_Rate"),
+    row.names =FALSE)
+```
+
+
