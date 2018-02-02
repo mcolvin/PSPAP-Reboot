@@ -304,6 +304,26 @@ knitr::kable(tmp,
     digits=2)
 ```
 
+Table x.3.
+
+Missouri River segments and RPMAs.
+
+| RPMA | Segment | Upstream Rkm | Downstream Rkm | Length (Km) | Description                                                          |
+|:----:|:-------:|:------------:|:--------------:|:-----------:|----------------------------------------------------------------------|
+|   2  |    1    |     2851     |     2832.4     |     18.6    | Fort Peck Dam downstream to the Milk River Confluence                |
+|   2  |    2    |    2832.4    |     2737.5     |     94.9    | Milk River Confluence downstream to Wolf Point, Montana              |
+|   2  |    3    |    2737.5    |      2546      |    191.5    | Wolf Point, Montana downstream to the Yellowstone River Confluence   |
+|   2  |    4    |     2546     |     2523.45    |    22.55    | Yellowstone River Confluence to the headwaters of Lake Sakakawea     |
+|   3  |    5    |    1416.2    |     1359.9     |     56.3    | Fort Randall Dam to the Niobrara River Confluence                    |
+|   3  |    6    |    1359.9    |      1327      |     32.9    | Niobrara River/ Confluence to the headwaters of Lewis and Clark Lake |
+|   4  |    7    |    1305.2    |      1207      |     98.2    | Gavins Point Dam to Ponca, Nebraska                                  |
+|   4  |    8    |     1207     |      958.4     |    248.6    | Ponca, Nebraska to the Platte River Confluence                       |
+|   4  |    9    |     958.4    |      591.4     |     367     | Platte River Confluence to the Kansas River Confluence               |
+|   4  |    10   |     591.4    |      402.3     |    189.1    | Kansas River Confluence downstream to the Grand River Confluence     |
+|   4  |    13   |     402.3    |      209.2     |    193.1    | Grand River to Osage River, Missouri (confluence)                    |
+|   4  |    14   |     209.2    |        0       |    209.2    | Osage River to the mouth, Missouri     
+
+
 
 
 Box 1. Function used to simulate reference populations given pallid 
