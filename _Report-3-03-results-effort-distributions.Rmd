@@ -24,20 +24,7 @@ source("_R/5_tables.R")
 rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
 
-```{r,echo=FALSE,warning=FALSE, message=FALSE}
-source("_R/1_global.R")
-source("_R/2_functions.R")
-#effort_data<- FALSE
-#source("_R/3_load-and-clean.R")
-dat<- readRDS("_output/effort-data.Rds")
 
-source("_R/4_figures.R")
-source("_R/5_tables.R")
-#source("_R/6_analysis-effort.R")
-common<-UBcommon<-c("GN14","GN41","MF","OT16","TLC1","TLC2","TN")
-LBcommon<-c("GN18","GN81","TLC4","TLS1","TLS2")
-# datS<-subset(dat,standard_gear=="yes")
-``` 
 
 
 
@@ -154,10 +141,33 @@ deployments of each gear type within a particular bend during each year
 of the PSPAP. This information is summarized in Table 3. 
 
 
-No bend was sampled by standard gears during every year of the PSPAP. Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 3) were sampled the least at only one deployment of a standard gear in the 14 years of the PSPAP. These lower basin bends were sampled by a trotline (TLS2 & TLC2, respectively) while the upper basin bends were sampled by a trammel net. Overall, the bend with the most total deployments of standard gears over the course of the PSPAP was bend 17 within the upper basin river segment 4 at a total of 719 deployments. In the lower basin, river segment 7 bend 4 had the highest standard gear usage with 368 deployments. 
+No bend was sampled by standard gears during every year of the PSPAP. 
+Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and 
+three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 
+3) were sampled the least at only one deployment of a standard gear in 
+the 14 years of the PSPAP. These lower basin bends were sampled by a 
+trotline (TLS2 & TLC2, respectively) while the upper basin bends were 
+sampled by a trammel net. Overall, the bend with the most total 
+deployments of standard gears over the course of the PSPAP was bend 17 
+within the upper basin river segment 4 at a total of 719 deployments. In 
+the lower basin, river segment 7 bend 4 had the highest standard gear 
+usage with 368 deployments. 
 
 
-As seen in Table 3, several standard gears were deployed only once in a given bend over the entire duration of the PSPAP. On the opposite side of the spectrum, in 2005 there were 205 trammel nets deployed within upper basin segment 4 bend 14---the most deployments of a particular standard gear in a river bend in any year. Across years, the most deployments of a single gear type by bend was 503 trammel net deployments, which occurred in upper basin bend 17 within river segment 4. In the lower basin, the bends with the most deployments of a single gear type within and across years were both found in segment 7. Across years, bend 4 had the most gear deployments (127 trotlines, configuration TLC1), while within years bend 17 had the most (32 mini-fyke nets in 2010). 
+
+As seen in Table 3, several standard gears were deployed only once in a 
+given bend over the entire duration of the PSPAP. On the opposite side 
+of the spectrum, in 2005 there were 205 trammel nets deployed within 
+upper basin segment 4 bend 14---the most deployments of a particular 
+standard gear in a river bend in any year. Across years, the most 
+deployments of a single gear type by bend was 503 trammel net 
+deployments, which occurred in upper basin bend 17 within river segment 
+4. In the lower basin, the bends with the most deployments of a single 
+gear type within and across years were both found in segment 7. Across 
+years, bend 4 had the most gear deployments (127 trotlines, 
+configuration TLC1), while within years bend 17 had the most (32 
+mini-fyke nets in 2010). 
+
 
 
 
@@ -186,68 +196,6 @@ No bend was sampled by standard gears during every year of the PSPAP.  Two lower
 
 As seen in Table 3, several standard gears were deployed only once in a given bend over the entire duration of the PSPAP.  On the opposite side of the spectrum, in 2005 there were 204 trammel nets deployed within upper basin segment 4 bend 14---the most deployments of a particular standard gear in a river bend in any year.  Across years, the most deployments of a single gear type by bend was 502 trammel net deployments, which occurred in upper basin bend 17 within river segment 4.  In the lower basin, the most deployments of a single gear type within a year was 32, which occurred in two different bends during different years: bend 17 in segment 7 (32 mini-fyke nets in 2010) and bend 1 in segment 9 (32 TLS1 trotlines in 2007). Across years, segment 7 bend 4 had the most gear deployments (127 trotlines, configuration TLC1).
 
-
-
-
-
-## Figures
-```{r,echo=FALSE}
-figures_effort(1)
-```
-
-Figure 1. Illustration of gears used since 2003 for Pallid Sturgeon 
-Population assessment in the Missouri River. Top panel is for Lower 
-basin (RPMA 4) and bottom panel is for Upper basin (RPMA 2). 
-
-
-
-## Tables
-
-Table 1. Summary of frequency of use for each gear type by year. An 
-asterisk (*) following a gear name indicates that the data from this 
-gear was used in the effort analysis (summarized in Table 4). 
-
-```{r,echo=FALSE}
-kable(tables_effort(1,dat=dat),
-    col.names=c("Basin","PSPAP gear code", "Gear id",2003:2016),
-    row.names=FALSE)
-   
-```
-
-
-Table 2. Frequency of use (number of deployments) for each standard gear 
-type by bend (within river segment) and year. An asterisk (*) following 
-a gear name indicates that the data from this gear was used in the 
-effort analysis (summarized in Table 4). 
-
-```{r,echo=FALSE}
-kable(tables_effort(2,dat=dat),
-    col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id",2003:2016),
-    row.names =FALSE)
-   
-```
-
-Table 3. Summary of the number of deployments for each standard gear 
-type by bend (within river segment) per year. An asterisk (*) following 
-a gear name indicates that the data from this gear was used in the 
-effort analysis (summarized in Table 4). 
-
-```{r,echo=FALSE}
-kable(tables_effort(3,dat=dat),
-    col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id", "Minimum","Maximum","Mean","Median", "Total Deployments"),
-    row.names =FALSE)
-   
-```
-
-Table 4. Summary of effort data (minutes of use per catch trial) for 
-each common gear type. 
-
-```{r,echo=FALSE}
-effort_summary<- read.table("output/effort_dat.csv",sep=" ") # from table 4
-kable(effort_summary, #tables_effort(4,dat=dat),
-    col.names=c("Basin","PSPAP gear code", "Gear id","No. of Obs.","Mean Effort", "Standard Deviation","Minimum","Maximum", "Median", "Gamma_Shape", "Gamma_Rate"),
-    row.names =FALSE)
-```
 
 
 

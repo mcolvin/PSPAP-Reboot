@@ -194,7 +194,7 @@ the particular bend being binomially distributed.
 
 Distributions for deployment level effort ($f$) were generated using the 
 PSPAP database. We defined effort as the time (in minutes) that a gear 
-was set, dragged, or pulled for during a single deployment[^1]. Since 
+was set, dragged, or pulled for during a single deployment[^3]. Since 
 effort was calculated using the start and stop times, all PSPAP data 
 without a start or stop time was excluded from this analysis. The 
 relevant data entries were then merged with the gear data and a stop 
@@ -207,18 +207,18 @@ respectively. Before generating the effort distributions, all entries
 resulting in negative effort values were removed. 
 
 
-[^1]: This is a general measurement of effort that can be calculated for all gear types. However, we recognize that gear set time is more relavent to measuring effort for passive gears and we plan to further incorporate effort values based on distance or area metrics when considering active gears. 
+[^3]: This is a general measurement of effort that can be calculated for all gear types. However, we recognize that gear set time is more relavent to measuring effort for passive gears and we plan to further incorporate effort values based on distance or area metrics when considering active gears. 
 
 
 Gamma distributions were fit to the cleaned up PSPAP effort data for 
-standard gear types[^2] by basin. The mean effort, standard deviation of 
+standard gear types[^4] by basin. The mean effort, standard deviation of 
 the effort data, minimum effort, maximum effort, and median effort were 
 also calculated for each gear by basin (Table 2). In general, gamma 
 distributions provided a good fit to the effort data (e.g. Figure 3), 
 but see Appendix ?? for more details. 
 
 
-[^2]: We use the term "standard gear" as defined in the USACE's 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (CITATION).  <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.-->
+[^4]: We use the term "standard gear" as defined in the USACE's 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (CITATION).  <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.-->
 
 #### Catchability Distributions
 
@@ -259,7 +259,7 @@ successfuly caught its fish id, location (bend), timing (occasion within
 year) of catch, gear used, and length are recorded. 
 
 We have primarily focused on measuring length, as it is vital to the 
-metrics for sub-objective 2[^3] as outlined in Section 4.1.1 of the 2016 
+metrics for sub-objective 2[^5] as outlined in Section 4.1.1 of the 2016 
 AM plan. Additionally, we are currently working on including fish sex, 
 origin (natural or hatchery), and age due to their importance to 
 sub-objective metrics and to understanding effective populations size. 
@@ -267,7 +267,7 @@ Several other individual measurements were voiced to be of interest to
 stakeholders at the 2017 MRNRC PSPAP Workshop. These measurements may 
 be considered as part of future analyses. 
 
-[^3]: 2016 AM Sub-objective 2 metric: "Population estimates for pallid sturgeon for all size and age classes, particularly for ages 2 to 3 to assess recent trends in recruitment; catch rates of all pallid sturgeon by size class (to maintain legacy data)." (CITATION)
+[^5]: 2016 AM Sub-objective 2 metric: "Population estimates for pallid sturgeon for all size and age classes, particularly for ages 2 to 3 to assess recent trends in recruitment; catch rates of all pallid sturgeon by size class (to maintain legacy data)." (CITATION)
 
 
 <!-- USEFUL TO PUT SOMEWHERE??? In summary, the catch data simulator 
