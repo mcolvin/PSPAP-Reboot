@@ -17,7 +17,7 @@ output:
 
 <!--
 https://rpubs.com/ajlyons/autonumfigs
-rmarkdown::render("_Report-0-00-master-report.Rmd",     output_format="word_document",     output_file = paste(format(Sys.time(), '%Y%m%d%H%M'),         "reboot-master-report.docx",sep="-"))# build page
+rmarkdown::render("_Report-0-00-master-report.Rmd",output_format="word_document",output_file = paste(format(Sys.time(), '%Y%m%d%H%M'),         "reboot-master-report.docx",sep="-"))# build page
 -->
 
 

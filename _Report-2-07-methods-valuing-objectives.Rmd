@@ -337,7 +337,7 @@ $$U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.$$
 
 
 
-
+## Swing weighting, not so subjective.
 
 
 
