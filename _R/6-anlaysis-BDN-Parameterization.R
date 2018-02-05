@@ -54,10 +54,29 @@ intLocationLabs<-c("Anywhere","Lower third","Lower 2/3","Outside of basin")
 pDetectBrks<-c(0,0.02,0.04,0.06,0.08,1)
 pDetectLabs<- makeLabs(pDetectBrks)
 
+## 5. NUMBER OF BENDS SAMPLED
+segs<-data.frame(
+    basin=c(2,2,2,2,4,4,4,4,4,4),
+    segment=c(1,2,3,4,
+        7,8,9,10,13,14),
+    nbends=c(1,40,91,24,
+        34,61,81,39,45,56))
+prop_sampled<-c(0.05,0.1,0.15,0.2,0.25)
+
+out<-matrix(0,10,length(prop_sampled))
+for(i in 1:length(prop_sampled))
+    {
+    out[,i]<- round(segs$nbends*prop_sampled[i],0)
+    }
+
+colSums(out[which(segs$basin==2),])    
+colSums(out[which(segs$basin==4),])  
+# write.csv(...,"_output/bdn_nodes/total_bends_sampled.csv"
+
 
 #######################################################################
 #
-#  MAKE CPT TABLE FOR RESULTS
+#  SIMULATE RESULTS TO PARAMETERIZE prob_detect NODE
 #
 #######################################################################
 combos<-expand.grid(design=design, 
@@ -149,19 +168,6 @@ NN<- 1000000
 pDetect<- round(runif(NN,1,1000),0)
 
 
-
-
-
-
-
-
-
-
-
-#prop<- sample(c(0.05,0.10,0.15,0.20,0.25),NN,replace=TRUE)
-#p<- runif(NN, 0, 0.1)
-#nocc<-sample(c(2:50),NN,replace=TRUE)
-#bend<- rep(1,sum(nbends))
 
 #######################################################################
 #
