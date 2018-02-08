@@ -6,10 +6,51 @@
 #       1. BASIN
 #
 #######################################################################
+wd<-getwd()
+wd<-unlist(strsplit(wd,"/"))
+setwd(paste0(wd[-length(wd)],collapse="\\"))
+
+library(parallel)
+library(pbapply)
 library(plyr)
 library(reshape2)
 library(xlsx)
 makeLabs<-function(x){paste(x[-length(x)],x[-1],sep="-")}
+
+#######################################################################
+# READ IN BEND DATA FOR RPMA 2 (UPPER) AND 4 (LOWER)
+# USED FOR MOVEMENT ANALYSIS
+#######################################################################
+bends<- read.csv("./_dat/bend-data.csv")
+
+# make data.frame column names lower case
+names(bends)<- tolower(names(bends))
+bends<- subset(bends,b_segment %in% c(1,2,3,4,7,8,9,10,13,14))
+bends<-bends[-157,]
+## bend_start_rkm needs to be adjusted either upstream or downstream
+## of segment 9 bend 65
+
+# FIX ID COLUMN DUE TO REMOVED BEND
+bends<-bends[order(bends$lower_river_mile),]
+bends$id<- 1:nrow(bends)
+
+# MAKE A PAIRWISE DISTANCE MATRICES FOR EACH RPMA
+## FIND LOWER RKM FOR EACH BEND
+bends$lower_rkm<-0
+for(i in 2:length(bends$lower_rkm))
+{
+  bends$lower_rkm[i]<-bends$lower_rkm[i-1]+bends$length.rkm[i-1]
+}
+rm(i)
+## FIND BEND CENTER
+bends$center<- bends$lower_rkm + bends$length.rkm/2
+
+## ADD WITHIN RPMA BEND ID, INCREASING ORDER MOVING UPSTREAM
+bends$b_id<- 1
+bends$b_id[which(bends$rpma==2)]<- 1:length(which(bends$rpma==2))
+bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
+
+
 
 #######################################################################
 #
@@ -51,7 +92,7 @@ intLocationLabs<-c("Anywhere","Lower third","Lower 2/3","Outside of basin")
 
 
 ## 4. DETECTION PROBABILITY
-pDetectBrks<-c(0,0.02,0.04,0.06,0.08,1)
+pDetectBrks<-c(0,0.02,0.04,0.06,0.08,0.1)
 pDetectLabs<- makeLabs(pDetectBrks)
 
 ## 5. NUMBER OF BENDS SAMPLED
@@ -97,7 +138,9 @@ upper$cumRkm<-cumsum(upper$length.rkm)
 lower<- subset(bends,basin=="lower")
 lower<- lower[order(lower$b_segment,lower$bend_num),]
 lower$cumRkm<-cumsum(lower$length.rkm)
-library(parallel)
+
+
+## ~ 12 minutes to run on 3 cores
 cl<- makeCluster(3)
 library(pbapply)
 clusterExport(cl, c("combos","lower","upper"))
@@ -113,11 +156,15 @@ outt<- pblapply(1:nrow(combos),function(x){
         pp<- (sum(lower$length.rkm)+0.1)-sum(lower$length.rkm)*combos$intLocation[x]
         pp<-ifelse(lower$cumRkm>=pp,1,0)
         }
+    
+    ## SAMPLE WITHIN RECRUITMENT LEVEL INTERVALS
     rr<- as.numeric(unlist(strsplit(as.character(combos$recruitmentLevel[x]),"-")))
     #abund<-rmultinom(1,
-     #   round(runif(1,rr[1],rr[2])),
+    #   round(runif(1,rr[1],rr[2])),
     #    pp/length(pp))
     reps<-150
+    
+    ## ALLOCATE RECRUITS TO A BEND
     abunds<-round(runif(reps,rr[1],rr[2]))
     abund<-sapply(1:length(abunds), function(i) 
         {
@@ -125,48 +172,61 @@ outt<- pblapply(1:nrow(combos),function(x){
         if(sum(pp)==0){ww<-rep(0,length(pp))}
         return(ww)
         })
-    abund[abund>1]<-1
-    
-
+    ## CONVERT THE BEND TO BEING OCCUPIED OR NOT 
+    abund[abund>1]<-1    
+    ## SET UP THE NUMBER OF TRAWLS TO RUN
     trawls<- as.numeric(unlist(strsplit(as.character(combos$ntrawlsLabs[x]),"-")))
     trawls<-floor(runif(ncol(abund),trawls[1],trawls[2]-0.001))
+    ## SET UP THE DETECTION PROBABILITY
     pdetect<- as.numeric(unlist(strsplit(as.character(combos$pDetectLabs[x]),"-")))    
     pdetect<- runif(ncol(abund),pdetect[1],pdetect[2]-0.0001)
+    ## SET UP HOW MANY BENDS TO RANDOMLY SAMPLE
     sampleSize<- round(nrow(abund)*combos$percentBends[x],0)
 
-       
+    ## SIMULATE MANY REPLICATE SAMPLES AND WHETHER AN AN\
+    ## AGE-1 PS IS DETECTED IN AN OCCUPIED BEND
     detected<-lapply(1:ncol(abund),function(i)
         {
+        # FIGURE OUT WHICH BEND TO SAMPLE
         indx<- sample(1:nrow(abund),
             sampleSize,replace=FALSE)
-        xx<-matrix(rbinom(nrow(abund)*trawls[i],1,pdetect[i]*abund),ncol=trawls[i],byrow=FALSE)
+        # CONDITIONAL ON HOW MANY AVAILIBLE FOR CAPTURE
+        # CAPTURE
+        
+        ## MATRIX FOR THE RESULTS OF EACH TRAWL 
+        #xx<-matrix(0,nrow(abund),trawls[i])
+        #for(i in 1:trawls[i])
+        #            {
+        #    xx[,i]<- rbinom(nrow(abund),1,pdetect[i]*abund)
+        #    }
+        xx<-matrix(
+        rbinom(nrow(abund)*trawls[i],1,pdetect[i]*abund),
+        nrow(abund),trawls[i])
+        
         samp<-rowSums(xx[indx,])
+        samp[samp>0]<-1
         return(data.frame(detect=max(samp), 
             reliable=length(which(samp>2))/sampleSize))
         })
-    #print(x)
     detected<-do.call("rbind",detected)
     return(data.frame(id=x,
-        notdetected = reps- colSums(detected)[1], 
+        notdetected = reps - colSums(detected)[1], 
         detected= colSums(detected)[1],
         performance=colSums(detected)[2]/reps))
     },cl=cl)
-
-outcomes<- do.call("rbind",outt)
 stopCluster(cl = cl)
 
+outcomes<- data.table::rbindlist(outt)
 
+boo<- subset(outcomes, notdetected<0)
 
+## COMBINE COMBOS AND OUTCOMES
 outcomes<-cbind(combos,outcomes)
-
-
-
-as.numeric(unlist(strsplit(pDetectLabs[1],"-")))
-
-
-NN<- 1000000
-pDetect<- round(runif(NN,1,1000),0)
-
+outcomes$nreps<- outcomes$notdetected+outcomes$detected
+outcomes$notdetected_prob<-outcomes$notdetected/outcomes$nreps
+outcomes$detected_prob<-outcomes$detected/outcomes$nreps
+table(outcomes$nreps)
+write.csv(outcomes,"_output/age1-detection-cpt.csv")
 
 
 #######################################################################
