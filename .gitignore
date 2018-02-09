@@ -29,7 +29,7 @@ test
 *.msp
 
 # OFFICE FILES
-*.xlsx
+#*.xlsx
 #*.docx
 #*.doc
 *.pptx
