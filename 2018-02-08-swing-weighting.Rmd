@@ -13,18 +13,20 @@ csl: ecology.csl
 --->
 
 ## Objective
-The purpose of this post is to gain expert input on how various metrics should be weighted when valuing the outcomes of a sampling design with respect to the fundamental objectives. In  order to do so we ask that each of you fill out a swing weighting form (linked in step 1 below).  In order to understand swing weighting and how it applies to some of our particular objectives and metrics, we are also including links to a tutorial and examples.  Thank you all for your participation!  
+The purpose of this post is to gain expert input on how various metrics may be weighted when valuing the outcomes of a montitoring design with respect to the fundamental objectives. In order to do so we ask that you fill out a swing weighting form (linked in step 1 below). In order to understand swing weighting and how it applies to some of our particular objectives and metrics, we are also including links to a tutorial and examples. Thank you all for your participation! 
+
 
 ## Process
-1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): <a href='swing-weighting-exercise-draft.xls' target="_blank">Download Exercise</a>
+1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): <a href='swing-weighting-exercise-draft.xls' target="_blank">Download Exercise</a> 
 1. Listen and watch the "Swing Weighting Tutorial":
-2. Listen, watch, and understand the abundance and trend examples: (Link)
-3. Fill in all empty boxes (on all 5 sheets) of the swing weighting form, using the ideas from the links above.  Instructions are also included at the bottom of each excel sheet.
+2. Listen, watch, and understand the abundance and trend examples: (Link) 
+3. Fill in all empty boxes (on all 5 sheets) of the swing weighting form, using the ideas from the links above. Instructions are also included at the bottom of each excel sheet. 
 4. Email the filled in form to: s.reynolds@msstate.edu.
 
 
 ## Questions
-If you have any questions please email s.reynolds@msstate.edu or michael.colvin@msstate.edu.  You may also post questions in the comment section below.
+If you have any questions please post them in the comment box below. 
+
 
 #### Thanks for your input and participation!
   
