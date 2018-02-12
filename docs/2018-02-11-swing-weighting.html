@@ -20,8 +20,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 <div><img src="images/20170321_180723.jpg" width="100%" align="right"></div>
 
@@ -32,12 +32,10 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
 }
 </script>
 
@@ -210,9 +208,7 @@ $(document).ready(function () {
 </div>
 
 
-<!---
-  rmarkdown::render_site("2018-02-08-swing-weighting.Rmd")# build website
---->
+<p>rmarkdown::render_site(“2018-02-11-swing-weighting.Rmd”)# build website</p>
 <div id="objective" class="section level2">
 <h2>Objective</h2>
 <p>The purpose of this post is to gain expert input on how various metrics may be weighted when valuing the outcomes of a montitoring design with respect to the fundamental objectives. In order to do so we ask that you fill out a swing weighting form (linked in step 1 below). In order to understand swing weighting and how it applies to some of our particular objectives and metrics, we are also including links to a tutorial and examples. Thank you all for your participation!</p>
@@ -221,8 +217,8 @@ $(document).ready(function () {
 <h2>Process</h2>
 <ol style="list-style-type: decimal">
 <li>Be sure you can open and edit the swing weighting exercise (it’s an excel file with 5 sheets): <a href='swing-weighting-exercise-draft.xls' target="_blank">Download Exercise</a></li>
-<li>Listen and watch the “Swing Weighting Tutorial”:</li>
-<li>Listen, watch, and understand the abundance and trend examples: (Link)</li>
+<li>Listen and watch the “Swing Weighting Tutorial”: <a href="https://www.youtube.com/watch?v=57XeTdCEH7E">Swing Weighting</a></li>
+<li>Listen, watch, and understand the abundance and trend examples: <a href="https://www.youtube.com/watch?v=UKX0Uw7Ta0A">Abundance</a> and <a href="https://www.youtube.com/watch?v=LPbdE_dK1vk">Trend</a></li>
 <li>Fill in all empty boxes (on all 5 sheets) of the swing weighting form, using the ideas from the links above. Instructions are also included at the bottom of each excel sheet.</li>
 <li>Email the filled in form to: <a href="mailto:s.reynolds@msstate.edu">s.reynolds@msstate.edu</a>.</li>
 </ol>
@@ -232,6 +228,17 @@ $(document).ready(function () {
 <p>If you have any questions please post them in the comment box below.</p>
 <div id="thanks-for-your-input-and-participation" class="section level4">
 <h4>Thanks for your input and participation!</h4>
+<!--
+## Videos
+### Swing Weighting
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=57XeTdCEH7E" frameborder="0" allowfullscreen></iframe>
+
+### Abundance
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=UKX0Uw7Ta0A" frameborder="0" allowfullscreen></iframe>
+
+### Trend
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=LPbdE_dK1vk" frameborder="0" allowfullscreen></iframe>
+-->
 </div>
 </div>
 
@@ -296,7 +303,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
