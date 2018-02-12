@@ -8,8 +8,9 @@ bibliography: PSref.bib
 csl: ecology.csl  
 ---
   
-
+<!--
 rmarkdown::render_site("2018-02-11-swing-weighting.Rmd")# build website
+-->
 
 
 ## Objective
