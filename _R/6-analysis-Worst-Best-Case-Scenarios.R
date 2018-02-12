@@ -145,6 +145,7 @@ lapply(dat_list, function(x)
              bias_sum=mean(bias_sum, na.rm=TRUE),
              bias=mean(bias, na.rm=TRUE),
              rel_bias=mean(rel_bias, na.rm=TRUE),
+             rel_abs_bias=mean(abs(rel_bias), na.rm=TRUE),
              prec=mean(precision, na.rm=TRUE),
              sd=mean(sd, na.rm=TRUE),
              reliability=mean(reliability, na.rm=TRUE),
@@ -168,6 +169,8 @@ tbl<-lapply(dat_list, function(x)
              min_relb_id=paste0(samp_type[which.min(rel_bias)], "_", pop_id[which.min(rel_bias)], "-", catch_id[which.min(rel_bias)], "_", gear[which.min(rel_bias)], "-", occasions[which.min(rel_bias)]),
              max_rel_bias=max(rel_bias, na.rm=TRUE),
              max_relb_id=paste0(samp_type[which.max(rel_bias)], "_", pop_id[which.max(rel_bias)], "-", catch_id[which.max(rel_bias)], "_", gear[which.max(rel_bias)], "-", occasions[which.max(rel_bias)]),
+             min_rel_abs_bias=min(rel_abs_bias, na.rm=TRUE),
+             min_relab_id=paste0(samp_type[which.min(rel_abs_bias)], "_", pop_id[which.min(rel_abs_bias)], "-", catch_id[which.min(rel_abs_bias)], "_", gear[which.min(rel_abs_bias)], "-", occasions[which.min(rel_abs_bias)]),
              min_prec=min(prec, na.rm=TRUE),
              min_p_id=paste0(samp_type[which.min(prec)], "_", pop_id[which.min(prec)], "-", catch_id[which.min(prec)], "_", gear[which.min(prec)], "-", occasions[which.min(prec)]),
              max_prec=max(prec, na.rm=TRUE),
@@ -183,11 +186,15 @@ tbl<-lapply(dat_list, function(x)
 })
 tbl<-do.call(rbind, tbl)
 saveRDS(tbl, "D:/_output/4-tables/Worst_Best/abund_basin_min_max_by_samp_type_and_estimator.rds")
+tbl<-readRDS("D:/_output/4-tables/Worst_Best/abund_basin_min_max_by_samp_type_and_estimator.rds")
 
 values<-ddply(tbl, .(basin),summarize,
                    min_bias=min(min_bias),
                    max_bias=max(max_bias),
                    min_abs_bias=min(min_abs_bias),
+                   min_rel_bias=min(min_rel_bias),
+                   max_rel_bias=max(max_rel_bias),
+                   min_rel_abs_bias=min(min_rel_abs_bias),
                    min_prec=min(min_prec),
                    max_prec=max(max_prec),
                    min_sd=min(min_sd),
@@ -243,6 +250,9 @@ values<-readRDS("D:/_output/4-tables/Worst_Best/SW_abund_basin_min_max.rds")
         
 
 
+        
+        
+        
 
 ## TREND
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
@@ -269,6 +279,12 @@ tbl<-ddply(dat, .(samp_type, estimator), summarize,
            max_expb_id=paste0(samp_type[which.max(exp_bias)], "_", pop_id[which.max(exp_bias)], "-", catch_id[which.max(exp_bias)], "_", gear[which.max(exp_bias)], "-", occasions[which.max(exp_bias)]),
            min_abs_exp_bias=min(abs(exp_bias), na.rm=TRUE),
            min_abs_expb_id=paste0(samp_type[which.min(abs(exp_bias))], "_", pop_id[which.min(abs(exp_bias))], "-", catch_id[which.min(abs(exp_bias))], "_", gear[which.min(abs(exp_bias))], "-", occasions[which.min(abs(exp_bias))]),
+           min_exp_rel_bias=min(exp_rel_bias, na.rm=TRUE),
+           min_exprb_id=paste0(samp_type[which.min(exp_rel_bias)], "_", pop_id[which.min(exp_rel_bias)], "-", catch_id[which.min(exp_rel_bias)], "_", gear[which.min(exp_rel_bias)], "-", occasions[which.min(exp_rel_bias)]),
+           max_exp_rel_bias=max(exp_rel_bias, na.rm=TRUE),
+           max_exprb_id=paste0(samp_type[which.max(exp_rel_bias)], "_", pop_id[which.max(exp_rel_bias)], "-", catch_id[which.max(exp_rel_bias)], "_", gear[which.max(exp_rel_bias)], "-", occasions[which.max(exp_rel_bias)]),
+           min_rel_abs_exp_bias=min(abs(exp_rel_bias), na.rm=TRUE),
+           min_abs_exprb_id=paste0(samp_type[which.min(abs(exp_rel_bias))], "_", pop_id[which.min(abs(exp_rel_bias))], "-", catch_id[which.min(abs(exp_rel_bias))], "_", gear[which.min(abs(exp_rel_bias))], "-", occasions[which.min(abs(exp_rel_bias))]),
            min_exp_prec=min(exp_precision, na.rm=TRUE),
            min_expp_id=paste0(samp_type[which.min(exp_precision)], "_", pop_id[which.min(exp_precision)], "-", catch_id[which.min(exp_precision)], "_", gear[which.min(exp_precision)], "-", occasions[which.min(exp_precision)]),
            max_exp_prec=max(exp_precision, na.rm=TRUE),
@@ -289,6 +305,9 @@ values<-data.frame(min_bias=min(dat$bias, na.rm=TRUE),
                    min_exp_bias=min(dat$exp_bias, na.rm=TRUE),
                    max_exp_bias=max(dat$exp_bias, na.rm=TRUE),
                    min_abs_exp_bias=min(abs(dat$exp_bias), na.rm=TRUE),
+                   min_rel_exp_bias=min(dat$exp_rel_bias, na.rm=TRUE),
+                   max_rel_exp_bias=max(dat$exp_rel_bias, na.rm=TRUE),
+                   min_rel_abs_exp_bias=min(abs(dat$exp_rel_bias), na.rm=TRUE),
                    min_exp_prec=min(dat$exp_precision, na.rm=TRUE),
                    max_exp_prec=max(dat$exp_precision, na.rm=TRUE),
                    min_rely=min(dat$reliability),
@@ -308,6 +327,7 @@ values<-data.frame(min_bias=min(dat$bias, na.rm=TRUE),
                    min_expsd_id=paste0(tbl$estimator[which.min(tbl$min_exp_sd)],"_",tbl$min_expsd_id[which.min(tbl$min_exp_sd)]),
                    max_expsd_id=paste0(tbl$estimator[which.max(tbl$max_exp_sd)],"_",tbl$max_expsd_id[which.max(tbl$max_exp_sd)]))
 saveRDS(values, "D:/_output/4-tables/Worst_Best/SW_trnd_min_max.rds")
+val_trnd<-readRDS("D:/_output/4-tables/Worst_Best/SW_trnd_min_max.rds")
 
 
 ### PLOT EXAMPLES
