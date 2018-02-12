@@ -20,31 +20,8 @@ rmarkdown::render("methods-overview.Rmd",
     output_format="word_document")# build page
 -->
 
-## Methods overview
 
-The approach used to evaluate alernative monitoring designs was intended 
-to be rigorous and transparent because of the many stakeholders effected 
-by potential modifications to the exising PSPAP program. Additionally,
-the methods used will provide a tool for USACE to make transparent decisions
-in the future because montoring funding levels are not certain and 
-therefore hard decisions will be likely in the fgure. We used a 
-structured decision making approach to elicit stateholder objectives, 
-simuation modeling to generate reference population, alternative 
-monitoring designs to estimate relevant population metrics, and 
-valuation of stakeholder objectives to quantify the utility of 
-monitoring design alternatives. The methods are covered in 5 sections 
-detailing 
-
-1. Elicitation of stakeholder objectives,
-2. Generation of reference populations with known dynamics (e.g., 
-recruitment, survival), 
-3. Estimation of population metrics given alternative monitoring designs,
-4. Valuation of monitoring design utility, and
-5. Routing of monitoring design subobjectives.
-
-
-
-## Eliciting stakeholder objectives
+## Eliciting objectives
 
 
 ### Objectives hierarchy and attributes

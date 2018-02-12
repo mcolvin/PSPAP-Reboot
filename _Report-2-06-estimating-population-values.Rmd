@@ -110,3 +110,248 @@ scale of estimation and the details of how
 <!--
 ???CAN WE DISCUSS EACH SEPERATELY IS THERE ENOUGH TO SAY...THINK ABOUT DOING FOR EACH
 -->
+
+Applications of Capture-Recapture Robust Design to PSPAP
+
+The fundamental species objective identified by the USFWS for the pallid 
+sturgeon is: Avoid jeopardizing the continued existence of the pallid 
+sturgeon from the US Army Corps of Engineers actions on the Missouri 
+River. Means to achieve this fundamental objective included increasing 
+pallid sturgeon recruitment and maintaining or increasing current 
+population levels. 
+
+The means to achieve the fundamental objective are specified as 2 
+sub-objectives with quantifiable metrics and targets as: 
+
+1. Increase pallid sturgeon recruitment to age 1
+Metric:  Catch rates of age 2 and 3 year-old pallid sturgeon.  
+Target: Short-term: recruitment; long-term: projection from population 
+models of an annual egg to age-1 survival rate > 0.03. 
+
+2. Maintain or increase numbers of pallid sturgeon until sufficient and 
+sustained natural recruitment occur. 
+
+Metric:  Catch rate of all size classes 
+Target: Viable population size necessary to successfully overcome 
+recruitment bottleneck. Minimum of 5000 adults in each management unit. 
+
+
+While a catch per unit effort based approach to population monitoring 
+may be used to calculate the metrics for sub-objective 1 and 2 it fails 
+to estimate sub-objective targets. Specifically, CPUE is a relative 
+index of population abundance and therefore it may document recruitment 
+if age-0 and age-1 pallid sturgeon are captured but it does not estimate 
+early life history survival rates. Absolute population estimates cannot 
+be achieved unless gear-specified catchability coefficient exists or can 
+be estimated to link catch and effort to predict abundance 
+as:$Abundance=Catch\cdot Effort\cdot Catchability$. Catchability 
+coefficients are difficult to estimate, unlikely to be constant (i.e., 
+gear-specific catchability varies among habitat type, season, fish 
+species), and assumed to be constant across abundance levels. 
+Catchability assumptions have received some scrutiny through 
+meta-analysis of multiple fish stocks which suggest that fish stocks 
+exhibit a curvilinear relationship of catchability with abundance, most 
+commonly exhibiting a phenomenon known as hyperstability, where CPUE 
+remains while abundance declines (Harley et al. 2001). It should be 
+noted that gear-specific catchabilities have not been estimated for 
+pallid sturgeon. The consequences of violating CPUE assumptions are 
+uncertain. Despite this uncertainty, the CPUE based PSPAP has been 
+successful in achieving PSPAP objectives, however, modifications will be 
+needed to achieve sub-objective 1 and 2. 
+
+
+Modifying the existing PSPAP program will ideally maintain a degree of 
+compatibility with existing data while providing population level 
+estimates of recruitment, trend, and abundance to achieve the metrics 
+and targets specified in sub-objectives 1 and 2. Compatibility with 
+existing PSPAP data can be achieved by maintaining the existing sampling 
+framework where each management unit is divided into segments, river 
+segments divided into bends, and habitat units sampled with each bend. 
+Additionally, continued use of current PSPAP standard gear types defined 
+in Welker et al. (2016), which have been identified over the duration of 
+the PSPAP to be effective, will potentially maintain compatibility with 
+existing PSPAP data. A significant modification will be required to 
+estimate population abundance, specifically the use of a 
+capture-recapture estimator to estimate demographic rates and abundance. 
+
+Several capture-recapture estimators exist to estimate abundance, 
+demographic rates, as well as abundance and demographic rates. A capture 
+recapture estimator that simultaneously estimates demographic rates and 
+abundance can potentially achieve metrics and targets specified in 
+sub-objectives 1 and 2. Historically, a Jolly-Seber model, was used to 
+simultaneously estimate abundance and survival from recapture of marked 
+individuals from singular capture occasions over time (Jolly 1963, 1965, 
+Seber 1965). However, the lack of multiple within occasion recapture 
+attempts required potentially unrealistic assumptions to estimate 
+capture probability. Some of these assumptions can be relaxed by 
+sophisticated model formulations or fitting the capture recapture model 
+as a Bayesian state space model, which has been done for pallid sturgeon 
+in the RPMA 4 by Wu and Holan (2016). Alternatively, using multiple 
+recapture efforts within a sampling occasion allows direct estimation of 
+capture probability as well as abundance and survival, which was 
+described by Pollock (1982) and referred to as the robust design. 
+
+The robust design frame work has been applied across a wide range of 
+taxa to estimate demographic rates and population abundance. Its use has 
+been extended to studies of species occurrence (i.e., occupancy models; 
+MacKenzie et al. 2002, Tyre et al. 2003) and abundance (N-mixture 
+models; Royle 2004b, Royle 2004a) of unmarked individuals. The robust 
+design provides a rigorous framework that allows for the estimation of 
+relevant demographic rates and abundance using marked individuals. As 
+originally described by Pollock (1982), a robust design consists of 
+primary sampling occasions with secondary sampling occasions nested with 
+the primary sampling occasion (Figure 1). Primary occasions are spaced 
+temporally to capture processes like survival and growth. Secondary 
+occasions occur over a short time frame, short enough that closure of 
+the population from demographic processes (i.e., recruitment, mortality, 
+immigration, emigration) can be assumed. The secondary sampling 
+occasions provide multiple opportunities for individuals to be captured 
+and thereby allowing capture probability and abundance to be estimated. 
+
+Application of robust design to Pallid Sturgeon
+The use of a robust design capture recapture approach to estimate 
+Missouri River pallid sturgeon abundance, and demographic rates are not 
+novel. The first application was Steffensen et al. (2012) as part of the 
+annual brood stock collection in segment 9. Similarly, Winders and 
+Steffensen (2014) used a robust design to estimate abundance and 
+demographic rates for a portion of segment 10 using broodstock 
+collection data. In both studies, pallid sturgeon were captured by 
+setting multiple trotlines at random locations in the study area over a 
+short period. The annual brood stock sampling was the primary occasion 
+and daily capture efforts were the secondary occasions in both studies. 
+Given the study design, survival was estimated over the open period 
+(i.e., between annual broodstock collection events). Capture probability 
+was estimated for each daily effort within the primary period and 
+abundance during the closed period (i.e., broodstock collection). 
+Additionally, both studies were able to estimate movement parameters 
+that account for pallid sturgeon leaving or arriving in the study area 
+between closed periods. 
+
+
+Specific parameters estimated by the robust design
+There are variations of the robust design that estimate varying 
+parameters. The most commonly used version, as well as the version used 
+by Steffensen et al. (2012) and Winders and Steffensen (2014) is the 
+version that estimates 6 parameters. Specifically these parameters are: 
+
+* $\varphi $: the probability of surviving between primary occasions, 
+* $\gamma^{\prime}$:  the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was not present during the previous primary occasions given it survives to the current occasion (Figure 2),
+* $\gamma^{\prime\prime}$:  is the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was present during the previous primary occasions given it survives to the current occasion (Figure 2),
+* $c$ is the initial capture probability
+* $p$ is the recapture probability, and 
+* $f_0$ is number of unobserved individuals.  
+
+Depending on the situation the number of parameters estimated can be 
+reduced by assuming initial capture probability is equal to recapture 
+probability where $c=p$. Similarly, ${{\gamma }^{\prime }}$ and 
+$\gamma^{\prime\prime}$ can be specified to represent hypotheses about 
+immigration and emigration processes. For example, even flow of fish in 
+and out of the systems can be specified by imposing equality of 
+immigration and emigration terms where ${{\gamma }^{\prime }}={{\gamma 
+}^{\prime \prime }}$. Population abundance ($N$) at each time period is 
+a derived parameter calculated as: $N={{f}_{0}}+M$ where, $M$ is the 
+number of marked fish. Uncerainty around parameter estimates derived 
+quantities can be estimated by profile likelihood and use of the delta 
+method if estimated by maximizing the likelihood of the model given the 
+data (Hilborn and Mangel 1997, Powell 2012). Uncertainty can also be 
+quantified simultaneously for estimated and derived parameters if fit by 
+MCMC using a Bayesian approach. 
+
+
+
+Achieving sub-objective metrics and targets
+
+Recruitment
+
+When capture recapture histories are viewed in reverse order 
+recruitment can be estimated using what is referred to as a Pradel model 
+(Pradel 1996). This model relies on being able to differentiate recruits 
+based off of size or age which works well for fish populations. 
+Therefore there are 2 processes in which a pallid sturgeon can be 
+initially captured: 1) it is a new recruit and was not vulnerable to 
+capture and 2) the pallid sturgeon was vulnerable to capture but not 
+captured. The differentiating the 2 outcomes can be informed by size to 
+improve recruitment estimates. 
+
+Trend
+
+While not commonly employed in fisheries literature the robust design 
+can estimate population growth rate ($\lambda$). In particular, by 
+running capture histories backwards estimates the probability a pallid 
+sturgeon was present in the previous year given it was present in the 
+current year which is the per capita rate of additions to the population 
+($f$), or the number of individuals entering the population between 
+primary occasions. Survival rate ($\varphi $) can be estimated, and by 
+running them forward, survival can be estimated. Trend evaluated as 
+population growth rate is derived from model estimates as$\lambda 
+=\varphi \text{+}f$ and uncertainty can be estimated using the 
+previously described approaches for$N$. 
+
+Abundance
+
+Absolute abundance estimates are important to ongoing adaptive 
+management and recovery because species recovery sub-objective 2 is 
+specified as abundance. The robust design for capture recapture provides 
+the necessary within primary occasion replication to reliably estimate 
+capture probabilities ($c,p$) and then estimate $N$ given the number of 
+fish captured and the capture probability. Given that the capture 
+recapture design is potentially using 2 or more temporal replicates 
+within each bend then unadjusted catch numbers may be comparable to 
+existing PSPAP CPUE data. 
+
+
+Quantifying effects of management actions and auxiliary information
+
+Parameters in capture recapture models can be related to covariates 
+which provide a potential means to quantify the population response to 
+management actions. For example, changes in flow can be related to 
+survival or migration parameters using a logit linear model 
+as$\operatorname{logit}(\theta )={{\beta }_{0}}+{{\beta }_{1}}\cdot 
+X+\epsilon $, where $\theta$ is an estimated parameter (e.g., $\phi$, 
+$\gamma \prime$, $\gamma\prime\prime$), $\beta_0$ is the intercept, 
+${{\beta }_{1}}$ is the effect of covariate $X$, and $\epsilon $ is 
+residual error. Additionally, auxiliary information can be used to 
+inform parameter estimates. For example, telemetry can be used to 
+determine whether a pallid sturgeon is in the study area or not and 
+thereby inform estimates of $\gamma \prime$and $\gamma\prime\prime$. 
+Overall ability of a capture recapture robust design to use auxiliary 
+information and potential capture population level responses to 
+management actions make this a potentially useful design beyond 
+providing a means to quantify the metrics and targets for sub-objectives 
+1 and 2. 
+
+
+Caveats and considerations
+Monitoring pallid sturgeon in a system as large as the Missouri River is 
+inherently challenging and it is likely that any approached used will 
+violate an assumption required to estimate demographic rates or 
+population abundance. The previous section provides an overview of the 
+robust design as a monitoring design for pallid sturgeon populations of 
+the Upper and Lower Missouri River. The accurate estimation of 
+population parameters represents a critical component of assessing the 
+system state for pallid sturgeon in the Missouri River and providing key 
+demographic values for evaluating management actions through predictive 
+population modeling. The estimation of these metrics depends on the 
+quality and quantity of data collected from a well-developed sampling 
+design. The optimal design must be cost-efficient, and provide reliable, 
+accurate data. 
+
+Implementing an untested design on a large system like the Missouri 
+River could prove costly from the expenditure of time and effort if the 
+selected design performs poorly. Pallid sturgeon populations in the 
+Upper and Lower Missouri Rivers differ (e.g., size and age at maturity, 
+growth rates, life span). The habitats in which they live are also 
+different. The Lower River is characterized by a narrow, self-scouring 
+channel with higher water velocities, especially in the main channel. In 
+contrast, the Yellowstone and Upper Missouri Rivers are characterized by 
+lower velocities, shallower depths, and a more natural channel form. 
+Differences between the two Missouri River portions has shown that the 
+most effective sampling methodologies and potential strategies also 
+differ significantly and therefore necessitate that the mark-recapture 
+sample designs be tailored to each population. Provisional capture 
+recapture population monitoring designs need to be evaluated by 
+simulation modeling to identify the optimal design (that is, tradeoffs 
+between precision, bias, and cost) and provide proof of concept before 
+testing or implementing in the field as part of a level 1 science effort 
+and adjusted periodically to improve the design so that it more 
+effectively meets the monitoring and species objectives. 
