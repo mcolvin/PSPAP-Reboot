@@ -22,29 +22,47 @@ you fill out a swing weighting form (excel workbook linked in step 1
 below). The PSPAP 2.0 team will not be making decisions based on this 
 information. Instead, the information will be summarized and used to 
 calculate the expected utility (i.e., what is the value of alternative 
-monitoring designs to achieve objectives) for decision maker evaluation. 
-We'll inform the decision makers about how different agencies and 
-stakeholders value the fundamental objectives and how these values 
-relate to the value of various monitoring designs. 
-
-
+monitoring designs to achieve objectives) for decision maker comparison. 
 
 In order to understand swing weighting and how it applies to some of the 
 particular objectives and metrics, we are also including links to a 
 tutorial and examples. Thank you all for your participation!
 
-It may take 10 to 20 minutes to work through this exercise. 
+It may take 10 to 20 minutes to work through this exercise. We recognize 
+this is a tedious task however, it provides a transparent and robust 
+approach to quantifying how objectives may be weighted. 
  
 For those looking for a more in depth understanding of how and why we 
-are using swing weighting in PSPAP 2.0, please watch the [Swing 
-Weighting Tutorial (YouTube; 11 minutes)"](https://www.youtube.com/watch?v=v2nVRkpmWQY). 
+are using swing weighting in PSPAP 2.0, please watch the 11 minute 
+YouTube tutorial [Here](https://www.youtube.com/watch?v=v2nVRkpmWQY). 
 
-
-## Process
-1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise here](swing-weighting-exercise-draft.xlsx) 
-2. Fill in all empty boxes (on all 5 sheets) of the swing weighting form. 
-    1. Instructions to fill out each worksheet are included at the bottom of each excel sheet.
-    2. See 2 example demonstrations (YouTube videos) filling in the [Abundance (YouTube; 5 minutes)](https://www.youtube.com/watch?v=UKX0Uw7Ta0A) and [Trend (YouTube; 4 minutes)](https://www.youtube.com/watch?v=LPbdE_dK1vk) worksheets. 3. Email the filled in form to: s.reynolds@msstate.edu. 
+## Instructions
+1. Be sure you can open, edit, and save the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise Spreadsheet here](swing-weighting-exercise.xlsx) 
+2. Fill in your Name and Agency information on the worksheet titled "Meta"
+3. On the Abundance worksheet do the following:  (Note: these instructions are also on the worksheet)
+    1. See the 5 minute YouTube video demonstrating how to fill in the abundance table [Abundance example](https://www.youtube.com/watch?v=UKX0Uw7Ta0A)
+    2. Rank each of the the scenarios (i.e., rows). The worst case scenario is already filled in for you with a 3.
+    3. Identify your best scenario from the remaining rows and give that a rank of 1. 
+    4. Now rank the remaining scenarios in your order of importance. 
+    5. Assign the scenario that you ranked 1 with a value of 100. 
+    6. Assign a value, from 0 to 100, to the remaining scenarios (0 is worst and 100 is the best),
+    making sure that your values increase with rank *(values do not need to sum to 100)*
+4. On the Trend worksheet do the following:   (Note: these instructions are also on the worksheet)
+    1. See the 4 minute YouTube video demonstrating how to fill in the abundance table [Trend example](https://www.youtube.com/watch?v=LPbdE_dK1vk)
+    2. Rank each of the the scenarios (i.e., rows). The worst case scenario is already filled in for you with a 3.
+    3. Identify your best scenario from the remaining rows and give that a rank of 1. 
+    4. Now rank the remaining scenarios in your order of importance. 
+    5. Assign the scenario that you ranked 1 with a value of 100. 
+    6. Assign a value, from 0 to 100, to the remaining scenarios (0 is worst and 100 is the best),
+    making sure that your values increase with rank *(values do not need to sum to 100)*
+5. On the Fundamental objectives worksheet do the following:   (Note: these instructions are also on the worksheet)
+    1. Rank each of the the scenarios (i.e., rows). The worst case scenario is already filled in for you with a 5.
+    2. Identify your best scenario from the remaining rows and give that a rank of 1. 
+    3. Now rank the remaining scenarios in your order of importance. 
+    4. Assign the scenario that you ranked 1 with a value of 100. 
+    5. Assign a value, from 0 to 100, to the remaining scenarios (0 is worst and 100 is the best),
+    making sure that your values increase with rank *(values do not need to sum to 100)*    
+3. Once you have completed the the stes then email the filled in form to: s.reynolds@msstate.edu 
 
 
 ## Questions
