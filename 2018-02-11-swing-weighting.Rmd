@@ -14,18 +14,38 @@ rmarkdown::render_site("2018-02-11-swing-weighting.Rmd")# build website
 
 
 ## Objective
-The purpose of this post is to gain expert input on how various metrics may be weighted when valuing the outcomes of a montitoring design with respect to the fundamental objectives.  In order to do so we ask that you fill out a swing weighting form (linked in step 1 below). The PSPAP 2.0 team will not be making decisions based on this information.  Instead, we will compile the collected data and report it to the decision makers. We'll inform the decision makers about how different agencies and stakeholders value the fundamental objectives and how these values relate to the outcomes of various monitoring designs.     
 
-In order to understand swing weighting and how it applies to some of the particular objectives and metrics, we are also including links to a tutorial and examples. Thank you all for your participation! 
+The purpose of this post is to elicit input on how various metrics may 
+be weighted when valuing the outcomes of a montitoring design with 
+respect to the fundamental objectives. In order to do so, we ask that 
+you fill out a swing weighting form (excel workbook linked in step 1 
+below). The PSPAP 2.0 team will not be making decisions based on this 
+information. Instead, the information will be summarized and used to 
+calculate the expected utility (i.e., what is the value of alternative 
+monitoring designs to achieve objectives) for decision maker evaluation. 
+We'll inform the decision makers about how different agencies and 
+stakeholders value the fundamental objectives and how these values 
+relate to the value of various monitoring designs. 
+
+
+
+In order to understand swing weighting and how it applies to some of the 
+particular objectives and metrics, we are also including links to a 
+tutorial and examples. Thank you all for your participation!
+
+It may take 10 to 20 minutes to work through this exercise. 
+ 
+For those looking for a more in depth understanding of how and why we 
+are using swing weighting in PSPAP 2.0, please watch the "Swing 
+Weighting Tutorial (11 minutes)": [Swing 
+Weighting](https://www.youtube.com/watch?v=v2nVRkpmWQY). 
 
 
 ## Process
-1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise](swing-weighting-exercise-draft.xlsx) 
-1. For those looking for a more in depth understanding of how and why we are using swing weighting in PSPAP 2.0, please watch the  "Swing Weighting Tutorial":   [Swing Weighting](https://www.youtube.com/watch?v=v2nVRkpmWQY).  
-*For those wanting to move right into the swing weighting exercise, jump to step 3.*
-2. Listen, watch, and understand the abundance and trend metric explantions and examples:  [Abundance](https://www.youtube.com/watch?v=UKX0Uw7Ta0A)   and   [Trend](https://www.youtube.com/watch?v=LPbdE_dK1vk)
-3. Fill in all empty boxes (on all 5 sheets) of the swing weighting form, using the ideas from the links above. Instructions are also included at the bottom of each excel sheet. 
-4. Email the filled in form to: s.reynolds@msstate.edu.
+1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise here](swing-weighting-exercise-draft.xlsx) 
+2. Fill in all empty boxes (on all 5 sheets) of the swing weighting form. 
+    1. Instructions to fill out each worksheet are included at the bottom of each excel sheet.
+    2. See 2 example demonstrations (YouTube videos) filling in the [Abundance (5 minutes)](https://www.youtube.com/watch?v=UKX0Uw7Ta0A) and [Trend (4 minutes)](https://www.youtube.com/watch?v=LPbdE_dK1vk) worksheets. 3. Email the filled in form to: s.reynolds@msstate.edu. 
 
 
 ## Questions
