@@ -19,6 +19,12 @@ output:
 rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build page
 -->
 
+```{r, warning=FALSE, include=FALSE}
+source("_R/1_global.R")
+source("_R/3_load-and-clean.R")
+source("_R/4_figures.R")
+```
+
 
 ```{r,echo=FALSE}
 knitr::include_graphics("images/monitoring-framework.png")
@@ -141,7 +147,8 @@ values and increasing values approach 1.
 
 ## Effort Figures
 ```{r,echo=FALSE,eval=FALSE}
-figures_effort(1)
+#MISSING dfitfunLB and UB causing issues
+figures_effort(1, dat=effort)
 ```
 
 Figure 1. Illustration of gears used since 2003 for Pallid Sturgeon 

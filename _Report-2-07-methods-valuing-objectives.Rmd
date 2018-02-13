@@ -20,7 +20,7 @@ To do:
 1. utility for model
 -->
 
-```{r,echo=FALSE,warning=FALSE, message=FALSE}
+```{r,echo=FALSE,warning=FALSE, message=FALSE, eval=TRUE}
 source("_R/6-analysis-cost.R")
 pbias<- c(-300:300)
 pbias_u<- (max(abs(pbias))-abs(pbias))/(max(abs(pbias))-min(abs(pbias)))

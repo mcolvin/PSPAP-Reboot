@@ -19,6 +19,11 @@ output:
 rmarkdown::render("_Report-5-03-appendix",output_format='word_document')# build page
 -->
 
+```{r, warning=FALSE, include=FALSE}
+source("_R/1_global.R")
+source("_R/2_functions.R")
+```
+
 
 
 Box 1. Function used to simulate reference populations given pallid 

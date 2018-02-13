@@ -111,7 +111,7 @@ if(n==4)
 
 
 
-figures_effort<- function(n){
+figures_effort<- function(n, dat=NULL){
  if(n==1)
         {
         par(mfrow=c(2,1),mar=c(2,2,0,0),oma=c(2,2,1,1))

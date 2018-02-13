@@ -120,7 +120,7 @@ assigned for PSPAP sampling.
 
 Table X.2.  <!--SARA CAN'T COMPILE THIS TABLE...WHAT IS tmp?-->
 
-```{r,echo=FALSE,as.is=TRUE,eval=FALSE}
+```{r,echo=FALSE,as.is=TRUE,eval=TRUE}
 source(_R/6-analysis-cost.R")
 knitr::kable(tmp,
     row.names=FALSE,
