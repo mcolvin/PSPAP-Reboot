@@ -1,5 +1,5 @@
 ---
-title: "PSPAP 2.0 Update Meeting Follow Up:  Swing Weighting"
+title: "Objectives weighting: a swing weighting exercise"
 output: 
   html_document:
     includes:
