@@ -13,7 +13,7 @@ output:
 ---
 
 <!--
-rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
+rmarkdown::render("_Report-2-06-estimating-population-values.Rmd",output_format='word_document')# build page
 -->
 
 
