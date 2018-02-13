@@ -24,7 +24,7 @@ rmarkdown::render("_Report-0-00-master-report.Rmd",output_format="word_document"
 ```{r, warning=FALSE, include=FALSE}
 source("_R/1_global.R")
 source("_R/2_functions.R")
-effort_data<-FALSE   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
+#effort_data<-TRUE   # NEEDED TO CREATE "effort" FROM DATABASE FROM SCRATCH
 source("_R/3_load-and-clean.R")
 source("_R/4_figures.R")
 source("_R/5_tables.R")
