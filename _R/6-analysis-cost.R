@@ -6,7 +6,10 @@
 library(RODBC);library(plyr)
 
 # IMPORT EFFORT FOR LINKING TO COST
-com4<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")
+pcname<- Sys.info()[['nodename']]   
+
+if(pcname!="WFA-F3W30G2"){com4<-odbcConnectAccess2007("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/pallids.accdb")}
+if(pcname=="WFA-F3W30G2"){com4<-odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")}
 dat<-sqlFetch(com4,"cost-summary")
 
 names(dat)<-tolower(names(dat))

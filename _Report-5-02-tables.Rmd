@@ -19,10 +19,20 @@ output:
 rmarkdown::render("_Report-5-02-tables",output_format='word_document')# build page
 -->
 
+```{r, warning=FALSE, include=FALSE}
+source("_R/1_global.R")
+source("_R/2_functions.R")
+#effort_data<-TRUE   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
+source("_R/3_load-and-clean.R")
+source("_R/4_figures.R")
+source("_R/5_tables.R")
+```
+
 
 
 Table 1. Summary of bends within PSPAP Missouri river segments.
- 
+
+
 ```{r,echo=FALSE,eval=TRUE}
 tbl<-tables(1)
 tbl$basin<- ifelse(tbl$basin=="lower","LB","UB")
@@ -34,6 +44,8 @@ kable(tbl,row.names=FALSE,
         "Minimum length (km)", "Mean length (km)","Maximum length (km)"),
     align="lccccc")
 ```
+
+
 
 ##### Page Break
 
@@ -104,9 +116,9 @@ assigned for PSPAP sampling.
 
 
 
-Table X.2.  
+Table X.2.  <!--SARA CAN'T COMPILE THIS TABLE...WHAT IS tmp?-->
 
-```{r,echo=FALSE,as.is=TRUE,eval=TRUE}
+```{r,echo=FALSE,as.is=TRUE,eval=FALSE}
 knitr::kable(tmp,
     row.names=FALSE,
     col.names=c("Field crew", "Mean cost","Median cost", "Std. deviation",
@@ -142,6 +154,7 @@ gear was used in the effort analysis (summarized in Table 4).
 
 ```{r,echo=FALSE,eval=FALSE}
 ## NEED TO FIX BASIN IN THIS ONE.
+dat<-readRDS("_output/effort-data.rds")
 kable(tables_effort(1,dat=dat),
     col.names=c("Basin","PSPAP gear code", "Gear id",2003:2016),
     row.names=FALSE)
@@ -156,6 +169,7 @@ effort analysis (summarized in Table 4).
 
 ```{r,echo=FALSE,eval=FALSE}
 ## NEED TO FIX STANDARD GEAR HERE
+dat<-readRDS("_output/effort-data.rds")
 kable(tables_effort(2,dat=dat),
     col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id",2003:2016),
     row.names =FALSE)
@@ -169,6 +183,7 @@ effort analysis (summarized in Table 4).
 
 ```{r,echo=FALSE,eval=FALSE}
 ## NEED TO FIX STANDARD GEAR HERE
+dat<-readRDS("_output/effort-data.rds")
 kable(tables_effort(3,dat=dat),
     col.names=c("Basin","Segment","Bend","PSPAP gear code", "Gear id", "Minimum","Maximum","Mean","Median", "Total Deployments"),
     row.names =FALSE)
@@ -176,13 +191,13 @@ kable(tables_effort(3,dat=dat),
 ```
 
 Table 4. Summary of effort data (minutes of use per catch trial) for 
-each common gear type. 
+each common gear type. <!--SARA CAN'T COMPILE THIS TABLE...UNLESS IT IS EXACTLY THE SAME AS TABLE 4 ABOVE???  MAYBE NEED DIFFERENT effort_dat.csv.-->
 
-```{r,echo=FALSE,eval=TRUE}
+```{r,echo=FALSE,eval=FALSE}
+#SAME AS TABLE 4 ABOVE???
 effort_summary<- read.table("_output/effort_dat.csv",sep=" ") # from table 4
 kable(effort_summary, #tables_effort(4,dat=dat),
     col.names=c("Basin","PSPAP gear code", "Gear id","No. of Obs.","Mean Effort", "Standard Deviation","Minimum","Maximum", "Median", "Gamma_Shape", "Gamma_Rate"),
     row.names =FALSE)
 ```
-
 

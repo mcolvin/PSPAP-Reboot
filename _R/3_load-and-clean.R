@@ -85,7 +85,7 @@ rm(tmp)
 ## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
 ## AN OUTPUT FROM THE EFFORT ANALYSIS
 #######################################################################
-effort<- read.table("_output/effort_dat.csv")
+effort<- read.csv("_output/effort_dat.csv")
 effort$rpma<- ifelse(effort$basin=="UB",2,4)
 
 # READ IN DENSITY DATA
