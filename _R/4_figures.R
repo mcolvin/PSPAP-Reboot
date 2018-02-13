@@ -107,9 +107,10 @@ if(n==4)
 
     }
 	
-	}
+}
 
 
+source("_R/6-analysis-effort.r")
 
 figures_effort<- function(n, dat=NULL){
  if(n==1)

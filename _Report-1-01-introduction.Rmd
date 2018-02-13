@@ -26,7 +26,7 @@ To do:
 2. fix equations imported from word
 -->
 
-# Evaluation context for the PSPAP V. 2.0
+# Evaluation context for the PSPAP v. 2.0
 
 Redesign of the Pallid Sturgeon Population Assessment Program (PSPAP) to 
 PSPAP v. 2.0 is intended to update population assessment to support 
@@ -116,9 +116,10 @@ sub-objectives listed in section 4.1.1. of the AM plan specify
 
 1. increase pallid sturgeon recruitment to age-1, and 
 2. maintain or increase numbers of pallid sturgeon as an interim measure 
-until sufficient and sustained natural recruitment occurs, both of which 
-are needed to achieve the fundamental objective set by the USFWS to 
-preclude species jeopardy. 
+until sufficient and sustained natural recruitment occurs, 
+
+both of which are needed to achieve the fundamental objective set by the 
+USFWS to preclude species jeopardy. 
 
 The first sub-objective (increase pallid sturgeon recruitment to age-1) 
 is based on the understanding that bottlenecks for pallid sturgeon 

@@ -76,7 +76,7 @@ Figure 6.
 ##### page break
 
 
-```{r,echo=FALSE,warning=FALSE, message=FALSE,eval=TRUE}
+```{r,echo=FALSE,warning=FALSE, message=FALSE,eval=FALSE}
 source("_R/6-analysis-cost.R")
 fit<-lm(lperdep~year+fieldoffice+year:fieldoffice,
     depcost)
@@ -147,7 +147,7 @@ values and increasing values approach 1.
 
 ## Effort Figures
 ```{r,echo=FALSE,eval=FALSE}
-#MISSING dfitfunLB and UB causing issues
+#datUBgear causing issues
 figures_effort(1, dat=effort)
 ```
 
