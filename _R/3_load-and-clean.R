@@ -78,17 +78,6 @@ rm(tmp)
 
 
 
-
-
-#######################################################################
-# READ IN EFFORT DATA FROM 01-PSPAP-Background Analysis
-## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
-## AN OUTPUT FROM THE EFFORT ANALYSIS
-#######################################################################
-
-effort<-readRDS("_output/effort-data.rds")
-effort$rpma<- ifelse(effort$basin=="UB",2,4)
-
 # READ IN DENSITY DATA
 dens<-read.csv("./_dat/fish_density.csv")
 # REMOVE WU AND HOLAN DATA
@@ -112,12 +101,24 @@ initial_length<- read.csv("./_dat/length_inputs.csv")
 
 
 
+
+
+
+#######################################################################
+# READ IN EFFORT DATA FROM 01-PSPAP-Background Analysis
+## THIS DATA HAS ALREADY BEEN PROCESSED AND IS
+## AN OUTPUT FROM THE EFFORT ANALYSIS
+#######################################################################
+if(effort_data==FALSE)
+{
+  effort<-readRDS("_output/effort-data.rds")
+  effort$rpma<- ifelse(effort$basin=="UB",2,4)
+}
+
 ############## EFFORT ANALYSIS #####################
 if(effort_data==TRUE)# long time to run, set to true in Rmd to run
-    {
+  {
     ## CODE TO COMMUNICATE WITH LOCAL PSPAP DATABASE 
-    #com3<- odbcConnectAccess2007("C:/Users/mcolvin/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
-    #com3<- odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb")
     com3<- odbcConnectAccess2007(file.path(Sys.getenv("USERPROFILE"),"Google Drive/Pallid-Sturgeon/analysis-effort/pallids.accdb"))
     dat<-sqlFetch(com3, "Gear-Specific-Effort")
     ## CONVERT TO CHARACTER
@@ -218,7 +219,10 @@ if(effort_data==TRUE)# long time to run, set to true in Rmd to run
     #     }
     # )))
     saveRDS(dat,"_output/effort-data.Rds")
-    }
+    effort<-dat
+    effort$rpma<- ifelse(effort$basin=="UB",2,4)
+    rm(dat,gear_dat,com3)
+  }
 
 ######################### STUDY AREA ###########
 
