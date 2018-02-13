@@ -1,5 +1,5 @@
 
-tables_effort<- function(n,dat=dat,...)
+tables_effort<- function(n,dat=NULL,...)
 {
   dat$tmp<-1 # TO SUM FOR COUNTS
 ## EFFORT ANALYSIS
