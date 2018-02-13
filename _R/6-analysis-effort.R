@@ -1,4 +1,4 @@
-
+source("_R/3_load-and-clean.r")
 
 ###########################
 # FIT GAMMA DISTRIBUTIONS #
@@ -6,6 +6,14 @@
 ## 1.  
 dfitfunLB<-function(x)
 {
+  datLB<-subset(effort, standard_gear=="yes" & basin=="LB")
+  dim(datLB)
+  LBgears<-unlist(lapply(unlist(levels(datLB$gear)), function(x) 
+  {
+    lg<-subset(datLB, gear==x)
+    if(nrow(lg)!=0) return(x)
+  }
+  ))
   datLBgear<-subset(datLB, gear==LBgears[x])
   dfit<-fitdistr(datLBgear$effort, "gamma")
   #Define Shape and Rate Based on Distribution Fitting
@@ -17,6 +25,14 @@ dfitfunLB<-function(x)
 ## 2.
 dfitfunUB<-function(x)
 {
+  datUB<-subset(effort, standard_gear=="yes" & basin=="UB")
+  dim(datUB)
+  UBgears<-unlist(lapply(unlist(levels(datUB$gear)), function(x) 
+  {
+    lg<-subset(datUB, gear==x)
+    if(nrow(lg)!=0) return(x)
+  }
+  ))
   datUBgear<-subset(datUB, gear==UBgears[x])
   dfit<-fitdistr(datUBgear$effort, "gamma")
   #Define Shape and Rate Based on Distribution Fitting
@@ -27,7 +43,7 @@ dfitfunUB<-function(x)
 
 
 # FIND STANDARD LOWER & UPPER BASIN GEARS
-datLB<-subset(dat, standard_gear=="yes" & basin=="LB")
+datLB<-subset(effort, standard_gear=="yes" & basin=="LB")
 dim(datLB)
 LBgears<-unlist(lapply(unlist(levels(datLB$gear)), function(x) 
 {
@@ -36,7 +52,7 @@ LBgears<-unlist(lapply(unlist(levels(datLB$gear)), function(x)
 }
 ))
 
-datUB<-subset(dat, standard_gear=="yes" & basin=="UB")
+datUB<-subset(effort, standard_gear=="yes" & basin=="UB")
 dim(datUB)
 UBgears<-unlist(lapply(unlist(levels(datUB$gear)), function(x) 
 {
@@ -44,6 +60,7 @@ UBgears<-unlist(lapply(unlist(levels(datUB$gear)), function(x)
   if(nrow(lg)!=0) return(x)
 }
 ))
+
 
 # MAKE A LIST OF DISTRIBUTION PARAMETERS
 valuesLB<-unlist(lapply(c(1:12,15,16,18), dfitfunLB))
@@ -82,7 +99,7 @@ if(run_code==TRUE)
   tables(4)[9,]
   
 # LOOK AT DATA BY BEND FOR ALL STANDARD GEARS COMBINED
-  datS<-subset(dat,standard_gear=="yes")
+  datS<-subset(effort,standard_gear=="yes")
   datS$tmp2<-1 # TO SUM FOR COUNTS
   tmp2<-dcast(datS, basin+segment_id+bend~yr,value.var="tmp2",sum)
   tmp2$min<-apply(tmp2[,4:17], 1, FUN=min)

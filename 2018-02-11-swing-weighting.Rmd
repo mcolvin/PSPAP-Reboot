@@ -20,8 +20,8 @@ In order to understand swing weighting and how it applies to some of the particu
 
 
 ## Process
-1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise](swing-weighting-exercise-draft.xlsx) 
-1. For those looking for a more in depth understanding of how and why we are using swing weighting in PSPAP 2.0, please watch the  "Swing Weighting Tutorial":   [Swing Weighting](https://www.youtube.com/watch?v=v2nVRkpmWQY).  
+1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise](swing-weighting-exercise.xlsx) 
+1. For those looking for a more in depth understanding of how and why we are using swing weighting in PSPAP 2.0, please watch the  "Swing Weighting Tutorial":   [Swing Weighting](https://www.youtube.com/watch?v=HkXh0ue_Zjw).  
 *For those wanting to move right into the swing weighting exercise, jump to step 3.*
 2. Listen, watch, and understand the abundance and trend metric explantions and examples:  [Abundance](https://www.youtube.com/watch?v=UKX0Uw7Ta0A)   and   [Trend](https://www.youtube.com/watch?v=LPbdE_dK1vk)
 3. Fill in all empty boxes (on all 5 sheets) of the swing weighting form, using the ideas from the links above. Instructions are also included at the bottom of each excel sheet. 
