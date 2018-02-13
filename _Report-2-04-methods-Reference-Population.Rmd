@@ -15,15 +15,6 @@ output:
     reference_docx: tmp-editing.docx
 ---
 
-```{r, warning=FALSE, include=FALSE}
-source("_R/1_global.R")
-source("_R/2_functions.R")
-effort_data<-FALSE   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
-source("_R/3_load-and-clean.R")
-#source("_R/4_figures.R")
-source("_R/5_tables.R")
-```
-
 <!--
 rmarkdown::render("_Reference-Population.Rmd",output_format='html_document')# 
 build page
