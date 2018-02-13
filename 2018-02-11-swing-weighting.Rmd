@@ -37,7 +37,7 @@ are using swing weighting in PSPAP 2.0, please watch the 11 minute
 swing weighting YouTube tutorial [Here](https://www.youtube.com/watch?v=HkXh0ue_Zjw). 
 
 ## Instructions
-1. Be sure you can open, edit, and save the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise Spreadsheet Here](swing-weighting-exercise.xlsx) 
+1. Be sure you can open, edit, and save the swing weighting exercise (it's an excel file with 4 sheets): [Download Exercise Spreadsheet Here](swing-weighting-exercise.xlsx) 
 2. Fill in your Name and Agency information on the worksheet titled "Meta"
 3. On the Abundance worksheet do the following:  (Note, these instructions are also on the worksheet.)
     1. See the 5 minute YouTube video demonstrating how to fill in the abundance table:  [Abundance example](https://www.youtube.com/watch?v=UKX0Uw7Ta0A)
