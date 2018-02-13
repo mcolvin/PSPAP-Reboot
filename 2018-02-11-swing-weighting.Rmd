@@ -36,16 +36,15 @@ tutorial and examples. Thank you all for your participation!
 It may take 10 to 20 minutes to work through this exercise. 
  
 For those looking for a more in depth understanding of how and why we 
-are using swing weighting in PSPAP 2.0, please watch the "Swing 
-Weighting Tutorial (11 minutes)": [Swing 
-Weighting](https://www.youtube.com/watch?v=v2nVRkpmWQY). 
+are using swing weighting in PSPAP 2.0, please watch the [Swing 
+Weighting Tutorial (YouTube; 11 minutes)"](https://www.youtube.com/watch?v=v2nVRkpmWQY). 
 
 
 ## Process
 1. Be sure you can open and edit the swing weighting exercise (it's an excel file with 5 sheets): [Download Exercise here](swing-weighting-exercise-draft.xlsx) 
 2. Fill in all empty boxes (on all 5 sheets) of the swing weighting form. 
     1. Instructions to fill out each worksheet are included at the bottom of each excel sheet.
-    2. See 2 example demonstrations (YouTube videos) filling in the [Abundance (5 minutes)](https://www.youtube.com/watch?v=UKX0Uw7Ta0A) and [Trend (4 minutes)](https://www.youtube.com/watch?v=LPbdE_dK1vk) worksheets. 3. Email the filled in form to: s.reynolds@msstate.edu. 
+    2. See 2 example demonstrations (YouTube videos) filling in the [Abundance (YouTube; 5 minutes)](https://www.youtube.com/watch?v=UKX0Uw7Ta0A) and [Trend (YouTube; 4 minutes)](https://www.youtube.com/watch?v=LPbdE_dK1vk) worksheets. 3. Email the filled in form to: s.reynolds@msstate.edu. 
 
 
 ## Questions
