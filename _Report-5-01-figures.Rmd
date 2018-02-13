@@ -76,7 +76,7 @@ Figure 6.
 ##### page break
 
 
-```{r,echo=FALSE,warning=FALSE, message=FALSE,eval=FALSE}
+```{r,echo=FALSE,warning=FALSE, message=FALSE,eval=TRUE}
 source("_R/6-analysis-cost.R")
 fit<-lm(lperdep~year+fieldoffice+year:fieldoffice,
     depcost)

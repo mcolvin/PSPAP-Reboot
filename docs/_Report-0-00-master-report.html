@@ -214,7 +214,7 @@ To do:
 -->
 </div>
 <div id="evaluation-context-for-the-pspap-v.-2.0" class="section level1">
-<h1>Evaluation context for the PSPAP V. 2.0</h1>
+<h1>Evaluation context for the PSPAP v. 2.0</h1>
 <p>Redesign of the Pallid Sturgeon Population Assessment Program (PSPAP) to PSPAP v. 2.0 is intended to update population assessment to support adaptive management of the Missouri River Recovery Program (MRRP). PSPAP v. 2.0 is considered a necessary part of the pallid sturgeon monitoring strategy, but it is not considered sufficient for monitoring needs. Instead, it is designed to complement three other components:</p>
 <ol style="list-style-type: decimal">
 <li>effectiveness monitoring,</li>
@@ -687,11 +687,251 @@ To do:
 -->
 </div>
 </div>
+<div id="valuing-fundamental-objectives" class="section level1">
+<h1>Valuing fundamental objectives</h1>
+<div id="objectives-hierarchy-and-attributes-1" class="section level2">
+<h2>Objectives hierarchy and attributes</h2>
+<p>The objectives identified by stakeholders can be valued in varying ways which in turn are used to calculate the value of a monitoring design. Some objectives</p>
+<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each numbered objective in bold are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers.</p>
+<div id="quantify-ps-recruitment-to-age-1-natural-origin" class="section level3">
+<h3>1. Quantify PS recruitment to age-1 (Natural origin)</h3>
+<ol style="list-style-type: decimal">
+<li>Power to detect age-1 natural origin recruits if recruitment occurs</li>
+<li>Segment level age-1 abundance
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Estimate age-1 recruitment rate (natural origin)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+</ol>
+</div>
+<div id="quantify-ps-population-trend-natural-and-hatchery-origin" class="section level3">
+<h3>2. Quantify PS population trend (natural and hatchery origin)</h3>
+<p>In simulating population monitoring designs, we are using 3 metrics to quantify how a monitoring design meets the objective of <em>quantifying population trend</em>. Specifically, the estimates from a monitoring program, as it relates to trend are evaluated by estimating basin level population growth rate <span class="math inline">\(\lambda\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Bias: How does a trend estimate compare to the true trend.</strong> Bias is calculated as the true value minus the estimated value. We then divide the bias by the true value to be able to combine estimates of varying magnitude (i.e., survival, abundance), recall the previous post that used proportional bias.</p></li>
+<li><p><strong>Precision: How precise are estimated trend values.</strong> Precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. There is no real threshold for what is optimal for estimator precision regarding decision making. Generally speaking, the more precise an estimate, the better. There are other alternatives to CV. However, CV is commonly used in fisheries and therefore likely to be familiar.</p></li>
+<li><p><strong>Performance: How likely is an estimator successful.</strong> In some cases, an estimator like the Robust Design may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations where the estimator did not converge, or convergence was problematic. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 2 alternative monitoring programs, a catch effort program and a capture recapture program. Then we estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, the performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse.</p></li>
+</ol>
+</div>
+<div id="maintain-compatibility-with-legacy-pspap-data" class="section level3">
+<h3>3. Maintain compatibility with legacy PSPAP data</h3>
+<ol style="list-style-type: decimal">
+<li>Proportion of randomly selected bends within segment</li>
+<li>Gears similarity: proportion of standard gears used by design</li>
+<li>Effort similarity: deviation from average effort</li>
+</ol>
+</div>
+<div id="provide-relevant-ps-model-inputs" class="section level3">
+<h3>4. Provide relevant PS model inputs</h3>
+</div>
+<div id="remain-in-cost-constraints" class="section level3">
+<h3>5. ## Remain in cost constraints</h3>
+<p>Cost is the ultimate PSPAP constraint. Designs exceeding cost containments will not be considered. Significant uncertainty exists in costs because of several factors. First, field crews tend to become more efficient over time and therefore recent PSPAP costs may not represent the actual costs. However, if the next iteration of the PSPAP uses similar sampling units (i.e., bends within segments) to the current PSPAP, then costs for field sampling will likely be similar.</p>
+<p>Minimize costs and stay within cost constraints. The expected cost for each design will be calculated. The expected cost can be used 2 ways. First it can screen for designs that exceed cost constrains. Second, it can be used in an absolute sense to quantify design cost. Lastly,it can be used relatively by dividing the value by the expected cost of the current PSPAP and therefore values less than 1 are cheaper and values greater than 1 are more expensive. 1. Designs exceeding cost constraints not considered.</p>
+<div id="estimating-cost-per-gear-deployment" class="section level4">
+<h4>Estimating cost per gear deployment</h4>
+<p>Estimating cost for a day of sampling is difficult. It is the function of several factors, including but not limited to the number of personnel, pay rates, other personnel expenses, travel, time sampling, and gear maintenance. Additionally, the cost of sampling varies among years and costs may be nonlinearly related if there is economy of scale (i.e., it may cost less per sampling unit if many are done).</p>
+<p>There are 7 field offices that have conducted PSPAP sampling since 2003. Annually the USACE provides funding to these field offices to perform PSPAP sampling. Annual values vary from</p>
+<ol style="list-style-type: decimal">
+<li>Annual funding provided to each field crew</li>
+<li>Calculate the number of bends sampled in a year</li>
+<li>Divide the cost by the total to get a field crew specific cost per bend.</li>
+<li>Model or empirical distribution</li>
+</ol>
+<ul>
+<li>The season will begin when water temperatures decline to 12.8C or less (in the fall) and will continue through June 30.</li>
+<li>The Fish Community Season will be July 1 through October 30 throughout the geographic range of the PSPAP.</li>
+</ul>
+</div>
+<div id="important-assumptions" class="section level4">
+<h4>Important assumptions</h4>
+<p>Currently the analysis assumes that the period of performance for field crews is the same as the fiscal year. Discussions with USACE contracting and PSPAP personnel suggested this was a reasonable assumption.</p>
+<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
+<ol style="list-style-type: decimal">
+<li>Survival (RPMA level)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Fecundity (RPMA level)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Growth (RPMA)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Movement
+<ol style="list-style-type: decimal">
+<li>fidelity</li>
+<li>among segment movement</li>
+</ol></li>
+<li>Population structure and characteristics (segment level)
+<ol style="list-style-type: decimal">
+<li>Size structure
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Sex ratio (segment level)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div id="estimate-segment-level-abundance-origin-and-stage-specific" class="section level3">
+<h3>3. Estimate segment-level abundance, origin and stage specific</h3>
+<ol style="list-style-type: decimal">
+<li><p>bias</p></li>
+<li><p>precision</p></li>
+<li><p>spatial distribution</p></li>
+</ol>
+</div>
+<div id="valuing-the-fundamental-objective" class="section level3">
+<h3>Valuing the fundamental objective</h3>
+<p>The 3 metrics described above can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <span class="citation">[@RN4402]</span>. The utility is then used to evaluate alternative monitoring programs. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and conformance is constrained between 0 (worst) and 100 (best).</p>
+<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalized values to a specified minimum and maximum. For example, we can scale the bias to values varying from 0 to 1 as:</p>
+<p><span class="math display">\[U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},\]</span></p>
+<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot below, values with lower proportional bias are given higher values, and increasing values approach 0.</p>
+<p>Now let’s look at the precision metric. Suppose it varies from 10 to 300 (not very precise). The equation to calculate scaled precision is the same as before. However, we do not need to take absolute values since all values are positive. In the plot below, values with lower CV values have higher values, and increasing values approach 0.</p>
+<p>Lastly, let’s look at performance. Suppose performance values from simulating multiple replicates of each monitoring design vary from 35% to 100%. The difference between the performance metric with bias and precision is that higher values are more desirable and therefore we need to rearrange the proportional scaling equation to reflect this as,</p>
+</div>
+<div id="linking-monitoring-designs-and-objectives" class="section level3">
+<h3>Linking monitoring designs and objectives</h3>
+<p>We can combine the utility values now such that monitoring designs resulting in a trend estimate with low bias, good precision, and good performance have higher values (i.e., approaching 1) and estimates of the trend that is biased, imprecise with poor performance approach 0. Values approach 1 because each of the scaled metrics is weighted. For example, if each metric is valued equally, then the weights would be 1/3. Alternatively, if really precise estimates of trend were desired the weight for scaled trend could be 0.5 and the remaining metrics weighted at 0.25. Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
+<ul>
+<li>Catch effort
+<ul>
+<li>Proportional bias = -60, scaled = 0.8</li>
+<li>Precision = 112, scaled = 0.648</li>
+<li>Performance = 100, scaled = 1</li>
+</ul></li>
+<li>Capture recapture
+<ul>
+<li>Proportional bias = 5, scaled = 0.983</li>
+<li>Precision = 115, scaled = 0.638</li>
+<li>Performance = 90, scaled = 0.857</li>
+</ul></li>
+</ul>
+<p>The scaled utility for the catch effort program is:</p>
+<p><span class="math display">\[0.774= 
+0.25\cdot 0.8+
+0.50 \cdot 0.648+
+0.25\cdot1,\]</span></p>
+<p>and the scaled utility for the capture recapture program is</p>
+<p><span class="math display">\[0.779= 
+0.25\cdot 0.983+
+0.50 \cdot 0.638+
+0.25\cdot0.857.\]</span></p>
+<p>The combined utility values indicate that the capture recapture program has slightly more value to achieve the objective of <em>quantifing population trend</em>.</p>
+<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.\]</span></p>
+</div>
+</div>
+<div id="swing-weighting-not-so-subjective." class="section level2">
+<h2>Swing weighting, not so subjective.</h2>
+<!--
+Quantify PS abundance or relative abundance  
+Quantify catch rates of age 0 and age 1 PS   
+Age at maturity  
+Age structure    
+Blood    
+
+Catch effort     
+Competition with invasive species    
+Contaminants     
+Didson   
+Diet     
+Disease  
+Drift and dspersal   
+ 
+Egg quality  
+Egg sample   
+Estimate Effective population size   
+Evaluate annual trends in Native forage fish     
+Fecundity    
+Fin ray  
+Fish communities     
+Fish condition   
+Foraging habitat     
+Free embryo collection   
+Genetic composition  
+Growth   
+Habitat selection    
+ 
+Hybridization    
+     
+IRC habitat  
+ 
+Local adaptation     
+ 
+Microchemistry   
+Model-based estimates of abundance of age 0 and age 1 PS     
+Model-based estimates of survival of hatchery and naturally reproducing PS to age 1  
+Movement     
+     
+Population estimates for PS for all size and age classes, particularly ages 2 to 3   
+Population structure and other characteristics   
+Predation    
+RNA Stress markers   
+Reproductive cycling     
+Reproductive readiness   
+Robust design    
+Sex  
+Sex ratio    
+Spawning aggregation and synchrony   
+Spawning habitat     
+Stable isotopes  
+Stocking program reports     
+ 
+Stress   
+Survival     
+     
+     
+     
+Use of Mississippi and tributaries   
+Zooplankton density  
+catch rates of all PS by size class  
+
+
+Hydroacoustic monitoring
+N mixture model  
+PIT tag fish
+Trawling
+ultrasound
+Telemetry River sweep
+CJS  
+Calibrated Population Model 
+Measure fish length and weight
+Take a Tissue sample    
+Lavage   
+Stomach removal 
+EDNA    
+Hatchery report and data    
+Closed population estimators
+Smaller gill mesh
+Use trammel nets
+-->
+<!--
+To do:
+1. utility for model
+-->
+</div>
+</div>
 <div id="sub-objectives" class="section level1">
 <h1>Sub-objectives</h1>
 <div id="fecundity" class="section level2">
 <h2>Fecundity</h2>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-12-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-13-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 </div>
 </div>
 <div id="discussion" class="section level1">
@@ -743,8 +983,9 @@ rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build p
 </div>
 <div id="page-break-6" class="section level5">
 <h5>page break</h5>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-2.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-3.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-4.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-5.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-6.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-7.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-8.png" width="672" /></p>
 <p>Figure 7.</p>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-21-1.png" width="672" /> Figure 8.</p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-22-1.png" width="672" /> Figure 8.</p>
 <p>Figure 9.</p>
 <p>Figure 10. In the plot above, values with lower performance values have lower values and increasing values approach 1.</p>
 </div>
@@ -1254,6 +1495,77 @@ rmarkdown::render("_Report-5-02-tables",output_format='word_document')# build pa
 </tbody>
 </table>
 <p>Table X.2. <!--SARA CAN'T COMPILE THIS TABLE...WHAT IS tmp?--></p>
+<pre><code>## Warning: closing unused RODBC handle 2</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Field crew</th>
+<th align="center">Mean cost</th>
+<th align="center">Median cost</th>
+<th align="center">Std. deviation</th>
+<th align="center">Minimum cost</th>
+<th align="center">Maximum cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CF</td>
+<td align="center">404.75</td>
+<td align="center">397.26</td>
+<td align="center">110.14</td>
+<td align="center">248.51</td>
+<td align="center">621.71</td>
+</tr>
+<tr class="even">
+<td align="left">GP</td>
+<td align="center">373.49</td>
+<td align="center">377.99</td>
+<td align="center">175.72</td>
+<td align="center">141.73</td>
+<td align="center">666.15</td>
+</tr>
+<tr class="odd">
+<td align="left">MO</td>
+<td align="center">368.09</td>
+<td align="center">355.54</td>
+<td align="center">147.79</td>
+<td align="center">220.28</td>
+<td align="center">776.91</td>
+</tr>
+<tr class="even">
+<td align="left">MR</td>
+<td align="center">284.65</td>
+<td align="center">241.93</td>
+<td align="center">118.90</td>
+<td align="center">216.40</td>
+<td align="center">628.08</td>
+</tr>
+<tr class="odd">
+<td align="left">MT</td>
+<td align="center">230.92</td>
+<td align="center">190.41</td>
+<td align="center">165.62</td>
+<td align="center">91.65</td>
+<td align="center">706.87</td>
+</tr>
+<tr class="even">
+<td align="left">NE</td>
+<td align="center">270.87</td>
+<td align="center">267.22</td>
+<td align="center">76.35</td>
+<td align="center">159.17</td>
+<td align="center">377.69</td>
+</tr>
+<tr class="odd">
+<td align="left">SD</td>
+<td align="center">197.29</td>
+<td align="center">178.42</td>
+<td align="center">63.54</td>
+<td align="center">130.14</td>
+<td align="center">348.40</td>
+</tr>
+</tbody>
+</table>
 <p>Table x.3.</p>
 <p>Missouri River segments and RPMAs.</p>
 <table>

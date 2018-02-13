@@ -60,7 +60,7 @@ the process-->
 ```
 
 <!--Methods: valuing design outcomes-utilities-->
-```{r child="_Report-2-07-methods-valuing-objectives.Rmd", echo=FALSE,eval=FALSE}
+```{r child="_Report-2-07-methods-valuing-objectives.Rmd", echo=FALSE,eval=TRUE}
 ```
 
 ```{r child="_Report-2-08-methods-evaluating-and-routing-ancillary-objectives.Rmd", echo=FALSE,eval=TRUE}
