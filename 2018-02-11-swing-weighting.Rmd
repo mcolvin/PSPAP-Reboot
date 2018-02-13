@@ -13,7 +13,7 @@ rmarkdown::render_site("2018-02-11-swing-weighting.Rmd")# build website
 -->
 
 
-## Objective
+## Background
 
 The purpose of this post is to elicit input on how various metrics may 
 be weighted when valuing the outcomes of a montitoring design with 
