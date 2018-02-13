@@ -46,7 +46,8 @@ swing weighting YouTube tutorial [Here](https://www.youtube.com/watch?v=v2nVRkpm
     4. Now rank the remaining scenarios in your order of importance. 
     5. Assign the scenario that you ranked 1 with a value of 100. 
     6. Assign a value, from 0 to 100, to the remaining scenarios (0 is worst and 100 is the best),
-    making sure that your values increase with rank *(values do not need to sum to 100)*
+    making sure that your values increase with rank. For example a scenario with a rank of 2 should
+    have a higher value than a scenario with a rank of 3. *(values do not need to sum to 100)*
 4. On the Trend worksheet do the following:   (Note: these instructions are also on the worksheet)
     1. See the 4 minute YouTube video demonstrating how to fill in the abundance table [Trend example](https://www.youtube.com/watch?v=LPbdE_dK1vk)
     2. Rank each of the the scenarios (i.e., rows). The worst case scenario is already filled in for you with a 3 and a value of 0.
@@ -54,14 +55,16 @@ swing weighting YouTube tutorial [Here](https://www.youtube.com/watch?v=v2nVRkpm
     4. Now rank the remaining scenarios in your order of importance. 
     5. Assign the scenario that you ranked 1 with a value of 100. 
     6. Assign a value, from 0 to 100, to the remaining scenarios (0 is worst and 100 is the best),
-    making sure that your values increase with rank *(values do not need to sum to 100)*
+    making sure that your values increase with rank. For example a scenario with a rank of 2 should
+    have a higher value than a scenario with a rank of 3. *(values do not need to sum to 100)*
 5. On the Fundamental objectives worksheet do the following:   (Note: these instructions are also on the worksheet)
     1. Rank each of the the scenarios (i.e., rows). The worst case scenario is already filled in for you with a 5 and a value of 0.
     2. Identify your best scenario from the remaining rows and give that a rank of 1. 
     3. Now rank the remaining scenarios in your order of importance. 
     4. Assign the scenario that you ranked 1 with a value of 100. 
     5. Assign a value, from 0 to 100, to the remaining scenarios (0 is worst and 100 is the best),
-    making sure that your values increase with rank *(values do not need to sum to 100)*    
+    making sure that your values increase with rank. For example a scenario with a rank of 2 should
+    have a higher value than a scenario with a rank of 3. *(values do not need to sum to 100)*   
 3. Once you have completed the the stes then email the filled in form to: s.reynolds@msstate.edu 
 
 
