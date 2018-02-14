@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Missouri River Pallid Sturgeon Technical Team" />
+
+
+<title>Creating a reference population</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Creating a reference population</h1>
+<h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
+<h4 class="date"><em>14 February, 2018</em></h4>
+
+</div>
+
+
+<!--
+rmarkdown::render("_Reference-Population.Rmd",output_format='html_document')# 
+build page
+-->
+<div id="generation-of-reference-populations" class="section level2">
+<h2>Generation of reference populations</h2>
+<!-- IF WE NEED A MORE DETAILED INTRO WE CAN SAY SOMETHING LIKE: We used 
+a Bayesian Decision Network (BDN) to evaluate alternative PSPAP 
+monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and 
+Peterson 2013). The development and parameterization of the BDN required 
+two steps (see ??). The second step was to stochastically simulate the 
+outcomes of the alternative monitoring designs. In short, the process 
+that we used (and continue to use) to generate monitoring design 
+outcomes involves four steps (see ??), the first of which is to simulate 
+known reference pallid sturgeon populations. Therefore...pick up with 
+what follows-->
+<p>A set of reference populations of known pallid sturgeon abundance was needed to evaluate alternative monitoring designs and their ability to achieve the fundamental objectives identified by stakeholders (See previous section: “Eliciting Stakeholder Objectives”). A reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level (Figure 1). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated.</p>
+<div id="objectives" class="section level3">
+<h3>Objectives</h3>
+<p>The objectives of this analysis were to:</p>
+<ol style="list-style-type: decimal">
+<li>Create a set of spatially explicit pallid sturgeon population with known bend-level annual abundances,</li>
+<li>Simulate reference population dynamics for 10 years with varying but known annual survival, individual growth, movement, and recruitment, and</li>
+<li>Allow movement and recruitment to vary over a wide range of biologically reasonable conditions in order to better understand their relationship with monitoring design outcomes.</li>
+</ol>
+</div>
+<div id="assumptions" class="section level3">
+<h3>Assumptions</h3>
+<ol style="list-style-type: decimal">
+<li>Survival probability is homogeneous among all individuals and independent of space and time.</li>
+<li>Individual fish growth follows a von Bertalanffy growth equation.</li>
+<li>There is no movement within years.</li>
+<li>Movement within a basin can occur between years.</li>
+<li>Recruitment occurs at the basin-level and is stochastic.</li>
+</ol>
+<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (Cite Kirk, Holan &amp; Wu, &amp; Rotella). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. However, since it is unclear how closely assumptions 3 and 4 are met in reality, we explore and discuss the consequences of breaking these movement assumptions on estimator outputs in Appendix ??. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon.</p>
+<!--
+# Methods
+-->
+</div>
+<div id="spatial-extent-and-grain" class="section level3">
+<h3>Spatial extent and grain</h3>
+<p>This analysis was constrained to generate reference pallid sturgeon populations for segments and bends within the upper basin (segments 1-4) and lower basin (segments 7-10, 13 and 14) of the Missouri River. Bends of varying length were used to generate the spatial distribution of pallid sturgeon (Table 1).</p>
+</div>
+<div id="population-initialization" class="section level3">
+<h3>Population Initialization</h3>
+<p>The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature. Population initialization required xx steps: 1. initializing bend-level abundance, 2. initializing lengths and growth parameters of individuals within each bend, 3. assigning demographic rates (i.e., sex, origin).</p>
+<div id="bend-abundance" class="section level4">
+<h4>Bend Abundance</h4>
+<p>We populated each river bend with pallid sturgeon based on expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:</p>
+<p><span class="math display">\[N_{segment,bend}\sim 
+Poisson\left(\sum_{origin}\lambda_{segment,origin}\cdot 
+l_{segment,bend}\right),\text{(1)}\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(N\)</span> is the number of pallid sturgeon within each bend,</li>
+<li><span class="math inline">\(\lambda\)</span> is the segment and origin specific density in fish per RKM,</li>
+<li><span class="math inline">\(l\)</span> is bend length in RKM,</li>
+<li><span class="math inline">\(segment\)</span> indexes segment within universe,</li>
+<li><span class="math inline">\(bend\)</span> indexes bend within segment, and</li>
+<li><span class="math inline">\(origin\)</span> indexes whether pallid sturgeon were hatchery or natural origin.</li>
+</ul>
+<p>Generating bend abundances from a Poisson distribution allows for variation in bend densities among bends within segment while guaranteeing that the bend is populated with a whole number of fish. Additionally, one could derive a spatial Poisson distribution with the following assumptions:</p>
+<ol style="list-style-type: decimal">
+<li>The probability of 1 pallid being in a column of water with length <span class="math inline">\(dl\)</span> and the width of the river at RKM <span class="math inline">\(l\)</span> is <span class="math inline">\(\alpha\)</span>.</li>
+<li>The probability of 2 or more pallid sturgeon in a column of water with length <span class="math inline">\(dl\)</span> is negligible <span class="math inline">\(o(\varepsilon)\)</span>.</li>
+<li>The number of pallid sturgeon in disjoint (non-overlapping) water columns <span class="math inline">\(dl_1\)</span> and <span class="math inline">\(dl_2\)</span> are independent. In other words the presence or absence of a fish in water column 1 does not effect the probability of a fish being present in water column 2, even if these two water columns are adjacent to each other.</li>
+</ol>
+<!--WORKS BETTER WITH $dA$ BUT WE DON'T HAVE WIDTHS... COULD ASSUME AN 
+APPROXIMATELY CONSTANT WIDTH AMONG BENDS WITHIN SEGMENT TO ACHIEVE THIS. 
+MECNOTE-we can 
+get widths-->
+</div>
+<div id="assigning-length-and-growth-parameters-to-individuals" class="section level4">
+<h4>Assigning length and growth parameters to individuals</h4>
+<p>We randomly assigned an initial length to each individual fish. Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) PSPAP database length data. Only pallid sturgeon data where both length and weight were reported as non-negative values were used. Additionally, data points that were residual outliers to the log-log regression of weight and length were excluded from the analysis. Lastly, only lengths greater than 200mm were included in the analysis. Lengths 200mm or less were considered to be from age-0 pallid sturgeon and these fish would instead be added to the reference population through an analysis of next year’s recruitment (described in a later section below).</p>
+<p>The cleaned up data was then analyzed by segment. For each segment, a numerical inverse cummulative distribution function for length was generated by interpolating between the percentiles of the length data for the given segment. This was achieved using “approxfun” in R’s stats package. Inverse cummulative distribution functions take a probability value between 0 and 1 as input and output a length value. Therefore, we were able to generate an individual’s initial length by using a uniformly sampled probability value as input to the inverse cummulative distribution function associated with the individual’s segment.</p>
+<p>Additionally, we assigned individual von Bertalanffy growth parameters <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>, or the asymptotic length and Brody growth coefficient of a fish’s growth trajectory, respectively, to each fish. Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database. (FURTHER DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE) <!--MECNOTE: 
+on my todo list now--></p>
+<p>To avoid unrealistic growth parameter values we truncated each bivariate normal distribution (one for each basin) to the middle 80%. All points <span class="math inline">\((L_\infty, k)\)</span> of the truncated distribution are contained on or within an ellipse centered at <span class="math inline">\(\mathbf{\mu}=(\mu_{L_\infty}, \mu_k)\)</span>, the basin specific mean values for <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>. Since the R package <span class="math inline">\(\texttt{tmvtnorm}\)</span> truncates multivariate normal distributions to rectangular regions, as opposed to elliptical regions, we used a different approach to randomly draw points from the desired elliptical region.</p>
+<p>In short, we first drew points from the middle 80% of a standard bivariate normal distribution and then transformed these points to the bivariate normal distribution of interest, giving us randomly drawn points that fall on or within the 80% ellipse. The truncation process was achieved using <span class="math inline">\(\texttt{rtruncnorm}\)</span> twice in R, once for the normal distribution associated with <span class="math inline">\(L_\infty\)</span> and then again for the normal distribution associated with <span class="math inline">\(k\)</span> conditional on <span class="math inline">\(L_\infty\)</span>. For more details see Appendix ??.</p>
+</div>
+</div>
+<div id="simulating-annual-transitions" class="section level3">
+<h3>Simulating Annual Transitions</h3>
+<p>After initializing the reference population, we track all individual fish for 10 years, recording individual survival status, bend location, and length on a yearly basis. Additionally, new recruits may be added to the population and tracked.</p>
+<div id="survival-growth" class="section level4">
+<h4>Survival &amp; Growth</h4>
+<p>Survival is stochastic but simulated with a survival probability that is homogeneous among individuals with all fish in the river having an equal probability, <span class="math inline">\(\phi\)</span>, of surviving the year. Survival probability is independent of individual age, length, sex, origin, location, and year. In other words, each year individual fish survival is a Bernoulli trial with fixed probability of success, <span class="math inline">\(\phi\)</span>.</p>
+<p>Annual growth is projected by individual von Bertalanffy growth curves as</p>
+<p><span class="math display">\[ L(t+1)=L(t)+(L_\infty-L(t))(1-e^{-k}), \text{(2)}\]</span></p>
+<p>where <span class="math inline">\(L(t)\)</span> is the individual’s length during year <span class="math inline">\(t\)</span> and each fish has its own randomly generated asymptotic length, <span class="math inline">\(L_\infty\)</span>, and Brody growth rate, <span class="math inline">\(k\)</span>, as described in the previous section on initializing the population.</p>
+</div>
+<div id="movement" class="section level4">
+<h4>Movement</h4>
+<p>Within basin movement occurs between years and is considered at the bend-level. Pallid sturgeon may move from one bend to another bend within the same segment, from one bend to another bend within a different segment (but same basin), or stay within the same bend. Movement probabilities are based on current bend locations with the probability of being in bend <span class="math inline">\(j\)</span> the following year increasing as the distance between the fish’s current bend and bend <span class="math inline">\(j\)</span> decreases. In particular,</p>
+<p><span class="math display">\[\mathbb{P}\Big(B(t)=j \quad | \quad B(t-1)=i\Big)=\frac{e^{-\beta d(i, 
+j)}}{\sum_k e^{-\beta d(i, k)}}, \qquad \text{(3)}\]</span></p>
+<!--
+$$\mathbb{P}\Big(B(t)=j \quad | \quad  B(t-1)=i\Big)=\frac{f(i,j)}{\sum_k f(i,k)},$$
+and 
+$$\begin{cases} 
+      1, & k=i \\
+      e^{\beta_0-\beta_1 d(i, k)}, & k\neq i
+   \end{cases},$$
+-->
+<p>where <span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span>, and <span class="math inline">\(k\)</span> are particular bends, <span class="math inline">\(B(t)\)</span> is the individual’s bend location in year <span class="math inline">\(t\)</span>, <span class="math inline">\(d(i, k)\)</span> is the distance in river kilometers (RKM) from the center of bend <span class="math inline">\(i\)</span> to the center of bend <span class="math inline">\(k\)</span>, and <span class="math inline">\(\beta\)</span> is a basin specific parameter[^3].</p>
+<p>Currently, we have simulated reference populations that do not move (individuals can always be found in the same bend from one sampling season to the next), as well as reference populations with very little between year movement (<span class="math inline">\(\beta=1\)</span>; high site fidelity). This allows for an evaluation of whether there are any stark discontinuities in optimal monitoring decisions between the simplified case of no movement and the case of very little between year movement. Additionally, to account for the uncertain nature of movement probabilities, we plan to vary <span class="math inline">\(\beta\)</span> from simulation to simulation, allowing the analysis of populations that range in having high site fidelity to low site fidelity (Figure 2). Since (3) is discontinuous in terms of river kilometer, a similar bend-level conditional probability distribution that is derived from movement probabilities that are continuous in space is also being considered as a movement model.</p>
+</div>
+<div id="recruitment" class="section level4">
+<h4>Recruitment</h4>
+<p>Each year recruitment was determined by two factors: (1) whether or not spawning that led to successful recruitment occurred and (2) given recruitment occurred, how many age-0 fish survived to age-1 (number of recruits). Recruitment years occurred with a fixed expected frequency (e.g. once every 3 years) and were determined each year as the result of a Bernoulli trial (e.g. probability of success 1/3). During years when recruitment occurred, the number of recruits is drawn from a basin specific Poisson distribution. Assuming that spawning results in a large number of free embryos and that survival to age-1 is rare, then a Poisson distribution mathematically provides a good approximation for the number of recruits. Furthermore, the use of a Poisson distribution aligns well with how actual recruit data may be analyzed (?), as well as with the set-up of the collaborative population model.</p>
+<p>Each new recruit is tracked after being randomly assigned an age-0 location within basin, an age-0 length of 200mm, and von Bertalanffy growth parameters. Age-0 bend locations are generated from a discrete uniform distribution that includes all bends within basin, while growth parameters are generated from the same basin specific truncated bivariate normal distribution used during the initialization of the population. Initial length was chosen as 200mm, because (REASON HERE). Despite fixed initial lengths, the growth trajectories of recruits will differ due to variation in their individual growth parameters.</p>
+</div>
+</div>
+<div id="summary" class="section level3">
+<h3>Summary</h3>
+</div>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

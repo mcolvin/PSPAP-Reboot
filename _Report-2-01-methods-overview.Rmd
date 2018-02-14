@@ -20,18 +20,24 @@ rmarkdown::render("methods-overview.Rmd",
     output_format="word_document")# build page
 -->
 
+```{r, warning=FALSE, include=FALSE}
+source("_R/1_global.R")
+```
+
 ## Methods overview
 
 The approach used to evaluate alernative monitoring designs was intended 
 to be rigorous and transparent because of the many stakeholders effected 
-by potential modifications to the exising PSPAP program. Additionally,
-the methods used will provide a tool for USACE to make transparent decisions
-in the future because montoring funding levels are not certain and 
-therefore hard decisions will be likely in the fgure. We used a 
-structured decision making approach to elicit stateholder objectives, 
-simuation modeling to generate reference population, alternative 
-monitoring designs to estimate relevant population metrics, and 
-valuation of stakeholder objectives to quantify the utility of 
+by potential modifications to the existing PSPAP program. Additionally,
+the methods used will provide a tool for the U.S. Army Corp of Engineers 
+(USACE) to make transparent decisions in the face of uncertain future 
+monitoring funding levels that will likely result in difficult future 
+decisions.  
+
+We used a structured decision making approach to elicit stateholder 
+objectives, simulation modeling to generate reference populations, 
+alternative monitoring designs to estimate relevant population metrics, 
+and valuation of stakeholder objectives to quantify the utility of 
 monitoring design alternatives. The methods are covered in 5 sections 
 detailing 
 
@@ -42,24 +48,33 @@ recruitment, survival),
 4. Valuation of monitoring design utility, and
 5. Routing of monitoring design subobjectives.
 
-
+<!--NEED TO LINK TO BDN DESCRIPTION ABOVE OR ALTER INTRO...NOT MENTIONED HERE, BUT MENTIONED IN INTRO OR ALTER INTRO-->
 
 ## Eliciting stakeholder objectives
+### 2017 MRNRC workshop
+```{r echo=FALSE, results='asis'}
+cat(knit_child(text = readLines('_Report-1-01-introduction.Rmd')[181:215], quiet=TRUE), sep = '\n')
+```
 
+<!--TALK ABOUT UPDATE WEBINARS AND JANUARY MEETING...ANCILLARY OBJECTIVES DISCUSSIONS HERE???
+### PSPAP update at 2017 Fall Science Meeting -- is this something we should include?
+### PSPAP January 2018 Update
+-->
 
 ### Objectives hierarchy and attributes
 
 The numbered objectives correspond to fundamental objectives identified 
-during the workshop. Bulleted lists within each numbered objective in 
-bold are measurable attributes that can be used to quantify each 
-objective. For example there are 3 attributes under objective 1 that can 
-be quantified for each monitoring alternative. Assuming these attributes 
+during the workshop. Bulleted lists within each bold, numbered objective 
+are measurable attributes that can be used to quantify each objective. 
+For example there are 3 attributes under objective 1 that can be 
+quantified for each monitoring alternative. Assuming these attributes 
 are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet 
 may receive a weight of 33% if each attribute is equally important to 
 decision makers. Alternatively these values can be weighted to reflect 
-perceived importance by decision makers. 
+perceived importance by decision makers (see "Valuation of monitoring 
+design utility). 
 
-
+<!--Add description of square bullets-->
 
 1. **Quantify PS recruitment to age-1 (Natural origin)**
     * Power to detect age-1 natural origin recruits if recruitment occurs
@@ -103,6 +118,7 @@ perceived importance by decision makers.
     * Effort similarity: deviation from average effort
 5. **Stay below cost constraints**
     * Minimize costs
+    
   
 
   

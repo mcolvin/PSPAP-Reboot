@@ -22,7 +22,7 @@ build page
 
 
 
-# Overview
+## Generation of reference populations with known dynamics
 
 <!-- IF WE NEED A MORE DETAILED INTRO WE CAN SAY SOMETHING LIKE: We used 
 a Bayesian Decision Network (BDN) to evaluate alternative PSPAP 
@@ -36,17 +36,18 @@ known reference pallid sturgeon populations. Therefore...pick up with
 what follows--> 
 
 A set of reference populations of known pallid sturgeon abundance was 
-needed to evaluate varying monitoring designs and their ability to 
-achieve the fundamental objectives identified during the first 
-population assessment program workshop (See Section ??). A reference 
+needed to evaluate alternative monitoring designs and their ability to 
+achieve the fundamental objectives identified by stakeholders (See 
+previous section: "Eliciting Stakeholder Objectives"). A reference 
 population provides data on the annual survival and movement of each 
 fish in the population (including new recruits) at the bend-level 
-(Figure 1). Since fish length may influence sampling effectiveness (e.g. 
-gear selectivity), data on individuals (e.g., growth) was also 
+(Figure 1). Since fish length may influence sampling effectiveness 
+(e.g. gear selectivity), data on individuals (e.g., growth) was also 
 simulated. 
 
 
 ### Objectives
+
 
 The objectives of this analysis were to:
 
@@ -58,7 +59,7 @@ known annual survival, individual growth, movement, and recruitment, and
 biologically reasonable conditions in order to better understand their 
 relationship with monitoring design outcomes. 
 
-### Major Assumptions
+### Assumptions
 
 1. Survival probability is homogeneous among all individuals and 
 independent of space and time.
@@ -83,8 +84,9 @@ to year and fish are expected to migrate to spawning habitats within
 basin (and not necessarily stay in particular bends), assumption 5 is 
 appropriate for studying pallid sturgeon. 
 
-
+<!--
 # Methods
+-->
 
 ### Spatial extent and grain
 
@@ -172,8 +174,8 @@ Additionally, we assigned individual von Bertalanffy growth parameters
 $L_\infty$ and $k$, or the asymptotic length and Brody growth 
 coefficient of a fish's growth trajectory, respectively, to each fish. 
 Growth parameters were generated from a basin specific bivariate normal 
-distribution fitted to the length data in the PSPAP database. (FURTHER 
-DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE) <!--MECNOTE: 
+distribution fitted to the length data in the PSPAP database.<!--SRNOTE: FURTHER 
+DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE;  MECNOTE: 
 on my todo list now--> 
 
 To avoid unrealistic growth parameter values we truncated each bivariate 
@@ -283,7 +285,7 @@ specific Poisson distribution. Assuming that spawning results in a large
 number of free embryos and that survival to age-1 is rare, then a 
 Poisson distribution mathematically provides a good approximation for 
 the number of recruits. Furthermore, the use of a Poisson distribution 
-aligns well with how actual recruit data may be analyzed (?), as well as 
+aligns well with how actual recruit data may be analyzed (CITATION), as well as 
 with the set-up of the collaborative population model. 
 
  Each new recruit is tracked after being randomly assigned an age-0 
@@ -295,4 +297,9 @@ bivariate normal distribution used during the initialization of the
 population. Initial length was chosen as 200mm, because (REASON HERE). 
 Despite fixed initial lengths, the growth trajectories of recruits will 
 differ due to variation in their individual growth parameters. 
+
+### Summary
+```{r echo=FALSE, results='asis'}
+cat(knit_child(text = readLines('_Report-1-01-introduction.Rmd')[327:348], quiet=TRUE), sep = '\n')
+```
 

@@ -152,12 +152,13 @@ being able to
 
 # PSPAP objectives
 
-The objective of the redesign effort is to identify sampling designs 
-that will give optimal estimates given 
-budget constraints. Our approach is to compare metrics of estimator 
-success and associated sampling costs across multiple estimators and 
-sampling strategies, while accounting for uncertainties about whether 
-monitoring program objectives were achieved. 
+The objective of the redesign effort is to identify, through a 
+transparent approach, the value of alternative monitoring designs in 
+fulfilling stakeholder monitoring objectives (includeing the two AM plan 
+sub-objectives discussed above) given budget constraints. Our approach 
+is to use a Bayesian Decision Network (BDN) to compare alternative PSPAP 
+monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and 
+Peterson 2013) within a structured decision making framework.   
 
 The following sections outline the approach used for this comparison. 
 The methods described below are overviews intended to provide sufficient 
@@ -165,7 +166,15 @@ understanding of the process. It should also be noted that evaluating
 alternative monitoring designs is not trivial, and at times requires 
 weeks of computing time to run estimators and various simulations with 
 sufficient numbers of replications to characterize uncertainty in 
-outcomes. 
+outcomes.
+
+# Extra to Add in
+compare metrics of estimator success 
+and associated 
+sampling costs across multiple estimators and sampling strategies, while 
+accounting for uncertainties about whether monitoring program objectives 
+were achieved. 
+
 
 # PSPAP stakeholders and eliciting monitoring objectives
 
@@ -180,7 +189,9 @@ objectives of the PSPAP were identified at the workshop: 1) quantify
 recruitment to age-1, 2) quantify population trend and abundance, 3) 
 provide collaborative population model inputs (improved parameter 
 estimates), 4) maintain compatibility with legacy PSPAP data, and 5) 
-remain within cost constraints. Stakeholders identified many means 
+remain within cost constraints. 
+
+Stakeholders identified many means 
 objectives that potentially contribute to the fundamental objectives; 
 they also provided critical information on logistics of sampling. Means 
 objectives included varying population metrics to monitor and approaches 
@@ -193,13 +204,17 @@ stress, condition, diet, contaminants), population augmentation,
 movement (i.e., spawning, seasonal), demographic rates (e.g., 
 recruitment, survival), fish community (e.g., competition, invasive 
 species), and genetic status (e.g., effective population size, 
-hybridization, local adaptation). Stakeholder objectives were organized 
+hybridization, local adaptation). 
+
+Stakeholder objectives were organized 
 in an influence diagram during the workshop. The influence diagram 
 serves 2 purposes. First, it clarifies stakeholders' fundamental and 
 means objectives, thereby increasing transparency. Second, the influence 
 diagram can be developed into a Bayesian Decision Network (BDN) to 
-evaluate alternative PSPAP designs (Marcot et al. 2001, Nyberg et al. 
-2006, Conroy and Peterson 2013). The development and parameterization of 
+evaluate alternative PSPAP monitoring designs (Marcot et al. 2001, 
+Nyberg et al. 2006, Conroy and Peterson 2013). 
+
+The development and parameterization of 
 the BDN required 2 steps: 1) translate nodes in the influence diagram to 
 quantifiable metrics that can be estimated from a monitoring program and 
 2) stochastically simulate the range of possible outcomes for a node, 
@@ -311,24 +326,25 @@ generate the reference population.
 
 The pallid sturgeon reference population is initialized using data from 
 the PSPAP database and the pallid sturgeon literature. Each river bend 
-is populated with pallid sturgeon based on expected segment[^2]-level 
+is populated with pallid sturgeon based on expected segment-level 
 densities, while each fish is assigned an initial length and von 
-Bertalanffy growth parameters L_inf and k from segment-level and basin 
+Bertalanffy growth parameters $L_inf$ and $k$ from segment-level and basin 
 -level distributions, respectively. Individual fish are then tracked for 
 10 years, recording individual survival status, bend location, and 
 length on a yearly basis. Survival is binomially distributed with fixed 
-parameter f, and growth is projected by individualized von Bertalanffy 
-growth curves. Within-basin movement is based on a pallid sturgeon’s 
+parameter $\phi$, and growth is projected by individualized von Bertalanffy 
+growth curves. Within-basin movement is based on a pallid sturgeon's 
 current bend location with the probability of being in a particular bend 
 the following year increasing as distance to that bend decreases. 
 Immigration and emigration (for example, to/from the Mississippi River) 
 are critical unknowns that can also be evaluated within the reference 
 population. Recruitment occurs randomly with a fixed expected frequency 
-(e.g., every year, every 3 years), and the number of recruits, given 
+(e.g., every year, every 3 years).  The number of recruits, given 
 there is recruitment, is drawn from a basin-dependent Poisson 
-distribution. Each new recruit is tracked after being randomly assigned 
+distribution. Each new recruit is <!--tracked after being randomly assigned 
 an age-0 location within basin, an age-0 length of 200 mm, and von 
-Bertalanffy growth parameters. The population simulation here is 
+Bertalanffy growth parameters.--> is assigned a location, length, and growth
+parameters and is tracked on a yearly basis. The population simulation here is 
 generalized from the collaborative pallid sturgeon population model 
 (Jacobson et al, 2016). 
 
