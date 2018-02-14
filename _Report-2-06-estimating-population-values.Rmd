@@ -18,7 +18,7 @@ rmarkdown::render("_Report-2-06-estimating-population-values.Rmd",output_format=
 
 
 
-# Overview
+## Estimating Population Trend and Abundance
 
 The need to redesign the PSPAP was triggered by the recognition that the 
 current PSPAP may not allow evaluation of whether the pallid sturgeon 
@@ -90,7 +90,7 @@ discussion of the particular estimator to which it applies.
 
 
 
-# Methods
+<!--# Methods-->
 ### Scope and Spatial Scale
 Since accurately identifying fish age in the field is challenging and 
 the AM plan specifies that age classes are to be estimated by the 

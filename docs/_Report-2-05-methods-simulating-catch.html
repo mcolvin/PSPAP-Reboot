@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Missouri River Pallid Sturgeon Technical Team" />
+
+
+<title>Simulating Catch Data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Simulating Catch Data</h1>
+<h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
+<h4 class="date"><em>14 February, 2018</em></h4>
+
+</div>
+
+
+<!--
+source("_R/1_global.R")
+source("_R/2_functions.R")
+# effort_data<-   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
+source("_R/3_load-and-clean.R")
+source("_R/5_tables.R")
+rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
+-->
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Simulated catch data was essential to calculating estimates of population abundance and trend using alternative estimators. It is because we could compare the estimates from simulated catch data to the underlying reference population, that we were able to evaluate estimator accuracy and precision. Therefore, simulating catch data was a key component of evaluating varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??).</p>
+<p>The catchability and capture probability of particular gears are important elements of simulating catch data. Since these values are highly uncertain and in some case unknown, we simulate catch data over a range of plausible gear catchabilities.</p>
+<div id="objectives" class="section level3">
+<h3>Objectives</h3>
+<p>The objectives of this analysis were to:</p>
+<ol style="list-style-type: decimal">
+<li>Simulate 10 years of bend sampling data (i.e. which bends are sampled during which years) for various monitoring designs,</li>
+<li>Simulate 10 years of catch data for various sampling strategies using bends as the spatial scale,</li>
+<li>Include information in the catch data that could be reasonably assessed by sampling crews in the field and is relevant to meeting fundamental or sub-objectives,</li>
+<li>Allow gear catchability to vary over a wide range of values in order to evaluate its effect on monitoring design outcomes, and</li>
+<li>Simulate several catch data tables per combination of reference population and monitoring design.</li>
+</ol>
+</div>
+<div id="major-assumptions" class="section level3">
+<h3>Major Assumptions</h3>
+<ol style="list-style-type: decimal">
+<li>All fish can be uniquely identified.<br />
+</li>
+<li>Fish ids are not lost or overlooked.</li>
+<li>The sampling protocol is followed without exception.</li>
+<li>Expected catch, <span class="math inline">\(C\)</span> can be approximated as <span class="math inline">\(C=qfN\)</span>, a function of gear catchability, <span class="math inline">\(q\)</span>, effort described as the time in minutes a gear is deployed, <span class="math inline">\(f\)</span>, and the population size, <span class="math inline">\(N\)</span>.</li>
+<li>Gear deployments are independent of one another and do not interact.</li>
+</ol>
+<!--Currently we have the following, but are planning to make 
+simulations with selective gears. 6. Gears are not size selective. -->
+<p>Assumptions 1 and 2, while unlikely to be perfectly met, are reasonable assumptions for working with pallid sturgeon (ref) and are typical assumptions made when working with capture-recapture data (ref). For a well designed sampling protocol, assumption 3 is also a reasonable, although we recognized that it may not be perfectly met due to safety or other unforeseen issues.</p>
+<p>Describing expected catch as in assumption 4: <span class="math inline">\(C=qfN=pN\)</span>, where <span class="math inline">\(p\)</span> is the capture probability and <span class="math inline">\(p=qf\)</span>, is also a commonly made assumption (ref). This equation is likely a good approximation for small effort values (<span class="math inline">\(f\)</span>); however, it is clear that as effort increases without bound, capture probability (<span class="math inline">\(p\)</span>) will become greater than 1 for fixed <span class="math inline">\(q\)</span>. In other words, the model <span class="math inline">\(C=qfN\)</span> breaks down for large effort values, and therefore, we must be cautious drawing conclusions from outcomes that were generated from large effort values. To indirectly account for this we have flagged cases in our simulations where the capture probability is abnormally high.</p>
+<p>To understand assumption 5, it is important to first describe the sampling relationship among years, occasions, deployments, and bends. In short, during each year a number of bends will be selected to be sampled. During a particular year, each selected bend will be sampled on several occasions. Occasions are short periods of time, say 24 hours, during which multiple deployments of a gear are used to sample the population throughout the bend. Using this terminology assumption 4 means both that there is a zero probability that the same fish will be caught by two separate deployments (within the same occasion), and that any particular deployment does not affect the probability that a fish is caught by any other deployment within the same sampling occasion. For some gear types these assumptions are very likely met, while with others there are some caveats that we examine in THE DISCUSSION/APPENDIX ??.</p>
+</div>
+</div>
+<div id="methods" class="section level1">
+<h1>Methods</h1>
+<div id="monitoring-designs" class="section level3">
+<h3>Monitoring Designs</h3>
+<p>For each of the simulated reference populations, various sampling decisions can be implemented to obtain simulated catch data. The choice of monitoring design determines the particular combination of decisions used in this process—system-level sampling design, within bend and year sampling design, gear selection, and measurements taken on individual fish are all prescribed by the monitoring design (Figure 1). Alternative sampling decisions of interest were identified during the PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up input from stakeholders and experts in the system. Simulated catch data have been generated from the range of the identified alternative sampling decisions, with the exception that some individual measurements have yet to be implemented and the spatially balanced system-level sampling design is still a work in progress.</p>
+<p>For each combination of reference population and monitoring design, we simulated catch data (Figure 2) using two major steps:</p>
+<ol style="list-style-type: decimal">
+<li>For each year, select which bends to sample.</li>
+<li>For each occasion, select which individual fish (of those located in the sampled bends) are caught.</li>
+</ol>
+</div>
+<div id="bend-selection" class="section level3">
+<h3>Bend Selection</h3>
+<p>All monitoring designs considered included sampling bends located within segments 2-4, 7-10, 13, and 14. The number of bends sampled within each segment was chosen to be consistent with past sampling procedures. In particular, we chose the number of sampled bends within segement to match those given in USACE’s 2017 PSPAP Guiding Document Table A1 (CITATION) and reproduced in Table 1 below. The way selected bends were generated, however, varied and was determined by the choice of system-level sampling design laid out in the monitoring design. In particular, three alternative system-level sampling designs were considered: a random design, a fixed design, and a spatially balanced design (Stevens and Olsen 2004). Under the random sampling design bends within a segment were chosen each year uniformly at random, while under the fixed sampling design they were chosen uniformly at random for the first year and then fixed to be sampled each of the following 9 years. A combination of the fixed and random designs can also be implemented,and the spatially balanced design is in the works.</p>
+<p>While monitoring designs can also differ in decisions made about within bend and year sampling design, gear selection, and measurement choices, none of these decisions affected which bends were selected for sampling each year. They did, however, affect the individual capture histories of the catch data.</p>
+</div>
+<div id="individual-captures" class="section level3">
+<h3>Individual Captures</h3>
+<p>Once the bends to be sampled were selected for each of the 10 years, 10 years of catch data can be simulated. Each year, catch was simulated spatially at the bend level and temporally at the sampling occasion level. We defined a sampling occasion as a short time period (e.g. 24 hours) within a year during which the given bend was sampled. The fixed number of sampling occasions per year per sampled bend was given as part of the monitoring design of interest. In particular, we simulated catch data for monitoring designs that included 1-4 sampling occasions per year for each sampled bend. Additionally, in order to thoroughly sample a bend during a sampling occasion, several gear deployments are used to capture fish. Currently simulations all utilize 8 gear deployments per sampling occasion; however, future analysis will include catch data simulated for a range of deployment numbers.</p>
+<p>For a particular sampled bend during a particular year, each fish located in the given bend had a probability, <span class="math inline">\(p_{occ}\)</span>, of being captured during occasion <span class="math inline">\(occ\)</span>. This occasion level capture probability varied from bend to bend and occasion to occasion, as it was calculated from individualized deployment catchability and effort values. For each of the 8 deployments within occasion <span class="math inline">\(occ\)</span>, an effort value <span class="math inline">\(f\)</span> was generated from a gear and basin specific gamma distribution, and a catchability value <span class="math inline">\(q\)</span> was generated from a gear specific distribution. Deployment specific capture probabilities, <span class="math inline">\(p\)</span>, were calculated as <span class="math inline">\(p=q\cdot f\)</span>, and the 8 within occasion deployment capture probabilities were summed (and bounded at 1) to obtain occasion level <span class="math inline">\(p_{occ}\)</span>. Therefore, if a fish was located in the given sampled bend during the given year, its capture was a Bernoulli trial with probability of success <span class="math inline">\(p_{occ}\)</span>, resulting in total occasion level catch numbers for the particular bend being binomially distributed.</p>
+<div id="effort-distributions" class="section level4">
+<h4>Effort Distributions</h4>
+<p>Distributions for deployment level effort (<span class="math inline">\(f\)</span>) were generated using the PSPAP database. We defined effort as the time (in minutes) that a gear was set, dragged, or pulled for during a single deployment<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Since effort was calculated using the start and stop times, all PSPAP data without a start or stop time was excluded from this analysis. The relevant data entries were then merged with the gear data and a stop date column was added to take into account gears that were set over night. Effort was calculated in minutes as the difference between the stop time and the start time with any discrepancies in the set date and stop date taken into account by using the <code>strptime</code> function in R to link the start and stop times to their corresponding set and stop dates, respectively. Before generating the effort distributions, all entries resulting in negative effort values were removed.</p>
+<p>Gamma distributions were fit to the cleaned up PSPAP effort data for standard gear types<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> by basin. The mean effort, standard deviation of the effort data, minimum effort, maximum effort, and median effort were also calculated for each gear by basin (Table 2). In general, gamma distributions provided a good fit to the effort data (e.g. Figure 3), but see Appendix ?? for more details.</p>
+</div>
+<div id="catchability-distributions" class="section level4">
+<h4>Catchability Distributions</h4>
+<p>Gear specific catchability distributions were set up such that the log-odds of catchability (<span class="math inline">\(q\)</span>) was normally distributed: <span class="math display">\[\ln\left(\frac{q}{1-q}\right)\sim \mathcal{N}\left(\mu, 
+\beta_0\right),\]</span> where <span class="math inline">\(\mu=\ln\frac{\mu_q}{1-\mu_q}\)</span> and <span class="math inline">\(\mu_q\)</span> is the expected catchability of the gear. Because deployment catchability values, or the probability of catching a single fish with one unit of effort, are a source of uncertainty we allowed the choices of <span class="math inline">\(\mu_q\)</span> and <span class="math inline">\(\beta_0\)</span> to vary for among catch data simulations (CITE A TABLE OR SOMETHING THAT LISTS RANGES OF PARAMS).</p>
+</div>
+<div id="gear-selection-and-size-selectivity" class="section level4">
+<h4>Gear Selection and Size Selectivity</h4>
+<p>The choice of monitoring design also indicates which gears should be used in sampling. This is important as different gears will have different catch rates and associated costs of deployment. Currently, catch simulations include catch data from gill nets, trammel nets, otter trawls, trotlines, or a combination of these.</p>
+<p>Additionally, gears may be size selective. In this case different gears will interact with the size distribution of the reference population to produce different catch data outcomes. Because gear selectivity is not precisely known, we are currently accounting for size selectivity by comparing the catch data results simulated under various selction curves. See Appendix ?? for details.</p>
+</div>
+<div id="individual-measurements" class="section level4">
+<h4>Individual Measurements</h4>
+<p>For a particular bend and year, a Bernoulli trial simulated whether or not an individual fish was captured during each occassion, producing a within year capture history for each fish. Fish that were never captured had their capture histories removed from the data. Fish that were captured had their individual attributes for the given year recorded from the reference population data. Specifically, whenever a fish is successfuly caught its fish id, location (bend), timing (occasion within year) of catch, gear used, and length are recorded.</p>
+<p>We have primarily focused on measuring length, as it is vital to the metrics for sub-objective 2<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> as outlined in Section 4.1.1 of the 2016 AM plan. Additionally, we are currently working on including fish sex, origin (natural or hatchery), and age due to their importance to sub-objective metrics and to understanding effective populations size. Several other individual measurements were voiced to be of interest to stakeholders at the 2017 MRNRC PSPAP Workshop. These measurements may be considered as part of future analyses.</p>
+<!-- USEFUL TO PUT SOMEWHERE??? In summary, the catch data simulator 
+generates which bends are sampled during year $y$ where $y=1, 2, \ldots, 
+10$. Using the reference population, we identify which fish were in 
+sampled bend $b$ during year $y$. Each of the identified individual fish 
+had probability $p_{occ}$ of being captured in bend $b$ during sampling 
+occasion $occ$ within year $y$, where $occ=1, 2, \ldots, occ_{max}$ and 
+$occ_{max}$ is the number of sampling occasions per year per bend 
+specified by the monitoring design. A Bernoulli trial simulated whether 
+or not an individual fish was captured during each occassion, producing 
+a within year capture history for each fish. Fish that were never 
+captured had their capture histories removed from the data. Fish that 
+were captured had their individual attributes for year $y$ recorded from 
+the reference population data. This process was repeated for every 
+sampled bend $b$ in year $y$, as well as for every year $y$, producing 
+10 years of catch data. Notice that $p_{occ}$ is different for each 
+occasion, bend, and year but is the same probabilty value for all fish 
+located within bend $b$ in year $y$ during sampling occasion $occ$. In 
+other words capture probability was location and time dependent but not 
+dependent on past behavior or individual attributes (e.g. size). 
+-->
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This is a general measurement of effort that can be calculated for all gear types. However, we recognize that gear set time is more relavent to measuring effort for passive gears and we plan to further incorporate effort values based on distance or area metrics when considering active gears.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>We use the term “standard gear” as defined in the USACE’s 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (CITATION). <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.--><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>2016 AM Sub-objective 2 metric: “Population estimates for pallid sturgeon for all size and age classes, particularly for ages 2 to 3 to assess recent trends in recruitment; catch rates of all pallid sturgeon by size class (to maintain legacy data).” (CITATION)<a href="#fnref3">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

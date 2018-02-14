@@ -38,21 +38,26 @@ LBcommon<-c("GN18","GN81","TLC4","TLS1","TLS2")
 
 # Introduction
 
-```{r child="_Report-1-01-introduction.Rmd", echo=FALSE,eval=TRUE}
+```{r echo=FALSE, results='asis'}
+# knit the first three lines of first.Rmd
+cat(knit_child(text = readLines('_Report-1-01-introduction.Rmd')[1:169], quiet=TRUE), sep = '\n')
+```
+
+```{r child="_Report-1-01-introduction.Rmd", echo=FALSE,eval=FALSE}
 ```
 
 # Methods
-
 <!--Methodological overview: a couple of paragraphs overviewing 
 the process-->
 ```{r child="_Report-2-01-methods-overview.Rmd", echo=FALSE,eval=TRUE}
 ```
 
+
 <!--Methods: reference population-->
 ```{r child="_Report-2-04-methods-Reference-Population.Rmd", echo=FALSE,eval=TRUE}
 ```
 
-
+##  Estimation of population metrics given alternative monitoring designs
 ```{r child="_Report-2-05-methods-simulating-catch.Rmd", echo=FALSE,eval=TRUE}
 ```
 
@@ -65,6 +70,8 @@ the process-->
 
 ```{r child="_Report-2-08-methods-evaluating-and-routing-ancillary-objectives.Rmd", echo=FALSE,eval=TRUE}
 ```
+
+# Results
 
 # Discussion
 

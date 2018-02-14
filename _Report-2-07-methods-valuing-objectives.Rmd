@@ -33,9 +33,9 @@ pbias_u<- (pbias-min(pbias))/(max(pbias)-min(pbias))
 u_perf<- approxfun(pbias,pbias_u)
 ```
 
-# Valuing fundamental objectives
+## Valuation of monitoring design utility
 
-## Objectives hierarchy and attributes
+### Objectives hierarchy and attributes
 
 The objectives identified by stakeholders can be valued in 
 varying ways which in turn are used to calculate the 
@@ -54,7 +54,7 @@ perceived importance by decision makers.
 
 
 
-### 1. Quantify PS recruitment to age-1 (Natural origin)
+#### 1. Quantify PS recruitment to age-1 (Natural origin)
 
 1. Power to detect age-1 natural origin recruits if recruitment occurs
 1. Segment level age-1 abundance
@@ -65,7 +65,7 @@ perceived importance by decision makers.
     1. precision
 
 
-### 2. Quantify PS population trend (natural and hatchery origin)
+#### 2. Quantify PS population trend (natural and hatchery origin)
 
 In simulating population monitoring designs, we are using 3 metrics to 
 quantify how a monitoring design meets the objective of _quantifying 
@@ -110,16 +110,16 @@ just does not work, and estimates cannot be made because the capture
 recapture histories are just too sparse.
 
 
-### 3.  Maintain compatibility with legacy PSPAP data
+#### 3.  Maintain compatibility with legacy PSPAP data
 
 1. Proportion of randomly selected bends within segment
 1. Gears similarity: proportion of standard gears used by design
 1. Effort similarity: deviation from average effort
 
-### 4. Provide relevant PS model inputs
+#### 4. Provide relevant PS model inputs
 
 
-### 5. ## Remain in cost constraints 
+#### 5. ## Remain in cost constraints 
 
 Cost is the ultimate PSPAP constraint. Designs exceeding cost 
 containments will not be considered. Significant uncertainty exists in 
@@ -142,7 +142,7 @@ not considered.
 
 
 
-#### Estimating cost per gear deployment
+##### Estimating cost per gear deployment
 
 Estimating cost for a day of sampling is difficult. It is the function 
 of several factors, including but not limited to the number of 
