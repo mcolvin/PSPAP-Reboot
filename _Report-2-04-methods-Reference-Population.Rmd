@@ -69,8 +69,8 @@ independent of space and time.
 5. Recruitment occurs at the basin-level and is stochastic.
 
 Assumptions 1 and 2 are reasonable simplifications for the purposes of 
-this evaluation and have been used in various fish studies (Cite Kirk, 
-Holan & Wu, & Rotella). Assumptions 3 and 4 match the assumptions of 
+this evaluation and have been used in various fish studies {Steffensen, 
+Holan & Wu, & Rotella}. Assumptions 3 and 4 match the assumptions of 
 many closed population estimators from mark-recapture estimation to 
 robust design estimation. Making these assumptions allows for the 
 evaluation of such estimators under the best possible movement 
@@ -100,9 +100,9 @@ pallid sturgeon (Table 1).
 
 The pallid sturgeon reference population was initialized using data from 
 the PSPAP database and the pallid sturgeon literature. Population 
-initialization required xx steps: 1. initializing bend-level abundance, 
-2. initializing lengths and growth parameters of individuals within each 
-bend, 3. assigning demographic rates (i.e., sex, origin). 
+initialization required 3 steps: 1. initialize bend-level abundance, 
+2. initialize lengths and growth parameters of individuals within each 
+bend, 3. assign demographic rates (i.e., sex, origin) to each individual. 
 
 #### Bend Abundance
 
@@ -150,7 +150,7 @@ get widths-->
 
 We randomly assigned an initial length to each individual fish. Initial 
 lengths were generated from a segment specific distribution constructed 
-from recent (2015-??) PSPAP database length data. Only pallid sturgeon 
+from recent (2015 and 2016 sampling season) PSPAP database length data. Only pallid sturgeon 
 data where both length and weight were reported as non-negative values 
 were used. Additionally, data points that were residual outliers to the 
 log-log regression of weight and length were excluded from the analysis. 

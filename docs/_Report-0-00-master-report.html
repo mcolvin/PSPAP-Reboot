@@ -195,10 +195,7 @@ $(document).ready(function () {
 </div>
 
 
-<!--
-https://rpubs.com/ajlyons/autonumfigs
-rmarkdown::render("_Report-0-00-master-report.Rmd",output_format="word_document",output_file = paste(format(Sys.time(), '%Y%m%d%H%M'),         "reboot-master-report.docx",sep="-"))# build page
--->
+<p><a href="https://rpubs.com/ajlyons/autonumfigs" class="uri">https://rpubs.com/ajlyons/autonumfigs</a> rmarkdown::render(“_Report-0-00-master-report.Rmd“,output_format=”word_document“,output_file = paste(format(Sys.time(), ‘%Y%m%d%H%M’),”reboot-master-report.docx“,sep=”-“))# build page</p>
 <!--Executive summary-->
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -290,7 +287,7 @@ rmarkdown::render("methods-overview.Rmd",
 </div>
 <div id="objectives-hierarchy-and-attributes" class="section level3">
 <h3>Objectives hierarchy and attributes</h3>
-<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each bold, numbered objective are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers (see “Valuation of monitoring design utility).</p>
+<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each bold, numbered objective are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers (see “Valuation of monitoring design utility” for details on combining metrics).</p>
 <!--Add description of square bullets-->
 <ol style="list-style-type: decimal">
 <li><strong>Quantify PS recruitment to age-1 (Natural origin)</strong>
@@ -307,12 +304,19 @@ rmarkdown::render("methods-overview.Rmd",
 <li>precision</li>
 </ul></li>
 </ul></li>
-<li><strong>Quantify PS population trend (natural and hatchery origin)</strong>
+<li><strong>Quantify PS population trend and abundance (natural and hatchery origin)</strong>
 <ul>
-<li>Estimate RPMA level population growth rate <span class="math inline">\(\lambda\)</span> <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
+<li>Trend: Estimate RPMA level population growth rate <span class="math inline">\(\lambda\)</span> <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
 <ul>
 <li>bias</li>
 <li>precision</li>
+<li>performance</li>
+</ul></li>
+<li>Abundance: Estimate RPMA level population abundance <span class="math inline">\(N\)</span> each year
+<ul>
+<li>bias</li>
+<li>precision</li>
+<li>performance</li>
 </ul></li>
 </ul></li>
 <li><strong>Provide relevant PS model inputs</strong>
@@ -406,7 +410,7 @@ what follows-->
 <li>Movement within a basin can occur between years.</li>
 <li>Recruitment occurs at the basin-level and is stochastic.</li>
 </ol>
-<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies (Cite Kirk, Holan &amp; Wu, &amp; Rotella). Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. However, since it is unclear how closely assumptions 3 and 4 are met in reality, we explore and discuss the consequences of breaking these movement assumptions on estimator outputs in Appendix ??. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon.</p>
+<p>Assumptions 1 and 2 are reasonable simplifications for the purposes of this evaluation and have been used in various fish studies {Steffensen, Holan &amp; Wu, &amp; Rotella}. Assumptions 3 and 4 match the assumptions of many closed population estimators from mark-recapture estimation to robust design estimation. Making these assumptions allows for the evaluation of such estimators under the best possible movement conditions—if an estimator performs poorly under the best movement conditions, then its use in less favorable movement conditions is further questionable. However, since it is unclear how closely assumptions 3 and 4 are met in reality, we explore and discuss the consequences of breaking these movement assumptions on estimator outputs in Appendix ??. Lastly, since recruitment is expected to vary from year to year and fish are expected to migrate to spawning habitats within basin (and not necessarily stay in particular bends), assumption 5 is appropriate for studying pallid sturgeon.</p>
 <!--
 # Methods
 -->
@@ -417,7 +421,7 @@ what follows-->
 </div>
 <div id="population-initialization" class="section level3">
 <h3>Population Initialization</h3>
-<p>The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature. Population initialization required xx steps: 1. initializing bend-level abundance, 2. initializing lengths and growth parameters of individuals within each bend, 3. assigning demographic rates (i.e., sex, origin).</p>
+<p>The pallid sturgeon reference population was initialized using data from the PSPAP database and the pallid sturgeon literature. Population initialization required 3 steps: 1. initialize bend-level abundance, 2. initialize lengths and growth parameters of individuals within each bend, 3. assign demographic rates (i.e., sex, origin) to each individual.</p>
 <div id="bend-abundance" class="section level4">
 <h4>Bend Abundance</h4>
 <p>We populated each river bend with pallid sturgeon based on expected segment-level densities by origin (Table 2). The number of pallid sturgeon assigned to a bend was stochastically generated from a Poisson distribution given the segment density and bend length as:</p>
@@ -446,7 +450,7 @@ get widths-->
 </div>
 <div id="assigning-length-and-growth-parameters-to-individuals" class="section level4">
 <h4>Assigning length and growth parameters to individuals</h4>
-<p>We randomly assigned an initial length to each individual fish. Initial lengths were generated from a segment specific distribution constructed from recent (2015-??) PSPAP database length data. Only pallid sturgeon data where both length and weight were reported as non-negative values were used. Additionally, data points that were residual outliers to the log-log regression of weight and length were excluded from the analysis. Lastly, only lengths greater than 200mm were included in the analysis. Lengths 200mm or less were considered to be from age-0 pallid sturgeon and these fish would instead be added to the reference population through an analysis of next year’s recruitment (described in a later section below).</p>
+<p>We randomly assigned an initial length to each individual fish. Initial lengths were generated from a segment specific distribution constructed from recent (2015 and 2016 sampling season) PSPAP database length data. Only pallid sturgeon data where both length and weight were reported as non-negative values were used. Additionally, data points that were residual outliers to the log-log regression of weight and length were excluded from the analysis. Lastly, only lengths greater than 200mm were included in the analysis. Lengths 200mm or less were considered to be from age-0 pallid sturgeon and these fish would instead be added to the reference population through an analysis of next year’s recruitment (described in a later section below).</p>
 <p>The cleaned up data was then analyzed by segment. For each segment, a numerical inverse cummulative distribution function for length was generated by interpolating between the percentiles of the length data for the given segment. This was achieved using “approxfun” in R’s stats package. Inverse cummulative distribution functions take a probability value between 0 and 1 as input and output a length value. Therefore, we were able to generate an individual’s initial length by using a uniformly sampled probability value as input to the inverse cummulative distribution function associated with the individual’s segment.</p>
 <p>Additionally, we assigned individual von Bertalanffy growth parameters <span class="math inline">\(L_\infty\)</span> and <span class="math inline">\(k\)</span>, or the asymptotic length and Brody growth coefficient of a fish’s growth trajectory, respectively, to each fish. Growth parameters were generated from a basin specific bivariate normal distribution fitted to the length data in the PSPAP database.<!--SRNOTE: FURTHER 
 DESCRIPTION HERE; NEED MIKE TO DO SINCE NOT SURE HOW DONE;  MECNOTE: 
@@ -757,7 +761,7 @@ To do:
 <h5>Abundance</h5>
 <p>In simulating population monitoring designs, we are using 3 metrics to quantify how a monitoring design meets the objective of <em>quantifying population abundance</em>. Specifically, the estimates from a monitoring program, as it relates to abundance are evaluated by estimating basin level abundances, <span class="math inline">\(N\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Bias: How does an abundance estimate compare to the true abundance, given an estimate is made.</strong> In the case of abundance bias,the relative bias (calculated as the estimated value minus the true value, all divided by the true value) was used. For example if the true basin abundance is 25000 pallids and the estimated abundance is 20000 then the abundance bias is <span class="math inline">\(-5000/25000=-0.2\)</span>. Using relative bias as the metric allows for a measurement that is more comparable across a wide range of population sizes. In the example just described, the absolute bias was -5000 with a relative bias of 0.2. If the actual population had instead consisted of 5500 fish but still had a bias of -5000, then the estimated population would have been 500 fish. Notice, the estimate for the first population is only off by a factor slightly greater than 1 but second population is off by more than a factor of 10, yet they both have the same bias. However, their relative bias shows a difference. While the first population’s estimate has a relative bias of 0.20, the second population’s estimate has a much worse relative bias of 0.91.</p></li>
+<li><p><strong>Bias: How does an abundance estimate compare to the true abundance, given an estimate is made.</strong> In the case of abundance bias,the relative bias (calculated as the estimated value minus the true value, all divided by the true value) was used. For example if the true basin abundance is 25000 pallids and the estimated abundance is 20000 then the abundance bias is -5000/25000=-0.2. Using relative bias as the metric allows for a measurement that is more comparable across a wide range of population sizes. In the example just described, the absolute bias was -5000 with a relative bias of 0.2. If the actual population had instead consisted of 5500 fish but still had a bias of -5000, then the estimated population would have been 500 fish. Notice, the estimate for the first population is only off by a factor slightly greater than 1 but second population is off by more than a factor of 10, yet they both have the same bias. However, their relative bias shows a difference. While the first population’s estimate has a relative bias of 0.20, the second population’s estimate has a much worse relative bias of 0.91.</p></li>
 <li><p><strong>Precision: How precise is an estimated abundance value, given an abundance estimate is made.</strong> As with trend, abundance precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. Again, while there is no real threshold for what is optimal for estimator precision regarding decision making, generally speaking, the more precise an estimate, the better. As mentioned earlier, there are other alternatives to CV; however, there are benefits to using CV. Not only is CV commonly used in fisheries, but it is also a relative measure that takes into account differences in the standard error across wider ranges of abundance. For example, a standard error of 5000 fish for an estimate of 25000 fish, has different meaning than a standard error of 5000 fish for an estimate of 5500 fish. The CV conveys this difference in a similar manner to the relative bias metric, as described above.</p></li>
 <li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above.</p></li>
 </ol>
@@ -1000,11 +1004,12 @@ To do:
 <h1>Routing of monitoring design sub-objectives</h1>
 <div id="fecundity" class="section level2">
 <h2>Fecundity</h2>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-17-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-18-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
 </div>
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
+<p><img src="images/F4estComp.png" /><!-- --><img src="images/F_TL_estComp.png" /><!-- --><img src="images/F_TN_estComp.png" /><!-- --></p>
 </div>
 <div id="discussion" class="section level1">
 <h1>Discussion</h1>
@@ -1055,9 +1060,9 @@ rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build p
 </div>
 <div id="page-break-6" class="section level5">
 <h5>page break</h5>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-2.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-3.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-4.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-5.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-6.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-7.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-25-8.png" width="672" /></p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-2.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-3.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-4.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-5.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-6.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-7.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-8.png" width="672" /></p>
 <p>Figure 7.</p>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-1.png" width="672" /> Figure 8.</p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-1.png" width="672" /> Figure 8.</p>
 <p>Figure 9.</p>
 <p>Figure 10. In the plot above, values with lower performance values have lower values and increasing values approach 1.</p>
 </div>
@@ -1567,7 +1572,6 @@ rmarkdown::render("_Report-5-02-tables",output_format='word_document')# build pa
 </tbody>
 </table>
 <p>Table X.2. <!--SARA CAN'T COMPILE THIS TABLE...WHAT IS tmp?--></p>
-<pre><code>## Warning: closing unused RODBC handle 2</code></pre>
 <table>
 <thead>
 <tr class="header">

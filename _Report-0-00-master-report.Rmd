@@ -21,6 +21,7 @@ rmarkdown::render("_Report-0-00-master-report.Rmd",output_format="word_document"
 -->
 
 
+
 ```{r, warning=FALSE, include=FALSE}
 source("_R/1_global.R")
 source("_R/2_functions.R")
@@ -70,6 +71,11 @@ the process-->
 ```
 
 # Results
+```{r,echo=FALSE}
+knitr::include_graphics("images/F4estComp.png")
+knitr::include_graphics("images/F_TL_estComp.png")
+knitr::include_graphics("images/F_TN_estComp.png")
+```
 
 # Discussion
 

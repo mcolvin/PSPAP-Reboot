@@ -241,3 +241,194 @@ if(n==3)
 
     }
 
+# PERFORMANCE METRIC RESULTS BY MONITORING DESIGN
+dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
+dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+
+#CPUE
+#Gears & Samp Type Occ 1
+boxplot(exp_bias~samp_type, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & gear=="GN14"),
+        at = 0:1*4.5 + 1, xlim = c(0, 8.5), 
+        ylim = range(dat[which(dat$estimator=="CPUE" & dat$occasions=="1"),]$exp_bias),
+        xaxt = "n",
+        main="CPUE, 1 Occasion",
+        ylab="Bias")
+boxplot(exp_bias~samp_type, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & gear=="TLC1"),
+        at = 0:1*4.5 + 2, xlim = c(0, 8.5), xaxt = "n", add=TRUE)
+boxplot(exp_bias~samp_type, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & gear=="TN"),
+        at = 0:1*4.5 + 3, xlim = c(0, 8.5), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:1*4.5 + 2, labels = c("Fixed", "Random"), tick = FALSE)
+
+#Gears & Samp Type Occ 1 Reversed
+levels(dat$gear)<-c(rep("GN14", 6), rep("TLC1",2), "TN")
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & samp_type=="f"),
+        at = 0:2*4 + 1, xlim = c(0, 11), 
+        ylim = range(dat[which(dat$estimator=="CPUE" & dat$occasions=="1"),]$exp_bias), 
+        xaxt = "n",
+        main="CPUE, 1 Occasion",
+        ylab="Bias")
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & samp_type=="r"),
+        at = 0:2*4 + 2, xlim = c(0, 11), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:2*4 + 1.5, labels = c("GN14", "TLC1", "TN"), tick = FALSE)
+
+#Gears & Occasions, fixed
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & samp_type=="f"),
+        at = 0:2*6 + 1, xlim = c(0, 17), 
+        ylim = range(dat[which(dat$estimator=="CPUE" & dat$samp_type=="f"),]$exp_bias), 
+        xaxt = "n",
+        main="CPUE, Fixed Sampling",
+        ylab="Bias")
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="2" & samp_type=="f"),
+        at = 0:2*6 + 2, xlim = c(0, 17), xaxt = "n", add=TRUE)
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="3" & samp_type=="f"),
+        at = 0:2*6 + 3, xlim = c(0, 17), xaxt = "n", add=TRUE)
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="4" & samp_type=="f"),
+        at = 0:2*6 + 4, xlim = c(0, 17), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:2*6 + 2.5, labels = c("GN14", "TLC1", "TN"), tick = FALSE)
+#Gears & Occasions, random
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="1" & samp_type=="r"),
+        at = 0:2*6 + 1, xlim = c(0, 17), 
+        ylim = range(dat[which(dat$estimator=="CPUE" & dat$samp_type=="r"),]$exp_bias), 
+        xaxt = "n",
+        main="CPUE, Random Sampling",
+        ylab="Bias")
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="2" & samp_type=="r"),
+        at = 0:2*6 + 2, xlim = c(0, 17), xaxt = "n", add=TRUE)
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="3" & samp_type=="r"),
+        at = 0:2*6 + 3, xlim = c(0, 17), xaxt = "n", add=TRUE)
+boxplot(exp_bias~gear, data=dat, 
+        subset=c(estimator=="CPUE" & occasions=="4" & samp_type=="f"),
+        at = 0:2*6 + 4, xlim = c(0, 17), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:2*6 + 2.5, labels = c("GN14", "TLC1", "TN"), tick = FALSE)
+
+#Sampling Type & Occasions, GN14
+boxplot(exp_bias~occasions, data=dat, 
+        subset=c(estimator=="CPUE" & gear=="GN14" & samp_type=="f"),
+        at = 0:3*4 + 1, xlim = c(0, 15), 
+        ylim = range(dat[which(dat$estimator=="CPUE" & dat$gear=="GN14"),]$exp_bias), 
+        xaxt = "n",
+        main="CPUE: Gillnet",
+        ylab="Bias")
+boxplot(exp_bias~occasions, data=dat, 
+        subset=c(estimator=="CPUE" & gear=="GN14" & samp_type=="r"),
+        at = 0:3*4 + 2, xlim = c(0, 15), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:3*4 + 1.5, labels = c("1", "2", "3", "4"), tick = FALSE)
+
+
+## Comparing Estimators
+# Estimator and Sampling Type, Occ 4
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*8 + 1, xlim = c(0, 59), 
+        ylim = range(dat[which(dat$occasions=="4" & dat$gear=="GN14"),]$exp_bias, na.rm=TRUE), 
+        xaxt = "n",
+        main="Gillnet, 4 occasions",
+        ylab="Bias")
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="r"),
+        at = 0:7*8 + 2, xlim = c(0, 59), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:7*8 + 1.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+#CHOPPED
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*8 + 1, xlim = c(0, 59), 
+        ylim = c(-0.03,0.03), 
+        xaxt = "n",
+        main="Gillnet, 4 occasions",
+        ylab="Bias")
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="r"),
+        at = 0:7*8 + 2, xlim = c(0, 59), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:7*8 + 1.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+
+# Estimator and Occasion, Fixed
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="1" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*8 + 1, xlim = c(0, 61), 
+        ylim = range(dat[which(dat$samp_type=="f" & dat$gear=="GN14"),]$exp_bias, na.rm=TRUE), 
+        xaxt = "n",
+        main="Gillnet, Fixed Sampling",
+        ylab="Bias")
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="2" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*8 + 2, xlim = c(0, 61), xaxt = "n", add=TRUE)
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="3" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*8 + 3, xlim = c(0, 61), xaxt = "n", add=TRUE)
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*8 + 4, xlim = c(0, 61), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:7*8 + 2.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+#CHOPPED
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="1" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*6 + 1, xlim = c(0, 47), 
+        ylim = c(-0.1,0.1),
+        xaxt = "n",
+        main="Gillnet, Random Sampling",
+        ylab="Bias")
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="2" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*6 + 2, xlim = c(0, 47), xaxt = "n", add=TRUE)
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="3" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*6 + 3, xlim = c(0, 47), xaxt = "n", add=TRUE)
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*6 + 4, xlim = c(0, 47), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:7*6 + 2.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+
+
+# Estimator and Gear, Fixed
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*6 + 1, xlim = c(0, 46), 
+        ylim = range(dat[which(dat$samp_type=="f" & dat$occasions=="4"),]$exp_bias, na.rm=TRUE), 
+        xaxt = "n",
+        main="Fixed Sampling, 4 Occasions",
+        ylab="Bias")
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+        at = 0:7*6 + 2, xlim = c(0, 46), xaxt = "n", add=TRUE)
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="TN" & samp_type=="f"),
+        at = 0:7*6 + 3, xlim = c(0, 46), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:7*6 + 2, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+#CHOPPED
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="GN14" & samp_type=="f"),
+        at = 0:7*6 + 1, xlim = c(0, 46), 
+        ylim = c(-0.075,0.075),
+        xaxt = "n",
+        main="Fixed Sampling, 4 Occasions",
+        ylab="Bias")
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+        at = 0:7*6 + 2, xlim = c(0, 46), xaxt = "n", add=TRUE)
+boxplot(exp_bias~estimator, data=dat, 
+        subset=c(occasions=="4" & gear=="TN" & samp_type=="f"),
+        at = 0:7*6 + 3, xlim = c(0, 46), xaxt = "n", add=TRUE)
+abline(h=0, lty=2, col="red")
+axis(1, at = 0:7*6 + 2, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
