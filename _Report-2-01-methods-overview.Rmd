@@ -72,7 +72,7 @@ are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet
 may receive a weight of 33% if each attribute is equally important to 
 decision makers. Alternatively these values can be weighted to reflect 
 perceived importance by decision makers (see "Valuation of monitoring 
-design utility). 
+design utility" for details on combining metrics). 
 
 <!--Add description of square bullets-->
 
@@ -84,10 +84,15 @@ design utility).
     * Estimate age-1 recruitment rate (natural origin)
         * bias
         * precision
-2. **Quantify PS population trend (natural and hatchery origin)**
-    * Estimate RPMA level population growth rate $\lambda$ <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
+2. **Quantify PS population trend and abundance (natural and hatchery origin)**
+    * Trend: Estimate RPMA level population growth rate $\lambda$ <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
         * bias
         * precision
+        * performance
+    * Abundance: Estimate RPMA level population abundance $N$ each year
+        * bias
+        * precision
+        * performance
 3. **Provide relevant PS model inputs**
     * Estimate segment-level abundance, origin and stage specific 
         * bias
