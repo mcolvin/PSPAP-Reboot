@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Missouri River Pallid Sturgeon Technical Team" />
+
+
+<title>Valuating Monitoring Designs</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSPAP-V2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="posts.html">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Posts
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Valuating Monitoring Designs</h1>
+<h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
+<h4 class="date"><em>15 February, 2018</em></h4>
+
+</div>
+
+
+<!--
+To do:
+1. utility for model
+-->
+<div id="valuation-of-monitoring-design-utility" class="section level2">
+<h2>Valuation of monitoring design utility</h2>
+<div id="objectives-hierarchy-and-attributes" class="section level3">
+<h3>Objectives hierarchy and attributes</h3>
+<p>The objectives identified by stakeholders can be valued in varying ways which in turn are used to calculate the value of a monitoring design. Some objectives</p>
+<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each numbered objective in bold are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers.</p>
+<div id="quantify-ps-recruitment-to-age-1-natural-origin" class="section level4">
+<h4>1. Quantify PS recruitment to age-1 (Natural origin)</h4>
+<ol style="list-style-type: decimal">
+<li>Power to detect age-1 natural origin recruits if recruitment occurs</li>
+<li>Segment level age-1 abundance
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Estimate age-1 recruitment rate (natural origin)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+</ol>
+</div>
+<div id="quantify-ps-population-trend-natural-and-hatchery-origin" class="section level4">
+<h4>2. Quantify PS population trend (natural and hatchery origin)</h4>
+<p>In simulating population monitoring designs, we are using 3 metrics to quantify how a monitoring design meets the objective of <em>quantifying population trend</em>. Specifically, the estimates from a monitoring program, as it relates to trend are evaluated by estimating basin level population growth rate <span class="math inline">\(\lambda\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Bias: How does a trend estimate compare to the true trend.</strong> Bias is calculated as the true value minus the estimated value. We then divide the bias by the true value to be able to combine estimates of varying magnitude (i.e., survival, abundance), recall the previous post that used proportional bias.</p></li>
+<li><p><strong>Precision: How precise are estimated trend values.</strong> Precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. There is no real threshold for what is optimal for estimator precision regarding decision making. Generally speaking, the more precise an estimate, the better. There are other alternatives to CV. However, CV is commonly used in fisheries and therefore likely to be familiar.</p></li>
+<li><p><strong>Performance: How likely is an estimator successful.</strong> In some cases, an estimator like the Robust Design may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations where the estimator did not converge, or convergence was problematic. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 2 alternative monitoring programs, a catch effort program and a capture recapture program. Then we estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, the performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse.</p></li>
+</ol>
+</div>
+<div id="maintain-compatibility-with-legacy-pspap-data" class="section level4">
+<h4>3. Maintain compatibility with legacy PSPAP data</h4>
+<ol style="list-style-type: decimal">
+<li>Proportion of randomly selected bends within segment</li>
+<li>Gears similarity: proportion of standard gears used by design</li>
+<li>Effort similarity: deviation from average effort</li>
+</ol>
+</div>
+<div id="provide-relevant-ps-model-inputs" class="section level4">
+<h4>4. Provide relevant PS model inputs</h4>
+</div>
+<div id="remain-in-cost-constraints" class="section level4">
+<h4>5. ## Remain in cost constraints</h4>
+<p>Cost is the ultimate PSPAP constraint. Designs exceeding cost containments will not be considered. Significant uncertainty exists in costs because of several factors. First, field crews tend to become more efficient over time and therefore recent PSPAP costs may not represent the actual costs. However, if the next iteration of the PSPAP uses similar sampling units (i.e., bends within segments) to the current PSPAP, then costs for field sampling will likely be similar.</p>
+<p>Minimize costs and stay within cost constraints. The expected cost for each design will be calculated. The expected cost can be used 2 ways. First it can screen for designs that exceed cost constrains. Second, it can be used in an absolute sense to quantify design cost. Lastly,it can be used relatively by dividing the value by the expected cost of the current PSPAP and therefore values less than 1 are cheaper and values greater than 1 are more expensive. 1. Designs exceeding cost constraints not considered.</p>
+<div id="estimating-cost-per-gear-deployment" class="section level5">
+<h5>Estimating cost per gear deployment</h5>
+<p>Estimating cost for a day of sampling is difficult. It is the function of several factors, including but not limited to the number of personnel, pay rates, other personnel expenses, travel, time sampling, and gear maintenance. Additionally, the cost of sampling varies among years and costs may be nonlinearly related if there is economy of scale (i.e., it may cost less per sampling unit if many are done).</p>
+<p>There are 7 field offices that have conducted PSPAP sampling since 2003. Annually the USACE provides funding to these field offices to perform PSPAP sampling. Annual values vary from</p>
+<ol style="list-style-type: decimal">
+<li>Annual funding provided to each field crew</li>
+<li>Calculate the number of bends sampled in a year</li>
+<li>Divide the cost by the total to get a field crew specific cost per bend.</li>
+<li>Model or empirical distribution</li>
+</ol>
+<ul>
+<li>The season will begin when water temperatures decline to 12.8C or less (in the fall) and will continue through June 30.</li>
+<li>The Fish Community Season will be July 1 through October 30 throughout the geographic range of the PSPAP.</li>
+</ul>
+</div>
+</div>
+<div id="important-assumptions" class="section level4">
+<h4>Important assumptions</h4>
+<p>Currently the analysis assumes that the period of performance for field crews is the same as the fiscal year. Discussions with USACE contracting and PSPAP personnel suggested this was a reasonable assumption.</p>
+<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
+<ol style="list-style-type: decimal">
+<li>Survival (RPMA level)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Fecundity (RPMA level)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Growth (RPMA)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Movement
+<ol style="list-style-type: decimal">
+<li>fidelity</li>
+<li>among segment movement</li>
+</ol></li>
+<li>Population structure and characteristics (segment level)
+<ol style="list-style-type: decimal">
+<li>Size structure
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+<li>Sex ratio (segment level)
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+</ol></li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div id="estimate-segment-level-abundance-origin-and-stage-specific" class="section level3">
+<h3>3. Estimate segment-level abundance, origin and stage specific</h3>
+<ol style="list-style-type: decimal">
+<li><p>bias</p></li>
+<li><p>precision</p></li>
+<li><p>spatial distribution</p></li>
+</ol>
+</div>
+<div id="valuing-the-fundamental-objective" class="section level3">
+<h3>Valuing the fundamental objective</h3>
+<p>The 3 metrics described above can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <span class="citation">[@RN4402]</span>. The utility is then used to evaluate alternative monitoring programs. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and conformance is constrained between 0 (worst) and 100 (best).</p>
+<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalized values to a specified minimum and maximum. For example, we can scale the bias to values varying from 0 to 1 as:</p>
+<p><span class="math display">\[U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},\]</span></p>
+<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot below, values with lower proportional bias are given higher values, and increasing values approach 0.</p>
+<p>Now let’s look at the precision metric. Suppose it varies from 10 to 300 (not very precise). The equation to calculate scaled precision is the same as before. However, we do not need to take absolute values since all values are positive. In the plot below, values with lower CV values have higher values, and increasing values approach 0.</p>
+<p>Lastly, let’s look at performance. Suppose performance values from simulating multiple replicates of each monitoring design vary from 35% to 100%. The difference between the performance metric with bias and precision is that higher values are more desirable and therefore we need to rearrange the proportional scaling equation to reflect this as,</p>
+</div>
+<div id="linking-monitoring-designs-and-objectives" class="section level3">
+<h3>Linking monitoring designs and objectives</h3>
+<p>We can combine the utility values now such that monitoring designs resulting in a trend estimate with low bias, good precision, and good performance have higher values (i.e., approaching 1) and estimates of the trend that is biased, imprecise with poor performance approach 0. Values approach 1 because each of the scaled metrics is weighted. For example, if each metric is valued equally, then the weights would be 1/3. Alternatively, if really precise estimates of trend were desired the weight for scaled trend could be 0.5 and the remaining metrics weighted at 0.25. Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
+<ul>
+<li>Catch effort
+<ul>
+<li>Proportional bias = -60, scaled = 0.8</li>
+<li>Precision = 112, scaled = 0.648</li>
+<li>Performance = 100, scaled = 1</li>
+</ul></li>
+<li>Capture recapture
+<ul>
+<li>Proportional bias = 5, scaled = 0.983</li>
+<li>Precision = 115, scaled = 0.638</li>
+<li>Performance = 90, scaled = 0.857</li>
+</ul></li>
+</ul>
+<p>The scaled utility for the catch effort program is:</p>
+<p><span class="math display">\[0.774= 
+0.25\cdot 0.8+
+0.50 \cdot 0.648+
+0.25\cdot1,\]</span></p>
+<p>and the scaled utility for the capture recapture program is</p>
+<p><span class="math display">\[0.779= 
+0.25\cdot 0.983+
+0.50 \cdot 0.638+
+0.25\cdot0.857.\]</span></p>
+<p>The combined utility values indicate that the capture recapture program has slightly more value to achieve the objective of <em>quantifing population trend</em>.</p>
+<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.\]</span></p>
+</div>
+</div>
+<div id="swing-weighting-not-so-subjective." class="section level2">
+<h2>Swing weighting, not so subjective.</h2>
+<!--
+Quantify PS abundance or relative abundance  
+Quantify catch rates of age 0 and age 1 PS   
+Age at maturity  
+Age structure    
+Blood    
+
+Catch effort     
+Competition with invasive species    
+Contaminants     
+Didson   
+Diet     
+Disease  
+Drift and dspersal   
+ 
+Egg quality  
+Egg sample   
+Estimate Effective population size   
+Evaluate annual trends in Native forage fish     
+Fecundity    
+Fin ray  
+Fish communities     
+Fish condition   
+Foraging habitat     
+Free embryo collection   
+Genetic composition  
+Growth   
+Habitat selection    
+ 
+Hybridization    
+     
+IRC habitat  
+ 
+Local adaptation     
+ 
+Microchemistry   
+Model-based estimates of abundance of age 0 and age 1 PS     
+Model-based estimates of survival of hatchery and naturally reproducing PS to age 1  
+Movement     
+     
+Population estimates for PS for all size and age classes, particularly ages 2 to 3   
+Population structure and other characteristics   
+Predation    
+RNA Stress markers   
+Reproductive cycling     
+Reproductive readiness   
+Robust design    
+Sex  
+Sex ratio    
+Spawning aggregation and synchrony   
+Spawning habitat     
+Stable isotopes  
+Stocking program reports     
+ 
+Stress   
+Survival     
+     
+     
+     
+Use of Mississippi and tributaries   
+Zooplankton density  
+catch rates of all PS by size class  
+
+
+Hydroacoustic monitoring
+N mixture model  
+PIT tag fish
+Trawling
+ultrasound
+Telemetry River sweep
+CJS  
+Calibrated Population Model 
+Measure fish length and weight
+Take a Tissue sample    
+Lavage   
+Stomach removal 
+EDNA    
+Hatchery report and data    
+Closed population estimators
+Smaller gill mesh
+Use trammel nets
+-->
+</div>
+
+
+
+<!-- disqus -->
+ <div id="disqus_thread" class="standardPadding"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'pspapv2'; // required: replace example with your forum shortname
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            // create disqus script tag
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            // determine container
+            var container = document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0];
+            // append script tag enclosed by google indexing suppression comment
+            container.appendChild(document.createComment('googleoff: all'));
+            container.appendChild(dsq);
+            container.appendChild(document.createComment('googleon: all'));
+        })();
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+      </div> <!-- articleBandContent -->
+</div> <!-- pageContent -->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-99786286-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

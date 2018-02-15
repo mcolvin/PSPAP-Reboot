@@ -1,5 +1,5 @@
 ---
-title: "Simulating Catch Data"
+title: "Valuating Monitoring Designs"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 author: "Missouri River Pallid Sturgeon Technical Team"
 output:  
@@ -237,16 +237,16 @@ quantifiable metrics is necessary.
 The 3 metrics described above can be combined into a single 
 metric---commonly referred to as a utility---representing the objective 
 to _quantify population trend_ [@RN4402]. The utility is then used to 
-evaluate alternative monitoring programs. However, one problem we run 
+valuate alternative monitoring programs. However, one problem we run 
 into with the metrics above is that they are on different scales. Bias 
 can be negative or positive with values approaching 0 being best, 
 precision is a positive number varying from 0 (best) to potentially 
-large numbers (worst), and conformance is constrained between 0 (worst) 
-and 100 (best). 
+large numbers (worst), and reliability is constrained between 0 (worst) 
+and 1 (best). 
 
 
 
- To convert the 3 metrics to a common scale we can use methods like 
+To convert the 3 metrics to a common scale we can use methods like 
 proportional scaling which normalized values to a specified minimum and 
 maximum. For example, we can scale the bias to values varying from 0 to 
 1 as: 
@@ -270,28 +270,30 @@ Now let's look at the precision metric. Suppose it varies from 10 to 300
 (not very precise). The equation to calculate scaled precision is the 
 same as before. However, we do not need to take absolute values since 
 all values are positive. In the plot below, values with lower CV values 
-have higher values, and increasing values approach 0. 
+have higher precision utility values, and precision utility approaches 0
+as CV values increase to the maximum. 
 
-
-
-
-
-
-Lastly, let's look at performance. Suppose performance values from 
+<!--Lastly, let's look at performance. Suppose performance values from 
 simulating multiple replicates of each monitoring design vary from 35% 
 to 100%. The difference between the performance metric with bias and 
 precision is that higher values are more desirable and therefore we need 
 to rearrange the proportional scaling equation to reflect this as, 
-
+-->
+ ADD IN SOMETHING ABOUT BIAS AND PRECISION ESTIMATES BEING CONDITIONAL 
+ ON RELIABILITY/PERFORMANCE AND HOW WE DEAL WITH THIS
 
 
 
 ### Linking monitoring designs and objectives
 
+NEED TO CHANGE AROUND DUE TO NEW WAY OF HANDLING RELIABILITY/PERFORMANCE 
+AND MAKE A NOTE ON RELATIVE VS ABSOLUTE
+
 We can combine the utility values now such that monitoring designs 
-resulting in a trend estimate with low bias, good precision, and good 
-performance have higher values (i.e., approaching 1) and estimates of 
-the trend that is biased, imprecise with poor performance approach 0. 
+resulting in a trend estimate with relatively low bias, relatively high 
+precision, and good performance have higher values (i.e., approaching 1) 
+and estimates of the trend that is biased, imprecise with poor 
+performance approach 0. 
 Values approach 1 because each of the scaled metrics is weighted. For 
 example, if each metric is valued equally, then the weights would be 
 1/3. Alternatively, if really precise estimates of trend were desired 
@@ -337,8 +339,96 @@ $$U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.$$
 
 
 
-## Swing weighting, not so subjective.
+## Swing weighting
+The challenge in combining utiltities is determining how each 
+performance metric utility should be weighted.  To understand some of 
+the complications assume that in general we feel trend precision is 
+more important than trend bias.  Choosing a weight of 0.75 
+for precision and 0.25 for bias, based on this feeling as we did in the 
+example above, is not only a very subjective approach but it also did 
+not take into account variation in the metrics---something 
+that should affect the weighting.  For example, if all monitoring 
+designs had trend estimates with CV values that ranged between 0.001 and 
+0.002 (i.e., great precision), then we'd be happy with the precision of 
+any of our choices.  Hence, if trend bias values varied greatly, when 
+making a decision we would focus on which choice of monitoring design 
+also led to a small bias.  In this case, the bias metric should be 
+weighted higher than the precision metric (eventhough in general we 
+think precision is more important than bias) because the bias values 
+should have a greater impact on the choice of monitoring design given 
+the small variation in precision values.  To curtail these complications 
+we used swing weighting to determe metric utility weights.  
 
+Swing weighting, as a structured approach, is less subjective and takes 
+into account variation.  The process involves comparing the worst case 
+to the best case scenario for each metric while holding each of the 
+other metrics constant at their worst case.  In other words, swing 
+weighting forces you to think about how your decision is impacted when 
+each metric "swings" from worst to best.  These "swings" are first 
+ranked and then valued.  The swing that has the most impact on the 
+decision process (relative to the other swings) would be given a rank of 
+1 (most important), the swing with the second greatest impact on the 
+decision a rank of 2, and so on. The baseline scenario, where all 
+metrics are set to their worst case, always gets the highest (worst) 
+rank.  The scenario with a rank of 1 is assigned a value of 100 and the 
+baseline scenario is assigned a value of 0.  All other cases are then 
+given a value from 0 to 100, representing the impact they have on the 
+decision making process relative to the highest and lowest ranked 
+scenarios.
+
+In the case of trend described a couple paragraphs ago, 
+lets say the trend bias varies from 1%-70%. Then, as trend CV values 
+swing from 0.002 (worst) to 0.001 (best), there is little impact on our 
+decision process relative to when trend bias values swing from 70% 
+(worst) to 1% (best).  Therefore, we would rank the scenario with the 
+best bias with a 1 and the scenario with the best precision with a 2 
+(see Figure/Table ??).  The scenario with the best bias would get a 
+value of 100, and the scenario with the best precision will get a rank 
+from 0 to 100---0 if I think having the best precision relative to the 
+worst precsion has no impact on the decision (i.e., its just as bad as 
+thebaseline scenario) and 100 if I think having the best precision has 
+just as much impact on the decision as the swing in bias does. For 
+the sake of example, assume I think the impact of the precision 
+swing is about 1/10 the impact of the bias swing.  Then I would value 
+the scenario with the best precision with a 10.  It is important to 
+note, that this does not mean that precision is weighted by 0.10; it just 
+means that having the best precision and the worst bias is worth about 
+1/10 as having the worst precision and the best bias. Instead, the 
+weights are determined by dividing each value by the sum of all 
+values---since any case having both the best precision and the best bias[^1] 
+would end up with the highest value of 110 or a utility weight of 1, as desired.  
+
+[^1] Under the swing weighting assumption that the impact on the 
+decision is a linear function of the metrics 
+
+
+### Stakeholder Input
+Inevitably, individual stakeholders, as well as different stakeholder 
+agencies, will have different opinions on what metrics should have a 
+greater impact on the choosing a monitoring design.  As a consistent, 
+structured process, swing weighting provides an excellent approach for 
+comparing and compiling stakeholder weights.  We are currently in the 
+process of using swing weighting as a way to understand what differences 
+and similarities there are in stakeholder opinions on the importance of 
+objective metrics and the consequences of these on valuating various 
+monitoring designs.  While PSPAP v. 2.0 will not be making any decisions 
+based on these weights, this analysis will provide valuable stakeholder 
+information to and be a tool for decision makers.
+
+In order for swing weighting to be used consistently amongst 
+stakeholders, it is important for each stakeholder to have a good 
+understanding of the swing weighting process.  We created YouTube videos
+that described the swing weighting process and its role in the PSPAP v. 
+2.0 {cite swing weighting tutorial video} and explained the meaning and 
+variation in the abundance and trend metrics {cite Abundance and Trend 
+videos}.  We posted a downloadable swing weighting form, links to the 
+YouTube videos described above, and instructions on how to fill in the 
+swing weighting form to the PSPAP v. 2.0 blog {cite swing weighting 
+blog page}.  An email was also sent out to stakeholders inviting them
+to visit the blog to fill in and submit a swing weighting form.  Once  
+swing weighting data has been collected, valuation of monitoring 
+designs can be considered across the range of stakeholder weighting 
+schemes, as well as looked at by stakeholder angency.  
 
 
 
