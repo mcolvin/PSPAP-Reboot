@@ -280,7 +280,7 @@ rmarkdown::render("methods-overview.Rmd",
 <h2>Eliciting stakeholder objectives</h2>
 <div id="mrnrc-workshop" class="section level3">
 <h3>2017 MRNRC workshop</h3>
-<p>Many state and federal agencies contracted to collect pallid sturgeon population assessment data will be affected by changes to the current PSPAP design, as well as consulting groups and management agencies dependent on monitoring data to inform adaptive management. We convened a face-to-face stakeholder workshop during the MRNRC meeting in March 2017 to present an overview of the redesign process and to elicit stakeholder[^1] objectives for the program. Five fundamental information objectives of the PSPAP were identified at the workshop: 1) quantify recruitment to age-1, 2) quantify population trend and abundance, 3) provide collaborative population model inputs (improved parameter estimates), 4) maintain compatibility with legacy PSPAP data, and 5) remain within cost constraints.</p>
+<p>Many state and federal agencies contracted to collect pallid sturgeon population assessment data will be affected by changes to the current PSPAP design, as well as consulting groups and management agencies dependent on monitoring data to inform adaptive management. We convened a face-to-face stakeholder workshop during the MRNRC meeting in March 2017 to present an overview of the redesign process and to elicit stakeholder<!--[^1]--> objectives for the program. Five fundamental information objectives of the PSPAP were identified at the workshop: 1) quantify recruitment to age-1, 2) quantify population trend and abundance, 3) provide collaborative population model inputs (improved parameter estimates), 4) maintain compatibility with legacy PSPAP data, and 5) remain within cost constraints.</p>
 <p>Stakeholders identified many means objectives that potentially contribute to the fundamental objectives; they also provided critical information on logistics of sampling. Means objectives included varying population metrics to monitor and approaches needed to quantify the metrics. Metrics identified during the objectives elicitation were organized to 8 categories. Specifically, stakeholders identified metrics relating to population structure (e.g., age and size structure, sex ratio), reproductive status (e.g., fecundity, reproductive cycling, size at sexual maturity), health status (e.g., stress, condition, diet, contaminants), population augmentation, movement (i.e., spawning, seasonal), demographic rates (e.g., recruitment, survival), fish community (e.g., competition, invasive species), and genetic status (e.g., effective population size, hybridization, local adaptation).</p>
 <p>Stakeholder objectives were organized in an influence diagram during the workshop. The influence diagram serves 2 purposes. First, it clarifies stakeholders’ fundamental and means objectives, thereby increasing transparency. Second, the influence diagram can be developed into a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and Peterson 2013).</p>
 <!--TALK ABOUT UPDATE WEBINARS AND JANUARY MEETING...ANCILLARY OBJECTIVES DISCUSSIONS HERE???
@@ -390,15 +390,15 @@ what follows-->
 <p>A set of reference populations of known pallid sturgeon abundance was needed to evaluate alternative monitoring designs and their ability to achieve the fundamental objectives identified by stakeholders (See previous section: “Eliciting Stakeholder Objectives”). A reference population provides data on the annual survival and movement of each fish in the population (including new recruits) at the bend-level (Figure 1). Since fish length may influence sampling effectiveness (e.g. gear selectivity), data on individuals (e.g., growth) was also simulated.</p>
 <div id="objectives" class="section level3">
 <h3>Objectives</h3>
-<p>The objectives of this analysis were to:</p>
+<p>The objectives of this simulation were to:</p>
 <ol style="list-style-type: decimal">
-<li>Create a set of spatially explicit pallid sturgeon population with known bend-level annual abundances,</li>
+<li>Create a set of spatially explicit pallid sturgeon populations with known bend-level annual abundances,</li>
 <li>Simulate reference population dynamics for 10 years with varying but known annual survival, individual growth, movement, and recruitment, and</li>
 <li>Allow movement and recruitment to vary over a wide range of biologically reasonable conditions in order to better understand their relationship with monitoring design outcomes.</li>
 </ol>
 </div>
-<div id="assumptions" class="section level3">
-<h3>Assumptions</h3>
+<div id="major-assumptions" class="section level3">
+<h3>Major Assumptions</h3>
 <ol style="list-style-type: decimal">
 <li>Survival probability is homogeneous among all individuals and independent of space and time.</li>
 <li>Individual fish growth follows a von Bertalanffy growth equation.</li>
@@ -489,13 +489,32 @@ $$\begin{cases}
 </div>
 <div id="summary" class="section level3">
 <h3>Summary</h3>
-<p>The pallid sturgeon reference population is initialized using data from the PSPAP database and the pallid sturgeon literature. Each river bend is populated with pallid sturgeon based on expected segment-level densities, while each fish is assigned an initial length and von Bertalanffy growth parameters <span class="math inline">\(L_inf\)</span> and <span class="math inline">\(k\)</span> from segment-level and basin -level distributions, respectively. Individual fish are then tracked for 10 years, recording individual survival status, bend location, and length on a yearly basis. Survival is binomially distributed with fixed parameter <span class="math inline">\(\phi\)</span>, and growth is projected by individualized von Bertalanffy growth curves. Within-basin movement is based on a pallid sturgeon’s current bend location with the probability of being in a particular bend the following year increasing as distance to that bend decreases. Immigration and emigration (for example, to/from the Mississippi River) are critical unknowns that can also be evaluated within the reference population. Recruitment occurs randomly with a fixed expected frequency (e.g., every year, every 3 years). The number of recruits, given there is recruitment, is drawn from a basin-dependent Poisson distribution. Each new recruit is <!--tracked after being randomly assigned 
+<p>The pallid sturgeon reference population is initialized using data from the PSPAP database and the pallid sturgeon literature. Each river bend is populated with pallid sturgeon based on expected segment-level densities, while each fish is assigned an initial length and von Bertalanffy growth parameters <span class="math inline">\(L_{inf}\)</span> and <span class="math inline">\(k\)</span> from segment-level and basin<!--[^2]--> -level distributions, respectively. Individual fish are then tracked for 10 years, recording individual survival status, bend location, and length on a yearly basis. Survival is binomially distributed with fixed parameter <span class="math inline">\(\phi\)</span>, and growth is projected by individualized von Bertalanffy growth curves. Within-basin movement is based on a pallid sturgeon’s current bend location with the probability of being in a particular bend the following year increasing as distance to that bend decreases. Immigration and emigration (for example, to/from the Mississippi River) are critical unknowns that can also be evaluated within the reference population. Recruitment occurs randomly with a fixed expected frequency (e.g., every year, every 3 years). The number of recruits, given there is recruitment, is drawn from a basin-dependent Poisson distribution. Each new recruit is <!--tracked after being randomly assigned 
 an age-0 location within basin, an age-0 length of 200 mm, and von 
 Bertalanffy growth parameters.--> is assigned a location, length, and growth parameters and is tracked on a yearly basis. The population simulation here is generalized from the collaborative pallid sturgeon population model</p>
 </div>
 </div>
 <div id="estimation-of-population-metrics-given-alternative-monitoring-designs" class="section level2">
 <h2>Estimation of population metrics given alternative monitoring designs</h2>
+<!--
+rmarkdown::render("_Report-2-06-estimating-population-values.Rmd",output_format='word_document')# build page
+-->
+<p>The need to redesign the PSPAP was triggered by the recognition that the current PSPAP may not allow evaluation of whether the pallid sturgeon fundamental objectives identified in the AM plan were achieved on an annual basis or estimated with any level of certainty. Specifically, sub-objectives listed in section 4.1.1. of the AM plan specify 1) increase pallid sturgeon recruitment to age-1, and 2) maintain or increase numbers of pallid sturgeon as an interim measure until sufficient and sustained natural recruitment occurs, both of which are needed to achieve the fundamental objective set by the USFWS to preclude species jeopardy. These two sub-objectives are redefined as fundamental objectives in the context of the monitoring program to quantify recruitment to age-1 and quantify pallid sturgeon population trend and abundance.</p>
+<p>Metrics to assess achievement of the first sub-objective (increase pallid sturgeon recruitment to age-1) are particularly challenging because of the rarity of the species and existing technical difficulties with capturing age-1 (and age-2, age-3) fish and in accurately determining ages. As direct assessment of recruitment to age-1 is unlikely to be successful, the PSPAP v. 2.0 process has proceeded with the assumption that recruitment will need to be assessed through estimates of abundance and trend of older fish, determination of hatchery or wild origin, and back-calculation of age-1 recruitment rates through a well-calibrated and validated population model. As reported in Section 4.1.1 of the AM plan, metrics for assessing the second sub-objective (maintain or increase numbers of pallid sturgeon as an interim measure) include population estimates for pallid sturgeon for all size and age classes, where age classes are estimated by the population model.</p>
+<p>As indicated above, estimates of population abundance and trend are key to assessing both AM plan pallid sturgeon sub-objectives. Moreover, the objective of the PSPAP redesign effort is to identify monitoring designs (sampling designs and abundance and trend estimators) that will give optimal estimates given budget constraints. Therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. Here we focus on the generation of the abundance and trend estimates, i.e. the metrics for assessing the AM sub-objectives, leaving the assessment of these estimates to the following section.</p>
+<p>Generating abundance and trend estimates under a particular monitoring design occurs in two steps:</p>
+<ol style="list-style-type: decimal">
+<li>Simulate catch data using the sampling design prescribed by the given monitoring program, and</li>
+<li>Calculate estimates from the catch data using the abundance and trend estimators prescribed by the given monitoring program.</li>
+</ol>
+<p>Since the simulation of catch data is stochastic and certain values (e.g., catchability) are uncertain, these steps were repeated several times for each monitoring design, generating a fuller picture of the range of outcomes that can be expected under a particular monitoring design.</p>
+<div id="monitoring-designs-under-consideration" class="section level3">
+<h3>Monitoring designs under consideration</h3>
+<p>Monitoring designs consisted of a suite of sampling and estimator decisions. Sampling decisions included…</p>
+<p>…For each of the simulated reference populations, various sampling decisions can be implemented to obtain simulated catch data. The choice of monitoring design determines the particular combination of decisions used in this process—system-level sampling design, within bend and year sampling design, gear selection, and measurements taken on individual fish are all prescribed by the monitoring design (Figure 1). Alternative sampling decisions of interest were identified during the PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up input from stakeholders and experts in the system. Simulated catch data have been generated from the range of the identified alternative sampling decisions, with the exception that some individual measurements have yet to be implemented and the spatially balanced system-level sampling design is still a work in progress.</p>
+</div>
+<div id="simulating-catch-data" class="section level3">
+<h3>Simulating catch data</h3>
 <!--
 source("_R/1_global.R")
 source("_R/2_functions.R")
@@ -504,74 +523,96 @@ source("_R/3_load-and-clean.R")
 source("_R/5_tables.R")
 rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
-</div>
-<div id="simulating-catch-data" class="section level2">
-<h2>Simulating Catch Data</h2>
-<p>Simulated catch data was essential to calculating estimates of population abundance and trend using alternative estimators. It is because we could compare the estimates from simulated catch data to the underlying reference population, that we were able to evaluate estimator accuracy and precision. Therefore, simulating catch data was a key component of evaluating varying monitoring designs and their ability to achieve the fundamental objectives identified during the first population assessment program workshop (See Section ??).</p>
-<p>The catchability and capture probability of particular gears are important elements of simulating catch data. Since these values are highly uncertain and in some case unknown, we simulate catch data over a range of plausible gear catchabilities.</p>
-<div id="objectives-1" class="section level3">
-<h3>Objectives</h3>
-<p>The objectives of this analysis were to:</p>
+<!--
+Simulated catch data was essential to calculating estimates of 
+population abundance and trend using alternative estimators. It is 
+because we could compare the estimates from simulated catch data to the 
+underlying reference population, that we were able to evaluate estimator 
+accuracy and precision. Therefore, simulating catch data was a key 
+component of evaluating varying monitoring designs and their ability to 
+achieve the fundamental objectives identified during the first 
+population assessment program workshop (See Section ??).   
+
+The catchability and capture probability of particular gears are 
+important elements of simulating catch data. Since these values are 
+highly uncertain and in some case unknown, we simulate catch data over a 
+range of plausible gear catchabilities.
+-->
+<div id="objectives-1" class="section level4">
+<h4>Objectives</h4>
+<p>The objectives of the catch data simulations are, for each monitoring design considered, to:</p>
 <ol style="list-style-type: decimal">
-<li>Simulate 10 years of bend sampling data (i.e. which bends are sampled during which years) for various monitoring designs,</li>
-<li>Simulate 10 years of catch data for various sampling strategies using bends as the spatial scale,</li>
-<li>Include information in the catch data that could be reasonably assessed by sampling crews in the field and is relevant to meeting fundamental or sub-objectives,</li>
+<li>Simulate 10 years of bend sampling data (i.e. which bends are sampled during which years),</li>
+<li>Simulate 10 years of catch data using bends at the spatial scale,</li>
+<li>Include information in the catch data that could be reasonably assessed by sampling crews in the field and is relevant to meeting fundamental or ancillary objectives,</li>
 <li>Allow gear catchability to vary over a wide range of values in order to evaluate its effect on monitoring design outcomes, and</li>
-<li>Simulate several catch data tables per combination of reference population and monitoring design.</li>
+<li>Simulate several catch data tables for each of the simulated reference populations.</li>
 </ol>
 </div>
-<div id="major-assumptions" class="section level3">
-<h3>Major Assumptions</h3>
+<div id="major-assumptions-1" class="section level4">
+<h4>Major Assumptions</h4>
 <ol style="list-style-type: decimal">
 <li>All fish can be uniquely identified.<br />
 </li>
 <li>Fish ids are not lost or overlooked.</li>
-<li>The sampling protocol is followed without exception.</li>
+<li>The sampling protocol, given by the particular monitoring design, is followed without exception.</li>
 <li>Expected catch, <span class="math inline">\(C\)</span> can be approximated as <span class="math inline">\(C=qfN\)</span>, a function of gear catchability, <span class="math inline">\(q\)</span>, effort described as the time in minutes a gear is deployed, <span class="math inline">\(f\)</span>, and the population size, <span class="math inline">\(N\)</span>.</li>
 <li>Gear deployments are independent of one another and do not interact.</li>
 </ol>
 <!--Currently we have the following, but are planning to make 
 simulations with selective gears. 6. Gears are not size selective. -->
 <p>Assumptions 1 and 2, while unlikely to be perfectly met, are reasonable assumptions for working with pallid sturgeon (ref) and are typical assumptions made when working with capture-recapture data (ref). For a well designed sampling protocol, assumption 3 is also a reasonable, although we recognized that it may not be perfectly met due to safety or other unforeseen issues.</p>
-<p>Describing expected catch as in assumption 4: <span class="math inline">\(C=qfN=pN\)</span>, where <span class="math inline">\(p\)</span> is the capture probability and <span class="math inline">\(p=qf\)</span>, is also a commonly made assumption (ref). This equation is likely a good approximation for small effort values (<span class="math inline">\(f\)</span>); however, it is clear that as effort increases without bound, capture probability (<span class="math inline">\(p\)</span>) will become greater than 1 for fixed <span class="math inline">\(q\)</span>. In other words, the model <span class="math inline">\(C=qfN\)</span> breaks down for large effort values, and therefore, we must be cautious drawing conclusions from outcomes that were generated from large effort values. To indirectly account for this we have flagged cases in our simulations where the capture probability is abnormally high.</p>
-<p>To understand assumption 5, it is important to first describe the sampling relationship among years, occasions, deployments, and bends. In short, during each year a number of bends will be selected to be sampled. During a particular year, each selected bend will be sampled on several occasions. Occasions are short periods of time, say 24 hours, during which multiple deployments of a gear are used to sample the population throughout the bend. Using this terminology assumption 4 means both that there is a zero probability that the same fish will be caught by two separate deployments (within the same occasion), and that any particular deployment does not affect the probability that a fish is caught by any other deployment within the same sampling occasion. For some gear types these assumptions are very likely met, while with others there are some caveats that we examine in THE DISCUSSION/APPENDIX ??.</p>
+<p>Describing expected catch as in assumption 4: <span class="math inline">\(C=qfN=pN\)</span>, where <span class="math inline">\(p\)</span> is the capture probability and <span class="math inline">\(p=qf\)</span>, is also a commonly made assumption (ref). This equation is likely a good approximation for small effort values (<span class="math inline">\(f\)</span>); however, it is clear that as effort increases without bound, capture probability (<span class="math inline">\(p\)</span>) will become greater than 1 for fixed <span class="math inline">\(q\)</span>. In other words, the model <span class="math inline">\(C=qfN\)</span> breaks down for large effort values, and therefore, we must be cautious drawing conclusions from outcomes that were generated from large effort values. To indirectly account for this we have flagged cases in our simulations where the occasion level capture probability is higher than 0.4.</p>
+<p>To understand assumption 5, it is important to first describe the sampling relationship among years, occasions, deployments, and bends. In short, during each year a number of bends will be selected to be sampled. During a particular year, each selected bend will be sampled on several occasions. Occasions are short periods of time, say 24 hours, during which multiple deployments of a gear are used to sample the population throughout the bend. Using this terminology assumption 4 means both that there is a zero probability that the same fish will be caught by two separate deployments (within the same occasion), and that any particular deployment does not affect the probability that a fish is caught by any other deployment within the same sampling occasion. In cases where there is little fish movement within occasions or where gears are set sufficiently far apart, these assumptions are very likely met. <!--For some gear types these assumptions are very likely met, while with others 
+there are some caveats that we examine in Appendix.--></p>
 <!--# Methods-->
+<!--#### Monitoring Designs
+
+For each of the simulated reference populations, various sampling 
+decisions can be implemented to obtain simulated catch data. The choice 
+of monitoring design determines the particular combination of decisions 
+used in this process---system-level sampling design, within bend and 
+year sampling design, gear selection, and measurements taken on 
+individual fish are all prescribed by the monitoring design (Figure 1). 
+Alternative sampling decisions of interest were identified during the 
+PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up 
+input from stakeholders and experts in the system. Simulated catch data 
+have been generated from the range of the identified alternative 
+sampling decisions, with the exception that some individual measurements 
+have yet to be implemented and the spatially balanced system-level 
+sampling design is still a work in progress. 
+-->
 </div>
-<div id="monitoring-designs" class="section level3">
-<h3>Monitoring Designs</h3>
-<p>For each of the simulated reference populations, various sampling decisions can be implemented to obtain simulated catch data. The choice of monitoring design determines the particular combination of decisions used in this process—system-level sampling design, within bend and year sampling design, gear selection, and measurements taken on individual fish are all prescribed by the monitoring design (Figure 1). Alternative sampling decisions of interest were identified during the PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up input from stakeholders and experts in the system. Simulated catch data have been generated from the range of the identified alternative sampling decisions, with the exception that some individual measurements have yet to be implemented and the spatially balanced system-level sampling design is still a work in progress.</p>
-<p>For each combination of reference population and monitoring design, we simulated catch data (Figure 2) using two major steps:</p>
-<ol style="list-style-type: decimal">
-<li>For each year, select which bends to sample.</li>
-<li>For each occasion, select which individual fish (of those located in the sampled bends) are caught.</li>
-</ol>
+<div id="process" class="section level4">
+<h4>Process</h4>
+<p>For each combination of reference population and monitoring design, we simulated catch data (Figure 2) by first selecting which bends to sample throughout the 10 years, and then selecting which individual fish (of those located in the sampled bends during sampling) were caught during each capture occasion.</p>
 </div>
-<div id="bend-selection" class="section level3">
-<h3>Bend Selection</h3>
-<p>All monitoring designs considered included sampling bends located within segments 2-4, 7-10, 13, and 14. The number of bends sampled within each segment was chosen to be consistent with past sampling procedures. In particular, we chose the number of sampled bends within segement to match those given in USACE’s 2017 PSPAP Guiding Document Table A1 (CITATION) and reproduced in Table 1 below. The way selected bends were generated, however, varied and was determined by the choice of system-level sampling design laid out in the monitoring design. In particular, three alternative system-level sampling designs were considered: a random design, a fixed design, and a spatially balanced design (Stevens and Olsen 2004). Under the random sampling design bends within a segment were chosen each year uniformly at random, while under the fixed sampling design they were chosen uniformly at random for the first year and then fixed to be sampled each of the following 9 years. A combination of the fixed and random designs can also be implemented,and the spatially balanced design is in the works.</p>
+<div id="bend-selection" class="section level4">
+<h4>Bend Selection</h4>
+<p>All monitoring designs considered included sampling bends located within segments 2-4, 7-10, 13, and 14. The number of bends sampled within each segment was chosen to be consistent with past sampling procedures. In particular, we chose the number of sampled bends within segement to match those given in USACE’s 2017 PSPAP Guiding Document Table A1 (Welker et al. 2017) and reproduced in Table 1 below. The way selected bends were generated, however, varied and was determined by the choice of system-level sampling design laid out in the monitoring design. In particular, three alternative system-level sampling designs were considered: a random design, a fixed design, and a spatially balanced design (Stevens and Olsen 2004). Under the random sampling design bends within a segment were chosen each year uniformly at random, while under the fixed sampling design they were chosen uniformly at random for the first year and then fixed to be sampled each of the following 9 years. A combination of the fixed and random designs can also be implemented,and the spatially balanced design is in the works.</p>
 <p>While monitoring designs can also differ in decisions made about within bend and year sampling design, gear selection, and measurement choices, none of these decisions affected which bends were selected for sampling each year. They did, however, affect the individual capture histories of the catch data.</p>
 </div>
-<div id="individual-captures" class="section level3">
-<h3>Individual Captures</h3>
-<p>Once the bends to be sampled were selected for each of the 10 years, 10 years of catch data can be simulated. Each year, catch was simulated spatially at the bend level and temporally at the sampling occasion level. We defined a sampling occasion as a short time period (e.g. 24 hours) within a year during which the given bend was sampled. The fixed number of sampling occasions per year per sampled bend was given as part of the monitoring design of interest. In particular, we simulated catch data for monitoring designs that included 1-4 sampling occasions per year for each sampled bend. Additionally, in order to thoroughly sample a bend during a sampling occasion, several gear deployments are used to capture fish. Currently simulations all utilize 8 gear deployments per sampling occasion; however, future analysis will include catch data simulated for a range of deployment numbers.</p>
+<div id="individual-captures" class="section level4">
+<h4>Individual Captures</h4>
+<p>Once the bends to be sampled were selected for each of the 10 years, 10 years of catch data can be simulated. Each year, catch was simulated spatially at the bend level and temporally at the sampling occasion level. We defined a sampling occasion as a short time period (e.g. 24 hours) within a year during which the given bend was sampled. A fixed number of sampling occasions per year per sampled bend was given as part of the monitoring design of interest. In particular, we simulated catch data for monitoring designs that included 1-4 sampling occasions per year for each sampled bend. Additionally, in order to thoroughly sample a bend during a sampling occasion, several gear deployments are used to capture fish. Currently simulations all utilize 8 gear deployments per sampling occasion; however, future analysis will include catch data simulated for a range of deployment numbers.</p>
 <p>For a particular sampled bend during a particular year, each fish located in the given bend had a probability, <span class="math inline">\(p_{occ}\)</span>, of being captured during occasion <span class="math inline">\(occ\)</span>. This occasion level capture probability varied from bend to bend and occasion to occasion, as it was calculated from individualized deployment catchability and effort values. For each of the 8 deployments within occasion <span class="math inline">\(occ\)</span>, an effort value <span class="math inline">\(f\)</span> was generated from a gear and basin specific gamma distribution, and a catchability value <span class="math inline">\(q\)</span> was generated from a gear specific distribution. Deployment specific capture probabilities, <span class="math inline">\(p\)</span>, were calculated as <span class="math inline">\(p=q\cdot f\)</span>, and the 8 within occasion deployment capture probabilities were summed (and bounded at 1) to obtain occasion level <span class="math inline">\(p_{occ}\)</span>. Therefore, if a fish was located in the given sampled bend during the given year, its capture was a Bernoulli trial with probability of success <span class="math inline">\(p_{occ}\)</span>, resulting in total occasion level catch numbers for the particular bend being binomially distributed.</p>
-<div id="effort-distributions" class="section level4">
-<h4>Effort Distributions</h4>
+<div id="effort-distributions" class="section level5">
+<h5>Effort Distributions</h5>
 <p>Distributions for deployment level effort (<span class="math inline">\(f\)</span>) were generated using the PSPAP database. We defined effort as the time (in minutes) that a gear was set, dragged, or pulled for during a single deployment<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. Since effort was calculated using the start and stop times, all PSPAP data without a start or stop time was excluded from this analysis. The relevant data entries were then merged with the gear data and a stop date column was added to take into account gears that were set over night. Effort was calculated in minutes as the difference between the stop time and the start time with any discrepancies in the set date and stop date taken into account by using the <code>strptime</code> function in R to link the start and stop times to their corresponding set and stop dates, respectively. Before generating the effort distributions, all entries resulting in negative effort values were removed.</p>
 <p>Gamma distributions were fit to the cleaned up PSPAP effort data for standard gear types<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> by basin. The mean effort, standard deviation of the effort data, minimum effort, maximum effort, and median effort were also calculated for each gear by basin (Table 2). In general, gamma distributions provided a good fit to the effort data (e.g. Figure 3), but see Appendix ?? for more details.</p>
 </div>
-<div id="catchability-distributions" class="section level4">
-<h4>Catchability Distributions</h4>
+<div id="catchability-distributions" class="section level5">
+<h5>Catchability Distributions</h5>
 <p>Gear specific catchability distributions were set up such that the log-odds of catchability (<span class="math inline">\(q\)</span>) was normally distributed: <span class="math display">\[\ln\left(\frac{q}{1-q}\right)\sim \mathcal{N}\left(\mu, 
 \beta_0\right),\]</span> where <span class="math inline">\(\mu=\ln\frac{\mu_q}{1-\mu_q}\)</span> and <span class="math inline">\(\mu_q\)</span> is the expected catchability of the gear. Because deployment catchability values, or the probability of catching a single fish with one unit of effort, are a source of uncertainty we allowed the choices of <span class="math inline">\(\mu_q\)</span> and <span class="math inline">\(\beta_0\)</span> to vary for among catch data simulations (CITE A TABLE OR SOMETHING THAT LISTS RANGES OF PARAMS).</p>
 </div>
-<div id="gear-selection-and-size-selectivity" class="section level4">
-<h4>Gear Selection and Size Selectivity</h4>
+<div id="gear-selection-and-size-selectivity" class="section level5">
+<h5>Gear Selection and Size Selectivity</h5>
 <p>The choice of monitoring design also indicates which gears should be used in sampling. This is important as different gears will have different catch rates and associated costs of deployment. Currently, catch simulations include catch data from gill nets, trammel nets, otter trawls, trotlines, or a combination of these.</p>
-<p>Additionally, gears may be size selective. In this case different gears will interact with the size distribution of the reference population to produce different catch data outcomes. Because gear selectivity is not precisely known, we are currently accounting for size selectivity by comparing the catch data results simulated under various selction curves. See Appendix ?? for details.</p>
+<p>Additionally, gears may be size selective. In this case different gears will interact with the size distribution of the reference population to produce different catch data outcomes. Because gear selectivity is not precisely known, we are currently working on accounting for size selectivity by comparing the catch data results simulated under various selection curves. <!--See Appendix ?? for details.--></p>
 </div>
-<div id="individual-measurements" class="section level4">
-<h4>Individual Measurements</h4>
+<div id="individual-measurements" class="section level5">
+<h5>Individual Measurements</h5>
 <p>For a particular bend and year, a Bernoulli trial simulated whether or not an individual fish was captured during each occassion, producing a within year capture history for each fish. Fish that were never captured had their capture histories removed from the data. Fish that were captured had their individual attributes for the given year recorded from the reference population data. Specifically, whenever a fish is successfuly caught its fish id, location (bend), timing (occasion within year) of catch, gear used, and length are recorded.</p>
 <p>We have primarily focused on measuring length, as it is vital to the metrics for sub-objective 2<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> as outlined in Section 4.1.1 of the 2016 AM plan. Additionally, we are currently working on including fish sex, origin (natural or hatchery), and age due to their importance to sub-objective metrics and to understanding effective populations size. Several other individual measurements were voiced to be of interest to stakeholders at the 2017 MRNRC PSPAP Workshop. These measurements may be considered as part of future analyses.</p>
 <!-- USEFUL TO PUT SOMEWHERE??? In summary, the catch data simulator 
@@ -594,40 +635,30 @@ located within bend $b$ in year $y$ during sampling occasion $occ$. In
 other words capture probability was location and time dependent but not 
 dependent on past behavior or individual attributes (e.g. size). 
 -->
-<!--
-rmarkdown::render("_Report-2-06-estimating-population-values.Rmd",output_format='word_document')# build page
--->
 </div>
 </div>
 </div>
-<div id="estimating-population-trend-and-abundance" class="section level2">
-<h2>Estimating Population Trend and Abundance</h2>
-<p>The need to redesign the PSPAP was triggered by the recognition that the current PSPAP may not allow evaluation of whether the pallid sturgeon fundamental objectives identified in the AM plan were achieved on an annual basis or estimated with any level of certainty. Specifically, sub-objectives listed in section 4.1.1. of the AM plan specify 1) increase pallid sturgeon recruitment to age-1, and 2) maintain or increase numbers of pallid sturgeon as an interim measure until sufficient and sustained natural recruitment occurs, both of which are needed to achieve the fundamental objective set by the USFWS to preclude species jeopardy. These two sub-objectives are redefined as fundamental objectives in the context of the monitoring program to quantify recruitment to age-1 and quantify pallid sturgeon population trend and abundance.</p>
-<p>Metrics to assess achievement of the first sub-objective (increase pallid sturgeon recruitment to age-1) are particularly challenging because of the rarity of the species and existing technical difficulties with capturing age-1 (and age-2, age-3) fish and in accurately determining ages. As direct assessment of recruitment to age-1 is unlikely to be successful, the PSPAP v. 2.0 process has proceeded with the assumption that recruitment will need to be assessed through estimates of abundance and trend of older fish, determination of hatchery or wild origin, and back-calculation of age-1 recruitment rates through a well-calibrated and validated population model. As reported in Section 4.1.1 of the AM plan, metrics for assessing the second sub-objective (maintain or increase numbers of pallid sturgeon as an interim measure) include population estimates for pallid sturgeon for all size and age classes, where age classes are estimated by the population model.</p>
-<p>As indicated above, estimates of population abundance and trend are key to assessing both AMP pallid sturgeon sub-objectives. Moreover, the objective of the PSPAP redesign effort is to identify monitoring designs (sampling designs and abundance and trend estimators) that will give optimal estimates given budget constraints. Therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. Here we focus on the generation of the abundance and trend estimates, i.e. the metrics for assessing the AM sub-objectives, leaving the assessment of these estimates to the following section.</p>
-<!--2. Assess abundance and trend estimates using values of estimator bias, precision,
-and performance.-->
-<div id="objectives-2" class="section level3">
-<h3>Objectives</h3>
-<p>The objectives of this analysis were to:</p>
+<div id="generating-abundance-and-trend-estimates" class="section level3">
+<h3>Generating abundance and trend estimates</h3>
+<div id="objectives-2" class="section level4">
+<h4>Objectives</h4>
+<p>The objectives of estimating population metrics are, for each monitoring design considered and for each of the catch data sets generated under the given monitoring design, to:</p>
 <ol style="list-style-type: decimal">
-<li>Apply various abundance estimators to each of the simulated catch data (that were generated from several different sampling strategies) to produce abundance estimates at the bend level.</li>
-<li>Use various trend estimators to generate a measure of the population trend over a 10-year period by basin.</li>
-<li>Use length data and various abundance estimators to generate population estimates for each length class.</li>
+<li>Generate an estimate of the average population trend over the 10-year period by basin,</li>
+<li>Generate segment-level abundance estimates,</li>
+<li>Generate segment-level abundance estimates for each length class.</li>
 </ol>
 </div>
-<div id="major-assumptions-1" class="section level3">
-<h3>Major Assumptions</h3>
-<p>We made the typical assumptions associated with the use of each individual estimator. In general, these assumptions match the assumptions used to produce the reference populations (SECTION) and simulated catch data (SECTION). Any major assumptions additional to those previously discussed are included in the Methods Section discussion of the particular estimator to which it applies.</p>
+<div id="major-assumptions-2" class="section level4">
+<h4>Major Assumptions</h4>
+<p>We made the typical assumptions associated with the use of each individual estimator. In general, these assumptions match the assumptions used to produce the reference populations (SECTION) and simulated catch data (SECTION). Any major assumptions additional to those previously discussed are included in the discussion of the particular estimator to which it applies.</p>
 <!--# Methods-->
+</div>
 </div>
 <div id="scope-and-spatial-scale" class="section level3">
 <h3>Scope and Spatial Scale</h3>
 <p>Since accurately identifying fish age in the field is challenging and the AM plan specifies that age classes are to be estimated by the collaborative population model, we limit our current focus to overall population estimates for pallid sturgeon, as well as population estimates by size class.</p>
-<p>The methods and scale varies based on the particular abundance estimator, each of which is discussed Whenever possible, population estimates were made at the bend level and then aggregated to the segment level. There were a few cases, where we could not achieve this spatial scale of estimation and the details of how</p>
-<!--
-???CAN WE DISCUSS EACH SEPERATELY IS THERE ENOUGH TO SAY...THINK ABOUT DOING FOR EACH
--->
+<p>Whenever possible, population abundance estimates were made at the bend level and then aggregated to the segment level; however, monitoring designs that employed the robust design abundance estimator had difficulty producing estimates at the bend spatial scale. Therefore, all monitory designs using the robust design estimator directly estimated segment-level abundances.</p>
 <p>Applications of Capture-Recapture Robust Design to PSPAP</p>
 <p>The fundamental species objective identified by the USFWS for the pallid sturgeon is: Avoid jeopardizing the continued existence of the pallid sturgeon from the US Army Corps of Engineers actions on the Missouri River. Means to achieve this fundamental objective included increasing pallid sturgeon recruitment and maintaining or increasing current population levels.</p>
 <p>The means to achieve the fundamental objective are specified as 2 sub-objectives with quantifiable metrics and targets as:</p>
@@ -1691,7 +1722,7 @@ rmarkdown::render("_Report-5-02-tables",output_format='word_document')# build pa
 <ol>
 <li id="fn1"><p>This is a general measurement of effort that can be calculated for all gear types. However, we recognize that gear set time is more relavent to measuring effort for passive gears and we plan to further incorporate effort values based on distance or area metrics when considering active gears.<a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>This is a general measurement of effort that can be calculated for all gear types. However, we recognize that gear set time is more relavent to measuring effort for passive gears and we plan to further incorporate effort values based on distance or area metrics when considering active gears.<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>We use the term “standard gear” as defined in the USACE’s 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (CITATION). <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.--><a href="#fnref3">↩</a></p></li>
+<li id="fn3"><p>We use the term “standard gear” as defined in the USACE’s 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (Welker &amp; Drobish 2017). <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.--><a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p>2016 AM Sub-objective 2 metric: “Population estimates for pallid sturgeon for all size and age classes, particularly for ages 2 to 3 to assess recent trends in recruitment; catch rates of all pallid sturgeon by size class (to maintain legacy data).” (CITATION)<a href="#fnref4">↩</a></p></li>
 </ol>
 </div>

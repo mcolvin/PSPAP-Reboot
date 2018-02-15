@@ -184,7 +184,7 @@ PSPAP design, as well as consulting groups and management agencies
 dependent on monitoring data to inform adaptive management. We convened 
 a face-to-face stakeholder workshop during the MRNRC meeting in March 
 2017 to present an overview of the redesign process and to elicit 
-stakeholder[^1] objectives for the program. Five fundamental information 
+stakeholder<!--[^1]--> objectives for the program. Five fundamental information 
 objectives of the PSPAP were identified at the workshop: 1) quantify 
 recruitment to age-1, 2) quantify population trend and abundance, 3) 
 provide collaborative population model inputs (improved parameter 
@@ -328,7 +328,7 @@ The pallid sturgeon reference population is initialized using data from
 the PSPAP database and the pallid sturgeon literature. Each river bend 
 is populated with pallid sturgeon based on expected segment-level 
 densities, while each fish is assigned an initial length and von 
-Bertalanffy growth parameters $L_inf$ and $k$ from segment-level and basin 
+Bertalanffy growth parameters $L_{inf}$ and $k$ from segment-level and basin<!--[^2]--> 
 -level distributions, respectively. Individual fish are then tracked for 
 10 years, recording individual survival status, bend location, and 
 length on a yearly basis. Survival is binomially distributed with fixed 

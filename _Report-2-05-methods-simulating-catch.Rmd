@@ -25,8 +25,8 @@ rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 
 
 
-## Simulating Catch Data
 
+<!--
 Simulated catch data was essential to calculating estimates of 
 population abundance and trend using alternative estimators. It is 
 because we could compare the estimates from simulated catch data to the 
@@ -40,29 +40,31 @@ The catchability and capture probability of particular gears are
 important elements of simulating catch data. Since these values are 
 highly uncertain and in some case unknown, we simulate catch data over a 
 range of plausible gear catchabilities.
+-->
 
-### Objectives
+#### Objectives
 
-The objectives of this analysis were to:
+The objectives of the catch data simulations are, for each monitoring 
+design considered, to:
 
 1. Simulate 10 years of bend sampling data (i.e. which bends are sampled 
-during which years) for various monitoring designs, 
-2. Simulate 10 years of catch data for various sampling strategies using 
-bends as the spatial scale, 
+during which years), 
+2. Simulate 10 years of catch data using bends at the spatial scale, 
 3. Include information in the catch data that could be reasonably 
 assessed by sampling crews in the field and is relevant to meeting 
-fundamental or sub-objectives, 
+fundamental or ancillary objectives, 
 4. Allow gear catchability to vary over a wide range of values in order 
 to evaluate its effect on monitoring design outcomes, and 
-5. Simulate several catch data tables per combination of reference 
-population and monitoring design. 
+5. Simulate several catch data tables for each of the simulated 
+reference populations. 
 
 
-### Major Assumptions
+#### Major Assumptions
 
 1. All fish can be uniquely identified.  
 2. Fish ids are not lost or overlooked.
-3. The sampling protocol is followed without exception. 
+3. The sampling protocol, given by the particular monitoring design, is 
+followed without exception. 
 4. Expected catch, $C$ can be approximated as $C=qfN$, a function of 
 gear catchability, $q$, effort described as the time in minutes a gear 
 is deployed, $f$, and the population size, $N$. 
@@ -89,7 +91,7 @@ $q$. In other words, the model $C=qfN$ breaks down for large effort
 values, and therefore, we must be cautious drawing conclusions from 
 outcomes that were generated from large effort values. To indirectly 
 account for this we have flagged cases in our simulations where the 
-capture probability is abnormally high. 
+occasion level capture probability is higher than 0.4. 
 
 To understand assumption 5, it is important to first describe the 
 sampling relationship among years, occasions, deployments, and bends. In 
@@ -101,14 +103,16 @@ population throughout the bend. Using this terminology assumption 4
 means both that there is a zero probability that the same fish will be 
 caught by two separate deployments (within the same occasion), and that 
 any particular deployment does not affect the probability that a fish is 
-caught by any other deployment within the same sampling occasion. For 
-some gear types these assumptions are very likely met, while with others 
-there are some caveats that we examine in THE DISCUSSION/APPENDIX ??. 
+caught by any other deployment within the same sampling occasion.  In 
+cases where there is little fish movement within occasions or where 
+gears are set sufficiently far apart, these assumptions are very likely 
+met. <!--For some gear types these assumptions are very likely met, while with others 
+there are some caveats that we examine in Appendix.--> 
 
 
 <!--# Methods-->
 
-### Monitoring Designs
+<!--#### Monitoring Designs
 
 For each of the simulated reference populations, various sampling 
 decisions can be implemented to obtain simulated catch data. The choice 
@@ -123,26 +127,26 @@ have been generated from the range of the identified alternative
 sampling decisions, with the exception that some individual measurements 
 have yet to be implemented and the spatially balanced system-level 
 sampling design is still a work in progress. 
+-->
 
-
+#### Process
 
 For each combination of reference population and monitoring design, we 
-simulated catch data (Figure 2) using two major steps: 
+simulated catch data (Figure 2) by first selecting which bends to 
+sample throughout the 10 years, and then selecting which individual fish 
+(of those located in the sampled bends during sampling) were caught 
+during each capture occasion. 
 
-1. For each year, select which bends to sample.
-2. For each occasion, select which individual fish (of those located in 
-the sampled bends) are caught. 
-
-### Bend Selection
+#### Bend Selection
 
 All monitoring designs considered included sampling bends located within 
 segments 2-4, 7-10, 13, and 14. The number of bends sampled within each 
 segment was chosen to be consistent with past sampling procedures. In 
 particular, we chose the number of sampled bends within segement to 
 match those given in USACE's 2017 PSPAP Guiding Document Table A1 
-(CITATION) and reproduced in Table 1 below. The way selected bends were 
-generated, however, varied and was determined by the choice of 
-system-level sampling design laid out in the monitoring design. In 
+(Welker et al. 2017) and reproduced in Table 1 below. The way selected 
+bends were generated, however, varied and was determined by the choice 
+of system-level sampling design laid out in the monitoring design. In 
 particular, three alternative system-level sampling designs were 
 considered: a random design, a fixed design, and a spatially balanced 
 design (Stevens and Olsen 2004). Under the random sampling design bends 
@@ -158,13 +162,13 @@ none of these decisions affected which bends were selected for sampling
 each year. They did, however, affect the individual capture histories of 
 the catch data. 
 
-### Individual Captures 
+#### Individual Captures 
 
 Once the bends to be sampled were selected for each of the 10 years, 10 
 years of catch data can be simulated. Each year, catch was simulated 
 spatially at the bend level and temporally at the sampling occasion 
 level. We defined a sampling occasion as a short time period (e.g. 24 
-hours) within a year during which the given bend was sampled. The fixed 
+hours) within a year during which the given bend was sampled. A fixed 
 number of sampling occasions per year per sampled bend was given as part 
 of the monitoring design of interest. In particular, we simulated catch 
 data for monitoring designs that included 1-4 sampling occasions per 
@@ -190,7 +194,7 @@ given year, its capture was a Bernoulli trial with probability of
 success $p_{occ}$, resulting in total occasion level catch numbers for 
 the particular bend being binomially distributed. 
 
-#### Effort Distributions
+##### Effort Distributions
 
 Distributions for deployment level effort ($f$) were generated using the 
 PSPAP database. We defined effort as the time (in minutes) that a gear 
@@ -218,9 +222,9 @@ distributions provided a good fit to the effort data (e.g. Figure 3),
 but see Appendix ?? for more details. 
 
 
-[^4]: We use the term "standard gear" as defined in the USACE's 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (CITATION).  <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.-->
+[^4]: We use the term "standard gear" as defined in the USACE's 2017 Missouri River SOP for Fish Sampling and Data Collection (See green boxes of Appendix K) (Welker & Drobish 2017).  <!--Hence, we consider gill nets (GN14,GN41, GN18, GN81), trotlines (TLC1, TLC2), trammel nets (TN), otter trawls (OT16), and mini-fykes (MF) to be standard gears.-->
 
-#### Catchability Distributions
+##### Catchability Distributions
 
 Gear specific catchability distributions were set up such that the 
 log-odds of catchability ($q$) was normally distributed: 
@@ -232,7 +236,7 @@ effort, are a source of uncertainty we allowed the choices of $\mu_q$
 and $\beta_0$ to vary for among catch data simulations (CITE A TABLE OR 
 SOMETHING THAT LISTS RANGES OF PARAMS). 
 
-#### Gear Selection and Size Selectivity
+##### Gear Selection and Size Selectivity
 
 The choice of monitoring design also indicates which gears should be 
 used in sampling. This is important as different gears will have 
@@ -243,11 +247,11 @@ trawls, trotlines, or a combination of these.
 Additionally, gears may be size selective. In this case different gears 
 will interact with the size distribution of the reference population to 
 produce different catch data outcomes. Because gear selectivity is not 
-precisely known, we are currently accounting for size selectivity by 
-comparing the catch data results simulated under various selction 
-curves. See Appendix ?? for details. 
+precisely known, we are currently working on accounting for size 
+selectivity by comparing the catch data results simulated under various 
+selection curves. <!--See Appendix ?? for details.--> 
 
-#### Individual Measurements
+##### Individual Measurements
 
 For a particular bend and year, a Bernoulli trial simulated whether or 
 not an individual fish was captured during each occassion, producing a 

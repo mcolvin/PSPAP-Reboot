@@ -49,9 +49,9 @@ simulated.
 ### Objectives
 
 
-The objectives of this analysis were to:
+The objectives of this simulation were to:
 
-1. Create a set of spatially explicit pallid sturgeon population with 
+1. Create a set of spatially explicit pallid sturgeon populations with 
 known bend-level annual abundances, 
 2. Simulate reference population dynamics for 10 years with varying but 
 known annual survival, individual growth, movement, and recruitment, and 
@@ -59,7 +59,7 @@ known annual survival, individual growth, movement, and recruitment, and
 biologically reasonable conditions in order to better understand their 
 relationship with monitoring design outcomes. 
 
-### Assumptions
+### Major Assumptions
 
 1. Survival probability is homogeneous among all individuals and 
 independent of space and time.

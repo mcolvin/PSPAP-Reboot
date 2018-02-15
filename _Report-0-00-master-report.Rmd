@@ -58,8 +58,6 @@ the process-->
 ```
 
 ##  Estimation of population metrics given alternative monitoring designs
-```{r child="_Report-2-05-methods-simulating-catch.Rmd", echo=FALSE,eval=TRUE}
-```
 
 ```{r child="_Report-2-06-estimating-population-values.Rmd", echo=FALSE,eval=TRUE}
 ```
