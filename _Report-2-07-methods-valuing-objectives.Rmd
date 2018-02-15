@@ -65,49 +65,78 @@ perceived importance by decision makers.
     1. precision
 
 
-#### 2. Quantify PS population trend (natural and hatchery origin)
-
+#### 2. Quantify PS population trend and abundance (natural and hatchery origin)
+##### Trend
 In simulating population monitoring designs, we are using 3 metrics to 
 quantify how a monitoring design meets the objective of _quantifying 
 population trend_. Specifically, the estimates from a monitoring 
 program, as it relates to trend are evaluated by estimating basin level 
 population growth rate $\lambda$. 
 
-1. **Bias: How does a trend estimate compare to the true trend.** Bias 
-is calculated as the true value minus the estimated value. We then 
-divide the bias by the true value to be able to combine estimates of 
-varying magnitude (i.e., survival, abundance), recall the previous post 
-that used proportional bias. 
+1. **Bias: How does a trend estimate compare to the true trend, given a 
+trend estimate is made.** Trend bias is calculated as the estimated value 
+minus the true value.  For example if the true population trend is an
+annual decrease of 5%, and the estimated population trend is an annual
+decrease of 7%, then the trend bias is -0.02 (an underestimate of 2%).
+
+
+2. **Precision: How precise is an estimated trend value, given a trend 
+estimate is made.** Precision is specified as the coefficient of 
+variation (CV) calculated as the standard error of the estimate divided 
+by the parameter estimate. There is no real threshold for what is 
+optimal for estimator precision regarding decision making. Generally 
+speaking, the more precise an estimate, the better. There are other 
+alternatives to CV. However, CV is commonly used in fisheries 
+{citation needed?} and therefore likely to be familiar. 
 
 
 
-2. **Precision: How precise are estimated trend values.** Precision is 
-specified as the coefficient of variation (CV) calculated as the 
-standard error of the estimate divided by the parameter estimate. There 
-is no real threshold for what is optimal for estimator precision 
-regarding decision making. Generally speaking, the more precise an 
-estimate, the better. There are other alternatives to CV. However, CV is 
-commonly used in fisheries and therefore likely to be familiar. 
-
-
-
-3. **Performance: How likely is an estimator successful.** In some 
-cases, an estimator like the Robust Design may not have enough 
-information for the estimator to provide an actual estimate. This 
-measure is quantified as the proportion of stochastic simulations where 
-the estimator did not converge, or convergence was problematic. Let's 
-step through an example to clarify exactly what we are talking about. 
-Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then 
-we simulate 2 alternative monitoring programs, a catch effort program 
-and a capture recapture program. Then we estimate trend from the 
-estimates from the 2 designs. In the case of a catch effort based 
-monitoring program, the performance is 100% because there are no 
-instances where trend cannot be estimated from CPUE data, albeit zeros 
+3. **Performance: The probability a trend estimate can be made under the 
+given monitoring design.** In some cases, an estimator (e.g., Robust 
+Design) may not have enough information for the estimator to provide an 
+actual estimate. This measure is quantified as the proportion of 
+stochastic simulations (under the given monitoring design) where the 
+estimator converge and no issues were flagged. Let's step through an 
+example to clarify exactly what we are talking about. Suppose we have 
+randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 
+catch data sets per population for each of 2 alternative monitoring 
+programs, a catch effort program and a capture recapture robust design program. We then
+estimate trend from the estimates from the 2 designs. In the case of a catch effort based 
+monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros 
 can be an issue at low abundances or capture probability, but that does 
 not preclude us from calculating CPUE. However, if capture probability 
 is low, then there may be instances where a capture recapture estimator 
 just does not work, and estimates cannot be made because the capture 
-recapture histories are just too sparse.
+recapture histories are just too sparse.  Assuming that only 1500 of the 
+2000 catch data sets allowed for a trend estimate using the robust design 
+estimator the trend estimate performance would be 1500/2000=0.75.  NEED A BLURB ON HOW THIS IS A DIFFERENT METRIC THAN THE OTHERS AND HOW THEY ALL RELATE 
+
+##### Abundance
+In simulating population monitoring designs, we are using 3 metrics to 
+quantify how a monitoring design meets the objective of _quantifying 
+population abundance_. Specifically, the estimates from a monitoring 
+program, as it relates to abundance are evaluated by estimating basin level 
+abundances, $N$. 
+
+1. **Bias: How does an abundance estimate compare to the true abundance, 
+given an estimate is made.** In the case of abundance bias,the relative bias (calculated as the estimated value minus the true value, all divided by the true value) was used.  For example if the true basin abundance is 25000 pallids and the estimated abundance is 20000 then the abundance bias is $-5000/25000=-0.2$.  Using relative bias as the metric allows for a measurement that is more comparable across a wide range of population sizes. In the example just described, the absolute bias was -5000 with a relative bias of 0.2.  If the actual population had instead consisted of 5500 fish but still had a bias of -5000, then the estimated population would have been 500 fish.  Notice, the estimate for the first population is only off by a factor slightly greater than 1 but second population is off by more than a factor of 10, yet they both have the same bias.  However, their relative bias shows a difference.  While the first population's estimate has a relative bias of 0.20, the second population's estimate has a much worse relative bias of 0.91.    
+
+
+2. **Precision: How precise is an estimated abundance value, given an abundance 
+estimate is made.** As with trend, abundance precision is specified as the coefficient of 
+variation (CV) calculated as the standard error of the estimate divided 
+by the parameter estimate. Again, while there is no real threshold for what is 
+optimal for estimator precision regarding decision making, generally speaking, the more precise an 
+estimate, the better. As mentioned earlier, there are other alternatives to CV; however, there are benefits to using CV. Not only is CV commonly used in fisheries, but it is also a relative measure that takes into account differences in the standard error across wider ranges of abundance.  For example, a standard error of 5000 fish for an estimate of 25000 fish, has different meaning than a standard error of 5000 fish for an estimate of 5500 fish. The CV conveys this difference in a similar manner to the relative bias metric, as described above.   
+
+
+
+3. **Performance: The probability a trend estimate can be made under the 
+given monitoring design.** In some cases, an estimator (e.g., Robust 
+Design) may not have enough information for the estimator to provide an 
+actual abundance estimate. This measure is quantified as the proportion of 
+stochastic simulations (under the given monitoring design) where the 
+estimator converges and no issues were flagged.  For a more precise example, see the description of trend estimator performance above.
 
 
 #### 3.  Maintain compatibility with legacy PSPAP data
@@ -117,30 +146,27 @@ recapture histories are just too sparse.
 1. Effort similarity: deviation from average effort
 
 #### 4. Provide relevant PS model inputs
+1. Proportion of model inputs that can be successfully estimated
+
+#### 5. Minimize costs (and do not exceed budget constraints) 
+1. Expected cost of a monitoring design
+
+Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding
+will not be considered. The expected cost for each design will be calculated. The expected cost can be used 3 ways. 
+First it can screen for designs that exceed cost constraints. Second, it 
+can be used in an absolute sense to quantify design cost. Thirdly,it can 
+be used relatively by dividing the value by the expected cost of the 
+current PSPAP.  In this last case, values less than 1 represent cheaper and values 
+greater than 1 represent more expensive monitoring programs than the current one.
 
 
-#### 5. ## Remain in cost constraints 
-
-Cost is the ultimate PSPAP constraint. Designs exceeding cost 
-containments will not be considered. Significant uncertainty exists in 
-costs because of several factors. First, field crews tend to become more 
+Significant uncertainty exists in costs because of several factors. First, field crews tend to become more 
 efficient over time and therefore recent PSPAP costs may not represent 
 the actual costs. However, if the next iteration of the PSPAP uses 
 similar sampling units (i.e., bends within segments) to the current 
 PSPAP, then costs for field sampling will likely be similar. 
-
-
-
-Minimize costs and stay within cost constraints. The expected cost for 
-each design will be calculated. The expected cost can be used 2 ways. 
-First it can screen for designs that exceed cost constrains. Second, it 
-can be used in an absolute sense to quantify design cost. Lastly,it can 
-be used relatively by dividing the value by the expected cost of the 
-current PSPAP and therefore values less than 1 are cheaper and values 
-greater than 1 are more expensive. 1. Designs exceeding cost constraints 
-not considered. 
-
-
+SECOND AND THIRD???
+DOES THIS  UNCERTAINTY VARY BY MONITORING DESIGN?  IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??
 
 ##### Estimating cost per gear deployment
 
