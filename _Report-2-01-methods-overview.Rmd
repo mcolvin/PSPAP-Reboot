@@ -38,17 +38,18 @@ We used a structured decision making approach to elicit stateholder
 objectives, simulation modeling to generate reference populations, 
 alternative monitoring designs to estimate relevant population metrics, 
 and valuation of stakeholder objectives to quantify the utility of 
-monitoring design alternatives. The methods are covered in 5 sections 
+monitoring design alternatives. The methods are covered in 6 sections 
 detailing 
 
 1. Elicitation of stakeholder objectives,
 2. Generation of reference populations with known dynamics (e.g., 
 recruitment, survival), 
-3. Estimation of population metrics given alternative monitoring designs,
-4. Valuation of monitoring design utility, and
-5. Routing of monitoring design subobjectives.
+3. Generation of catch data from known catchabilities and efforts given alternative monitoring designs,
+4. Estimation of population metrics given alternative monitoring designs,
+5. Valuation of monitoring design utility, and
+6. Routing of monitoring design subobjectives.
 
-<!--NEED TO LINK TO BDN DESCRIPTION ABOVE OR ALTER INTRO...NOT MENTIONED HERE, BUT MENTIONED IN INTRO OR ALTER INTRO-->
+<!--NEED TO LINK TO BDN DESCRIPTION ABOVE OR ALTER INTRO...(BDN NOT MENTIONED HERE, BUT MENTIONED IN INTRO)-->
 
 ## Eliciting stakeholder objectives
 ### 2017 MRNRC workshop
@@ -76,9 +77,15 @@ design utility" for details on combining metrics).
 
 <!--Add description of square bullets-->
 
-1. **Detect PS recruitment to age-1 (natural origin)**
-    * Power to detect age-1 natural origin recruits if recruitment occurs
-    * Estimator reliability
+1. **Detect and Quantify PS recruitment to age-1 (natural origin)**
+    * Detection    
+        * Power to detect age-1 natural origin recruits if recruitment occurs
+        * Estimator reliability
+    * Age-1 Abundance  
+        * Population model back calculation estimates
+              * bias
+              * precision
+              * reliability
 2. **Quantify PS population trend and abundance (natural and hatchery origin)**
     * Trend: Estimate RPMA level population growth rate $\lambda$ <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
         * bias
@@ -93,7 +100,7 @@ design utility" for details on combining metrics).
         * bias
         * precision
         * estimator reliability
-        * Spatial distribution <!--within segment? to what level? (bend, finer scale?)  Seems like this would just be a second parameter estimate with its own bias, precision, and reliability.-->
+        * spatial distribution <!--within segment? to what level? (bend, finer scale?)  Seems like this would just be a second parameter estimate with its own bias, precision, and reliability.-->
     * Survival: Estimate average annual survival at RPMA level
         * bias
         * precision
@@ -102,7 +109,7 @@ design utility" for details on combining metrics).
         * bias
         * precision
         * estimator reliability
-    * Growth:  Estimate ... at RPMA level  <!--Do we just have one estimate here, or do we need to estimate  k and Linf? or mean and sd of a bivariate normal?-->
+    * Growth:  <!--Estimate ... at--> (RPMA level)  <!--Do we just have one estimate here, or do we need to estimate  k and Linf? or mean and sd of a bivariate normal?-->
         * bias 
         * precision
         * estimator reliability

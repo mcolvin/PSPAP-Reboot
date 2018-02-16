@@ -133,7 +133,8 @@ successful, the PSPAP v. 2.0 process has proceeded with the assumption
 that recruitment will need to be assessed through estimates of abundance 
 and trend of older fish, determination of hatchery or natural origin, 
 and back-calculation of age-1 recruitment rates through a 
-calibrated population model. Success of the second 
+calibrated population model.  It is possible, however, that detection of 
+age-1 recruits may be directly assessed.  Success of the second 
 sub-objective (maintain or increase numbers of pallid sturgeon as an 
 interim measure) can be assessed through abundance estimates and 
 trend data, but the assessment can be enhanced, and better linked to 
@@ -145,7 +146,7 @@ objectives for the pallid sturgeon population assessment program
 moving forward. Specifically the PSPAP objectives we idenfied as a 
 being able to 
 
-1. quantify recruitment to age-1 and 
+1. detect and quantify recruitment to age-1 and 
 2. quantify pallid sturgeon population trend and abundance. 
 
 

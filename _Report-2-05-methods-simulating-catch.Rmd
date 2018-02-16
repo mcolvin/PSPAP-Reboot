@@ -24,6 +24,23 @@ rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
 
 
+## Simulation of catch data from known catchabilities and efforts given alternative monitoring designs
+
+Estimates of population abundance and trend are key to assessing AM 
+plan pallid sturgeon sub-objectives, both of which have been redefined 
+as PSPAP fundamental objectives 1. Detect and quantify age-1 recruitment 
+and 2. Quantify pallid sturgeon trend and abundance.  Therefore, both the 
+generation and the assessment of abundance and trend estimates play a 
+key role in this analysis.  In order to generate such estimates, catch 
+data, collected following the procedures laid out from alternative 
+monitoring designs, must be simulated.   
+
+Moreover, since catchability and capture probability of particular gears 
+are important elements of simulating catch data but also highly 
+uncertain and in some cases unknown, it is essential that catch data is 
+simulated over a wide range of plausible gear catchabilities.
+
+
 
 
 <!--
@@ -36,10 +53,7 @@ component of evaluating varying monitoring designs and their ability to
 achieve the fundamental objectives identified during the first 
 population assessment program workshop (See Section ??).   
 
-The catchability and capture probability of particular gears are 
-important elements of simulating catch data. Since these values are 
-highly uncertain and in some case unknown, we simulate catch data over a 
-range of plausible gear catchabilities.
+
 -->
 
 #### Objectives
@@ -49,10 +63,11 @@ design considered, to:
 
 1. Simulate 10 years of bend sampling data (i.e. which bends are sampled 
 during which years), 
-2. Simulate 10 years of catch data using bends at the spatial scale, 
+2. Simulate 10 years of catch data from known gear catchabilities and 
+effort using bends at the spatial scale, 
 3. Include information in the catch data that could be reasonably 
 assessed by sampling crews in the field and is relevant to meeting 
-fundamental or ancillary objectives, 
+fundamental or ancillary objectives (e.g., length), 
 4. Allow gear catchability to vary over a wide range of values in order 
 to evaluate its effect on monitoring design outcomes, and 
 5. Simulate several catch data tables for each of the simulated 
@@ -112,7 +127,7 @@ there are some caveats that we examine in Appendix.-->
 
 <!--# Methods-->
 
-<!--#### Monitoring Designs
+#### Monitoring Designs
 
 For each of the simulated reference populations, various sampling 
 decisions can be implemented to obtain simulated catch data. The choice 
@@ -127,7 +142,6 @@ have been generated from the range of the identified alternative
 sampling decisions, with the exception that some individual measurements 
 have yet to be implemented and the spatially balanced system-level 
 sampling design is still a work in progress. 
--->
 
 #### Process
 
@@ -233,8 +247,8 @@ $$\ln\left(\frac{q}{1-q}\right)\sim \mathcal{N}\left(\mu,
 the expected catchability of the gear. Because deployment catchability 
 values, or the probability of catching a single fish with one unit of 
 effort, are a source of uncertainty we allowed the choices of $\mu_q$ 
-and $\beta_0$ to vary for among catch data simulations (CITE A TABLE OR 
-SOMETHING THAT LISTS RANGES OF PARAMS). 
+and $\beta_0$ to vary for among catch data simulations {CITE A TABLE OR 
+SOMETHING THAT LISTS RANGES OF PARAMS}. 
 
 ##### Gear Selection and Size Selectivity
 

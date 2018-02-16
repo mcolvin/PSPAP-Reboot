@@ -16,7 +16,6 @@ output:
 rmarkdown::render("_Report-2-06-estimating-population-values.Rmd",output_format='word_document')# build page
 -->
 
-
 The need to redesign the PSPAP was triggered by the recognition that the 
 current PSPAP may not allow evaluation of whether the pallid sturgeon 
 fundamental objectives identified in the AM plan were achieved on an 
@@ -27,7 +26,7 @@ increase numbers of pallid sturgeon as an interim measure until
 sufficient and sustained natural recruitment occurs, both of which are 
 needed to achieve the fundamental objective set by the USFWS to preclude 
 species jeopardy. These two sub-objectives are redefined as fundamental 
-objectives in the context of the monitoring program to quantify 
+objectives in the context of the monitoring program to detect and quantify 
 recruitment to age-1 and quantify pallid sturgeon population trend and 
 abundance. 
 
@@ -45,19 +44,18 @@ Section 4.1.1 of the AM plan, metrics for assessing the second
 sub-objective (maintain or increase numbers of pallid sturgeon as an 
 interim measure) include population estimates for pallid sturgeon for 
 all size and age classes, where age classes are estimated by the 
-population model. 
+population model.
 
-As indicated above, estimates of population abundance and trend are key 
-to assessing both AM plan pallid sturgeon sub-objectives. Moreover, the 
-objective of the PSPAP redesign effort is to identify monitoring designs 
-(sampling designs and abundance and trend estimators) that will give 
-optimal estimates given budget constraints. Therefore, both the 
-generation and the assessment of abundance and trend estimates play a 
-key role in this analysis. Here we focus on the generation of the 
+
+As indicated above, estimates of abundance and trend are key to 
+assessing both AM plan pallid sturgeon sub-objectives, and therefore, both 
+the generation and the assessment of abundance and trend estimates play 
+a key role in this analysis. Here we focus on the generation of the 
 abundance and trend estimates, i.e. the metrics for assessing the AM 
 sub-objectives, leaving the assessment of these estimates to the 
 following section. 
 
+<!--
 Generating abundance and trend estimates under a particular monitoring 
 design occurs in two steps:
 
@@ -72,6 +70,8 @@ times for each monitoring design, generating a fuller picture of the
 range of outcomes that can be expected under a particular monitoring 
 design.
 
+
+The simulation of catch data was described in the previous section.
 ### Monitoring designs under consideration
 Monitoring designs consisted of a suite of sampling and estimator 
 decisions (Figure ??).  While we consider variations on current sampling
@@ -194,13 +194,9 @@ have been generated from the range of the identified alternative
 sampling decisions, with the exception that some individual measurements 
 have yet to be implemented and the spatially balanced system-level 
 sampling design is still a work in progress. 
+-->
 
-### Simulating catch data
-```{r child="_Report-2-05-methods-simulating-catch.Rmd", echo=FALSE,eval=TRUE}
-```
-
-### Generating abundance and trend estimates
-#### Objectives
+### Objectives
 
 The objectives of estimating population metrics are, for each monitoring 
 design considered and for each of the catch data sets generated under the 
@@ -213,7 +209,7 @@ period by basin,
 
   
 
-#### Major Assumptions
+### Major Assumptions
 We made the typical assumptions associated with the use of each 
 individual estimator. In general, these assumptions match the 
 assumptions used to produce the reference populations (SECTION) and 
@@ -224,7 +220,7 @@ particular estimator to which it applies.
 
 
 <!--# Methods-->
-#### Scope and Spatial Scale
+### Scope and Spatial Scale
 Since accurately identifying fish age in the field is challenging and 
 the AM plan specifies that age classes are to be estimated by the 
 collaborative population model, we limit our current focus to overall 
