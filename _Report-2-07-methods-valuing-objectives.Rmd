@@ -33,11 +33,21 @@ pbias_u<- (pbias-min(pbias))/(max(pbias)-min(pbias))
 u_perf<- approxfun(pbias,pbias_u)
 ```
 
-## Valuation of monitoring design utility
+## Valuation of a monitoring design
+If there existed a monitoring design that was clearly the most useful 
+and costed the least, than a management decision would be straight 
+forward.  However, maximizing a monitoring program's utility and 
+minimizing its costs will often be in conflict of one another, forcing a
+decision to be made given the tradeoffs in cost and utility.  Moreover,
+finding a monitoring design that is "clearly the most useful" is teeming 
+with issues.  First of all, what is the "most useful" is not well 
+defined and likely varies from stakeholder to stakeholder.  Second of 
+all, what is the "most useful" is not a stagnant concept.  Conditions change  
 
 ### Objectives hierarchy and attributes
 
-The objectives identified by stakeholders can be valued in 
+The objectives identified by stake
+holders can be valued in 
 varying ways which in turn are used to calculate the 
 value of a monitoring design. Some objectives 
 
@@ -109,7 +119,7 @@ is low, then there may be instances where a capture recapture estimator
 just does not work, and estimates cannot be made because the capture 
 recapture histories are just too sparse.  Assuming that only 1500 of the 
 2000 catch data sets allowed for a trend estimate using the robust design 
-estimator the trend estimate performance would be 1500/2000=0.75.  NEED A BLURB ON HOW THIS IS A DIFFERENT METRIC THAN THE OTHERS AND HOW THEY ALL RELATE 
+estimator the trend estimate performance would be 1500/2000=0.75.  Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has  unique relationship with trend estimate utility, as described in detail in Section ?? below.
 
 ##### Abundance
 In simulating population monitoring designs, we are using 3 metrics to 
@@ -136,7 +146,7 @@ given monitoring design.** In some cases, an estimator (e.g., Robust
 Design) may not have enough information for the estimator to provide an 
 actual abundance estimate. This measure is quantified as the proportion of 
 stochastic simulations (under the given monitoring design) where the 
-estimator converges and no issues were flagged.  For a more precise example, see the description of trend estimator performance above.
+estimator converges and no issues were flagged.  For a more precise example, see the description of trend estimator performance above.  Since abundance precision and bias can only be evaulated given the estimator performs (produces estimates), as with trend performance, the abundance performance metric has unique relationship with abundance estimate utility (see Section ??).
 
 
 #### 3.  Maintain compatibility with legacy PSPAP data
@@ -146,86 +156,10 @@ estimator converges and no issues were flagged.  For a more precise example, see
 1. Effort similarity: deviation from average effort
 
 #### 4. Provide relevant PS model inputs
-1. Proportion of model inputs that can be successfully estimated
-
-#### 5. Minimize costs (and do not exceed budget constraints) 
-1. Expected cost of a monitoring design
-
-Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding
-will not be considered. The expected cost for each design will be calculated. The expected cost can be used 3 ways. 
-First it can screen for designs that exceed cost constraints. Second, it 
-can be used in an absolute sense to quantify design cost. Thirdly,it can 
-be used relatively by dividing the value by the expected cost of the 
-current PSPAP.  In this last case, values less than 1 represent cheaper and values 
-greater than 1 represent more expensive monitoring programs than the current one.
-
-
-Significant uncertainty exists in costs because of several factors. First, field crews tend to become more 
-efficient over time and therefore recent PSPAP costs may not represent 
-the actual costs. However, if the next iteration of the PSPAP uses 
-similar sampling units (i.e., bends within segments) to the current 
-PSPAP, then costs for field sampling will likely be similar. 
-SECOND AND THIRD???
-DOES THIS  UNCERTAINTY VARY BY MONITORING DESIGN?  IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??
-
-##### Estimating cost per gear deployment
-
-Estimating cost for a day of sampling is difficult. It is the function 
-of several factors, including but not limited to the number of 
-personnel, pay rates, other personnel expenses, travel, time sampling, 
-and gear maintenance. Additionally, the cost of sampling varies among 
-years and costs may be nonlinearly related if there is economy of scale 
-(i.e., it may cost less per sampling unit if many are done). 
-
-
-
-There are 7 field offices that have conducted PSPAP sampling since 2003. 
-Annually the USACE provides funding to these field offices to perform 
-PSPAP sampling. Annual values vary from 
-
-
-
-
-1. Annual funding provided to each field crew
-1. Calculate the number of bends sampled in a year
-1. Divide the cost by the total to get a field crew specific
-cost per bend. 
-1. Model or empirical distribution
-
-
-
-* The season will begin when water temperatures decline to 12.8C or less 
-(in the fall) and will continue through June 30. 
-* The Fish Community Season will be July 1 through October 30 throughout 
-the geographic range of the PSPAP. 
-
-
-
-
-#### Important assumptions
-
-Currently the analysis assumes that the period of performance for field 
-crews is the same as the fiscal year. Discussions with USACE contracting 
-and PSPAP personnel suggested this was a reasonable assumption. 
-
-
-
-This was an example outlining how alternative monitoring programs can be 
-objectively evaluated and compared in the context of meeting agency 
-objectives. Many uncertainties remain in Pallid Sturgeon population 
-dynamics and capture that will need to be accounted for. Additionally, 
-the weighting of utility values can be a treacherous territory and how 
-metrics are weighted can drive outcomes. However, sensitivity analyses 
-can be conducted to evaluate the influence of weighting on outcomes. 
-This process of evaluating alternative monitoring programs is designed 
-purposely to be as objective as possible and therefore formally linking 
-the outcomes of alternative monitoring designs to agency objectives with 
-quantifiable metrics is necessary. 
-  
-
-
-
-
+1. Estimate segment-level abundance, origin and stage specific
+    1. bias
+    1. precision
+    1. spatial distribution
 1. Survival (RPMA level)
     1. bias
     1. precision
@@ -247,14 +181,40 @@ quantifiable metrics is necessary.
         1. precision
 
 
-### 3. Estimate segment-level abundance, origin and stage specific
+#### 5. Minimize costs (and do not exceed budget constraints) 
+1. **Cost: the expected cost of implementing the given monitoring design.**
+Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding
+will not be considered. The expected cost for each design will be 
+calculated. The expected cost can be used 3 ways. First it can screen 
+for designs that exceed cost constraints. Second, it can be used in an 
+absolute sense to quantify design cost. Thirdly,it can be used 
+relatively by dividing the value by the expected cost of the current 
+PSPAP.  In this last case, values less than 1 represent cheaper programs 
+and values greater than 1 represent more expensive monitoring programs 
+than the current PSPAP.
 
-1. bias
 
-1. precision
 
-1. spatial distribution
- 
+
+
+
+This was an example outlining how alternative monitoring programs can be 
+objectively evaluated and compared in the context of meeting agency 
+objectives. Many uncertainties remain in Pallid Sturgeon population 
+dynamics and capture that will need to be accounted for. Additionally, 
+the weighting of utility values can be a treacherous territory and how 
+metrics are weighted can drive outcomes. However, sensitivity analyses 
+can be conducted to evaluate the influence of weighting on outcomes. 
+This process of evaluating alternative monitoring programs is designed 
+purposely to be as objective as possible and therefore formally linking 
+the outcomes of alternative monitoring designs to agency objectives with 
+quantifiable metrics is necessary. 
+  
+
+
+
+
+
 
 
 
@@ -455,6 +415,56 @@ to visit the blog to fill in and submit a swing weighting form.  Once
 swing weighting data has been collected, valuation of monitoring 
 designs can be considered across the range of stakeholder weighting 
 schemes, as well as looked at by stakeholder angency.  
+
+#### Cost vs. Utility
+Significant uncertainty exists in costs because of several factors. First, field crews tend to become more 
+efficient over time and therefore recent PSPAP costs may not represent 
+the actual costs. However, if the next iteration of the PSPAP uses 
+similar sampling units (i.e., bends within segments) to the current 
+PSPAP, then costs for field sampling will likely be similar. 
+SECOND AND THIRD???
+DOES THIS  UNCERTAINTY VARY BY MONITORING DESIGN?  IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??
+
+##### Estimating cost per gear deployment
+
+Estimating cost for a day of sampling is difficult. It is the function 
+of several factors, including but not limited to the number of 
+personnel, pay rates, other personnel expenses, travel, time sampling, 
+and gear maintenance. Additionally, the cost of sampling varies among 
+years and costs may be nonlinearly related if there is economy of scale 
+(i.e., it may cost less per sampling unit if many are done). 
+
+
+
+There are 7 field offices that have conducted PSPAP sampling since 2003. 
+Annually the USACE provides funding to these field offices to perform 
+PSPAP sampling. Annual values vary from 
+
+
+
+
+1. Annual funding provided to each field crew
+1. Calculate the number of bends sampled in a year
+1. Divide the cost by the total to get a field crew specific
+cost per bend. 
+1. Model or empirical distribution
+
+
+
+* The season will begin when water temperatures decline to 12.8C or less 
+(in the fall) and will continue through June 30. 
+* The Fish Community Season will be July 1 through October 30 throughout 
+the geographic range of the PSPAP. 
+
+
+
+
+#### Important assumptions
+
+Currently the analysis assumes that the period of performance for field 
+crews is the same as the fiscal year. Discussions with USACE contracting 
+and PSPAP personnel suggested this was a reasonable assumption. 
+
 
 
 
