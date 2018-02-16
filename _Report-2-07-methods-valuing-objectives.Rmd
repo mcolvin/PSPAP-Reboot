@@ -34,37 +34,33 @@ u_perf<- approxfun(pbias,pbias_u)
 ```
 
 ## Valuation of a monitoring design
-If there existed a monitoring design that was clearly the most useful 
-and costed the least, than a management decision would be straight 
-forward.  However, maximizing a monitoring program's utility and 
-minimizing its costs will often be in conflict of one another, forcing a
-decision to be made given the tradeoffs in cost and utility.  Moreover,
-finding a monitoring design that is "clearly the most useful" is teeming 
-with issues.  First of all, what is the "most useful" is not well 
-defined and likely varies from stakeholder to stakeholder.  Second of 
-all, what is the "most useful" is not a stagnant concept.  Conditions change  
+Valuating monitoring designs, or quantifying overall utility, provides a 
+means for comparing alternative monitoring programs: the higher the 
+value, the better the design.  For monitoring design values to be as
+meaningful and objective as possible, it is necessary for the valuation 
+process to formally link the outcomes of alternative monitoring designs
+to agency objectives with quantifiable metrics. The value of a 
+monitoring design can then be thought of as an overall measurement of 
+its utility, or usefulness, in achieving all objectives.  Quantifying 
+such an overall monitoring design utility requires two steps:
 
-### Objectives hierarchy and attributes
+1.  Quantify the ability of the monitoring design to achieve each 
+individual objective, i.e., calculate objective utilities from 
+quantifiable performance metrics,
+2.  Combine the objective utilities into an overall value. 
 
-The objectives identified by stake
-holders can be valued in 
-varying ways which in turn are used to calculate the 
-value of a monitoring design. Some objectives 
+### Calculating objective utilities
+The calcuation of objective utilities relies heavily upon the objectives
+and metrics identified by stakeholders over the past year, summarized in 
+Figure ?? (See also "Eliciting stakeholder objectives").  When multiple 
+metrics are associated with an objective it will be necessary to combine 
+metric values into a single objective utility.  For example, recruitment 
+the detection power and estimator reliability metrics will be combined 
+into an overall utility value for "Detect Recruitment".  
+Before describing the process used to combine objective metrics, when needed, into a comprehensive objective utility, we first describe in detail the metrics used to quantify each of the 5 stakeholder objectives.
 
-The numbered objectives correspond to fundamental objectives identified 
-during the workshop. Bulleted lists within each numbered objective in 
-bold are measurable attributes that can be used to quantify each 
-objective. For example there are 3 attributes under objective 1 that can 
-be quantified for each monitoring alternative. Assuming these attributes 
-are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet 
-may receive a weight of 33% if each attribute is equally important to 
-decision makers. Alternatively these values can be weighted to reflect 
-perceived importance by decision makers. 
-
-
-
-
-#### 1. Quantify PS recruitment to age-1 (Natural origin)
+<!--Chat with Mike on Fixing These-->
+##### 1. Quantify PS recruitment to age-1 (Natural origin)
 
 1. Power to detect age-1 natural origin recruits if recruitment occurs
 1. Segment level age-1 abundance
@@ -76,7 +72,7 @@ perceived importance by decision makers.
 
 
 #### 2. Quantify PS population trend and abundance (natural and hatchery origin)
-##### Trend
+##### Trend Estimates
 In simulating population monitoring designs, we are using 3 metrics to 
 quantify how a monitoring design meets the objective of _quantifying 
 population trend_. Specifically, the estimates from a monitoring 
@@ -121,7 +117,7 @@ recapture histories are just too sparse.  Assuming that only 1500 of the
 2000 catch data sets allowed for a trend estimate using the robust design 
 estimator the trend estimate performance would be 1500/2000=0.75.  Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has  unique relationship with trend estimate utility, as described in detail in Section ?? below.
 
-##### Abundance
+##### Abundance Estimates
 In simulating population monitoring designs, we are using 3 metrics to 
 quantify how a monitoring design meets the objective of _quantifying 
 population abundance_. Specifically, the estimates from a monitoring 
@@ -195,32 +191,8 @@ than the current PSPAP.
 
 
 
-
-
-
-This was an example outlining how alternative monitoring programs can be 
-objectively evaluated and compared in the context of meeting agency 
-objectives. Many uncertainties remain in Pallid Sturgeon population 
-dynamics and capture that will need to be accounted for. Additionally, 
-the weighting of utility values can be a treacherous territory and how 
-metrics are weighted can drive outcomes. However, sensitivity analyses 
-can be conducted to evaluate the influence of weighting on outcomes. 
-This process of evaluating alternative monitoring programs is designed 
-purposely to be as objective as possible and therefore formally linking 
-the outcomes of alternative monitoring designs to agency objectives with 
-quantifiable metrics is necessary. 
-  
-
-
-
-
-
-
-
-
-### Valuing the fundamental objective
-
-The 3 metrics described above can be combined into a single 
+#### Combining fundamental objective metrics
+The 3 metrics described above under trend can be combined into a single 
 metric---commonly referred to as a utility---representing the objective 
 to _quantify population trend_ [@RN4402]. The utility is then used to 
 valuate alternative monitoring programs. However, one problem we run 
@@ -230,34 +202,27 @@ precision is a positive number varying from 0 (best) to potentially
 large numbers (worst), and reliability is constrained between 0 (worst) 
 and 1 (best). 
 
-
-
 To convert the 3 metrics to a common scale we can use methods like 
-proportional scaling which normalized values to a specified minimum and 
+proportional scaling which normalizes values to a specified minimum and 
 maximum. For example, we can scale the bias to values varying from 0 to 
 1 as: 
 
 
-
-$$U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},$$
+$$U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},$$
 
 where $|bias|$ is the absolute value of bias. We use absolute value here 
 because we are assuming negative and positive bias are equally bad 
 regarding satisfying the objective to _quantify population trend_. In 
-the plot below, values with lower proportional bias are given higher 
-values, and increasing values approach 0. 
+the plot of trend bias utility, $U_{T,bias}$, shown in Figure ??, trend esimates with smaller absolute bias are given higher utility values while increasingly large absolute bias values approach a utiliity of 0. 
 
 
-
-
- 
-
-Now let's look at the precision metric. Suppose it varies from 10 to 300 
-(not very precise). The equation to calculate scaled precision is the 
-same as before. However, we do not need to take absolute values since 
-all values are positive. In the plot below, values with lower CV values 
-have higher precision utility values, and precision utility approaches 0
-as CV values increase to the maximum. 
+Trend precision utility can be calculated in a similar manner. Suppose
+trend precision varies from a CV of 0.01 to 0.30 (where a CV value of 
+0.30 is not very precise). The equation to calculate scaled precision is the 
+same as for bias; however, we do not need to take absolute values since 
+all CV values are positive. In Figure ??, trend  estimates with lower CV values 
+have higher precision utility values, $U_{T,prec}$, and precision utility 
+approaches 0 as CV values increase to the maximum of 0.30. 
 
 <!--Lastly, let's look at performance. Suppose performance values from 
 simulating multiple replicates of each monitoring design vary from 35% 
@@ -464,6 +429,76 @@ the geographic range of the PSPAP.
 Currently the analysis assumes that the period of performance for field 
 crews is the same as the fiscal year. Discussions with USACE contracting 
 and PSPAP personnel suggested this was a reasonable assumption. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+The value of a monitoring design measures both its utility, or usefulness, 
+in achieving non-cost objectives, and its cost.  If there existed a monitoring 
+design that was clearly the most useful when costs were not taken into 
+account and also costed the least, then a management decision would be 
+straight forward.  However, maximizing a monitoring program's utility 
+(ignoring cost objectives) and minimizing its cost will often be in 
+conflict with one another, forcing a decision to be made given tradeoffs 
+in cost and utility.  How these tradeoffs are best reconciled can be a 
+source of debate.  Futhermore, identifying a monitoring design that is 
+"clearly the most useful" is not without issues, and we'll note two of 
+them here.  First, what is the "most useful" is not well defined and 
+likely varies from stakeholder to stakeholder.  Second, what is the 
+most useful is not a stagnant concept.  In particular, knowledge of 
+uncertainties associated with monitoring pallid sturgeon will increase 
+over time. As we learn more we can use that knowledge to re-value 
+monitoring programs and make better decisions, and therefore, it is 
+likely that what is viewed as the most useful program will change to 
+reflect gains in knowledge.  Additionally, what is the most useful given 
+budget constraints is also not stagnant.  Varying yearly budgets, which 
+can limit or expand the monitoring possibilities, can keep monitoring 
+program values in flux.
+
+All of these complications illustrate the difficulties involved in 
+calculating a value of a particular monitoring design.  While the 
+discussion above may make valuating a monitoring program seem like 
+daunting task, the structured decision making concepts and tools used in 
+the process above provide an inclusive and transparent way of valuing 
+monitoring designs that is linked to stakeholder objectives and values 
+through quantifiable metrics and swing weighting.  Additionally, the use 
+of Bayesian Decision Networks allows for the monitoring design 
+valuation process described to be flexible enough to account for gains 
+in knowledge, including knowledge of a budget change, over time.  This 
+is not to say that the valuation process is not without complications or 
+will make decision making simple and straight forward.  Instead, we 
+recognize that decision making is inherently complicated and are aiming 
+to provide decision makers with the most informative and flexible tools 
+as possible when it comes to comparing alternative monitoring designs.       
+
+This was an example outlining how alternative monitoring programs can be 
+objectively evaluated and compared in the context of meeting agency 
+objectives. Many uncertainties remain in Pallid Sturgeon population 
+dynamics and capture that will need to be accounted for. Additionally, 
+the weighting of utility values can be a treacherous territory and how 
+metrics are weighted can drive outcomes. However, sensitivity analyses 
+can be conducted to evaluate the influence of weighting on outcomes. 
+This process of evaluating alternative monitoring programs is designed 
+purposely to be as objective as possible and therefore formally linking 
+the outcomes of alternative monitoring designs to agency objectives with 
+quantifiable metrics is necessary. 
+  
+
+
+
+
+
+
+
 
 
 
