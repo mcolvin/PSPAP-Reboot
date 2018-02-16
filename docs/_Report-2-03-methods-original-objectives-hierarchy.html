@@ -12,7 +12,7 @@
 <meta name="author" content="Missouri River Pallid Sturgeon Technical Team" />
 
 
-<title>PSPAP Rebood Methods Overview</title>
+<title>Objectives and Attributes Hierarchy: Original</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -188,7 +188,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">PSPAP Rebood Methods Overview</h1>
+<h1 class="title toc-ignore">Objectives and Attributes Hierarchy: Original</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
 <h4 class="date"><em>16 February, 2018</em></h4>
 
@@ -199,40 +199,21 @@ $(document).ready(function () {
 rmarkdown::render("methods-overview.Rmd",
     output_format="word_document")# build page
 -->
-<div id="methods-overview" class="section level2">
-<h2>Methods overview</h2>
-<p>The approach used to evaluate alernative monitoring designs was intended to be rigorous and transparent because of the many stakeholders effected by potential modifications to the existing PSPAP program. Additionally, the methods used will provide a tool for the U.S. Army Corp of Engineers (USACE) to make transparent decisions in the face of uncertain future monitoring funding levels that will likely result in difficult future decisions.</p>
-<p>We used a structured decision making approach to elicit stateholder objectives, simulation modeling to generate reference populations, alternative monitoring designs to estimate relevant population metrics, and valuation of stakeholder objectives to quantify the utility of monitoring design alternatives. The methods are covered in 5 sections detailing</p>
+<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each bold, numbered objective are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers.</p>
 <ol style="list-style-type: decimal">
-<li>Elicitation of stakeholder objectives,</li>
-<li>Generation of reference populations with known dynamics (e.g., recruitment, survival),</li>
-<li>Estimation of population metrics given alternative monitoring designs,</li>
-<li>Valuation of monitoring design utility, and</li>
-<li>Routing of monitoring design subobjectives.</li>
-</ol>
-<!--NEED TO LINK TO BDN DESCRIPTION ABOVE OR ALTER INTRO...NOT MENTIONED HERE, BUT MENTIONED IN INTRO OR ALTER INTRO-->
-</div>
-<div id="eliciting-stakeholder-objectives" class="section level2">
-<h2>Eliciting stakeholder objectives</h2>
-<div id="mrnrc-workshop" class="section level3">
-<h3>2017 MRNRC workshop</h3>
-<p>Many state and federal agencies contracted to collect pallid sturgeon population assessment data will be affected by changes to the current PSPAP design, as well as consulting groups and management agencies dependent on monitoring data to inform adaptive management. We convened a face-to-face stakeholder workshop during the MRNRC meeting in March 2017 to present an overview of the redesign process and to elicit stakeholder<!--[^1]--> objectives for the program. Five fundamental information objectives of the PSPAP were identified at the workshop: 1) quantify recruitment to age-1, 2) quantify population trend and abundance, 3) provide collaborative population model inputs (improved parameter estimates), 4) maintain compatibility with legacy PSPAP data, and 5) remain within cost constraints.</p>
-<p>Stakeholders identified many means objectives that potentially contribute to the fundamental objectives; they also provided critical information on logistics of sampling. Means objectives included varying population metrics to monitor and approaches needed to quantify the metrics. Metrics identified during the objectives elicitation were organized to 8 categories. Specifically, stakeholders identified metrics relating to population structure (e.g., age and size structure, sex ratio), reproductive status (e.g., fecundity, reproductive cycling, size at sexual maturity), health status (e.g., stress, condition, diet, contaminants), population augmentation, movement (i.e., spawning, seasonal), demographic rates (e.g., recruitment, survival), fish community (e.g., competition, invasive species), and genetic status (e.g., effective population size, hybridization, local adaptation).</p>
-<p>Stakeholder objectives were organized in an influence diagram during the workshop. The influence diagram serves 2 purposes. First, it clarifies stakeholders’ fundamental and means objectives, thereby increasing transparency. Second, the influence diagram can be developed into a Bayesian Decision Network (BDN) to evaluate alternative PSPAP monitoring designs (Marcot et al. 2001, Nyberg et al. 2006, Conroy and Peterson 2013).</p>
-<!--TALK ABOUT UPDATE WEBINARS AND JANUARY MEETING AND PRUNING OVERALL OBJECTIVES...ANCILLARY OBJECTIVES DISCUSSIONS HERE???
-### PSPAP update at 2017 Fall Science Meeting -- is this something we should include?
-### PSPAP January 2018 Update
--->
-</div>
-<div id="objectives-hierarchy-and-attributes" class="section level3">
-<h3>Objectives hierarchy and attributes</h3>
-<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each bold, numbered objective are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers (see “Valuation of monitoring design utility” for details on combining metrics).</p>
-<!--Add description of square bullets-->
-<ol style="list-style-type: decimal">
-<li><strong>Detect PS recruitment to age-1 (natural origin)</strong>
+<li><strong>Quantify PS recruitment to age-1 (Natural origin)</strong>
 <ul>
 <li>Power to detect age-1 natural origin recruits if recruitment occurs</li>
-<li>Estimator reliability</li>
+<li>Segment level age-1 abundance <!--TW: I assume this is occupancy or CPUE... others may not make the distinction.  May not be important to identify at this point, though.  -->
+<ul>
+<li>bias</li>
+<li>precision</li>
+</ul></li>
+<li>Estimate age-1 recruitment rate (natural origin)
+<ul>
+<li>bias</li>
+<li>precision</li>
+</ul></li>
 </ul></li>
 <li><strong>Quantify PS population trend and abundance (natural and hatchery origin)</strong>
 <ul>
@@ -240,83 +221,68 @@ rmarkdown::render("methods-overview.Rmd",
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
+<li>performance</li>
 </ul></li>
 <li>Abundance: Estimate RPMA level population abundance <span class="math inline">\(N\)</span> each year
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
+<li>performance</li>
 </ul></li>
 </ul></li>
 <li><strong>Provide relevant PS model inputs</strong>
 <ul>
-<li>Abundance: Estimate segment level abundance, origin and stage specific
+<li>Estimate segment-level abundance, origin and stage specific
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
+<li>spatial distribution</li>
 </ul></li>
-<li>Spatial distribution <!--within segment? to what level? (bend, finer scale?)  Seems like this would just be a finer abundance scale.  A second parameter estimate with its own bias, precision, and reliability?--></li>
-<li>Survival: Estimate average annual survival at RPMA level
+<li>Survival (RPMA level)
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
 </ul></li>
-<li>Fecundity: Estimate average fecundity at RPMA level
+<li>Fecundity (RPMA level)
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
 </ul></li>
-<li>Growth: Estimate … at RPMA level <!--Do we just have one estimate here, or do we need to estimate  k and Linf? or mean and sd of a bivariate normal?-->
+<li>Growth (RPMA)
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
 </ul></li>
 <li>Movement
 <ul>
-<li>Site fidelity
+<li>fidelity</li>
+<li>among segment movement</li>
+</ul></li>
+<li>Population structure and characteristics (segment level)
+<ul>
+<li>Size structure
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
 </ul></li>
-<li>Among segment movement
+</ul></li>
+<li>Sex ratio (segment level)
 <ul>
 <li>bias</li>
 <li>precision</li>
-<li>estimator reliability</li>
-</ul></li>
-</ul></li>
-<li>Size structure: Estimate proportion of individuals in each size class at the segment level
-<ul>
-<li>bias</li>
-<li>precision</li>
-<li>estimator reliability</li>
-</ul></li>
-<li>Sex ratio: Estimate sex ratio at the segment level
-<ul>
-<li>bias</li>
-<li>precision</li>
-<li>estimator reliability</li>
 </ul></li>
 </ul></li>
 <li><strong>Maintain compatibility with legacy PSPAP data</strong> <!-- TW: If this adds to the cost, then the benefit will need to be explained.  Need to indicate (at some point) why this is helpful.  -->
 <ul>
 <li>Proportion of randomly selected bends within segment</li>
 <li>Gears similarity: proportion of standard gears used by design</li>
-<li>Effort similarity: deviation from average effort <!--What is the  reason behind this bullet?  CPUE can be calculated for any non-zero level of effort... Is it because N and CPUE are not really a linear relationship and straying too far from the normal effort level can cause issues with CPUE comparisions?--></li>
+<li>Effort similarity: deviation from average effort</li>
 </ul></li>
 <li><strong>Stay below cost constraints</strong>
 <ul>
 <li>Minimize costs</li>
 </ul></li>
 </ol>
-</div>
-</div>
 
 
 
