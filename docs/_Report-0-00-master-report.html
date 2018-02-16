@@ -190,12 +190,15 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overview of Pallid Sturgeon Assessment Framework Evaluation</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
-<h4 class="date"><em>15 February, 2018</em></h4>
+<h4 class="date"><em>16 February, 2018</em></h4>
 
 </div>
 
 
-<p><a href="https://rpubs.com/ajlyons/autonumfigs" class="uri">https://rpubs.com/ajlyons/autonumfigs</a> rmarkdown::render(“_Report-0-00-master-report.Rmd“,output_format=”word_document“,output_file = paste(format(Sys.time(), ‘%Y%m%d%H%M’),”reboot-master-report.docx“,sep=”-“))# build page</p>
+<!--
+https://rpubs.com/ajlyons/autonumfigs
+rmarkdown::render("_Report-0-00-master-report.Rmd",output_format="word_document",output_file = paste(format(Sys.time(), '%Y%m%d%H%M'),         "reboot-master-report.docx",sep="-"))# build page
+-->
 <!--Executive summary-->
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -724,11 +727,12 @@ To do:
 </div>
 </div>
 </div>
-<div id="valuation-of-monitoring-design-utility" class="section level2">
-<h2>Valuation of monitoring design utility</h2>
+<div id="valuation-of-a-monitoring-design" class="section level2">
+<h2>Valuation of a monitoring design</h2>
+<p>If there existed a monitoring design that was clearly the most useful and costed the least, than a management decision would be straight forward. However, maximizing a monitoring program’s utility and minimizing its costs will often be in conflict of one another, forcing a decision to be made given the tradeoffs in cost and utility. Moreover, finding a monitoring design that is “clearly the most useful” is teeming with issues. First of all, what is the “most useful” is not well defined and likely varies from stakeholder to stakeholder. Second of all, what is the “most useful” is not a stagnant concept. Conditions change</p>
 <div id="objectives-hierarchy-and-attributes-1" class="section level3">
 <h3>Objectives hierarchy and attributes</h3>
-<p>The objectives identified by stakeholders can be valued in varying ways which in turn are used to calculate the value of a monitoring design. Some objectives</p>
+<p>The objectives identified by stake holders can be valued in varying ways which in turn are used to calculate the value of a monitoring design. Some objectives</p>
 <p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each numbered objective in bold are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers.</p>
 <div id="quantify-ps-recruitment-to-age-1-natural-origin" class="section level4">
 <h4>1. Quantify PS recruitment to age-1 (Natural origin)</h4>
@@ -754,7 +758,7 @@ To do:
 <ol style="list-style-type: decimal">
 <li><p><strong>Bias: How does a trend estimate compare to the true trend, given a trend estimate is made.</strong> Trend bias is calculated as the estimated value minus the true value. For example if the true population trend is an annual decrease of 5%, and the estimated population trend is an annual decrease of 7%, then the trend bias is -0.02 (an underestimate of 2%).</p></li>
 <li><p><strong>Precision: How precise is an estimated trend value, given a trend estimate is made.</strong> Precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. There is no real threshold for what is optimal for estimator precision regarding decision making. Generally speaking, the more precise an estimate, the better. There are other alternatives to CV. However, CV is commonly used in fisheries {citation needed?} and therefore likely to be familiar.</p></li>
-<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converge and no issues were flagged. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 catch data sets per population for each of 2 alternative monitoring programs, a catch effort program and a capture recapture robust design program. We then estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse. Assuming that only 1500 of the 2000 catch data sets allowed for a trend estimate using the robust design estimator the trend estimate performance would be 1500/2000=0.75. NEED A BLURB ON HOW THIS IS A DIFFERENT METRIC THAN THE OTHERS AND HOW THEY ALL RELATE</p></li>
+<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converge and no issues were flagged. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 catch data sets per population for each of 2 alternative monitoring programs, a catch effort program and a capture recapture robust design program. We then estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse. Assuming that only 1500 of the 2000 catch data sets allowed for a trend estimate using the robust design estimator the trend estimate performance would be 1500/2000=0.75. Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has unique relationship with trend estimate utility, as described in detail in Section ?? below.</p></li>
 </ol>
 </div>
 <div id="abundance" class="section level5">
@@ -763,7 +767,7 @@ To do:
 <ol style="list-style-type: decimal">
 <li><p><strong>Bias: How does an abundance estimate compare to the true abundance, given an estimate is made.</strong> In the case of abundance bias,the relative bias (calculated as the estimated value minus the true value, all divided by the true value) was used. For example if the true basin abundance is 25000 pallids and the estimated abundance is 20000 then the abundance bias is -5000/25000=-0.2. Using relative bias as the metric allows for a measurement that is more comparable across a wide range of population sizes. In the example just described, the absolute bias was -5000 with a relative bias of 0.2. If the actual population had instead consisted of 5500 fish but still had a bias of -5000, then the estimated population would have been 500 fish. Notice, the estimate for the first population is only off by a factor slightly greater than 1 but second population is off by more than a factor of 10, yet they both have the same bias. However, their relative bias shows a difference. While the first population’s estimate has a relative bias of 0.20, the second population’s estimate has a much worse relative bias of 0.91.</p></li>
 <li><p><strong>Precision: How precise is an estimated abundance value, given an abundance estimate is made.</strong> As with trend, abundance precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. Again, while there is no real threshold for what is optimal for estimator precision regarding decision making, generally speaking, the more precise an estimate, the better. As mentioned earlier, there are other alternatives to CV; however, there are benefits to using CV. Not only is CV commonly used in fisheries, but it is also a relative measure that takes into account differences in the standard error across wider ranges of abundance. For example, a standard error of 5000 fish for an estimate of 25000 fish, has different meaning than a standard error of 5000 fish for an estimate of 5500 fish. The CV conveys this difference in a similar manner to the relative bias metric, as described above.</p></li>
-<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above.</p></li>
+<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above. Since abundance precision and bias can only be evaulated given the estimator performs (produces estimates), as with trend performance, the abundance performance metric has unique relationship with abundance estimate utility (see Section ??).</p></li>
 </ol>
 </div>
 </div>
@@ -778,37 +782,12 @@ To do:
 <div id="provide-relevant-ps-model-inputs" class="section level4">
 <h4>4. Provide relevant PS model inputs</h4>
 <ol style="list-style-type: decimal">
-<li>Proportion of model inputs that can be successfully estimated</li>
-</ol>
-</div>
-<div id="minimize-costs-and-do-not-exceed-budget-constraints" class="section level4">
-<h4>5. Minimize costs (and do not exceed budget constraints)</h4>
+<li>Estimate segment-level abundance, origin and stage specific
 <ol style="list-style-type: decimal">
-<li>Expected cost of a monitoring design</li>
-</ol>
-<p>Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding will not be considered. The expected cost for each design will be calculated. The expected cost can be used 3 ways. First it can screen for designs that exceed cost constraints. Second, it can be used in an absolute sense to quantify design cost. Thirdly,it can be used relatively by dividing the value by the expected cost of the current PSPAP. In this last case, values less than 1 represent cheaper and values greater than 1 represent more expensive monitoring programs than the current one.</p>
-<p>Significant uncertainty exists in costs because of several factors. First, field crews tend to become more efficient over time and therefore recent PSPAP costs may not represent the actual costs. However, if the next iteration of the PSPAP uses similar sampling units (i.e., bends within segments) to the current PSPAP, then costs for field sampling will likely be similar. SECOND AND THIRD??? DOES THIS UNCERTAINTY VARY BY MONITORING DESIGN? IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??</p>
-<div id="estimating-cost-per-gear-deployment" class="section level5">
-<h5>Estimating cost per gear deployment</h5>
-<p>Estimating cost for a day of sampling is difficult. It is the function of several factors, including but not limited to the number of personnel, pay rates, other personnel expenses, travel, time sampling, and gear maintenance. Additionally, the cost of sampling varies among years and costs may be nonlinearly related if there is economy of scale (i.e., it may cost less per sampling unit if many are done).</p>
-<p>There are 7 field offices that have conducted PSPAP sampling since 2003. Annually the USACE provides funding to these field offices to perform PSPAP sampling. Annual values vary from</p>
-<ol style="list-style-type: decimal">
-<li>Annual funding provided to each field crew</li>
-<li>Calculate the number of bends sampled in a year</li>
-<li>Divide the cost by the total to get a field crew specific cost per bend.</li>
-<li>Model or empirical distribution</li>
-</ol>
-<ul>
-<li>The season will begin when water temperatures decline to 12.8C or less (in the fall) and will continue through June 30.</li>
-<li>The Fish Community Season will be July 1 through October 30 throughout the geographic range of the PSPAP.</li>
-</ul>
-</div>
-</div>
-<div id="important-assumptions" class="section level4">
-<h4>Important assumptions</h4>
-<p>Currently the analysis assumes that the period of performance for field crews is the same as the fiscal year. Discussions with USACE contracting and PSPAP personnel suggested this was a reasonable assumption.</p>
-<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
-<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+<li>spatial distribution</li>
+</ol></li>
 <li>Survival (RPMA level)
 <ol style="list-style-type: decimal">
 <li>bias</li>
@@ -844,14 +823,13 @@ To do:
 </ol></li>
 </ol>
 </div>
-</div>
-<div id="estimate-segment-level-abundance-origin-and-stage-specific" class="section level3">
-<h3>3. Estimate segment-level abundance, origin and stage specific</h3>
+<div id="minimize-costs-and-do-not-exceed-budget-constraints" class="section level4">
+<h4>5. Minimize costs (and do not exceed budget constraints)</h4>
 <ol style="list-style-type: decimal">
-<li><p>bias</p></li>
-<li><p>precision</p></li>
-<li><p>spatial distribution</p></li>
+<li><strong>Cost: the expected cost of implementing the given monitoring design.</strong> Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding will not be considered. The expected cost for each design will be calculated. The expected cost can be used 3 ways. First it can screen for designs that exceed cost constraints. Second, it can be used in an absolute sense to quantify design cost. Thirdly,it can be used relatively by dividing the value by the expected cost of the current PSPAP. In this last case, values less than 1 represent cheaper programs and values greater than 1 represent more expensive monitoring programs than the current PSPAP.</li>
 </ol>
+<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
+</div>
 </div>
 <div id="valuing-the-fundamental-objective" class="section level3">
 <h3>Valuing the fundamental objective</h3>
@@ -911,6 +889,28 @@ to rearrange the proportional scaling equation to reflect this as,
 <p>Inevitably, individual stakeholders, as well as different stakeholder agencies, will have different opinions on what metrics should have a greater impact on the choosing a monitoring design. As a consistent, structured process, swing weighting provides an excellent approach for comparing and compiling stakeholder weights. We are currently in the process of using swing weighting as a way to understand what differences and similarities there are in stakeholder opinions on the importance of objective metrics and the consequences of these on valuating various monitoring designs. While PSPAP v. 2.0 will not be making any decisions based on these weights, this analysis will provide valuable stakeholder information to and be a tool for decision makers.</p>
 <p>In order for swing weighting to be used consistently amongst stakeholders, it is important for each stakeholder to have a good understanding of the swing weighting process. We created YouTube videos that described the swing weighting process and its role in the PSPAP v. 2.0 {cite swing weighting tutorial video} and explained the meaning and variation in the abundance and trend metrics {cite Abundance and Trend videos}. We posted a downloadable swing weighting form, links to the YouTube videos described above, and instructions on how to fill in the swing weighting form to the PSPAP v. 2.0 blog {cite swing weighting blog page}. An email was also sent out to stakeholders inviting them to visit the blog to fill in and submit a swing weighting form. Once<br />
 swing weighting data has been collected, valuation of monitoring designs can be considered across the range of stakeholder weighting schemes, as well as looked at by stakeholder angency.</p>
+<div id="cost-vs.utility" class="section level4">
+<h4>Cost vs. Utility</h4>
+<p>Significant uncertainty exists in costs because of several factors. First, field crews tend to become more efficient over time and therefore recent PSPAP costs may not represent the actual costs. However, if the next iteration of the PSPAP uses similar sampling units (i.e., bends within segments) to the current PSPAP, then costs for field sampling will likely be similar. SECOND AND THIRD??? DOES THIS UNCERTAINTY VARY BY MONITORING DESIGN? IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??</p>
+<div id="estimating-cost-per-gear-deployment" class="section level5">
+<h5>Estimating cost per gear deployment</h5>
+<p>Estimating cost for a day of sampling is difficult. It is the function of several factors, including but not limited to the number of personnel, pay rates, other personnel expenses, travel, time sampling, and gear maintenance. Additionally, the cost of sampling varies among years and costs may be nonlinearly related if there is economy of scale (i.e., it may cost less per sampling unit if many are done).</p>
+<p>There are 7 field offices that have conducted PSPAP sampling since 2003. Annually the USACE provides funding to these field offices to perform PSPAP sampling. Annual values vary from</p>
+<ol style="list-style-type: decimal">
+<li>Annual funding provided to each field crew</li>
+<li>Calculate the number of bends sampled in a year</li>
+<li>Divide the cost by the total to get a field crew specific cost per bend.</li>
+<li>Model or empirical distribution</li>
+</ol>
+<ul>
+<li>The season will begin when water temperatures decline to 12.8C or less (in the fall) and will continue through June 30.</li>
+<li>The Fish Community Season will be July 1 through October 30 throughout the geographic range of the PSPAP.</li>
+</ul>
+</div>
+</div>
+<div id="important-assumptions" class="section level4">
+<h4>Important assumptions</h4>
+<p>Currently the analysis assumes that the period of performance for field crews is the same as the fiscal year. Discussions with USACE contracting and PSPAP personnel suggested this was a reasonable assumption.</p>
 <!--
 Quantify PS abundance or relative abundance  
 Quantify catch rates of age 0 and age 1 PS   
@@ -997,6 +997,7 @@ Use trammel nets
 To do:
 1. utility for model
 -->
+</div>
 </div>
 </div>
 </div>
@@ -1572,6 +1573,7 @@ rmarkdown::render("_Report-5-02-tables",output_format='word_document')# build pa
 </tbody>
 </table>
 <p>Table X.2. <!--SARA CAN'T COMPILE THIS TABLE...WHAT IS tmp?--></p>
+<pre><code>## Warning: closing unused RODBC handle 2</code></pre>
 <table>
 <thead>
 <tr class="header">
