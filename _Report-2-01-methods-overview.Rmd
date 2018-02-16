@@ -56,7 +56,7 @@ recruitment, survival),
 cat(knit_child(text = readLines('_Report-1-01-introduction.Rmd')[181:215], quiet=TRUE), sep = '\n')
 ```
 
-<!--TALK ABOUT UPDATE WEBINARS AND JANUARY MEETING...ANCILLARY OBJECTIVES DISCUSSIONS HERE???
+<!--TALK ABOUT UPDATE WEBINARS AND JANUARY MEETING AND PRUNING OVERALL OBJECTIVES...ANCILLARY OBJECTIVES DISCUSSIONS HERE???
 ### PSPAP update at 2017 Fall Science Meeting -- is this something we should include?
 ### PSPAP January 2018 Update
 -->
@@ -76,51 +76,57 @@ design utility" for details on combining metrics).
 
 <!--Add description of square bullets-->
 
-1. **Quantify PS recruitment to age-1 (Natural origin)**
+1. **Detect PS recruitment to age-1 (natural origin)**
     * Power to detect age-1 natural origin recruits if recruitment occurs
-    * Segment level age-1 abundance <!--TW: I assume this is occupancy or CPUE... others may not make the distinction.  May not be important to identify at this point, though.  -->
-        * bias
-        * precision
-    * Estimate age-1 recruitment rate (natural origin)
-        * bias
-        * precision
+    * Estimator reliability
 2. **Quantify PS population trend and abundance (natural and hatchery origin)**
     * Trend: Estimate RPMA level population growth rate $\lambda$ <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
         * bias
         * precision
-        * performance
+        * estimator reliability
     * Abundance: Estimate RPMA level population abundance $N$ each year
         * bias
         * precision
-        * performance
+        * estimator reliability
 3. **Provide relevant PS model inputs**
-    * Estimate segment-level abundance, origin and stage specific 
+    * Abundance:  Estimate segment level abundance, origin and stage specific 
         * bias
         * precision
-        * spatial distribution
-    * Survival (RPMA level)
+        * estimator reliability
+        * Spatial distribution <!--within segment? to what level? (bend, finer scale?)  Seems like this would just be a second parameter estimate with its own bias, precision, and reliability.-->
+    * Survival: Estimate average annual survival at RPMA level
         * bias
         * precision
-    * Fecundity (RPMA level)
+        * estimator reliability
+    * Fecundity: Estimate average fecundity at RPMA level
         * bias
         * precision
-    * Growth (RPMA)
+        * estimator reliability
+    * Growth:  Estimate ... at RPMA level  <!--Do we just have one estimate here, or do we need to estimate  k and Linf? or mean and sd of a bivariate normal?-->
         * bias 
         * precision
+        * estimator reliability
     * Movement
-        * fidelity
-        * among segment movement
-    * Population structure and characteristics (segment level)
-        * Size structure
+        * Site fidelity
             * bias 
             * precision
-    * Sex ratio (segment level)
+            * estimator reliability
+        * Among segment movement
+            * bias 
+            * precision
+            * estimator reliability
+    * Size structure:  Estimate proportion of individuals in each size class at the segment level
+        * bias 
+        * precision
+        * estimator reliability
+    * Sex ratio:  Estimate sex ratio at the segment level
         * bias
         * precision
+        * estimator reliability
 4. **Maintain compatibility with legacy PSPAP data** <!-- TW: If this adds to the cost, then the benefit will need to be explained.  Need to indicate (at some point) why this is helpful.  -->
     * Proportion of randomly selected bends within segment
     * Gears similarity: proportion of standard gears used by design
-    * Effort similarity: deviation from average effort
+    * Effort similarity: deviation from average effort <!--What is the  reason behind this bullet?  CPUE can be calculated for any non-zero level of effort... Is it because N and CPUE are not really a linear relationship and straying too far from the normal effort level can cause issues with CPUE comparisions?-->
 5. **Stay below cost constraints**
     * Minimize costs
     
