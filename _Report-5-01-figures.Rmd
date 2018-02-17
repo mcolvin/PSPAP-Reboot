@@ -144,6 +144,12 @@ plot(pbias_u~pbias,type='l',xlab="Performance",
 Figure 10. In the plot above, values with lower performance values have lower 
 values and increasing values approach 1. 
 
+Figure ??
+```{r,echo=FALSE}
+knitr::include_graphics("images/Objectives_and_Metrics_5.png")
+```
+
+
 
 ## Effort Figures
 ```{r,echo=FALSE,eval=FALSE}

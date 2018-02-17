@@ -190,7 +190,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overview of Pallid Sturgeon Assessment Framework Evaluation</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
-<h4 class="date"><em>16 February, 2018</em></h4>
+<h4 class="date"><em>17 February, 2018</em></h4>
 
 </div>
 
@@ -291,7 +291,7 @@ rmarkdown::render("methods-overview.Rmd",
 </div>
 <div id="objectives-hierarchy-and-attributes" class="section level3">
 <h3>Objectives hierarchy and attributes</h3>
-<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each bold, numbered objective are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 1 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers (see “Valuation of monitoring design utility” for details on combining metrics).</p>
+<p>The numbered objectives correspond to fundamental objectives identified during the workshop. Bulleted lists within each bold, numbered objective are measurable attributes that can be used to quantify each objective. For example there are 3 attributes under objective 4 that can be quantified for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers (see “Valuation of monitoring design utility” for details on combining metrics).</p>
 <!--Add description of square bullets-->
 <ol style="list-style-type: decimal">
 <li><strong>Detect and Quantify PS recruitment to age-1 (natural origin)</strong>
@@ -301,14 +301,11 @@ rmarkdown::render("methods-overview.Rmd",
 <li>Power to detect age-1 natural origin recruits if recruitment occurs</li>
 <li>Estimator reliability</li>
 </ul></li>
-<li>Age-1 Abundance
-<ul>
-<li>Population model back calculation estimates
+<li>Age-1 Abundance Estimates (from population model back calculation estimates)
 <ul>
 <li>bias</li>
 <li>precision</li>
 <li>reliability</li>
-</ul></li>
 </ul></li>
 </ul></li>
 <li><strong>Quantify PS population trend and abundance (natural and hatchery origin)</strong>
@@ -341,7 +338,7 @@ rmarkdown::render("methods-overview.Rmd",
 <li>precision</li>
 <li>estimator reliability</li>
 </ul></li>
-<li>Fecundity: Estimate average fecundity at RPMA level
+<li>Fecundity: Estimate average annual fecundity at RPMA level
 <ul>
 <li>bias</li>
 <li>precision</li>
@@ -528,8 +525,7 @@ rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 </div>
 <div id="simulation-of-catch-data-from-known-catchabilities-and-efforts-given-alternative-monitoring-designs" class="section level2">
 <h2>Simulation of catch data from known catchabilities and efforts given alternative monitoring designs</h2>
-<p>Estimates of population abundance and trend are key to assessing AM plan pallid sturgeon sub-objectives, both of which have been redefined as PSPAP fundamental objectives 1. Detect and quantify age-1 recruitment and 2. Quantify pallid sturgeon trend and abundance. Therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. In order to generate such estimates, catch data, collected following the procedures laid out from alternative monitoring designs, must be simulated.</p>
-<p>Moreover, since catchability and capture probability of particular gears are important elements of simulating catch data but also highly uncertain and in some cases unknown, it is essential that catch data is simulated over a wide range of plausible gear catchabilities.</p>
+<p>Estimates of population abundance and trend are key to assessing AM plan pallid sturgeon sub-objectives, both of which have been redefined as PSPAP fundamental objectives 1. Detect and quantify age-1 recruitment and 2. Quantify pallid sturgeon trend and abundance. Therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. In order to generate such estimates, catch data is needed and must be simulated following the procedures laid out in the alternative monitoring designs. Moreover, since catchability and capture probability of particular gears are important elements of simulating catch data but also highly uncertain and in some cases unknown, it is essential that catch data is simulated over a wide range of plausible gear catchabilities.</p>
 <!--
 Simulated catch data was essential to calculating estimates of 
 population abundance and trend using alternative estimators. It is 
@@ -637,7 +633,7 @@ rmarkdown::render("_Report-2-06-estimating-population-values.Rmd",output_format=
 -->
 <p>The need to redesign the PSPAP was triggered by the recognition that the current PSPAP may not allow evaluation of whether the pallid sturgeon fundamental objectives identified in the AM plan were achieved on an annual basis or estimated with any level of certainty. Specifically, sub-objectives listed in section 4.1.1. of the AM plan specify 1) increase pallid sturgeon recruitment to age-1, and 2) maintain or increase numbers of pallid sturgeon as an interim measure until sufficient and sustained natural recruitment occurs, both of which are needed to achieve the fundamental objective set by the USFWS to preclude species jeopardy. These two sub-objectives are redefined as fundamental objectives in the context of the monitoring program to detect and quantify recruitment to age-1 and quantify pallid sturgeon population trend and abundance.</p>
 <p>Metrics to assess achievement of the first sub-objective (increase pallid sturgeon recruitment to age-1) are particularly challenging because of the rarity of the species and existing technical difficulties with capturing age-1 (and age-2, age-3) fish and in accurately determining ages. As direct assessment of recruitment to age-1 is unlikely to be successful, the PSPAP v. 2.0 process has proceeded with the assumption that recruitment will need to be assessed through estimates of abundance and trend of older fish, determination of hatchery or wild origin, and back-calculation of age-1 recruitment rates through a well-calibrated and validated population model. As reported in Section 4.1.1 of the AM plan, metrics for assessing the second sub-objective (maintain or increase numbers of pallid sturgeon as an interim measure) include population estimates for pallid sturgeon for all size and age classes, where age classes are estimated by the population model.</p>
-<p>As indicated above, estimates of abundance and trend are key to assessing both AM plan pallid sturgeon sub-objectives, and therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. Here we focus on the generation of the abundance and trend estimates, i.e. the metrics for assessing the AM sub-objectives, leaving the assessment of these estimates to the following section.</p>
+<p>As indicated above, estimates of abundance and trend are key to assessing both of the AM plan pallid sturgeon sub-objectives, and therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. Here we focus on the generation of the abundance and trend estimates, i.e. the metrics for assessing the AM sub-objectives, leaving the assessment of these estimates to the following section.</p>
 <!--
 Generating abundance and trend estimates under a particular monitoring 
 design occurs in two steps:
@@ -652,30 +648,112 @@ Since the simulation of catch data is stochastic and certain values
 times for each monitoring design, generating a fuller picture of the 
 range of outcomes that can be expected under a particular monitoring 
 design.
+-->
+<div id="objectives-2" class="section level3">
+<h3>Objectives</h3>
+<p>The objectives of estimating population metrics are, for each monitoring design considered and for each of the catch data sets generated under the given monitoring design, to:</p>
+<ol style="list-style-type: decimal">
+<li>Generate an estimate of the average population trend over the 10-year period by basin,</li>
+<li>Generate segment-level abundance estimates, and</li>
+<li>Generate segment-level abundance estimates for each length class.</li>
+</ol>
+</div>
+<div id="major-assumptions-2" class="section level3">
+<h3>Major Assumptions</h3>
+<p>We made the typical assumptions associated with the use of each individual estimator. In general, these assumptions match the assumptions used to generate the reference populations and simulate the catch data. Any major assumptions additional to those previously discussed are included in the discussion of the particular estimator to which it applies.</p>
+<!--# Methods-->
+</div>
+<div id="scope-and-spatial-scale" class="section level3">
+<h3>Scope and Spatial Scale</h3>
+<p>Since accurately identifying fish age in the field is challenging and the AM plan specifies that age classes are to be estimated by the collaborative population model, we limit our current focus to overall population estimates for pallid sturgeon, as well as population estimates by size class.</p>
+<p>Whenever possible, population abundance estimates were made at the bend level and then aggregated to the segment level; however, monitoring designs that employed the robust design abundance estimator had difficulty producing estimates at the bend spatial scale. Therefore, all monitoring designs using the robust design estimator directly estimated segment-level abundances.</p>
+</div>
+<div id="monitoring-design-estimators" class="section level3">
+<h3>Monitoring Design Estimators</h3>
+<p>Several capture-recapture estimators exist to estimate abundance, demographic rates, as well as abundance and demographic rates. A capture recapture estimator that simultaneously estimates demographic rates and abundance can potentially achieve metrics and targets specified in sub-objectives 1 and 2. Historically, a Jolly-Seber model, was used to simultaneously estimate abundance and survival from recapture of marked individuals from singular capture occasions over time (Jolly 1963, 1965, Seber 1965). However, the lack of multiple within primary occasion recapture attempts required potentially unrealistic assumptions to estimate capture probability. By considering monitoring designs that utilitze multiple recapture efforts (secondary occasions) within a sampling year (primary occasions), direct estimation of capture probability can be achieved, opening the door to the use of several mark- recapture estimators.</p>
+<div id="abundance-estimators" class="section level4">
+<h4>Abundance Estimators</h4>
+<div id="minimum-known-alive" class="section level5">
+<h5>Minimum Known Alive</h5>
+</div>
+<div id="closed-mark-recapture-estimators-m_0-and-m_t" class="section level5">
+<h5>Closed mark recapture estimators, <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_t\)</span></h5>
+</div>
+<div id="robust-design" class="section level5">
+<h5>Robust Design</h5>
+<!--See Commented Out Section Below-->
+</div>
+</div>
+<div id="trend-estimators" class="section level4">
+<h4>Trend Estimators</h4>
+<div id="catch-effort" class="section level5">
+<h5>Catch Effort</h5>
+</div>
+<div id="abundance-based-estimators" class="section level5">
+<h5>Abundance Based Estimators</h5>
+<!--
+Applications of Capture-Recapture Robust Design to PSPAP
+
+The fundamental species objective identified by the USFWS for the pallid 
+sturgeon is: Avoid jeopardizing the continued existence of the pallid 
+sturgeon from the US Army Corps of Engineers actions on the Missouri 
+River. Means to achieve this fundamental objective included increasing 
+pallid sturgeon recruitment and maintaining or increasing current 
+population levels. 
+
+The means to achieve the fundamental objective are specified as 2 
+sub-objectives with quantifiable metrics and targets as: 
+
+1. Increase pallid sturgeon recruitment to age 1
+Metric:  Catch rates of age 2 and 3 year-old pallid sturgeon.  
+Target: Short-term: recruitment; long-term: projection from population 
+models of an annual egg to age-1 survival rate > 0.03. 
+
+2. Maintain or increase numbers of pallid sturgeon until sufficient and 
+sustained natural recruitment occur. 
+
+Metric:  Catch rate of all size classes 
+Target: Viable population size necessary to successfully overcome 
+recruitment bottleneck. Minimum of 5000 adults in each management unit. 
 
 
-The simulation of catch data was described in the previous section.
-### Monitoring designs under consideration
-Monitoring designs consisted of a suite of sampling and estimator 
-decisions (Figure ??).  While we consider variations on current sampling
-decisions, compatibility with existing PSPAP data can be achieved by 
-maintaining the existing sampling framework where each management unit 
-is divided into segments, river segments divided into bends, and habitat 
-units sampled with each bend. Additionally, continued use of current 
-PSPAP standard gear types defined in Welker et al. (2017), which have 
-been identified over the duration of the PSPAP to be effective, will 
-potentially maintain compatibility with existing PSPAP data. A 
-significant modification, however, will be required to estimate 
-population abundance. Specifically, the use of a capture-recapture 
-estimator to estimate demographic rates and abundance is considered.
+While a catch per unit effort based approach to population monitoring 
+may be used to calculate the metrics for sub-objective 1 and 2 it fails 
+to estimate sub-objective targets. Specifically, CPUE is a relative 
+index of population abundance and therefore it may document recruitment 
+if age-0 and age-1 pallid sturgeon are captured but it does not estimate 
+early life history survival rates. Absolute population estimates cannot 
+be achieved unless gear-specified catchability coefficient exists or can 
+be estimated to link catch and effort to predict abundance 
+as:$Abundance=Catch/ (Effort\cdot Catchability)$. Catchability 
+coefficients are difficult to estimate, unlikely to be constant (i.e., 
+gear-specific catchability varies among habitat type, season, fish 
+species), and assumed to be constant across abundance levels. 
+Catchability assumptions have received some scrutiny through 
+meta-analysis of multiple fish stocks which suggest that fish stocks 
+exhibit a curvilinear relationship of catchability with abundance, most 
+commonly exhibiting a phenomenon known as hyperstability, where CPUE 
+remains while abundance declines (Harley et al. 2001). It should be 
+noted that gear-specific catchabilities have not been estimated for 
+pallid sturgeon. The consequences of violating CPUE assumptions are 
+uncertain. Despite this uncertainty, the CPUE based PSPAP has been 
+successful in achieving PSPAP objectives, however, modifications will be 
+needed to achieve sub-objective 1 and 2. 
 
-#### Sampling Decisions
 
-
-#### Estimator Decisions
-
-
-
+Modifying the existing PSPAP program will ideally maintain a degree of 
+compatibility with existing data while providing population level 
+estimates of recruitment, trend, and abundance to achieve the metrics 
+and targets specified in sub-objectives 1 and 2. Compatibility with 
+existing PSPAP data can be achieved by maintaining the existing sampling 
+framework where each management unit is divided into segments, river 
+segments divided into bends, and habitat units sampled with each bend. 
+Additionally, continued use of current PSPAP standard gear types defined 
+in Welker et al. (2016), which have been identified over the duration of 
+the PSPAP to be effective, will potentially maintain compatibility with 
+existing PSPAP data. A significant modification will be required to 
+estimate population abundance, specifically the use of a 
+capture-recapture estimator to estimate demographic rates and abundance. 
 
 Several capture-recapture estimators exist to estimate abundance, 
 demographic rates, as well as abundance and demographic rates. A capture 
@@ -687,16 +765,12 @@ individuals from singular capture occasions over time (Jolly 1963, 1965,
 Seber 1965). However, the lack of multiple within occasion recapture 
 attempts required potentially unrealistic assumptions to estimate 
 capture probability. Some of these assumptions can be relaxed by 
-sophisticated model formulations or fitting the capture-recapture model 
+sophisticated model formulations or fitting the capture recapture model 
 as a Bayesian state space model, which has been done for pallid sturgeon 
 in the RPMA 4 by Wu and Holan (2016). Alternatively, using multiple 
-recapture efforts within a sampling year (primary occasions) allows 
-direct estimation of capture probability as well as abundance and 
-survival, which was described by Pollock (1982) and referred to as the 
-robust design. 
-
-
-
+recapture efforts within a sampling occasion allows direct estimation of 
+capture probability as well as abundance and survival, which was 
+described by Pollock (1982) and referred to as the robust design. 
 
 The robust design frame work has been applied across a wide range of 
 taxa to estimate demographic rates and population abundance. Its use has 
@@ -715,7 +789,7 @@ immigration, emigration) can be assumed. The secondary sampling
 occasions provide multiple opportunities for individuals to be captured 
 and thereby allowing capture probability and abundance to be estimated. 
 
-
+Application of robust design to Pallid Sturgeon
 The use of a robust design capture recapture approach to estimate 
 Missouri River pallid sturgeon abundance, and demographic rates are not 
 novel. The first application was Steffensen et al. (2012) as part of the 
@@ -764,73 +838,105 @@ data (Hilborn and Mangel 1997, Powell 2012). Uncertainty can also be
 quantified simultaneously for estimated and derived parameters if fit by 
 MCMC using a Bayesian approach. 
 
-...For each of the simulated reference populations, various sampling 
-decisions can be implemented to obtain simulated catch data. The choice 
-of monitoring design determines the particular combination of decisions 
-used in this process---system-level sampling design, within bend and 
-year sampling design, gear selection, and measurements taken on 
-individual fish are all prescribed by the monitoring design (Figure 1). 
-Alternative sampling decisions of interest were identified during the 
-PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up 
-input from stakeholders and experts in the system. Simulated catch data 
-have been generated from the range of the identified alternative 
-sampling decisions, with the exception that some individual measurements 
-have yet to be implemented and the spatially balanced system-level 
-sampling design is still a work in progress. 
+
+
+Achieving sub-objective metrics and targets
+
+Recruitment
+
+When capture recapture histories are viewed in reverse order 
+recruitment can be estimated using what is referred to as a Pradel model 
+(Pradel 1996). This model relies on being able to differentiate recruits 
+based off of size or age which works well for fish populations. 
+Therefore there are 2 processes in which a pallid sturgeon can be 
+initially captured: 1) it is a new recruit and was not vulnerable to 
+capture and 2) the pallid sturgeon was vulnerable to capture but not 
+captured. The differentiating the 2 outcomes can be informed by size to 
+improve recruitment estimates. 
+
+Trend
+
+While not commonly employed in fisheries literature the robust design 
+can estimate population growth rate ($\lambda$). In particular, by 
+running capture histories backwards estimates the probability a pallid 
+sturgeon was present in the previous year given it was present in the 
+current year which is the per capita rate of additions to the population 
+($f$), or the number of individuals entering the population between 
+primary occasions. Survival rate ($\varphi $) can be estimated, and by 
+running them forward, survival can be estimated. Trend evaluated as 
+population growth rate is derived from model estimates as$\lambda 
+=\varphi \text{+}f$ and uncertainty can be estimated using the 
+previously described approaches for$N$. 
+
+Abundance
+
+Absolute abundance estimates are important to ongoing adaptive 
+management and recovery because species recovery sub-objective 2 is 
+specified as abundance. The robust design for capture recapture provides 
+the necessary within primary occasion replication to reliably estimate 
+capture probabilities ($c,p$) and then estimate $N$ given the number of 
+fish captured and the capture probability. Given that the capture 
+recapture design is potentially using 2 or more temporal replicates 
+within each bend then unadjusted catch numbers may be comparable to 
+existing PSPAP CPUE data. 
+
+
+Quantifying effects of management actions and auxiliary information
+
+Parameters in capture recapture models can be related to covariates 
+which provide a potential means to quantify the population response to 
+management actions. For example, changes in flow can be related to 
+survival or migration parameters using a logit linear model 
+as$\operatorname{logit}(\theta )={{\beta }_{0}}+{{\beta }_{1}}\cdot 
+X+\epsilon $, where $\theta$ is an estimated parameter (e.g., $\phi$, 
+$\gamma \prime$, $\gamma\prime\prime$), $\beta_0$ is the intercept, 
+${{\beta }_{1}}$ is the effect of covariate $X$, and $\epsilon $ is 
+residual error. Additionally, auxiliary information can be used to 
+inform parameter estimates. For example, telemetry can be used to 
+determine whether a pallid sturgeon is in the study area or not and 
+thereby inform estimates of $\gamma \prime$and $\gamma\prime\prime$. 
+Overall ability of a capture recapture robust design to use auxiliary 
+information and potential capture population level responses to 
+management actions make this a potentially useful design beyond 
+providing a means to quantify the metrics and targets for sub-objectives 
+1 and 2. 
+
+
+Caveats and considerations
+Monitoring pallid sturgeon in a system as large as the Missouri River is 
+inherently challenging and it is likely that any approached used will 
+violate an assumption required to estimate demographic rates or 
+population abundance. The previous section provides an overview of the 
+robust design as a monitoring design for pallid sturgeon populations of 
+the Upper and Lower Missouri River. The accurate estimation of 
+population parameters represents a critical component of assessing the 
+system state for pallid sturgeon in the Missouri River and providing key 
+demographic values for evaluating management actions through predictive 
+population modeling. The estimation of these metrics depends on the 
+quality and quantity of data collected from a well-developed sampling 
+design. The optimal design must be cost-efficient, and provide reliable, 
+accurate data. 
+
+Implementing an untested design on a large system like the Missouri 
+River could prove costly from the expenditure of time and effort if the 
+selected design performs poorly. Pallid sturgeon populations in the 
+Upper and Lower Missouri Rivers differ (e.g., size and age at maturity, 
+growth rates, life span). The habitats in which they live are also 
+different. The Lower River is characterized by a narrow, self-scouring 
+channel with higher water velocities, especially in the main channel. In 
+contrast, the Yellowstone and Upper Missouri Rivers are characterized by 
+lower velocities, shallower depths, and a more natural channel form. 
+Differences between the two Missouri River portions has shown that the 
+most effective sampling methodologies and potential strategies also 
+differ significantly and therefore necessitate that the mark-recapture 
+sample designs be tailored to each population. Provisional capture 
+recapture population monitoring designs need to be evaluated by 
+simulation modeling to identify the optimal design (that is, tradeoffs 
+between precision, bias, and cost) and provide proof of concept before 
+testing or implementing in the field as part of a level 1 science effort 
+and adjusted periodically to improve the design so that it more 
+effectively meets the monitoring and species objectives. 
 -->
-<div id="objectives-2" class="section level3">
-<h3>Objectives</h3>
-<p>The objectives of estimating population metrics are, for each monitoring design considered and for each of the catch data sets generated under the given monitoring design, to:</p>
-<ol style="list-style-type: decimal">
-<li>Generate an estimate of the average population trend over the 10-year period by basin,</li>
-<li>Generate segment-level abundance estimates,</li>
-<li>Generate segment-level abundance estimates for each length class.</li>
-</ol>
-</div>
-<div id="major-assumptions-2" class="section level3">
-<h3>Major Assumptions</h3>
-<p>We made the typical assumptions associated with the use of each individual estimator. In general, these assumptions match the assumptions used to produce the reference populations (SECTION) and simulated catch data (SECTION). Any major assumptions additional to those previously discussed are included in the discussion of the particular estimator to which it applies.</p>
-<!--# Methods-->
-</div>
-<div id="scope-and-spatial-scale" class="section level3">
-<h3>Scope and Spatial Scale</h3>
-<p>Since accurately identifying fish age in the field is challenging and the AM plan specifies that age classes are to be estimated by the collaborative population model, we limit our current focus to overall population estimates for pallid sturgeon, as well as population estimates by size class.</p>
-<p>Whenever possible, population abundance estimates were made at the bend level and then aggregated to the segment level; however, monitoring designs that employed the robust design abundance estimator had difficulty producing estimates at the bend spatial scale. Therefore, all monitory designs using the robust design estimator directly estimated segment-level abundances.</p>
-<p>Applications of Capture-Recapture Robust Design to PSPAP</p>
-<p>The fundamental species objective identified by the USFWS for the pallid sturgeon is: Avoid jeopardizing the continued existence of the pallid sturgeon from the US Army Corps of Engineers actions on the Missouri River. Means to achieve this fundamental objective included increasing pallid sturgeon recruitment and maintaining or increasing current population levels.</p>
-<p>The means to achieve the fundamental objective are specified as 2 sub-objectives with quantifiable metrics and targets as:</p>
-<ol style="list-style-type: decimal">
-<li><p>Increase pallid sturgeon recruitment to age 1 Metric: Catch rates of age 2 and 3 year-old pallid sturgeon.<br />
-Target: Short-term: recruitment; long-term: projection from population models of an annual egg to age-1 survival rate &gt; 0.03.</p></li>
-<li><p>Maintain or increase numbers of pallid sturgeon until sufficient and sustained natural recruitment occur.</p></li>
-</ol>
-<p>Metric: Catch rate of all size classes Target: Viable population size necessary to successfully overcome recruitment bottleneck. Minimum of 5000 adults in each management unit.</p>
-<p>While a catch per unit effort based approach to population monitoring may be used to calculate the metrics for sub-objective 1 and 2 it fails to estimate sub-objective targets. Specifically, CPUE is a relative index of population abundance and therefore it may document recruitment if age-0 and age-1 pallid sturgeon are captured but it does not estimate early life history survival rates. Absolute population estimates cannot be achieved unless gear-specified catchability coefficient exists or can be estimated to link catch and effort to predict abundance as:<span class="math inline">\(Abundance=Catch\cdot Effort\cdot Catchability\)</span>. Catchability coefficients are difficult to estimate, unlikely to be constant (i.e., gear-specific catchability varies among habitat type, season, fish species), and assumed to be constant across abundance levels. Catchability assumptions have received some scrutiny through meta-analysis of multiple fish stocks which suggest that fish stocks exhibit a curvilinear relationship of catchability with abundance, most commonly exhibiting a phenomenon known as hyperstability, where CPUE remains while abundance declines (Harley et al. 2001). It should be noted that gear-specific catchabilities have not been estimated for pallid sturgeon. The consequences of violating CPUE assumptions are uncertain. Despite this uncertainty, the CPUE based PSPAP has been successful in achieving PSPAP objectives, however, modifications will be needed to achieve sub-objective 1 and 2.</p>
-<p>Modifying the existing PSPAP program will ideally maintain a degree of compatibility with existing data while providing population level estimates of recruitment, trend, and abundance to achieve the metrics and targets specified in sub-objectives 1 and 2. Compatibility with existing PSPAP data can be achieved by maintaining the existing sampling framework where each management unit is divided into segments, river segments divided into bends, and habitat units sampled with each bend. Additionally, continued use of current PSPAP standard gear types defined in Welker et al. (2016), which have been identified over the duration of the PSPAP to be effective, will potentially maintain compatibility with existing PSPAP data. A significant modification will be required to estimate population abundance, specifically the use of a capture-recapture estimator to estimate demographic rates and abundance.</p>
-<p>Several capture-recapture estimators exist to estimate abundance, demographic rates, as well as abundance and demographic rates. A capture recapture estimator that simultaneously estimates demographic rates and abundance can potentially achieve metrics and targets specified in sub-objectives 1 and 2. Historically, a Jolly-Seber model, was used to simultaneously estimate abundance and survival from recapture of marked individuals from singular capture occasions over time (Jolly 1963, 1965, Seber 1965). However, the lack of multiple within occasion recapture attempts required potentially unrealistic assumptions to estimate capture probability. Some of these assumptions can be relaxed by sophisticated model formulations or fitting the capture recapture model as a Bayesian state space model, which has been done for pallid sturgeon in the RPMA 4 by Wu and Holan (2016). Alternatively, using multiple recapture efforts within a sampling occasion allows direct estimation of capture probability as well as abundance and survival, which was described by Pollock (1982) and referred to as the robust design.</p>
-<p>The robust design frame work has been applied across a wide range of taxa to estimate demographic rates and population abundance. Its use has been extended to studies of species occurrence (i.e., occupancy models; MacKenzie et al. 2002, Tyre et al. 2003) and abundance (N-mixture models; Royle 2004b, Royle 2004a) of unmarked individuals. The robust design provides a rigorous framework that allows for the estimation of relevant demographic rates and abundance using marked individuals. As originally described by Pollock (1982), a robust design consists of primary sampling occasions with secondary sampling occasions nested with the primary sampling occasion (Figure 1). Primary occasions are spaced temporally to capture processes like survival and growth. Secondary occasions occur over a short time frame, short enough that closure of the population from demographic processes (i.e., recruitment, mortality, immigration, emigration) can be assumed. The secondary sampling occasions provide multiple opportunities for individuals to be captured and thereby allowing capture probability and abundance to be estimated.</p>
-<p>Application of robust design to Pallid Sturgeon The use of a robust design capture recapture approach to estimate Missouri River pallid sturgeon abundance, and demographic rates are not novel. The first application was Steffensen et al. (2012) as part of the annual brood stock collection in segment 9. Similarly, Winders and Steffensen (2014) used a robust design to estimate abundance and demographic rates for a portion of segment 10 using broodstock collection data. In both studies, pallid sturgeon were captured by setting multiple trotlines at random locations in the study area over a short period. The annual brood stock sampling was the primary occasion and daily capture efforts were the secondary occasions in both studies. Given the study design, survival was estimated over the open period (i.e., between annual broodstock collection events). Capture probability was estimated for each daily effort within the primary period and abundance during the closed period (i.e., broodstock collection). Additionally, both studies were able to estimate movement parameters that account for pallid sturgeon leaving or arriving in the study area between closed periods.</p>
-<p>Specific parameters estimated by the robust design There are variations of the robust design that estimate varying parameters. The most commonly used version, as well as the version used by Steffensen et al. (2012) and Winders and Steffensen (2014) is the version that estimates 6 parameters. Specifically these parameters are:</p>
-<ul>
-<li>$$: the probability of surviving between primary occasions,</li>
-<li><span class="math inline">\(\gamma^{\prime}\)</span>: the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was not present during the previous primary occasions given it survives to the current occasion (Figure 2),</li>
-<li><span class="math inline">\(\gamma^{\prime\prime}\)</span>: is the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was present during the previous primary occasions given it survives to the current occasion (Figure 2),</li>
-<li><span class="math inline">\(c\)</span> is the initial capture probability</li>
-<li><span class="math inline">\(p\)</span> is the recapture probability, and</li>
-<li><span class="math inline">\(f_0\)</span> is number of unobserved individuals.</li>
-</ul>
-<p>Depending on the situation the number of parameters estimated can be reduced by assuming initial capture probability is equal to recapture probability where <span class="math inline">\(c=p\)</span>. Similarly, <span class="math inline">\({{\gamma }^{\prime }}\)</span> and <span class="math inline">\(\gamma^{\prime\prime}\)</span> can be specified to represent hypotheses about immigration and emigration processes. For example, even flow of fish in and out of the systems can be specified by imposing equality of immigration and emigration terms where <span class="math inline">\({{\gamma }^{\prime }}={{\gamma }^{\prime \prime }}\)</span>. Population abundance (<span class="math inline">\(N\)</span>) at each time period is a derived parameter calculated as: <span class="math inline">\(N={{f}_{0}}+M\)</span> where, <span class="math inline">\(M\)</span> is the number of marked fish. Uncerainty around parameter estimates derived quantities can be estimated by profile likelihood and use of the delta method if estimated by maximizing the likelihood of the model given the data (Hilborn and Mangel 1997, Powell 2012). Uncertainty can also be quantified simultaneously for estimated and derived parameters if fit by MCMC using a Bayesian approach.</p>
-<p>Achieving sub-objective metrics and targets</p>
-<p>Recruitment</p>
-<p>When capture recapture histories are viewed in reverse order recruitment can be estimated using what is referred to as a Pradel model (Pradel 1996). This model relies on being able to differentiate recruits based off of size or age which works well for fish populations. Therefore there are 2 processes in which a pallid sturgeon can be initially captured: 1) it is a new recruit and was not vulnerable to capture and 2) the pallid sturgeon was vulnerable to capture but not captured. The differentiating the 2 outcomes can be informed by size to improve recruitment estimates.</p>
-<p>Trend</p>
-<p>While not commonly employed in fisheries literature the robust design can estimate population growth rate (<span class="math inline">\(\lambda\)</span>). In particular, by running capture histories backwards estimates the probability a pallid sturgeon was present in the previous year given it was present in the current year which is the per capita rate of additions to the population (<span class="math inline">\(f\)</span>), or the number of individuals entering the population between primary occasions. Survival rate ($<span class="math inline">\() can be estimated, and by running them forward, survival can be estimated. Trend evaluated as population growth rate is derived from model estimates as\)</span> =f$ and uncertainty can be estimated using the previously described approaches for<span class="math inline">\(N\)</span>.</p>
-<p>Abundance</p>
-<p>Absolute abundance estimates are important to ongoing adaptive management and recovery because species recovery sub-objective 2 is specified as abundance. The robust design for capture recapture provides the necessary within primary occasion replication to reliably estimate capture probabilities (<span class="math inline">\(c,p\)</span>) and then estimate <span class="math inline">\(N\)</span> given the number of fish captured and the capture probability. Given that the capture recapture design is potentially using 2 or more temporal replicates within each bend then unadjusted catch numbers may be comparable to existing PSPAP CPUE data.</p>
-<p>Quantifying effects of management actions and auxiliary information</p>
-<p>Parameters in capture recapture models can be related to covariates which provide a potential means to quantify the population response to management actions. For example, changes in flow can be related to survival or migration parameters using a logit linear model as$()={{}<em>{0}}+{{}</em>{1}} X+$, where <span class="math inline">\(\theta\)</span> is an estimated parameter (e.g., <span class="math inline">\(\phi\)</span>, <span class="math inline">\(\gamma \prime\)</span>, <span class="math inline">\(\gamma\prime\prime\)</span>), <span class="math inline">\(\beta_0\)</span> is the intercept, <span class="math inline">\({{\beta }_{1}}\)</span> is the effect of covariate <span class="math inline">\(X\)</span>, and $$ is residual error. Additionally, auxiliary information can be used to inform parameter estimates. For example, telemetry can be used to determine whether a pallid sturgeon is in the study area or not and thereby inform estimates of <span class="math inline">\(\gamma \prime\)</span>and <span class="math inline">\(\gamma\prime\prime\)</span>. Overall ability of a capture recapture robust design to use auxiliary information and potential capture population level responses to management actions make this a potentially useful design beyond providing a means to quantify the metrics and targets for sub-objectives 1 and 2.</p>
-<p>Caveats and considerations Monitoring pallid sturgeon in a system as large as the Missouri River is inherently challenging and it is likely that any approached used will violate an assumption required to estimate demographic rates or population abundance. The previous section provides an overview of the robust design as a monitoring design for pallid sturgeon populations of the Upper and Lower Missouri River. The accurate estimation of population parameters represents a critical component of assessing the system state for pallid sturgeon in the Missouri River and providing key demographic values for evaluating management actions through predictive population modeling. The estimation of these metrics depends on the quality and quantity of data collected from a well-developed sampling design. The optimal design must be cost-efficient, and provide reliable, accurate data.</p>
-<p>Implementing an untested design on a large system like the Missouri River could prove costly from the expenditure of time and effort if the selected design performs poorly. Pallid sturgeon populations in the Upper and Lower Missouri Rivers differ (e.g., size and age at maturity, growth rates, life span). The habitats in which they live are also different. The Lower River is characterized by a narrow, self-scouring channel with higher water velocities, especially in the main channel. In contrast, the Yellowstone and Upper Missouri Rivers are characterized by lower velocities, shallower depths, and a more natural channel form. Differences between the two Missouri River portions has shown that the most effective sampling methodologies and potential strategies also differ significantly and therefore necessitate that the mark-recapture sample designs be tailored to each population. Provisional capture recapture population monitoring designs need to be evaluated by simulation modeling to identify the optimal design (that is, tradeoffs between precision, bias, and cost) and provide proof of concept before testing or implementing in the field as part of a level 1 science effort and adjusted periodically to improve the design so that it more effectively meets the monitoring and species objectives.</p>
 <!--Methods: valuing design outcomes-utilities-->
 <!--
 To do:
@@ -838,33 +944,36 @@ To do:
 -->
 </div>
 </div>
+</div>
+</div>
 <div id="valuation-of-a-monitoring-design" class="section level2">
 <h2>Valuation of a monitoring design</h2>
-<p>Valuating monitoring designs, or quantifying overall utility, provides a means for comparing alternative monitoring programs: the higher the value, the better the design. For monitoring design values to be as meaningful and objective as possible, it is necessary for the valuation process to formally link the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics. The value of a monitoring design can then be thought of as an overall measurement of its utility, or usefulness, in achieving all objectives. Quantifying such an overall monitoring design utility requires two steps:</p>
+<p>Valuating monitoring designs, or quantifying overall utility, provides a means for comparing alternative monitoring programs: the higher the value, the better the design (under the given valuation process). For monitoring design values to be as meaningful and objective as possible, it is necessary for the valuation process to formally link the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics. The value of a monitoring design can then be thought of as an overall measurement of its utility, or usefulness, in achieving all objectives. Quantifying such an overall monitoring design utility requires two steps:</p>
 <ol style="list-style-type: decimal">
-<li>Quantify the ability of the monitoring design to achieve each individual objective, i.e., calculate objective utilities from quantifiable performance metrics,</li>
+<li>Quantify the ability of the monitoring design to achieve each individual objective, i.e., calculate objective utilities from quantifiable attributes and metrics,</li>
 <li>Combine the objective utilities into an overall value.</li>
 </ol>
 <div id="calculating-objective-utilities" class="section level3">
 <h3>Calculating objective utilities</h3>
-<p>The calcuation of objective utilities relies heavily upon the objectives and metrics identified by stakeholders over the past year, summarized in Figure ?? (See also “Eliciting stakeholder objectives”). When multiple metrics are associated with an objective it will be necessary to combine metric values into a single objective utility. For example, recruitment the detection power and estimator reliability metrics will be combined into an overall utility value for “Detect Recruitment”.<br />
-Before describing the process used to combine objective metrics, when needed, into a comprehensive objective utility, we first describe in detail the metrics used to quantify each of the 5 stakeholder objectives.</p>
+<p>The calcuation of objective utilities relies heavily upon the objectives and metrics identified by stakeholders over the past year, summarized in Figure ?? (See also “Eliciting stakeholder objectives”). When multiple metrics are associated with an objective it will be necessary to combine metric values into a single objective utility. Before describing the process used to combine objective metrics into a comprehensive objective utility, we first describe in detail the metrics used to quantify each of the 5 stakeholder objectives.</p>
 <!--Chat with Mike on Fixing These-->
-<div id="quantify-ps-recruitment-to-age-1-natural-origin" class="section level5">
-<h5>1. Quantify PS recruitment to age-1 (Natural origin)</h5>
+<div id="quantify-ps-recruitment-to-age-1-natural-origin" class="section level4">
+<h4>1. Quantify PS recruitment to age-1 (natural origin)</h4>
+<div id="detection" class="section level5">
+<h5>Detection</h5>
 <ol style="list-style-type: decimal">
-<li>Power to detect age-1 natural origin recruits if recruitment occurs</li>
-<li>Segment level age-1 abundance
-<ol style="list-style-type: decimal">
-<li>bias</li>
-<li>precision</li>
-</ol></li>
-<li>Estimate age-1 recruitment rate (natural origin)
-<ol style="list-style-type: decimal">
-<li>bias</li>
-<li>precision</li>
-</ol></li>
+<li><p>Power to detect age-1 natural origin recruits if recruitment occurs</p></li>
+<li><p>Estimator reliability</p></li>
 </ol>
+</div>
+<div id="age-1-abundance-estimates-from-population-model-back-calculation-estimates" class="section level5">
+<h5>Age-1 Abundance Estimates (from population model back calculation estimates)</h5>
+<ol style="list-style-type: decimal">
+<li><p><strong>Bias: How do age-1 abundance estimates compare to the true age-1 recruitment numbers given an estimate can be made.</strong></p></li>
+<li><p><strong>Precision: How precise is an age-1 abundance estimate, given an estimate is made.</strong></p></li>
+<li><p><strong>Reliability: The probability an estimate can be made under the given monitoring design.</strong></p></li>
+</ol>
+</div>
 </div>
 <div id="quantify-ps-population-trend-and-abundance-natural-and-hatchery-origin" class="section level4">
 <h4>2. Quantify PS population trend and abundance (natural and hatchery origin)</h4>
@@ -874,7 +983,7 @@ Before describing the process used to combine objective metrics, when needed, in
 <ol style="list-style-type: decimal">
 <li><p><strong>Bias: How does a trend estimate compare to the true trend, given a trend estimate is made.</strong> Trend bias is calculated as the estimated value minus the true value. For example if the true population trend is an annual decrease of 5%, and the estimated population trend is an annual decrease of 7%, then the trend bias is -0.02 (an underestimate of 2%).</p></li>
 <li><p><strong>Precision: How precise is an estimated trend value, given a trend estimate is made.</strong> Precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. There is no real threshold for what is optimal for estimator precision regarding decision making. Generally speaking, the more precise an estimate, the better. There are other alternatives to CV. However, CV is commonly used in fisheries {citation needed?} and therefore likely to be familiar.</p></li>
-<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converge and no issues were flagged. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 catch data sets per population for each of 2 alternative monitoring programs, a catch effort program and a capture recapture robust design program. We then estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse. Assuming that only 1500 of the 2000 catch data sets allowed for a trend estimate using the robust design estimator the trend estimate performance would be 1500/2000=0.75. Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has unique relationship with trend estimate utility, as described in detail in Section ?? below.</p></li>
+<li><p><strong>Reliability: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converge and no issues were flagged. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 catch data sets per population for each of 2 alternative monitoring programs, a catch effort program and a capture recapture robust design program. We then estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse. Assuming that only 1500 of the 2000 catch data sets allowed for a trend estimate using the robust design estimator the trend estimate performance would be 1500/2000=0.75. Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has unique relationship with trend estimate utility, as described in detail in Section ?? below.</p></li>
 </ol>
 </div>
 <div id="abundance-estimates" class="section level5">
@@ -883,7 +992,7 @@ Before describing the process used to combine objective metrics, when needed, in
 <ol style="list-style-type: decimal">
 <li><p><strong>Bias: How does an abundance estimate compare to the true abundance, given an estimate is made.</strong> In the case of abundance bias,the relative bias (calculated as the estimated value minus the true value, all divided by the true value) was used. For example if the true basin abundance is 25000 pallids and the estimated abundance is 20000 then the abundance bias is -5000/25000=-0.2. Using relative bias as the metric allows for a measurement that is more comparable across a wide range of population sizes. In the example just described, the absolute bias was -5000 with a relative bias of 0.2. If the actual population had instead consisted of 5500 fish but still had a bias of -5000, then the estimated population would have been 500 fish. Notice, the estimate for the first population is only off by a factor slightly greater than 1 but second population is off by more than a factor of 10, yet they both have the same bias. However, their relative bias shows a difference. While the first population’s estimate has a relative bias of 0.20, the second population’s estimate has a much worse relative bias of 0.91.</p></li>
 <li><p><strong>Precision: How precise is an estimated abundance value, given an abundance estimate is made.</strong> As with trend, abundance precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. Again, while there is no real threshold for what is optimal for estimator precision regarding decision making, generally speaking, the more precise an estimate, the better. As mentioned earlier, there are other alternatives to CV; however, there are benefits to using CV. Not only is CV commonly used in fisheries, but it is also a relative measure that takes into account differences in the standard error across wider ranges of abundance. For example, a standard error of 5000 fish for an estimate of 25000 fish, has different meaning than a standard error of 5000 fish for an estimate of 5500 fish. The CV conveys this difference in a similar manner to the relative bias metric, as described above.</p></li>
-<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above. Since abundance precision and bias can only be evaulated given the estimator performs (produces estimates), as with trend performance, the abundance performance metric has unique relationship with abundance estimate utility (see Section ??).</p></li>
+<li><p><strong>Reliability: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above. Since abundance precision and bias can only be evaulated given the estimator performs (produces estimates), as with trend performance, the abundance performance metric has unique relationship with abundance estimate utility (see Section ??).</p></li>
 </ol>
 </div>
 </div>
@@ -897,138 +1006,192 @@ Before describing the process used to combine objective metrics, when needed, in
 </div>
 <div id="provide-relevant-ps-model-inputs" class="section level4">
 <h4>4. Provide relevant PS model inputs</h4>
-<ol style="list-style-type: decimal">
-<li>Estimate segment-level abundance, origin and stage specific
+<div id="abundance-estimates-1" class="section level5">
+<h5>Abundance Estimates</h5>
+<p>Estimate segment level abundance, origin and stage specific</p>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
+<li>reliability</li>
 <li>spatial distribution</li>
-</ol></li>
-<li>Survival (RPMA level)
+</ol>
+</div>
+<div id="survival-estimates" class="section level5">
+<h5>Survival Estimates</h5>
+<p>Estimate average annual survival at RPMA level.</p>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
-<li>Fecundity (RPMA level)
+<li>reliability</li>
+</ol>
+</div>
+<div id="fecundity-estimates" class="section level5">
+<h5>Fecundity Estimates</h5>
+<p>Estimate average annual fecundity at RPMA level</p>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
-<li>Growth (RPMA)
+<li>reliability</li>
+</ol>
+</div>
+<div id="growth-estimates-rpma" class="section level5">
+<h5>Growth Estimates (RPMA)</h5>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
-<li>Movement
+<li>reliability</li>
+</ol>
+</div>
+<div id="movement-estimates" class="section level5">
+<h5>Movement Estimates</h5>
 <ol style="list-style-type: decimal">
-<li>fidelity</li>
-<li>among segment movement</li>
-</ol></li>
-<li>Population structure and characteristics (segment level)
-<ol style="list-style-type: decimal">
-<li>Size structure
+<li>Site fidelity
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
+<li>reliability</li>
 </ol></li>
-<li>Sex ratio (segment level)
+<li>Among segment movement
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
+<li>reliability</li>
 </ol></li>
 </ol>
+</div>
+<div id="size-structure-segment-level" class="section level5">
+<h5>Size structure (segment level)</h5>
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+<li>reliability</li>
+</ol>
+</div>
+<div id="sex-ratio-segment-level" class="section level5">
+<h5>Sex ratio (segment level)</h5>
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+<li>reliability</li>
+</ol>
+</div>
 </div>
 <div id="minimize-costs-and-do-not-exceed-budget-constraints" class="section level4">
 <h4>5. Minimize costs (and do not exceed budget constraints)</h4>
 <ol style="list-style-type: decimal">
 <li><strong>Cost: the expected cost of implementing the given monitoring design.</strong> Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding will not be considered. The expected cost for each design will be calculated. The expected cost can be used 3 ways. First it can screen for designs that exceed cost constraints. Second, it can be used in an absolute sense to quantify design cost. Thirdly,it can be used relatively by dividing the value by the expected cost of the current PSPAP. In this last case, values less than 1 represent cheaper programs and values greater than 1 represent more expensive monitoring programs than the current PSPAP.</li>
 </ol>
-</div>
-<div id="combining-fundamental-objective-metrics" class="section level4">
-<h4>Combining fundamental objective metrics</h4>
-<p>The 3 metrics described above under trend can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <span class="citation">[@RN4402]</span>. The utility is then used to valuate alternative monitoring programs. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and reliability is constrained between 0 (worst) and 1 (best).</p>
-<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalizes values to a specified minimum and maximum. For example, we can scale the bias to values varying from 0 to 1 as:</p>
-<p><span class="math display">\[U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},\]</span></p>
-<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot of trend bias utility, <span class="math inline">\(U_{T,bias}\)</span>, shown in Figure ??, trend esimates with smaller absolute bias are given higher utility values while increasingly large absolute bias values approach a utiliity of 0.</p>
-<p>Trend precision utility can be calculated in a similar manner. Suppose trend precision varies from a CV of 0.01 to 0.30 (where a CV value of 0.30 is not very precise). The equation to calculate scaled precision is the same as for bias; however, we do not need to take absolute values since all CV values are positive. In Figure ??, trend estimates with lower CV values have higher precision utility values, <span class="math inline">\(U_{T,prec}\)</span>, and precision utility approaches 0 as CV values increase to the maximum of 0.30.</p>
-<!--Lastly, let's look at performance. Suppose performance values from 
-simulating multiple replicates of each monitoring design vary from 35% 
-to 100%. The difference between the performance metric with bias and 
-precision is that higher values are more desirable and therefore we need 
-to rearrange the proportional scaling equation to reflect this as, 
--->
-<p>ADD IN SOMETHING ABOUT BIAS AND PRECISION ESTIMATES BEING CONDITIONAL ON RELIABILITY/PERFORMANCE AND HOW WE DEAL WITH THIS</p>
-</div>
-</div>
-<div id="linking-monitoring-designs-and-objectives" class="section level3">
-<h3>Linking monitoring designs and objectives</h3>
-<p>NEED TO CHANGE AROUND DUE TO NEW WAY OF HANDLING RELIABILITY/PERFORMANCE AND MAKE A NOTE ON RELATIVE VS ABSOLUTE</p>
-<p>We can combine the utility values now such that monitoring designs resulting in a trend estimate with relatively low bias, relatively high precision, and good performance have higher values (i.e., approaching 1) and estimates of the trend that is biased, imprecise with poor performance approach 0. Values approach 1 because each of the scaled metrics is weighted. For example, if each metric is valued equally, then the weights would be 1/3. Alternatively, if really precise estimates of trend were desired the weight for scaled trend could be 0.5 and the remaining metrics weighted at 0.25. Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
-<ul>
-<li>Catch effort
-<ul>
-<li>Proportional bias = -60, scaled = 0.8</li>
-<li>Precision = 112, scaled = 0.648</li>
-<li>Performance = 100, scaled = 1</li>
-</ul></li>
-<li>Capture recapture
-<ul>
-<li>Proportional bias = 5, scaled = 0.983</li>
-<li>Precision = 115, scaled = 0.638</li>
-<li>Performance = 90, scaled = 0.857</li>
-</ul></li>
-</ul>
-<p>The scaled utility for the catch effort program is:</p>
-<p><span class="math display">\[0.774= 
-0.25\cdot 0.8+
-0.50 \cdot 0.648+
-0.25\cdot1,\]</span></p>
-<p>and the scaled utility for the capture recapture program is</p>
-<p><span class="math display">\[0.779= 
-0.25\cdot 0.983+
-0.50 \cdot 0.638+
-0.25\cdot0.857.\]</span></p>
-<p>The combined utility values indicate that the capture recapture program has slightly more value to achieve the objective of <em>quantifing population trend</em>.</p>
-<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.\]</span></p>
-</div>
-</div>
-<div id="swing-weighting" class="section level2">
-<h2>Swing weighting</h2>
-<p>The challenge in combining utiltities is determining how each performance metric utility should be weighted. To understand some of the complications assume that in general we feel trend precision is more important than trend bias. Choosing a weight of 0.75 for precision and 0.25 for bias, based on this feeling as we did in the example above, is not only a very subjective approach but it also did not take into account variation in the metrics—something that should affect the weighting. For example, if all monitoring designs had trend estimates with CV values that ranged between 0.001 and 0.002 (i.e., great precision), then we’d be happy with the precision of any of our choices. Hence, if trend bias values varied greatly, when making a decision we would focus on which choice of monitoring design also led to a small bias. In this case, the bias metric should be weighted higher than the precision metric (eventhough in general we think precision is more important than bias) because the bias values should have a greater impact on the choice of monitoring design given the small variation in precision values. To curtail these complications we used swing weighting to determe metric utility weights.</p>
-<p>Swing weighting, as a structured approach, is less subjective and takes into account variation. The process involves comparing the worst case to the best case scenario for each metric while holding each of the other metrics constant at their worst case. In other words, swing weighting forces you to think about how your decision is impacted when each metric “swings” from worst to best. These “swings” are first ranked and then valued. The swing that has the most impact on the decision process (relative to the other swings) would be given a rank of 1 (most important), the swing with the second greatest impact on the decision a rank of 2, and so on. The baseline scenario, where all metrics are set to their worst case, always gets the highest (worst) rank. The scenario with a rank of 1 is assigned a value of 100 and the baseline scenario is assigned a value of 0. All other cases are then given a value from 0 to 100, representing the impact they have on the decision making process relative to the highest and lowest ranked scenarios.</p>
-<p>In the case of trend described a couple paragraphs ago, lets say the trend bias varies from 1%-70%. Then, as trend CV values swing from 0.002 (worst) to 0.001 (best), there is little impact on our decision process relative to when trend bias values swing from 70% (worst) to 1% (best). Therefore, we would rank the scenario with the best bias with a 1 and the scenario with the best precision with a 2 (see Figure/Table ??). The scenario with the best bias would get a value of 100, and the scenario with the best precision will get a rank from 0 to 100—0 if I think having the best precision relative to the worst precsion has no impact on the decision (i.e., its just as bad as thebaseline scenario) and 100 if I think having the best precision has just as much impact on the decision as the swing in bias does. For the sake of example, assume I think the impact of the precision swing is about 1/10 the impact of the bias swing. Then I would value the scenario with the best precision with a 10. It is important to note, that this does not mean that precision is weighted by 0.10; it just means that having the best precision and the worst bias is worth about 1/10 as having the worst precision and the best bias. Instead, the weights are determined by dividing each value by the sum of all values—since any case having both the best precision and the best bias[^1] would end up with the highest value of 110 or a utility weight of 1, as desired.</p>
-<p>[^1] Under the swing weighting assumption that the impact on the decision is a linear function of the metrics</p>
-<div id="stakeholder-input" class="section level3">
-<h3>Stakeholder Input</h3>
-<p>Inevitably, individual stakeholders, as well as different stakeholder agencies, will have different opinions on what metrics should have a greater impact on the choosing a monitoring design. As a consistent, structured process, swing weighting provides an excellent approach for comparing and compiling stakeholder weights. We are currently in the process of using swing weighting as a way to understand what differences and similarities there are in stakeholder opinions on the importance of objective metrics and the consequences of these on valuating various monitoring designs. While PSPAP v. 2.0 will not be making any decisions based on these weights, this analysis will provide valuable stakeholder information to and be a tool for decision makers.</p>
-<p>In order for swing weighting to be used consistently amongst stakeholders, it is important for each stakeholder to have a good understanding of the swing weighting process. We created YouTube videos that described the swing weighting process and its role in the PSPAP v. 2.0 {cite swing weighting tutorial video} and explained the meaning and variation in the abundance and trend metrics {cite Abundance and Trend videos}. We posted a downloadable swing weighting form, links to the YouTube videos described above, and instructions on how to fill in the swing weighting form to the PSPAP v. 2.0 blog {cite swing weighting blog page}. An email was also sent out to stakeholders inviting them to visit the blog to fill in and submit a swing weighting form. Once<br />
-swing weighting data has been collected, valuation of monitoring designs can be considered across the range of stakeholder weighting schemes, as well as looked at by stakeholder angency.</p>
-<div id="cost-vs.utility" class="section level4">
-<h4>Cost vs. Utility</h4>
-<p>Significant uncertainty exists in costs because of several factors. First, field crews tend to become more efficient over time and therefore recent PSPAP costs may not represent the actual costs. However, if the next iteration of the PSPAP uses similar sampling units (i.e., bends within segments) to the current PSPAP, then costs for field sampling will likely be similar. SECOND AND THIRD??? DOES THIS UNCERTAINTY VARY BY MONITORING DESIGN? IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??</p>
+<p>In general, expected cost will be calculated using the following process:</p>
+<!--Modified from original to match below-->
+<ol style="list-style-type: decimal">
+<li>Obtain annual funding provided to each field crew,</li>
+<li>Subtract out any funding used for fixed costs,</li>
+<li>Calculate the number of gear deployments <!--bends sampled--> by each field crew in a year,</li>
+<li>Divide the variable costs by the total gear deployments <!--bends sampled--> to get a field crew specific cost per deployment, <!--bend--></li>
+<li>Calculate expected variable cost by multiplying field crew specific cost per deployment by the number of deployments required by the monitoring design <!--model or empirical distribution--></li>
+<li>Calculate field crew expected costs by adding back in any fixed costs to the expected varaible cost</li>
+<li>Sum the field crew specific expected costs to obtain total expected cost</li>
+</ol>
 <div id="estimating-cost-per-gear-deployment" class="section level5">
 <h5>Estimating cost per gear deployment</h5>
 <p>Estimating cost for a day of sampling is difficult. It is the function of several factors, including but not limited to the number of personnel, pay rates, other personnel expenses, travel, time sampling, and gear maintenance. Additionally, the cost of sampling varies among years and costs may be nonlinearly related if there is economy of scale (i.e., it may cost less per sampling unit if many are done).</p>
 <p>There are 7 field offices that have conducted PSPAP sampling since 2003. Annually the USACE provides funding to these field offices to perform PSPAP sampling. Annual values vary from</p>
-<ol style="list-style-type: decimal">
-<li>Annual funding provided to each field crew</li>
-<li>Calculate the number of bends sampled in a year</li>
-<li>Divide the cost by the total to get a field crew specific cost per bend.</li>
-<li>Model or empirical distribution</li>
-</ol>
 <ul>
 <li>The season will begin when water temperatures decline to 12.8C or less (in the fall) and will continue through June 30.</li>
 <li>The Fish Community Season will be July 1 through October 30 throughout the geographic range of the PSPAP.</li>
 </ul>
 </div>
-</div>
-<div id="important-assumptions" class="section level4">
-<h4>Important assumptions</h4>
+<div id="important-assumptions" class="section level5">
+<h5>Important assumptions</h5>
 <p>Currently the analysis assumes that the period of performance for field crews is the same as the fiscal year. Discussions with USACE contracting and PSPAP personnel suggested this was a reasonable assumption.</p>
+<!--
+Significant uncertainty exists in costs because of several factors. First, field crews tend to become more 
+efficient over time and therefore recent PSPAP costs may not represent 
+the actual costs. However, if the next iteration of the PSPAP uses 
+similar sampling units (i.e., bends within segments) to the current 
+PSPAP, then costs for field sampling will likely be similar. 
+-->
+</div>
+</div>
+<div id="combining-pspap-fundamental-objective-metrics" class="section level4">
+<h4>Combining PSPAP fundamental objective metrics</h4>
+<p>Here we describe how to combine each of the metrics associated with a PSPAP fundamental objective into an overall utility value for that objective. In particular, we walk through the steps required to value fundamental objective 2. <em>Quantify pallid strugeon population trend and abundance</em>.<br />
+The steps described in this example contain all the key elements of combining metrics and are easily extended to valuing all other PSPAP fundamental objectives. Additionally, the equations used to valuate each fundamental objective can be found in Appendix ??.</p>
+<p>First, it is important to note many of the objectives are associated with multiple levels of metrics. For example, objective 2 has 2 levels of metrics. The top level of metrics are trend estimates and abundance estimates. The second level of metrics consists of the performance metrics (bias, precision, and reliability) associated with each of the top level metrics. To obtain an overall objective utility value, we will combine metrics from the bottom level up. For example, when valuating <em>Quantify pallid strugeon population trend and abundance</em> we will:</p>
+<p>1.a. Combine trend estimator bias, trend estimator precision, and trend estimator reliability into an overall trend utility.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Combine abundance estimator bias, abundance estimator precision, and abundance estimator reliability into an overall abundance utility.</li>
+</ol>
+<ol start="2" style="list-style-type: decimal">
+<li>Combine trend utility and abundance utility into anoveral objective utility.</li>
+</ol>
+<div id="combining-performance-metrics-bias-precision-reliability" class="section level5">
+<h5>Combining Performance Metrics (Bias, Precision, Reliability)</h5>
+<p>The 3 performance metrics described above under trend can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <a href="mailto:%7B@RN4402%7D">{@RN4402}</a>. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and reliability is constrained between 0 (worst) and 1 (best).</p>
+<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalizes values to a specified minimum and maximum. For example, we can scale the bias metric to utility values varying from 0 to 1 as:</p>
+<p><span class="math display">\[U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},\]</span></p>
+<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias and we refer to <span class="math inline">\(U_{bias}\)</span> as bias utility. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot of trend bias utility, <span class="math inline">\(U_{t,bias}\)</span>, shown in Figure ??, trend esimates with smaller absolute bias are given higher utility values while increasingly large absolute bias values approach a utiliity of 0.</p>
+<p>Trend precision utility can be calculated in a similar manner. Suppose trend precision varies from a CV of 0.01 to 0.30 (where a CV value of 0.30 is not very precise). The equation to calculate scaled precision is the same as for bias; however, we do not need to take absolute values since all CV values are positive. In Figure ??, trend estimates with lower CV values have higher precision utility values, <span class="math inline">\(U_{t,prec}\)</span>, and precision utility approaches 0 as CV values increase to the maximum of 0.30.</p>
+<p>Lastly, as a probability, trend estimator reliability is already on a 0 to 1 scale and requires no additional scaling. However, the relationship of estimator reliability with the value of trend estimates is different than the relationship of bias and precision with trend estimates. Notice, estimator bias and precision can only be evaluated given an estimate was made, and reliability tells you the probability an estimate can be made. In other words, the bias and precision metrics are conditional on the estimator producing estimates. Hence, when combining trend bias, precision, and reliabilty to obtain trend utility we multiply the weighted average of the bias and trend utilities by the probability we can obtain estimates (estimator reliability):</p>
+<p><span class="math display">\[U_{trend}=(w_{t, bias}\cdot U_{t,bias}+w_{t,prec}\cdot U_{t, prec})\cdot U_{t, reli},\]</span> where <span class="math inline">\(U_{trend}\)</span> is the overall trend utility, <span class="math inline">\(U_{t,bias}\)</span> and <span class="math inline">\(U_{t, prec}\)</span> are the trend bias and trend precision utilities (proportionally scaled versions of bias and precision) previously described, <span class="math inline">\(U_{t, reli}\)</span> is a shorthand for the trend estimator reliability metric, and <span class="math inline">\(w_{t,bias}\)</span> and <span class="math inline">\(w_{t, prec}\)</span> are the weights for trend bias and trend precision.</p>
+<p>We will discuss the weights <span class="math inline">\(w_{t,bias}\)</span> and <span class="math inline">\(w_{t, prec}\)</span> in detail soon, but first let’s understand what this equation for trend utility implies. The trend utility function described above has nice properties that match our intution of what should occur when combining different levels of bias, precision, and reliability. On the one hand, monitoring designs that have a very reliable estimator that produces trend estimates with relatively low bias and relatively high precision (small CV) will have higher trend utility values (approaching 1), as desired.<br />
+On the other hand, monitoring designs with reliable estimators that produce trend estimates that are highly biased and imprecise will have a low utility (approaching 0). Additionally, monitoring designs that produce great trend estimates (low bias and high precision) but whose estimator rarely produces an estimate (near 0 reliabilty) will also have a low utility, as will be the case when all 3 performance metrics are poor.</p>
+<p>Similarly, we can define the overall abundance utility (or any other overall utility where bias, precision and reliabilty are being combined, e.g., fundamental objective 3’s survival estimate utility) as:</p>
+<p><span class="math display">\[U_{abund}=(w_{a, bias}\cdot U_{a,bias}+w_{a,prec}\cdot U_{a, prec})\cdot U_{a, reli}.\]</span></p>
+<p>As the performance metrics all approach their best case scenarios, the overall utility approaches 1 because the scaled metrics that are conditional on the existence of estimates (bias utility and precision utility) are weighted. For example, if bias and precision are valued equally, then the weights for each would be 0.5. Alternatively, if really precise estimates of trend were desired, the weight for scaled precision could be 0.75 while scaled bias is weighted at 0.25 (weights must sum to 1). Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
+<ul>
+<li>Catch effort
+<ul>
+<li>Relative bias = -85, scaled = 0.717</li>
+<li>Precision = 0.31, scaled = 0.565</li>
+<li>Performance = 1, scaled = 1</li>
+</ul></li>
+<li>Capture recapture
+<ul>
+<li>Relative bias = 5, scaled = 0.983</li>
+<li>Precision = 0.32, scaled = 0.551</li>
+<li>Performance = 0.93, scaled = 0.93</li>
+</ul></li>
+</ul>
+<p>The scaled utility for the catch effort program is:</p>
+<p><span class="math display">\[0.603= 
+(0.25\cdot 0.717+
+0.75 \cdot 0.565)
+\cdot1,\]</span></p>
+<p>and the scaled utility for the capture recapture program is:</p>
+<p><span class="math display">\[0.613= 
+(0.25\cdot 0.983+
+0.75 \cdot 0.551)
+\cdot0.93.\]</span></p>
+<p>The combined utility values indicate that the capture recapture program has slightly more value to achieve the objective of <em>quantifying population trend</em>.</p>
+<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, methods such as swing weighting (described in the next section) can aid in the weighting process, while sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible, and therefore, formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics (e.g., as we have done in the example above) is necessary.</p>
+</div>
+</div>
+<div id="swing-weighting" class="section level4">
+<h4>Swing weighting</h4>
+<p>The challenge in combining utiltities is determining how each performance metric utility should be weighted. To understand some of the complications, assume that in general we feel trend precision is more important than trend bias. Choosing a weight of <span class="math inline">\(w_{T,prec}=0.75\)</span> for precision and <span class="math inline">\(w_{T,bias}=0.25\)</span> for bias based on this feeling, as we did in the example above, is not only a very subjective approach but it also did not take into account variation in the metrics—something that should affect the weighting. For example, if all monitoring designs had trend estimates with CV values that ranged between 0.001 and 0.002 (i.e., great precision), then we’d be happy with the precision of any of our choices. Hence, if trend bias values varied greatly, when making a decision we would focus on which choice of monitoring design also led to a small bias. In this case, the bias metric should be weighted higher than the precision metric (eventhough in general we think precision is more important than bias) because the bias values should have a greater impact on the choice of monitoring design given the small variation in precision values. To curtail these complications we used swing weighting to determe metric utility weights.</p>
+<p>Swing weighting, as a structured approach, is less subjective and takes into account variation. The process involves comparing the worst case to the best case scenario for each metric while holding each of the other metrics constant at their worst case. In other words, swing weighting forces you to think about how your decision is impacted when each metric “swings” from worst to best. These “swings” are first ranked and then valued. The swing that has the most impact on the decision process (relative to the other swings) would be given a rank of 1 (most important), the swing with the second greatest impact on the decision a rank of 2, and so on. The baseline scenario, where all metrics are set to their worst case, always gets the highest (worst) rank. The scenario with a rank of 1 is assigned a value of 100 and the baseline scenario is assigned a value of 0. All other cases are then given a value from 0 to 100, representing the impact they have on the decision making process relative to the highest and lowest ranked scenarios.</p>
+<p>In the case of trend described a couple paragraphs ago, lets say the trend bias varies from 1%-70%. Then, as trend CV values swing from 0.002 (worst) to 0.001 (best), there is little impact on our decision process relative to when trend bias values swing from 70% (worst) to 1% (best). Therefore, we would rank the scenario with the best bias with a 1 and the scenario with the best precision with a 2 (see Figure/Table ??). The scenario with the best bias would get a value of 100, and the scenario with the best precision will get a rank from 0 to 100—0 if I think having the best precision relative to the worst precsion has no impact on the decision (i.e., its just as bad as thebaseline scenario) and 100 if I think having the best precision has just as much impact on the decision as the swing in bias does. For the sake of example, assume I think the impact of the precision swing is about 1/10 the impact of the bias swing. Then I would value the scenario with the best precision with a 10. It is important to note, that this does not mean that precision is weighted by 0.10; it just means that having the best precision and the worst bias is worth about 1/10 as having the worst precision and the best bias. Instead, the weights are determined by dividing each value by the sum of all values—since any case having both the best precision and the best bias[^1] would end up with the highest value of 110 or a utility weight of 1, as desired.</p>
+<p>[^1] Under the swing weighting assumption that the impact on the decision is a linear function of the metrics</p>
+<div id="stakeholder-input" class="section level5">
+<h5>Stakeholder Input</h5>
+<p>Inevitably, individual stakeholders, as well as different stakeholder agencies, will have different opinions on what metrics should have a greater impact on the choosing a monitoring design. As a consistent, structured process, swing weighting provides an excellent approach for comparing and compiling stakeholder weights. We are currently in the process of using swing weighting as a way to understand what differences and similarities there are in stakeholder opinions on the importance of objective metrics and the consequences of these on valuating various monitoring designs. While PSPAP v. 2.0 will not be making any decisions based on these weights, this analysis will provide valuable stakeholder information to and be a tool for decision makers.</p>
+<p>In order for swing weighting to be used consistently amongst stakeholders, it is important for each stakeholder to have a good understanding of the swing weighting process. We created YouTube videos that described the swing weighting process and its role in the PSPAP v. 2.0 {cite swing weighting tutorial video} and explained the meaning and variation in the abundance and trend metrics {cite Abundance and Trend videos}. We posted a downloadable swing weighting form, links to the YouTube videos described above, and instructions on how to fill in the swing weighting form to the PSPAP v. 2.0 blog {cite swing weighting blog page}. An email was also sent out to stakeholders inviting them to visit the blog to fill in and submit a swing weighting form. Once<br />
+swing weighting data has been collected, valuation of monitoring designs can be considered across the range of stakeholder weighting schemes, as well as looked at by stakeholder angency.</p>
+</div>
+</div>
+<div id="combining-abundance-and-trend-top-level-metrics" class="section level4">
+<h4>Combining Abundance and Trend (Top Level Metrics)</h4>
+<p>Once overall abundance and trend utilities have been calculated from their performance metrics, we combine these utilities and valuate the objective <em>Quantifying population trend and abundance</em>. This process mimics the one described above for the performance metrics, with two important differences. First, utility values are always between 0 and 1 and therefore, the abundance and trend utilities are on similar scales (and need no proportional scaling). Second, it is always possible to calculate an abundance and a trend utility value for each monitoring design, and therefore, these values are not conditional on any other situation (e.g., estimator reliability). We do, however, still need to use a weighting method, such as swing weighting, to weight the value of trend and abundance so that we may calculate utility as:</p>
+<p><span class="math display">\[U_2=w_{abund}\cdot U_{abund}+w_{trend}\cdot U_{trend},\]</span> where <span class="math inline">\(U_2\)</span> is the utility of fundamental objective 2 (Quantifying population trend and abundance) and <span class="math inline">\(w_{abund}\)</span> and <span class="math inline">\(w_{trend}\)</span> are the swing weights for abundance and trend, respectively.</p>
+</div>
+</div>
+<div id="combining-fundamental-objective-utilities" class="section level3">
+<h3>Combining fundamental objective utilities</h3>
+<p>As you may have expected, we can combine the fundamental objective utilities in the same manner as we have been combining metrics (and utilities) at lower levels:</p>
+<p><span class="math display">\[U_{MD}=w_1\cdot U_1+w_2\cdot U_2+w_3\cdot U_3+w_4\cdot U_4+w_5\cdot U_5,\]</span> where <span class="math inline">\(U_{MD}\)</span> is the value of a particular monitoring design and <span class="math inline">\(U_n\)</span> and <span class="math inline">\(w_n\)</span> are the utility of and swing weight for PSPAP fundamental objective <span class="math inline">\(n\)</span> (for <span class="math inline">\(n=1,\ldots,5\)</span>), respecitively, as calcualted with respect to the given monitoring design.</p>
 <p>The value of a monitoring design measures both its utility, or usefulness, in achieving non-cost objectives, and its cost. If there existed a monitoring design that was clearly the most useful when costs were not taken into account and also costed the least, then a management decision would be straight forward. However, maximizing a monitoring program’s utility (ignoring cost objectives) and minimizing its cost will often be in conflict with one another, forcing a decision to be made given tradeoffs in cost and utility. How these tradeoffs are best reconciled can be a source of debate. Futhermore, identifying a monitoring design that is “clearly the most useful” is not without issues, and we’ll note two of them here. First, what is the “most useful” is not well defined and likely varies from stakeholder to stakeholder. Second, what is the most useful is not a stagnant concept. In particular, knowledge of uncertainties associated with monitoring pallid sturgeon will increase over time. As we learn more we can use that knowledge to re-value monitoring programs and make better decisions, and therefore, it is likely that what is viewed as the most useful program will change to reflect gains in knowledge. Additionally, what is the most useful given budget constraints is also not stagnant. Varying yearly budgets, which can limit or expand the monitoring possibilities, can keep monitoring program values in flux.</p>
-<p>All of these complications illustrate the difficulties involved in calculating a value of a particular monitoring design. While the discussion above may make valuating a monitoring program seem like daunting task, the structured decision making concepts and tools used in the process above provide an inclusive and transparent way of valuing monitoring designs that is linked to stakeholder objectives and values through quantifiable metrics and swing weighting. Additionally, the use of Bayesian Decision Networks allows for the monitoring design valuation process described to be flexible enough to account for gains in knowledge, including knowledge of a budget change, over time. This is not to say that the valuation process is not without complications or will make decision making simple and straight forward. Instead, we recognize that decision making is inherently complicated and are aiming to provide decision makers with the most informative and flexible tools as possible when it comes to comparing alternative monitoring designs.</p>
-<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
+<p>All of these complications illustrate the difficulties involved in calculating a value of a particular monitoring design. While the discussion above may make valuating a monitoring program seem like a daunting task, the structured decision making concepts and tools used in the process we’ve described provide an inclusive and transparent way of valuing monitoring designs that is linked to stakeholder objectives and values through quantifiable metrics and swing weighting. Additionally, the use of Bayesian Decision Networks allows for the monitoring design valuation process described to be flexible enough to account for gains in knowledge, including knowledge of a budget change, over time. This is not to say that the valuation process is not without complications or will make decision making simple and straight forward. Instead, we recognize that decision making is inherently complicated and are aiming to provide decision makers with the most informative and flexible tools as possible when it comes to comparing alternative monitoring designs.</p>
 <!--
 Quantify PS abundance or relative abundance  
 Quantify catch rates of age 0 and age 1 PS   
@@ -1118,7 +1281,6 @@ To do:
 </div>
 </div>
 </div>
-</div>
 <div id="routing-of-monitoring-design-sub-objectives" class="section level1">
 <h1>Routing of monitoring design sub-objectives</h1>
 <div id="fecundity" class="section level2">
@@ -1184,6 +1346,7 @@ rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build p
 <p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-1.png" width="672" /> Figure 8.</p>
 <p>Figure 9.</p>
 <p>Figure 10. In the plot above, values with lower performance values have lower values and increasing values approach 1.</p>
+<p>Figure ?? <img src="images/Objectives_and_Metrics_5.png" /><!-- --></p>
 </div>
 <div id="effort-figures" class="section level2">
 <h2>Effort Figures</h2>

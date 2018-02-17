@@ -190,7 +190,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Simulating Catch Data</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
-<h4 class="date"><em>14 February, 2018</em></h4>
+<h4 class="date"><em>16 February, 2018</em></h4>
 
 </div>
 
@@ -203,6 +203,9 @@ source("_R/3_load-and-clean.R")
 source("_R/5_tables.R")
 rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
 -->
+<div id="simulation-of-catch-data-from-known-catchabilities-and-efforts-given-alternative-monitoring-designs" class="section level2">
+<h2>Simulation of catch data from known catchabilities and efforts given alternative monitoring designs</h2>
+<p>Estimates of population abundance and trend are key to assessing AM plan pallid sturgeon sub-objectives, both of which have been redefined as PSPAP fundamental objectives 1. Detect and quantify age-1 recruitment and 2. Quantify pallid sturgeon trend and abundance. Therefore, both the generation and the assessment of abundance and trend estimates play a key role in this analysis. In order to generate such estimates, catch data is needed and must be simulated following the procedures laid out in the alternative monitoring designs. Moreover, since catchability and capture probability of particular gears are important elements of simulating catch data but also highly uncertain and in some cases unknown, it is essential that catch data is simulated over a wide range of plausible gear catchabilities.</p>
 <!--
 Simulated catch data was essential to calculating estimates of 
 population abundance and trend using alternative estimators. It is 
@@ -213,18 +216,15 @@ component of evaluating varying monitoring designs and their ability to
 achieve the fundamental objectives identified during the first 
 population assessment program workshop (See Section ??).   
 
-The catchability and capture probability of particular gears are 
-important elements of simulating catch data. Since these values are 
-highly uncertain and in some case unknown, we simulate catch data over a 
-range of plausible gear catchabilities.
+
 -->
 <div id="objectives" class="section level4">
 <h4>Objectives</h4>
 <p>The objectives of the catch data simulations are, for each monitoring design considered, to:</p>
 <ol style="list-style-type: decimal">
 <li>Simulate 10 years of bend sampling data (i.e. which bends are sampled during which years),</li>
-<li>Simulate 10 years of catch data using bends at the spatial scale,</li>
-<li>Include information in the catch data that could be reasonably assessed by sampling crews in the field and is relevant to meeting fundamental or ancillary objectives,</li>
+<li>Simulate 10 years of catch data from known gear catchabilities and effort using bends at the spatial scale,</li>
+<li>Include information in the catch data that could be reasonably assessed by sampling crews in the field and is relevant to meeting fundamental or ancillary objectives (e.g., length),</li>
 <li>Allow gear catchability to vary over a wide range of values in order to evaluate its effect on monitoring design outcomes, and</li>
 <li>Simulate several catch data tables for each of the simulated reference populations.</li>
 </ol>
@@ -246,22 +246,10 @@ simulations with selective gears. 6. Gears are not size selective. -->
 <p>To understand assumption 5, it is important to first describe the sampling relationship among years, occasions, deployments, and bends. In short, during each year a number of bends will be selected to be sampled. During a particular year, each selected bend will be sampled on several occasions. Occasions are short periods of time, say 24 hours, during which multiple deployments of a gear are used to sample the population throughout the bend. Using this terminology assumption 4 means both that there is a zero probability that the same fish will be caught by two separate deployments (within the same occasion), and that any particular deployment does not affect the probability that a fish is caught by any other deployment within the same sampling occasion. In cases where there is little fish movement within occasions or where gears are set sufficiently far apart, these assumptions are very likely met. <!--For some gear types these assumptions are very likely met, while with others 
 there are some caveats that we examine in Appendix.--></p>
 <!--# Methods-->
-<!--#### Monitoring Designs
-
-For each of the simulated reference populations, various sampling 
-decisions can be implemented to obtain simulated catch data. The choice 
-of monitoring design determines the particular combination of decisions 
-used in this process---system-level sampling design, within bend and 
-year sampling design, gear selection, and measurements taken on 
-individual fish are all prescribed by the monitoring design (Figure 1). 
-Alternative sampling decisions of interest were identified during the 
-PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up 
-input from stakeholders and experts in the system. Simulated catch data 
-have been generated from the range of the identified alternative 
-sampling decisions, with the exception that some individual measurements 
-have yet to be implemented and the spatially balanced system-level 
-sampling design is still a work in progress. 
--->
+</div>
+<div id="monitoring-designs" class="section level4">
+<h4>Monitoring Designs</h4>
+<p>For each of the simulated reference populations, various sampling decisions can be implemented to obtain simulated catch data. The choice of monitoring design determines the particular combination of decisions used in this process—system-level sampling design, within bend and year sampling design, gear selection, and measurements taken on individual fish are all prescribed by the monitoring design (Figure 1). Alternative sampling decisions of interest were identified during the PSPAP workshop at the 2017 MRNRC meeting, as well as during follow-up input from stakeholders and experts in the system. Simulated catch data have been generated from the range of the identified alternative sampling decisions, with the exception that some individual measurements have yet to be implemented and the spatially balanced system-level sampling design is still a work in progress.</p>
 </div>
 <div id="process" class="section level4">
 <h4>Process</h4>
@@ -284,7 +272,7 @@ sampling design is still a work in progress.
 <div id="catchability-distributions" class="section level5">
 <h5>Catchability Distributions</h5>
 <p>Gear specific catchability distributions were set up such that the log-odds of catchability (<span class="math inline">\(q\)</span>) was normally distributed: <span class="math display">\[\ln\left(\frac{q}{1-q}\right)\sim \mathcal{N}\left(\mu, 
-\beta_0\right),\]</span> where <span class="math inline">\(\mu=\ln\frac{\mu_q}{1-\mu_q}\)</span> and <span class="math inline">\(\mu_q\)</span> is the expected catchability of the gear. Because deployment catchability values, or the probability of catching a single fish with one unit of effort, are a source of uncertainty we allowed the choices of <span class="math inline">\(\mu_q\)</span> and <span class="math inline">\(\beta_0\)</span> to vary for among catch data simulations (CITE A TABLE OR SOMETHING THAT LISTS RANGES OF PARAMS).</p>
+\beta_0\right),\]</span> where <span class="math inline">\(\mu=\ln\frac{\mu_q}{1-\mu_q}\)</span> and <span class="math inline">\(\mu_q\)</span> is the expected catchability of the gear. Because deployment catchability values, or the probability of catching a single fish with one unit of effort, are a source of uncertainty we allowed the choices of <span class="math inline">\(\mu_q\)</span> and <span class="math inline">\(\beta_0\)</span> to vary for among catch data simulations {CITE A TABLE OR SOMETHING THAT LISTS RANGES OF PARAMS}.</p>
 </div>
 <div id="gear-selection-and-size-selectivity" class="section level5">
 <h5>Gear Selection and Size Selectivity</h5>
@@ -315,6 +303,7 @@ located within bend $b$ in year $y$ during sampling occasion $occ$. In
 other words capture probability was location and time dependent but not 
 dependent on past behavior or individual attributes (e.g. size). 
 -->
+</div>
 </div>
 </div>
 <div class="footnotes">

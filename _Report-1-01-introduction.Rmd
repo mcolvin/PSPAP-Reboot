@@ -367,17 +367,18 @@ in the number of sampling occasions (times within a year that each bend
 is sampled), as well as the number of gear deployments within a 
 particular occasion. Additionally, each sampling design can be 
 implemented with varying gears: gill nets, trammel nets, otter trawls, 
-trotlines, or a combination of these. The catch is simulated from 
+trotlines, or a combination of these. 
+
+
+<!--The catch is simulated from 
 gear-specific catchability values which were bounded to produce 
 plausible overall capture probabilities where catchability is defined as 
 the probability of capture 1 fish per unit effort (Hubert and Fabrizio 
-2007). 
-
-### 3. Estimate metrics from the catch data
+2007).--> 
 
 Once a sampling design is selected, 10 years of occasion-level catch 
 data are simulated for each of the selected bends. Each fish within a 
-selected bend has a probability, P, of being captured. This 
+selected bend has a probability, $p_{occ}$, of being captured. This 
 occasion-level capture probability varies from occasion to occasion, as 
 it is calculated from the individualized deployment catchability and 
 effort values. For each deployment, effort values f are drawn from a 
@@ -391,6 +392,8 @@ P. When a fish is successfully caught, fish id, location (bend), timing
 individual attributes (e.g., length, weight, sex) are recorded, 
 simulating a complete capture history at the bend level for the given 
 sampling design. 
+
+### 3. Estimate metrics from the catch data
 
 ### 4. Compare the estimates to the “true” values
 

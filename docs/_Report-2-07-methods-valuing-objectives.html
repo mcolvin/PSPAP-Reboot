@@ -190,7 +190,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Valuating Monitoring Designs</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
-<h4 class="date"><em>16 February, 2018</em></h4>
+<h4 class="date"><em>17 February, 2018</em></h4>
 
 </div>
 
@@ -201,35 +201,32 @@ To do:
 -->
 <div id="valuation-of-a-monitoring-design" class="section level2">
 <h2>Valuation of a monitoring design</h2>
-<p>Valuating monitoring designs, or quantifying overall utility, provides a means for comparing alternative monitoring programs: the higher the value, the better the design. For monitoring design values to be as meaningful and objective as possible, it is necessary for the valuation process to formally link the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics. The value of a monitoring design can then be thought of as an overall measurement of its utility, or usefulness, in achieving all objectives. Quantifying such an overall monitoring design utility requires two steps:</p>
+<p>Valuating monitoring designs, or quantifying overall utility, provides a means for comparing alternative monitoring programs: the higher the value, the better the design (under the given valuation process). For monitoring design values to be as meaningful and objective as possible, it is necessary for the valuation process to formally link the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics. The value of a monitoring design can then be thought of as an overall measurement of its utility, or usefulness, in achieving all objectives. Quantifying such an overall monitoring design utility requires two steps:</p>
 <ol style="list-style-type: decimal">
-<li>Quantify the ability of the monitoring design to achieve each individual objective, i.e., calculate objective utilities from quantifiable performance metrics,</li>
+<li>Quantify the ability of the monitoring design to achieve each individual objective, i.e., calculate objective utilities from quantifiable attributes and metrics,</li>
 <li>Combine the objective utilities into an overall value.</li>
 </ol>
 <div id="calculating-objective-utilities" class="section level3">
 <h3>Calculating objective utilities</h3>
-<p>The calcuation of objective utilities relies heavily upon the objectives and metrics identified by stakeholders over the past year, summarized in Figure ?? (See also “Eliciting stakeholder objectives”). When multiple metrics are associated with an objective it will be necessary to combine metric values into a single objective utility. For example, trend bias, trend precision, and trend performance metrics will all be combined into an overall utility value for “Quantifying PS trend”.<br />
-Here, we describe in detail the metrics used to quantify each stakeholder objective as well as the process used in combining these metrics, where needed, into a comprehensive objective utility.</p>
-<!--#### Objectives hierarchy and attributes ...which?-->
-<div id="objective-metrics" class="section level4">
-<h4>Objective metrics</h4>
-<p>Each bold numbered objective below corresponds to one of the five fundamental objectives identified by stakeholders and is associated with a list of measurable attributes. For example there are 3 attributes under objective 1 that can be quantified, using any listed metrics, for each monitoring alternative. Assuming these attributes are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet may receive a weight of 33% if each attribute is equally important to decision makers. Alternatively these values can be weighted to reflect perceived importance by decision makers.</p>
-</div>
+<p>The calcuation of objective utilities relies heavily upon the objectives and metrics identified by stakeholders over the past year, summarized in Figure ?? (See also “Eliciting stakeholder objectives”). When multiple metrics are associated with an objective it will be necessary to combine metric values into a single objective utility. Before describing the process used to combine objective metrics into a comprehensive objective utility, we first describe in detail the metrics used to quantify each of the 5 stakeholder objectives.</p>
+<!--Chat with Mike on Fixing These-->
 <div id="quantify-ps-recruitment-to-age-1-natural-origin" class="section level4">
-<h4>1. Quantify PS recruitment to age-1 (Natural origin)</h4>
+<h4>1. Quantify PS recruitment to age-1 (natural origin)</h4>
+<div id="detection" class="section level5">
+<h5>Detection</h5>
 <ol style="list-style-type: decimal">
-<li>Power to detect age-1 natural origin recruits if recruitment occurs</li>
-<li>Segment level age-1 abundance
-<ol style="list-style-type: decimal">
-<li>bias</li>
-<li>precision</li>
-</ol></li>
-<li>Estimate age-1 recruitment rate (natural origin)
-<ol style="list-style-type: decimal">
-<li>bias</li>
-<li>precision</li>
-</ol></li>
+<li><p>Power to detect age-1 natural origin recruits if recruitment occurs</p></li>
+<li><p>Estimator reliability</p></li>
 </ol>
+</div>
+<div id="age-1-abundance-estimates-from-population-model-back-calculation-estimates" class="section level5">
+<h5>Age-1 Abundance Estimates (from population model back calculation estimates)</h5>
+<ol style="list-style-type: decimal">
+<li><p><strong>Bias: How do age-1 abundance estimates compare to the true age-1 recruitment numbers given an estimate can be made.</strong></p></li>
+<li><p><strong>Precision: How precise is an age-1 abundance estimate, given an estimate is made.</strong></p></li>
+<li><p><strong>Reliability: The probability an estimate can be made under the given monitoring design.</strong></p></li>
+</ol>
+</div>
 </div>
 <div id="quantify-ps-population-trend-and-abundance-natural-and-hatchery-origin" class="section level4">
 <h4>2. Quantify PS population trend and abundance (natural and hatchery origin)</h4>
@@ -239,7 +236,7 @@ Here, we describe in detail the metrics used to quantify each stakeholder object
 <ol style="list-style-type: decimal">
 <li><p><strong>Bias: How does a trend estimate compare to the true trend, given a trend estimate is made.</strong> Trend bias is calculated as the estimated value minus the true value. For example if the true population trend is an annual decrease of 5%, and the estimated population trend is an annual decrease of 7%, then the trend bias is -0.02 (an underestimate of 2%).</p></li>
 <li><p><strong>Precision: How precise is an estimated trend value, given a trend estimate is made.</strong> Precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. There is no real threshold for what is optimal for estimator precision regarding decision making. Generally speaking, the more precise an estimate, the better. There are other alternatives to CV. However, CV is commonly used in fisheries {citation needed?} and therefore likely to be familiar.</p></li>
-<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converge and no issues were flagged. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 catch data sets per population for each of 2 alternative monitoring programs, a catch effort program and a capture recapture robust design program. We then estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse. Assuming that only 1500 of the 2000 catch data sets allowed for a trend estimate using the robust design estimator the trend estimate performance would be 1500/2000=0.75. Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has unique relationship with trend estimate utility, as described in detail in Section ?? below.</p></li>
+<li><p><strong>Reliability: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converge and no issues were flagged. Let’s step through an example to clarify exactly what we are talking about. Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then we simulate 10 catch data sets per population for each of 2 alternative monitoring programs, a catch effort program and a capture recapture robust design program. We then estimate trend from the estimates from the 2 designs. In the case of a catch effort based monitoring program, then performance is 100% because there are no instances where trend cannot be estimated from CPUE data, albeit zeros can be an issue at low abundances or capture probability, but that does not preclude us from calculating CPUE. However, if capture probability is low, then there may be instances where a capture recapture estimator just does not work, and estimates cannot be made because the capture recapture histories are just too sparse. Assuming that only 1500 of the 2000 catch data sets allowed for a trend estimate using the robust design estimator the trend estimate performance would be 1500/2000=0.75. Since trend precision and bias can only be evaulated given the estimator performs (produces estimates), the performance metric has unique relationship with trend estimate utility, as described in detail in Section ?? below.</p></li>
 </ol>
 </div>
 <div id="abundance-estimates" class="section level5">
@@ -248,7 +245,7 @@ Here, we describe in detail the metrics used to quantify each stakeholder object
 <ol style="list-style-type: decimal">
 <li><p><strong>Bias: How does an abundance estimate compare to the true abundance, given an estimate is made.</strong> In the case of abundance bias,the relative bias (calculated as the estimated value minus the true value, all divided by the true value) was used. For example if the true basin abundance is 25000 pallids and the estimated abundance is 20000 then the abundance bias is -5000/25000=-0.2. Using relative bias as the metric allows for a measurement that is more comparable across a wide range of population sizes. In the example just described, the absolute bias was -5000 with a relative bias of 0.2. If the actual population had instead consisted of 5500 fish but still had a bias of -5000, then the estimated population would have been 500 fish. Notice, the estimate for the first population is only off by a factor slightly greater than 1 but second population is off by more than a factor of 10, yet they both have the same bias. However, their relative bias shows a difference. While the first population’s estimate has a relative bias of 0.20, the second population’s estimate has a much worse relative bias of 0.91.</p></li>
 <li><p><strong>Precision: How precise is an estimated abundance value, given an abundance estimate is made.</strong> As with trend, abundance precision is specified as the coefficient of variation (CV) calculated as the standard error of the estimate divided by the parameter estimate. Again, while there is no real threshold for what is optimal for estimator precision regarding decision making, generally speaking, the more precise an estimate, the better. As mentioned earlier, there are other alternatives to CV; however, there are benefits to using CV. Not only is CV commonly used in fisheries, but it is also a relative measure that takes into account differences in the standard error across wider ranges of abundance. For example, a standard error of 5000 fish for an estimate of 25000 fish, has different meaning than a standard error of 5000 fish for an estimate of 5500 fish. The CV conveys this difference in a similar manner to the relative bias metric, as described above.</p></li>
-<li><p><strong>Performance: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above. Since abundance precision and bias can only be evaulated given the estimator performs (produces estimates), as with trend performance, the abundance performance metric has unique relationship with abundance estimate utility (see Section ??).</p></li>
+<li><p><strong>Reliability: The probability a trend estimate can be made under the given monitoring design.</strong> In some cases, an estimator (e.g., Robust Design) may not have enough information for the estimator to provide an actual abundance estimate. This measure is quantified as the proportion of stochastic simulations (under the given monitoring design) where the estimator converges and no issues were flagged. For a more precise example, see the description of trend estimator performance above. Since abundance precision and bias can only be evaulated given the estimator performs (produces estimates), as with trend performance, the abundance performance metric has unique relationship with abundance estimate utility (see Section ??).</p></li>
 </ol>
 </div>
 </div>
@@ -262,138 +259,197 @@ Here, we describe in detail the metrics used to quantify each stakeholder object
 </div>
 <div id="provide-relevant-ps-model-inputs" class="section level4">
 <h4>4. Provide relevant PS model inputs</h4>
-<ol style="list-style-type: decimal">
-<li>Estimate segment-level abundance, origin and stage specific
+<div id="abundance-estimates-1" class="section level5">
+<h5>Abundance Estimates</h5>
+<p>Estimate segment level abundance, origin and stage specific</p>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
+<li>reliability</li>
 <li>spatial distribution</li>
-</ol></li>
-<li>Survival (RPMA level)
+</ol>
+</div>
+<div id="survival-estimates" class="section level5">
+<h5>Survival Estimates</h5>
+<p>Estimate average annual survival at RPMA level.</p>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
-<li>Fecundity (RPMA level)
+<li>reliability</li>
+</ol>
+</div>
+<div id="fecundity-estimates" class="section level5">
+<h5>Fecundity Estimates</h5>
+<p>Estimate average annual fecundity at RPMA level</p>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
-<li>Growth (RPMA)
+<li>reliability</li>
+</ol>
+</div>
+<div id="growth-estimates-rpma" class="section level5">
+<h5>Growth Estimates (RPMA)</h5>
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
-<li>Movement
+<li>reliability</li>
+</ol>
+</div>
+<div id="movement-estimates" class="section level5">
+<h5>Movement Estimates</h5>
 <ol style="list-style-type: decimal">
-<li>fidelity</li>
-<li>among segment movement</li>
-</ol></li>
-<li>Population structure and characteristics (segment level)
-<ol style="list-style-type: decimal">
-<li>Size structure
+<li>Site fidelity
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
+<li>reliability</li>
 </ol></li>
-<li>Sex ratio (segment level)
+<li>Among segment movement
 <ol style="list-style-type: decimal">
 <li>bias</li>
 <li>precision</li>
-</ol></li>
+<li>reliability</li>
 </ol></li>
 </ol>
+</div>
+<div id="size-structure-segment-level" class="section level5">
+<h5>Size structure (segment level)</h5>
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+<li>reliability</li>
+</ol>
+</div>
+<div id="sex-ratio-segment-level" class="section level5">
+<h5>Sex ratio (segment level)</h5>
+<ol style="list-style-type: decimal">
+<li>bias</li>
+<li>precision</li>
+<li>reliability</li>
+</ol>
+</div>
 </div>
 <div id="minimize-costs-and-do-not-exceed-budget-constraints" class="section level4">
 <h4>5. Minimize costs (and do not exceed budget constraints)</h4>
 <ol style="list-style-type: decimal">
 <li><strong>Cost: the expected cost of implementing the given monitoring design.</strong> Cost is the ultimate PSPAP constraint. Designs exceeding alloted funding will not be considered. The expected cost for each design will be calculated. The expected cost can be used 3 ways. First it can screen for designs that exceed cost constraints. Second, it can be used in an absolute sense to quantify design cost. Thirdly,it can be used relatively by dividing the value by the expected cost of the current PSPAP. In this last case, values less than 1 represent cheaper programs and values greater than 1 represent more expensive monitoring programs than the current PSPAP.</li>
 </ol>
-</div>
-</div>
-<div id="valuing-the-fundamental-objective" class="section level3">
-<h3>Valuing the fundamental objective</h3>
-<p>The 3 metrics described above can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <span class="citation">[@RN4402]</span>. The utility is then used to valuate alternative monitoring programs. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and reliability is constrained between 0 (worst) and 1 (best).</p>
-<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalized values to a specified minimum and maximum. For example, we can scale the bias to values varying from 0 to 1 as:</p>
-<p><span class="math display">\[U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},\]</span></p>
-<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot below, values with lower proportional bias are given higher values, and increasing values approach 0.</p>
-<p>Now let’s look at the precision metric. Suppose it varies from 10 to 300 (not very precise). The equation to calculate scaled precision is the same as before. However, we do not need to take absolute values since all values are positive. In the plot below, values with lower CV values have higher precision utility values, and precision utility approaches 0 as CV values increase to the maximum.</p>
-<!--Lastly, let's look at performance. Suppose performance values from 
-simulating multiple replicates of each monitoring design vary from 35% 
-to 100%. The difference between the performance metric with bias and 
-precision is that higher values are more desirable and therefore we need 
-to rearrange the proportional scaling equation to reflect this as, 
--->
-<p>ADD IN SOMETHING ABOUT BIAS AND PRECISION ESTIMATES BEING CONDITIONAL ON RELIABILITY/PERFORMANCE AND HOW WE DEAL WITH THIS</p>
-</div>
-<div id="linking-monitoring-designs-and-objectives" class="section level3">
-<h3>Linking monitoring designs and objectives</h3>
-<p>NEED TO CHANGE AROUND DUE TO NEW WAY OF HANDLING RELIABILITY/PERFORMANCE AND MAKE A NOTE ON RELATIVE VS ABSOLUTE</p>
-<p>We can combine the utility values now such that monitoring designs resulting in a trend estimate with relatively low bias, relatively high precision, and good performance have higher values (i.e., approaching 1) and estimates of the trend that is biased, imprecise with poor performance approach 0. Values approach 1 because each of the scaled metrics is weighted. For example, if each metric is valued equally, then the weights would be 1/3. Alternatively, if really precise estimates of trend were desired the weight for scaled trend could be 0.5 and the remaining metrics weighted at 0.25. Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
-<ul>
-<li>Catch effort
-<ul>
-<li>Proportional bias = -60, scaled = 0.8</li>
-<li>Precision = 112, scaled = 0.648</li>
-<li>Performance = 100, scaled = 1</li>
-</ul></li>
-<li>Capture recapture
-<ul>
-<li>Proportional bias = 5, scaled = 0.983</li>
-<li>Precision = 115, scaled = 0.638</li>
-<li>Performance = 90, scaled = 0.857</li>
-</ul></li>
-</ul>
-<p>The scaled utility for the catch effort program is:</p>
-<p><span class="math display">\[0.774= 
-0.25\cdot 0.8+
-0.50 \cdot 0.648+
-0.25\cdot1,\]</span></p>
-<p>and the scaled utility for the capture recapture program is</p>
-<p><span class="math display">\[0.779= 
-0.25\cdot 0.983+
-0.50 \cdot 0.638+
-0.25\cdot0.857.\]</span></p>
-<p>The combined utility values indicate that the capture recapture program has slightly more value to achieve the objective of <em>quantifing population trend</em>.</p>
-<p><span class="math display">\[U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.\]</span></p>
-</div>
-</div>
-<div id="swing-weighting" class="section level2">
-<h2>Swing weighting</h2>
-<p>The challenge in combining utiltities is determining how each performance metric utility should be weighted. To understand some of the complications assume that in general we feel trend precision is more important than trend bias. Choosing a weight of 0.75 for precision and 0.25 for bias, based on this feeling as we did in the example above, is not only a very subjective approach but it also did not take into account variation in the metrics—something that should affect the weighting. For example, if all monitoring designs had trend estimates with CV values that ranged between 0.001 and 0.002 (i.e., great precision), then we’d be happy with the precision of any of our choices. Hence, if trend bias values varied greatly, when making a decision we would focus on which choice of monitoring design also led to a small bias. In this case, the bias metric should be weighted higher than the precision metric (eventhough in general we think precision is more important than bias) because the bias values should have a greater impact on the choice of monitoring design given the small variation in precision values. To curtail these complications we used swing weighting to determe metric utility weights.</p>
-<p>Swing weighting, as a structured approach, is less subjective and takes into account variation. The process involves comparing the worst case to the best case scenario for each metric while holding each of the other metrics constant at their worst case. In other words, swing weighting forces you to think about how your decision is impacted when each metric “swings” from worst to best. These “swings” are first ranked and then valued. The swing that has the most impact on the decision process (relative to the other swings) would be given a rank of 1 (most important), the swing with the second greatest impact on the decision a rank of 2, and so on. The baseline scenario, where all metrics are set to their worst case, always gets the highest (worst) rank. The scenario with a rank of 1 is assigned a value of 100 and the baseline scenario is assigned a value of 0. All other cases are then given a value from 0 to 100, representing the impact they have on the decision making process relative to the highest and lowest ranked scenarios.</p>
-<p>In the case of trend described a couple paragraphs ago, lets say the trend bias varies from 1%-70%. Then, as trend CV values swing from 0.002 (worst) to 0.001 (best), there is little impact on our decision process relative to when trend bias values swing from 70% (worst) to 1% (best). Therefore, we would rank the scenario with the best bias with a 1 and the scenario with the best precision with a 2 (see Figure/Table ??). The scenario with the best bias would get a value of 100, and the scenario with the best precision will get a rank from 0 to 100—0 if I think having the best precision relative to the worst precsion has no impact on the decision (i.e., its just as bad as thebaseline scenario) and 100 if I think having the best precision has just as much impact on the decision as the swing in bias does. For the sake of example, assume I think the impact of the precision swing is about 1/10 the impact of the bias swing. Then I would value the scenario with the best precision with a 10. It is important to note, that this does not mean that precision is weighted by 0.10; it just means that having the best precision and the worst bias is worth about 1/10 as having the worst precision and the best bias. Instead, the weights are determined by dividing each value by the sum of all values—since any case having both the best precision and the best bias[^1] would end up with the highest value of 110 or a utility weight of 1, as desired.</p>
-<p>[^1] Under the swing weighting assumption that the impact on the decision is a linear function of the metrics</p>
-<div id="stakeholder-input" class="section level3">
-<h3>Stakeholder Input</h3>
-<p>Inevitably, individual stakeholders, as well as different stakeholder agencies, will have different opinions on what metrics should have a greater impact on the choosing a monitoring design. As a consistent, structured process, swing weighting provides an excellent approach for comparing and compiling stakeholder weights. We are currently in the process of using swing weighting as a way to understand what differences and similarities there are in stakeholder opinions on the importance of objective metrics and the consequences of these on valuating various monitoring designs. While PSPAP v. 2.0 will not be making any decisions based on these weights, this analysis will provide valuable stakeholder information to and be a tool for decision makers.</p>
-<p>In order for swing weighting to be used consistently amongst stakeholders, it is important for each stakeholder to have a good understanding of the swing weighting process. We created YouTube videos that described the swing weighting process and its role in the PSPAP v. 2.0 {cite swing weighting tutorial video} and explained the meaning and variation in the abundance and trend metrics {cite Abundance and Trend videos}. We posted a downloadable swing weighting form, links to the YouTube videos described above, and instructions on how to fill in the swing weighting form to the PSPAP v. 2.0 blog {cite swing weighting blog page}. An email was also sent out to stakeholders inviting them to visit the blog to fill in and submit a swing weighting form. Once<br />
-swing weighting data has been collected, valuation of monitoring designs can be considered across the range of stakeholder weighting schemes, as well as looked at by stakeholder angency.</p>
-<div id="cost-vs.utility" class="section level4">
-<h4>Cost vs. Utility</h4>
-<p>Significant uncertainty exists in costs because of several factors. First, field crews tend to become more efficient over time and therefore recent PSPAP costs may not represent the actual costs. However, if the next iteration of the PSPAP uses similar sampling units (i.e., bends within segments) to the current PSPAP, then costs for field sampling will likely be similar. SECOND AND THIRD??? DOES THIS UNCERTAINTY VARY BY MONITORING DESIGN? IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??</p>
+<p>In general, expected cost will be calculated using the following process:</p>
+<!--Modified from original to match below-->
+<ol style="list-style-type: decimal">
+<li>Obtain annual funding provided to each field crew,</li>
+<li>Subtract out any funding used for fixed costs,</li>
+<li>Calculate the number of gear deployments <!--bends sampled--> by each field crew in a year,</li>
+<li>Divide the variable costs by the total gear deployments <!--bends sampled--> to get a field crew specific cost per deployment, <!--bend--></li>
+<li>Calculate expected variable cost by multiplying field crew specific cost per deployment by the number of deployments required by the monitoring design <!--model or empirical distribution--></li>
+<li>Calculate field crew expected costs by adding back in any fixed costs to the expected varaible cost</li>
+<li>Sum the field crew specific expected costs to obtain total expected cost</li>
+</ol>
 <div id="estimating-cost-per-gear-deployment" class="section level5">
 <h5>Estimating cost per gear deployment</h5>
 <p>Estimating cost for a day of sampling is difficult. It is the function of several factors, including but not limited to the number of personnel, pay rates, other personnel expenses, travel, time sampling, and gear maintenance. Additionally, the cost of sampling varies among years and costs may be nonlinearly related if there is economy of scale (i.e., it may cost less per sampling unit if many are done).</p>
 <p>There are 7 field offices that have conducted PSPAP sampling since 2003. Annually the USACE provides funding to these field offices to perform PSPAP sampling. Annual values vary from</p>
-<ol style="list-style-type: decimal">
-<li>Annual funding provided to each field crew</li>
-<li>Calculate the number of bends sampled in a year</li>
-<li>Divide the cost by the total to get a field crew specific cost per bend.</li>
-<li>Model or empirical distribution</li>
-</ol>
 <ul>
 <li>The season will begin when water temperatures decline to 12.8C or less (in the fall) and will continue through June 30.</li>
 <li>The Fish Community Season will be July 1 through October 30 throughout the geographic range of the PSPAP.</li>
 </ul>
 </div>
-</div>
-<div id="important-assumptions" class="section level4">
-<h4>Important assumptions</h4>
+<div id="important-assumptions" class="section level5">
+<h5>Important assumptions</h5>
 <p>Currently the analysis assumes that the period of performance for field crews is the same as the fiscal year. Discussions with USACE contracting and PSPAP personnel suggested this was a reasonable assumption.</p>
+</div>
+</div>
+<div id="combining-pspap-fundamental-objective-metrics" class="section level4">
+<h4>Combining PSPAP fundamental objective metrics</h4>
+<p>Here we describe how to combine each of the metrics associated with a PSPAP fundamental objective into an overall utility value for that objective. In particular, we walk through the steps required to value fundamental objective 2. <em>Quantify pallid strugeon population trend and abundance</em>.<br />
+The steps described in this example contain all the key elements of combining metrics and are easily extended to valuing all other PSPAP fundamental objectives. Additionally, the equations used to valuate each fundamental objective can be found in Appendix ??.</p>
+<p>First, it is important to note many of the objectives are associated with multiple levels of metrics. For example, objective 2 has 2 levels of metrics. The top level of metrics are trend estimates and abundance estimates. The second level of metrics consists of the performance metrics (bias, precision, and reliability) associated with each of the top level metrics. To obtain an overall objective utility value, we will combine metrics from the bottom level up. For example, when valuating <em>Quantify pallid strugeon population trend and abundance</em> we will:</p>
+<p>1.a. Combine trend estimator bias, trend estimator precision, and trend estimator reliability into an overall trend utility.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Combine abundance estimator bias, abundance estimator precision, and abundance estimator reliability into an overall abundance utility.</li>
+</ol>
+<ol start="2" style="list-style-type: decimal">
+<li>Combine trend utility and abundance utility into anoveral objective utility.</li>
+</ol>
+<div id="combining-performance-metrics-bias-precision-reliability" class="section level5">
+<h5>Combining Performance Metrics (Bias, Precision, Reliability)</h5>
+<p>The 3 performance metrics described above under trend can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <a href="mailto:%7B@RN4402%7D">{@RN4402}</a>. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and reliability is constrained between 0 (worst) and 1 (best).</p>
+<p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalizes values to a specified minimum and maximum. For example, we can scale the bias metric to utility values varying from 0 to 1 as:</p>
+<p><span class="math display">\[U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},\]</span></p>
+<p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias and we refer to <span class="math inline">\(U_{bias}\)</span> as bias utility. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot of trend bias utility, <span class="math inline">\(U_{t,bias}\)</span>, shown in Figure ??, trend esimates with smaller absolute bias are given higher utility values while increasingly large absolute bias values approach a utiliity of 0.</p>
+<p>Trend precision utility can be calculated in a similar manner. Suppose trend precision varies from a CV of 0.01 to 0.30 (where a CV value of 0.30 is not very precise). The equation to calculate scaled precision is the same as for bias; however, we do not need to take absolute values since all CV values are positive. In Figure ??, trend estimates with lower CV values have higher precision utility values, <span class="math inline">\(U_{t,prec}\)</span>, and precision utility approaches 0 as CV values increase to the maximum of 0.30.</p>
+<p>Lastly, as a probability, trend estimator reliability is already on a 0 to 1 scale and requires no additional scaling. However, the relationship of estimator reliability with the value of trend estimates is different than the relationship of bias and precision with trend estimates. Notice, estimator bias and precision can only be evaluated given an estimate was made, and reliability tells you the probability an estimate can be made. In other words, the bias and precision metrics are conditional on the estimator producing estimates. Hence, when combining trend bias, precision, and reliabilty to obtain trend utility we multiply the weighted average of the bias and trend utilities by the probability we can obtain estimates (estimator reliability):</p>
+<p><span class="math display">\[U_{trend}=(w_{t, bias}\cdot U_{t,bias}+w_{t,prec}\cdot U_{t, prec})\cdot U_{t, reli},\]</span> where <span class="math inline">\(U_{trend}\)</span> is the overall trend utility, <span class="math inline">\(U_{t,bias}\)</span> and <span class="math inline">\(U_{t, prec}\)</span> are the trend bias and trend precision utilities (proportionally scaled versions of bias and precision) previously described, <span class="math inline">\(U_{t, reli}\)</span> is a shorthand for the trend estimator reliability metric, and <span class="math inline">\(w_{t,bias}\)</span> and <span class="math inline">\(w_{t, prec}\)</span> are the weights for trend bias and trend precision.</p>
+<p>We will discuss the weights <span class="math inline">\(w_{t,bias}\)</span> and <span class="math inline">\(w_{t, prec}\)</span> in detail soon, but first let’s understand what this equation for trend utility implies. The trend utility function described above has nice properties that match our intution of what should occur when combining different levels of bias, precision, and reliability. On the one hand, monitoring designs that have a very reliable estimator that produces trend estimates with relatively low bias and relatively high precision (small CV) will have higher trend utility values (approaching 1), as desired.<br />
+On the other hand, monitoring designs with reliable estimators that produce trend estimates that are highly biased and imprecise will have a low utility (approaching 0). Additionally, monitoring designs that produce great trend estimates (low bias and high precision) but whose estimator rarely produces an estimate (near 0 reliabilty) will also have a low utility, as will be the case when all 3 performance metrics are poor.</p>
+<p>Similarly, we can define the overall abundance utility (or any other overall utility where bias, precision and reliabilty are being combined, e.g., fundamental objective 3’s survival estimate utility) as:</p>
+<p><span class="math display">\[U_{abund}=(w_{a, bias}\cdot U_{a,bias}+w_{a,prec}\cdot U_{a, prec})\cdot U_{a, reli}.\]</span></p>
+<p>As the performance metrics all approach their best case scenarios, the overall utility approaches 1 because the scaled metrics that are conditional on the existence of estimates (bias utility and precision utility) are weighted. For example, if bias and precision are valued equally, then the weights for each would be 0.5. Alternatively, if really precise estimates of trend were desired, the weight for scaled precision could be 0.75 while scaled bias is weighted at 0.25 (weights must sum to 1). Suppose this last weighting scheme is the case and the output from 2 monitoring programs, a catch effort based and capture recapture program, are the values below.</p>
+<ul>
+<li>Catch effort
+<ul>
+<li>Relative bias = -85, scaled = 0.717</li>
+<li>Precision = 0.31, scaled = 0.565</li>
+<li>Performance = 1, scaled = 1</li>
+</ul></li>
+<li>Capture recapture
+<ul>
+<li>Relative bias = 5, scaled = 0.983</li>
+<li>Precision = 0.32, scaled = 0.551</li>
+<li>Performance = 0.93, scaled = 0.93</li>
+</ul></li>
+</ul>
+<p>The scaled utility for the catch effort program is:</p>
+<p><span class="math display">\[0.603= 
+(0.25\cdot 0.717+
+0.75 \cdot 0.565)
+\cdot1,\]</span></p>
+<p>and the scaled utility for the capture recapture program is:</p>
+<p><span class="math display">\[0.613= 
+(0.25\cdot 0.983+
+0.75 \cdot 0.551)
+\cdot0.93.\]</span></p>
+<p>The combined utility values indicate that the capture recapture program has slightly more value to achieve the objective of <em>quantifying population trend</em>.</p>
+<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, methods such as swing weighting (described in the next section) can aid in the weighting process, while sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible, and therefore, formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics (e.g., as we have done in the example above) is necessary.</p>
+</div>
+</div>
+<div id="swing-weighting" class="section level4">
+<h4>Swing weighting</h4>
+<p>The challenge in combining utiltities is determining how each performance metric utility should be weighted. To understand some of the complications, assume that in general we feel trend precision is more important than trend bias. Choosing a weight of <span class="math inline">\(w_{T,prec}=0.75\)</span> for precision and <span class="math inline">\(w_{T,bias}=0.25\)</span> for bias based on this feeling, as we did in the example above, is not only a very subjective approach but it also did not take into account variation in the metrics—something that should affect the weighting. For example, if all monitoring designs had trend estimates with CV values that ranged between 0.001 and 0.002 (i.e., great precision), then we’d be happy with the precision of any of our choices. Hence, if trend bias values varied greatly, when making a decision we would focus on which choice of monitoring design also led to a small bias. In this case, the bias metric should be weighted higher than the precision metric (eventhough in general we think precision is more important than bias) because the bias values should have a greater impact on the choice of monitoring design given the small variation in precision values. To curtail these complications we used swing weighting to determe metric utility weights.</p>
+<p>Swing weighting, as a structured approach, is less subjective and takes into account variation. The process involves comparing the worst case to the best case scenario for each metric while holding each of the other metrics constant at their worst case. In other words, swing weighting forces you to think about how your decision is impacted when each metric “swings” from worst to best. These “swings” are first ranked and then valued. The swing that has the most impact on the decision process (relative to the other swings) would be given a rank of 1 (most important), the swing with the second greatest impact on the decision a rank of 2, and so on. The baseline scenario, where all metrics are set to their worst case, always gets the highest (worst) rank. The scenario with a rank of 1 is assigned a value of 100 and the baseline scenario is assigned a value of 0. All other cases are then given a value from 0 to 100, representing the impact they have on the decision making process relative to the highest and lowest ranked scenarios.</p>
+<p>In the case of trend described a couple paragraphs ago, lets say the trend bias varies from 1%-70%. Then, as trend CV values swing from 0.002 (worst) to 0.001 (best), there is little impact on our decision process relative to when trend bias values swing from 70% (worst) to 1% (best). Therefore, we would rank the scenario with the best bias with a 1 and the scenario with the best precision with a 2 (see Figure/Table ??). The scenario with the best bias would get a value of 100, and the scenario with the best precision will get a rank from 0 to 100—0 if I think having the best precision relative to the worst precsion has no impact on the decision (i.e., its just as bad as thebaseline scenario) and 100 if I think having the best precision has just as much impact on the decision as the swing in bias does. For the sake of example, assume I think the impact of the precision swing is about 1/10 the impact of the bias swing. Then I would value the scenario with the best precision with a 10. It is important to note, that this does not mean that precision is weighted by 0.10; it just means that having the best precision and the worst bias is worth about 1/10 as having the worst precision and the best bias. Instead, the weights are determined by dividing each value by the sum of all values—since any case having both the best precision and the best bias[^1] would end up with the highest value of 110 or a utility weight of 1, as desired.</p>
+<p>[^1] Under the swing weighting assumption that the impact on the decision is a linear function of the metrics</p>
+<div id="stakeholder-input" class="section level5">
+<h5>Stakeholder Input</h5>
+<p>Inevitably, individual stakeholders, as well as different stakeholder agencies, will have different opinions on what metrics should have a greater impact on the choosing a monitoring design. As a consistent, structured process, swing weighting provides an excellent approach for comparing and compiling stakeholder weights. We are currently in the process of using swing weighting as a way to understand what differences and similarities there are in stakeholder opinions on the importance of objective metrics and the consequences of these on valuating various monitoring designs. While PSPAP v. 2.0 will not be making any decisions based on these weights, this analysis will provide valuable stakeholder information to and be a tool for decision makers.</p>
+<p>In order for swing weighting to be used consistently amongst stakeholders, it is important for each stakeholder to have a good understanding of the swing weighting process. We created YouTube videos that described the swing weighting process and its role in the PSPAP v. 2.0 {cite swing weighting tutorial video} and explained the meaning and variation in the abundance and trend metrics {cite Abundance and Trend videos}. We posted a downloadable swing weighting form, links to the YouTube videos described above, and instructions on how to fill in the swing weighting form to the PSPAP v. 2.0 blog {cite swing weighting blog page}. An email was also sent out to stakeholders inviting them to visit the blog to fill in and submit a swing weighting form. Once<br />
+swing weighting data has been collected, valuation of monitoring designs can be considered across the range of stakeholder weighting schemes, as well as looked at by stakeholder angency.</p>
+</div>
+</div>
+<div id="combining-abundance-and-trend-top-level-metrics" class="section level4">
+<h4>Combining Abundance and Trend (Top Level Metrics)</h4>
+<p>Once overall abundance and trend utilities have been calculated from their performance metrics, we combine these utilities and valuate the objective <em>Quantifying population trend and abundance</em>. This process mimics the one described above for the performance metrics, with two important differences. First, utility values are always between 0 and 1 and therefore, the abundance and trend utilities are on similar scales (and need no proportional scaling). Second, it is always possible to calculate an abundance and a trend utility value for each monitoring design, and therefore, these values are not conditional on any other situation (e.g., estimator reliability). We do, however, still need to use a weighting method, such as swing weighting, to weight the value of trend and abundance so that we may calculate utility as:</p>
+<p><span class="math display">\[U_2=w_{abund}\cdot U_{abund}+w_{trend}\cdot U_{trend},\]</span> where <span class="math inline">\(U_2\)</span> is the utility of fundamental objective 2 (Quantifying population trend and abundance) and <span class="math inline">\(w_{abund}\)</span> and <span class="math inline">\(w_{trend}\)</span> are the swing weights for abundance and trend, respectively.</p>
+</div>
+</div>
+<div id="combining-fundamental-objective-utilities" class="section level3">
+<h3>Combining fundamental objective utilities</h3>
+<p>As you may have expected, we can combine the fundamental objective utilities in the same manner as we have been combining metrics (and utilities) at lower levels:</p>
+<p><span class="math display">\[U_{MD}=w_1\cdot U_1+w_2\cdot U_2+w_3\cdot U_3+w_4\cdot U_4+w_5\cdot U_5,\]</span> where <span class="math inline">\(U_{MD}\)</span> is the value of a particular monitoring design and <span class="math inline">\(U_n\)</span> and <span class="math inline">\(w_n\)</span> are the utility of and swing weight for PSPAP fundamental objective <span class="math inline">\(n\)</span> (for <span class="math inline">\(n\)</span> 1-5), respecitively, as calcualted with respect to the given monitoring design.</p>
+<!--
+#### Cost vs. Utility
+Significant uncertainty exists in costs because of several factors. First, field crews tend to become more 
+efficient over time and therefore recent PSPAP costs may not represent 
+the actual costs. However, if the next iteration of the PSPAP uses 
+similar sampling units (i.e., bends within segments) to the current 
+PSPAP, then costs for field sampling will likely be similar. 
+SECOND AND THIRD???
+DOES THIS  UNCERTAINTY VARY BY MONITORING DESIGN?  IF SO, SHOULD WE ATTEMPT TO QUANTIFY IT AS A METRIC??
+-->
+<div id="other" class="section level4">
+<h4>Other</h4>
 <p>The value of a monitoring design measures both its utility, or usefulness, in achieving non-cost objectives, and its cost. If there existed a monitoring design that was clearly the most useful when costs were not taken into account and also costed the least, then a management decision would be straight forward. However, maximizing a monitoring program’s utility (ignoring cost objectives) and minimizing its cost will often be in conflict with one another, forcing a decision to be made given tradeoffs in cost and utility. How these tradeoffs are best reconciled can be a source of debate. Futhermore, identifying a monitoring design that is “clearly the most useful” is not without issues, and we’ll note two of them here. First, what is the “most useful” is not well defined and likely varies from stakeholder to stakeholder. Second, what is the most useful is not a stagnant concept. In particular, knowledge of uncertainties associated with monitoring pallid sturgeon will increase over time. As we learn more we can use that knowledge to re-value monitoring programs and make better decisions, and therefore, it is likely that what is viewed as the most useful program will change to reflect gains in knowledge. Additionally, what is the most useful given budget constraints is also not stagnant. Varying yearly budgets, which can limit or expand the monitoring possibilities, can keep monitoring program values in flux.</p>
-<p>All of these complications illustrate the difficulties involved in calculating a value of a particular monitoring design. While the discussion above may make valuating a monitoring program seem like daunting task, the structured decision making concepts and tools used in the process above provide an inclusive and transparent way of valuing monitoring designs that is linked to stakeholder objectives and values through quantifiable metrics and swing weighting. Additionally, the use of Bayesian Decision Networks allows for the monitoring design valuation process described to be flexible enough to account for gains in knowledge, including knowledge of a budget change, over time. This is not to say that the valuation process is not without complications or will make decision making simple and straight forward. Instead, we recognize that decision making is inherently complicated and are aiming to provide decision makers with the most informative and flexible tools as possible when it comes to comparing alternative monitoring designs.</p>
-<p>This was an example outlining how alternative monitoring programs can be objectively evaluated and compared in the context of meeting agency objectives. Many uncertainties remain in Pallid Sturgeon population dynamics and capture that will need to be accounted for. Additionally, the weighting of utility values can be a treacherous territory and how metrics are weighted can drive outcomes. However, sensitivity analyses can be conducted to evaluate the influence of weighting on outcomes. This process of evaluating alternative monitoring programs is designed purposely to be as objective as possible and therefore formally linking the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics is necessary.</p>
+<p>All of these complications illustrate the difficulties involved in calculating a value of a particular monitoring design. While the discussion above may make valuating a monitoring program seem like a daunting task, the structured decision making concepts and tools used in the process we’ve described provide an inclusive and transparent way of valuing monitoring designs that is linked to stakeholder objectives and values through quantifiable metrics and swing weighting. Additionally, the use of Bayesian Decision Networks allows for the monitoring design valuation process described to be flexible enough to account for gains in knowledge, including knowledge of a budget change, over time. This is not to say that the valuation process is not without complications or will make decision making simple and straight forward. Instead, we recognize that decision making is inherently complicated and are aiming to provide decision makers with the most informative and flexible tools as possible when it comes to comparing alternative monitoring designs.</p>
 <!--
 Quantify PS abundance or relative abundance  
 Quantify catch rates of age 0 and age 1 PS   

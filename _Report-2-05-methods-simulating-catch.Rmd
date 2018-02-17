@@ -32,13 +32,12 @@ as PSPAP fundamental objectives 1. Detect and quantify age-1 recruitment
 and 2. Quantify pallid sturgeon trend and abundance.  Therefore, both the 
 generation and the assessment of abundance and trend estimates play a 
 key role in this analysis.  In order to generate such estimates, catch 
-data, collected following the procedures laid out from alternative 
-monitoring designs, must be simulated.   
-
-Moreover, since catchability and capture probability of particular gears 
-are important elements of simulating catch data but also highly 
-uncertain and in some cases unknown, it is essential that catch data is 
-simulated over a wide range of plausible gear catchabilities.
+data is needed and must be simulated following the procedures laid out 
+in the alternative monitoring designs.  Moreover, since catchability and 
+capture probability of particular gears are important elements of 
+simulating catch data but also highly uncertain and in some cases 
+unknown, it is essential that catch data is simulated over a wide range 
+of plausible gear catchabilities.
 
 
 
