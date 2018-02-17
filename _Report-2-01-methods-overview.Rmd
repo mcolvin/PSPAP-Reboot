@@ -67,7 +67,7 @@ cat(knit_child(text = readLines('_Report-1-01-introduction.Rmd')[181:215], quiet
 The numbered objectives correspond to fundamental objectives identified 
 during the workshop. Bulleted lists within each bold, numbered objective 
 are measurable attributes that can be used to quantify each objective. 
-For example there are 3 attributes under objective 1 that can be 
+For example there are 3 attributes under objective 4 that can be 
 quantified for each monitoring alternative. Assuming these attributes 
 are scaled to a common scale (e.g., 0 to 1, 0 to 100) then each bullet 
 may receive a weight of 33% if each attribute is equally important to 
@@ -81,11 +81,10 @@ design utility" for details on combining metrics).
     * Detection    
         * Power to detect age-1 natural origin recruits if recruitment occurs
         * Estimator reliability
-    * Age-1 Abundance  
-        * Population model back calculation estimates
-              * bias
-              * precision
-              * reliability
+    * Age-1 Abundance Estimates (from population model back calculation estimates)
+        * bias
+        * precision
+        * reliability
 2. **Quantify PS population trend and abundance (natural and hatchery origin)**
     * Trend: Estimate RPMA level population growth rate $\lambda$ <!--TW: At some point, we will need to specify a time period over which this will be measured.  It will affect the design. -->
         * bias
@@ -105,7 +104,7 @@ design utility" for details on combining metrics).
         * bias
         * precision
         * estimator reliability
-    * Fecundity: Estimate average fecundity at RPMA level
+    * Fecundity: Estimate average annual fecundity at RPMA level
         * bias
         * precision
         * estimator reliability
