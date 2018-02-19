@@ -151,8 +151,15 @@ Aggregation to the segment level was based on estimated bend level densities, or
 In calculating the average density of pallid sturgeon in a segment we took two approaches for the purposes of comparing: arithmetic mean bend density and weighted mean bend density.  While we expect the weighted mean approach to be more accurate, we suspect that the arithmetic mean is a reasonable and commonly used approach, and therefore, wanted to highlight the differences between the two.
 
 ##### Arithmetic Mean (AM)
+For the arithmetic mean method, we calculate the estimated densities of each sampled bend and then take the typical average (add up the densities and divide by the total number of bends sampled).  This averaged density is used as an estimate of the segment density.  The segment abundance is then calculated from the segment density estimate and segment length.  Mathematically, the segment abundance estimate is calculated as 
+$$\hat{N_s}=\frac{\sum_i\left(\frac{\hat{N}_{s,i}}{L_{s,i}}\right)}{bends_s}\cdot L_s,$$
+where $\hat{N_s}$ and $L_s$ are the estimated abundance and total length (in rkm) of segment $s$, repsectively, $\hat{N}_{s,i}$ and $L_{s,i}$ is the estimated abundance and length (in rkm) of bend $i$ within segment $s$, respectively, and $bends_s$ is the number of sampled bends in segment $s$.
+
+A potential issue with the arithmetic mean is that it treats each bend as equivalent to any other bend, despite the fact that bends are of different lengths.  To get a good understanding of how this can effect an estimate, let's look at a simplified example with known abundances (i.e. perfect estimates).    
 
 ##### Weighted Mean (WM)
+The weighted mean estimator attempts to remedy the issues with assuming all bends are equal, as discussed in the  previous section.  
+
 
 #### Aggregating Segment Level Abundanc to the Basin Level
 

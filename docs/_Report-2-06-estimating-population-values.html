@@ -218,8 +218,8 @@ design.
 <p>The objectives of estimating population metrics are, for each monitoring design considered and for each of the catch data sets generated under the given monitoring design, to:</p>
 <ol style="list-style-type: decimal">
 <li>Generate an estimate of the average population trend over the 10-year period by basin,</li>
-<li>Generate segment-level abundance estimates, and</li>
-<li>Generate segment-level abundance estimates for each length class.</li>
+<li>Generate segment-level abundance estimates (as inputs for the collaborative population model, PSPAP Fundamental Objective 3) by length class, and</li>
+<li>Generate basin-level abundance estimates by aggregating segment-level estimates.</li>
 </ol>
 </div>
 <div id="major-assumptions" class="section level3">
@@ -241,10 +241,11 @@ design.
 <h5>Minimum Known Alive</h5>
 </div>
 <div id="closed-mark-recapture-estimators-m_0-and-m_t" class="section level5">
-<h5>Closed mark recapture estimators, <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_t\)</span></h5>
+<h5>Closed mark-recapture estimators, <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_t\)</span></h5>
 </div>
 <div id="robust-design" class="section level5">
 <h5>Robust Design</h5>
+<!--See Commented Out Section Below-->
 </div>
 </div>
 <div id="trend-estimators" class="section level4">
@@ -254,6 +255,24 @@ design.
 </div>
 <div id="abundance-based-estimators" class="section level5">
 <h5>Abundance Based Estimators</h5>
+</div>
+</div>
+<div id="aggregating-bend-level-abundance-to-the-segment-level" class="section level4">
+<h4>Aggregating Bend Level Abundance to the Segment Level</h4>
+<p>The minimum known alive (MKA) and closed mark-recapture <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_t\)</span> estimators were ran to estimate abundance at the bend level. However, abundance estimates at the segment and basin levels are desired for use in PSPAP Objectives 3 and 2, respectively. Here we’ll discuss the aggregation of the MKA, <span class="math inline">\(M_0\)</span>, and <span class="math inline">\(M_t\)</span> abundance estimates to the segment level, leaving discussion of the basin level estimates to the next section.</p>
+<p>Aggregation to the segment level was based on estimated bend level densities, or the estimated bend abundance divided by the bend length in river kilometers (rkm). We assume the segment density can be estimated by the average density of pallid sturgeon in the sampled bends within the segment. Therefore, the segment abundance can be estimated as the estimated segment density multiplied by the length (in rkm) of the segment.</p>
+<p>In calculating the average density of pallid sturgeon in a segment we took two approaches for the purposes of comparing: arithmetic mean bend density and weighted mean bend density. While we expect the weighted mean approach to be more accurate, we suspect that the arithmetic mean is a reasonable and commonly used approach, and therefore, wanted to highlight the differences between the two.</p>
+<div id="arithmetic-mean-am" class="section level5">
+<h5>Arithmetic Mean (AM)</h5>
+<p>For the arithmetic mean method, we calculate the estimated densities of each sampled bend and then take the typical average (add up the densities and divide by the total number of bends sampled). This averaged density is used as an estimate of the segment density. The segment abundance is then calculated from the segment density estimate and segment length. Mathematically, the segment abundance estimate is calculated as <span class="math display">\[\hat{N_s}=\frac{\sum_i\left(\frac{\hat{N}_{s,i}}{L_{s,i}}\right)}{bends_s}\cdot L_s,\]</span> where <span class="math inline">\(\hat{N_s}\)</span> and <span class="math inline">\(L_s\)</span> are the estimated abundance and total length (in rkm) of segment <span class="math inline">\(s\)</span>, repsectively, <span class="math inline">\(\hat{N}_{s,i}\)</span> and <span class="math inline">\(L_{s,i}\)</span> is the estimated abundance and length (in rkm) of bend <span class="math inline">\(i\)</span> within segment <span class="math inline">\(s\)</span>, respectively, and <span class="math inline">\(bends_s\)</span> is the number of sampled bends in segment <span class="math inline">\(s\)</span>.</p>
+<p>A potential issue with the arithmetic mean is that it treats each bend as equivalent to any other bend, despite the fact that bends are of different lengths. To get a good understanding of how</p>
+</div>
+<div id="weighted-mean-wm" class="section level5">
+<h5>Weighted Mean (WM)</h5>
+</div>
+</div>
+<div id="aggregating-segment-level-abundanc-to-the-basin-level" class="section level4">
+<h4>Aggregating Segment Level Abundanc to the Basin Level</h4>
 <!--
 Applications of Capture-Recapture Robust Design to PSPAP
 
@@ -500,7 +519,6 @@ testing or implementing in the field as part of a level 1 science effort
 and adjusted periodically to improve the design so that it more 
 effectively meets the monitoring and species objectives. 
 -->
-</div>
 </div>
 </div>
 

@@ -243,6 +243,71 @@ if(n==4)
   }
 }
 
+fig_utilities<-function()
+{
+  # UTILITIES
+  ## TREND
+  tt<-read.csv( "_output/trnd_min_max.csv")
+  tbmin<-min(tt$min_abs_exp_bias)
+  tbmax<-max(abs(min(tt$min_exp_bias)),max(tt$max_exp_bias))
+  tpmin<-min(tt$min_exp_prec)
+  tpmax<-max(tt$max_exp_prec)
+  
+  tbcutL<-0.0001
+  tbcutU<-0.7
+  tpcutL<-0.00005
+  tpcutU<-0.375
+  
+  tbmin<tbcutL
+  tbmax>tbcutU
+  tpmin<tpcutL
+  tpmax>tpcutU
+  
+  
+  t_bias_x<-c(tbmin, tbcutL, tbcutU, tbmax)
+  t_bias_y<-c(1, 1, 0, 0)
+  t_prec_x<-c(tpmin, tpcutL, tpcutU, tpmax)
+  t_prec_y<-c(1, 1, 0, 0)
+  
+  par(mfrow=c(2,2))
+  plot(t_bias_x, t_bias_y, typ="l", xlab="Absolute Bias",ylab="",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,tbmax))
+  mtext("Trend", side=2, padj=-5, font=2)
+  mtext("Bias", side=3, padj=-1, font=2)
+  plot(t_prec_x, t_prec_y, typ="l", xlab="CV",ylab="Utility",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,tpmax))
+  mtext("Precision", side=3, padj=-1, font=2)
+  
+  ## ABUNDANCE
+  at<-read.csv( "_output/basin_abund_min_max.csv")
+  abmin<-min(at$min_rel_abs_bias)
+  abmax<-max(abs(min(at$min_rel_bias)),max(at$max_rel_bias))
+  apmin<-min(at$min_prec)
+  apmax<-max(at$max_prec)
+  
+  abcutL<-0.00001
+  abcutU<-1
+  apcutL<-0.0001
+  apcutU<-0.3
+  
+  abmin<abcutL
+  abmax>abcutU
+  apmin<apcutL
+  apmax>apcutU
+  
+  a_bias_x<-c(abmin, abcutL, abcutU, abmax)
+  a_bias_y<-c(1, 1, 0, 0)
+  a_prec_x<-c(apmin, apcutL, apcutU, apmax)
+  a_prec_y<-c(1, 1, 0, 0)
+  
+  plot(a_bias_x, a_bias_y, typ="l", xlab="Absolute Relative Bias",ylab="",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,abmax))
+  mtext("Abundance", side=2, padj=-5,font=2)
+  plot(a_prec_x, a_prec_y, typ="l", xlab="CV",ylab="Utility",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,apmax))
+}
+
+
 # # PERFORMANCE METRIC RESULTS BY MONITORING DESIGN
 # dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 # dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
