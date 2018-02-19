@@ -38,7 +38,7 @@ test
 # DATA FILES
 
 *.rdata
-#*.rds
+*.rds
 
 
 # NPP FILES
