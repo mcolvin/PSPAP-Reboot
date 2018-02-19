@@ -21,8 +21,8 @@ tbl2<-lapply(dat_list, function(x)
   tmp<-ddply(dat, 
              .(samp_type, occasions, gear, estimator), 
              summarize, 
-             abundance_bias=mean(rel_bias, na.rm=TRUE), 
-             abundance_precision=mean(prec, na.rm=TRUE))
+             mean_abundance_bias=mean(rel_bias, na.rm=TRUE), 
+             mean_abundance_precision=mean(prec, na.rm=TRUE))
   return(tmp)
 })
 tbl2<-do.call(rbind,tbl2)
@@ -32,7 +32,14 @@ tbl2<-tbl2[which(tbl2$gear %in% c("GN14", "TLC1", "TN")),]
 final2<-merge(tt2, tbl2, 
               by=c("samp_type", "occasions", "gear", "estimator"), 
               all=TRUE)
+# ADD CPUE ABUNDANCE = MKA_WM ABUNDANCE
+dat<-final2[which(final2$estimator=="CPUE"), c(1:6)]
+dat2<-final2[which(final2$estimator=="MKA_WM"), c(1:3,7,8)]
+dat<-merge(dat,dat2, by=c("samp_type", "occasions", "gear"),all=TRUE)
+dat2<-final2[which(final2$estimator!="CPUE"),]
+final2<-rbind(dat2, dat)
 final2<-final2[order(final2$samp_type,final2$occasions, final2$estimator),]
+
 finalGN<-final2[which(final2$gear=="GN14"),]
 finalTL<-final2[which(final2$gear=="TLC1"),]
 finalTN<-final2[which(final2$gear=="TN"),]
