@@ -45,7 +45,7 @@ Figure 2. Population simulation
 ##### Page Break
 
 ```{r,echo=FALSE}
-knitr::include_graphics("images/Movement.jpeg")
+knitr::include_graphics("images/Movement_Lines.png")
 ```
 Figure 3. Movement illustration.
 
