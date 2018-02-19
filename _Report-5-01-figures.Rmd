@@ -68,7 +68,7 @@ Figure 5.
 ##### page break
 
 ```{r,echo=FALSE}
-knitr::include_graphics("images/EffortDistEx.jpeg")
+knitr::include_graphics("images/GammaFitEx.png")
 ```
 
 Figure 6. 

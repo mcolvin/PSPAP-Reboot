@@ -177,7 +177,8 @@ if(n==3)
     #barplot(datUBgear$effort,  ylab="Effort (in minutes)", main=paste("UB ", UBgears[x], " Effort"))
     }
 
-
+if(n==4)
+  {
     #LOOK AT DISTRIBUTION FIT
     fitfigsLB<-function(x)
     {
@@ -209,7 +210,7 @@ if(n==3)
       plot(density(datUBgear$effort), xlab="Effort", ylab=paste(LBgears[x],"Data"), main="PDF")
       px<-seq(min(datUBgear$effort), max(datUBgear$effort),floor((max(datUBgear$effort)-min(datUBgear$effort))/25))
       py<-dgamma(px, shape=s, rate=r)
-      plot(px,py, add=TRUE, col="red", type="l")
+      curve(px,py, add=TRUE, col="red", type=1, add=TRUE)
       curve(dgamma, shape=s, rate=r, min(datUBgear$effort),max(datUBgear$effort), add=TRUE)
     }
     
@@ -221,25 +222,26 @@ if(n==3)
     den<-density(datUBgear$effort)
     dat<-data.frame(x = den$x, y = den$y, type="Data")
     dat2<-data.frame(x = dat$x, y=dgamma(dat$x,s, r), type="Gamma Fit")
-    dat<-rbind(dat, dat2)
-    ggplot(data = dat, aes(x = x,y = y,color=factor(type))) + 
-      scale_colour_manual(values=c("black","red"))+
-      geom_point(size = 1) +     
-      #geom_line(aes(x=dat$x, y=dgamma(dat$x,s, r)), color="red", size = 1) + 
+    dat<-rbind(dat2, dat)
+    ggplot(data = dat, aes(x = x,y = y, group=type, linetype=type)) + 
+      #scale_colour_manual(values=c("black","black"))+
+      #geom_point(size = 1) +     
+      geom_line(size=1)+
+      #geom_line(aes(x=den$x, y=den$y), color="black", size = 1,linetype=4)+
+      #geom_line(aes(x=dat$x, y=dgamma(dat$x,s, r)), color="black", size = 1,linetype=1) + 
       theme_classic()+
       xlab("Effort (minutes)") +
       ylab("Density") +
-      ggtitle("Trotline (TLC1) Effort Distribution")+
-      theme(plot.title = element_text(hjust = 0.5), 
-            legend.title = element_blank())+
-      guides(colour = guide_legend(override.aes = list(size=3)))
+      #ggtitle("Trotline (TLC1) Effort Distribution")+
+      theme(#plot.title = element_text(hjust = 0.5), 
+            legend.title = element_blank(),
+            panel.border = element_rect(colour = "black", fill=NA, size=1))#+
+      #guides(colour = guide_legend(override.aes = list(size=3)))
     
     
-    fitfigsUB(5)
-
-
-
-    }
+    efitfigsUB(5)
+  }
+}
 
 # # PERFORMANCE METRIC RESULTS BY MONITORING DESIGN
 # dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
