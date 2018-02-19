@@ -319,6 +319,51 @@ varying from 0 to 1 as:
 
 
 $$U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},$$
+<!-- FORMULAS WITH CUT OFFS FROM SWING WEIGHTING IMPLEMENTED:
+
+
+# TREND BIAS
+$$U_{t,bias}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.0001\\
+\frac{0.7-x}{0.7-0.0001}, & \mbox{ for } \hspace{2pt} 0.0001< x < 0.7\\
+0, & \mbox{ for } \hspace{2pt} x\geq 0.7
+\end{cases},$$
+
+where $x=|trend \hspace{4pt} bias|$.
+
+# TREND PRECISON
+$$U_{t,prec}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.00005\\
+\frac{0.375-x}{0.375-0.00005}, & \mbox{ for } \hspace{2pt} 0.00005< x < 0.375\\
+0, & \mbox{ for } \hspace{2pt} x\geq 0.375
+\end{cases},$$
+
+where $x=trend \hspace{4pt} CV$.
+
+
+
+
+# ABUNDANCE BIAS
+$$U_{a,bias}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.00001\\
+\frac{1-x}{1-0.00001}, & \mbox{ for } \hspace{2pt} 0.00001< x < 1\\
+0, & \mbox{ for } \hspace{2pt} x\geq 1
+\end{cases},$$
+
+where $x=|abundance \hspace{4pt} relative \hspace{4pt} bias|$.
+
+# TREND PRECISON
+$$U_{t,prec}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.0001\\
+\frac{0.3-x}{0.3-0.0001}, & \mbox{ for } \hspace{2pt} 0.0001< x < 0.3\\
+0, & \mbox{ for } \hspace{2pt} x\geq 0.3
+\end{cases},$$
+
+where $x=abundance \hspace{4pt} CV$.
+
+-->
+
+
 
 where $|bias|$ is the absolute value of bias and we refer to $U_{bias}$ 
 as bias utility. We use absolute value here because we are assuming 
