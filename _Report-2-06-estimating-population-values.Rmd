@@ -126,11 +126,40 @@ recapture estimators.
  
 #### Abundance Estimators
 ##### Minimum Known Alive
-The minimum known alive (MKA) estimator
+The minimum known alive (MKA) estimator is the most simplistic abundance 
+estimator we considered.  It does exactly what it sounds like: it uses 
+the number of (unique) individuals captured in a bend as an estimate for 
+the bend abundance.  This estimator is expected to be very negatively 
+biased, as, given low capture probabilities and reasonable effort, it is 
+likely we catch only a small portion of the fish living in the bend. 
+However, this estimator has its benefits:  
+
+* It does not require a mark-recapture program (i.e., it can be used 
+with single occasion data), and therefore, should save on costs, and
+* It can be used with mark-recapture program data when more 
+sophisticated estimators fail to produce estimates.
+
+For these reasons, we ran the MKA estimator under all monitoring program 
+sampling designs, allowing us to compare it to all other estimators. 
+For single occasion data, the bend level abundance estimate is the same 
+as the number of fish caught in the bend.  For multiple occasion data, 
+PIT tag identification of the fish caught will be necessary.  Using PIT 
+tag information, it can be determined if any fish were caught multiple 
+times (in different occasions).  Each fish that was caught will be 
+counted only once, whether or not it was caught during more than one 
+occasion.  The total number of unique fish known to be alive in the 
+bend, as determined from PIT tag identification, serves as the estimate 
+for bend abundance.  
+
+Assuming PIT tag identification is always reliable,
+then the MKA abundance estimate is always clear and estimate standard 
+error is 0 at the bend level.  However, non-zero standard errors were 
+calculated when we aggregate bend level estimates to the segment or 
+basin levels (See Aggregating bend level abundance to segment level).
 
 ##### Closed mark-recapture estimators, M$_0$ and M$_t$
 The closed mark-recapture estimators take advantage of multiple capture 
-occasions within a year to estimate both capture probability and 
+occasions within a year to estimate both capture probability and
 abundance.  The two estimators differ in the way they treat capture 
 probability.  The M$_0$ estimator assumes that the capture probability 
 is constant across all capture occasions ($p$).  The  M$_t$ estimator 
@@ -169,6 +198,14 @@ approximately hold for at least a few days.  Additionally, since it is
 likely this assumption will not be met consistently in the field, we 
 have looked at the consequences of breaking the assumpiton of closure 
 across capture occasions (See ??).
+
+We ran the M$_0$ and M$_t$ estimators in R using the $\texttt{closedp.t}$ 
+function in the $\texttt{Rcapture}$ package, obtaining bend abundance 
+estimates and estimate standard error.  Any estimator results that gave 
+estimates but produced warnings (e.g., nonconvergence, extremely large 
+asymptotic bias) were excluded from the analysis (with the exception 
+that the inability of the estimator to produce estimates is considered 
+in estimator utility). 
 
 The M$_0$ and M$_t$ estimators only analyze the data from within a year 
 and do not compare data across years.  Therefore, while these estimators 
@@ -288,9 +325,97 @@ probabilities were equivalent (i.e, $c=p$).
 
 
 #### Trend Estimators
-##### Catch Effort
+We defined trend as the population growth rate $\lambda$, 
+which describes how quickly the population is either growing 
+($\lambda>1$) or declining ($\lambda<1$) each year.  Trend, therefore, 
+takes into account both survival and recruitment. 
 
 ##### Abundance Based Estimators
+In general, we can define population growth as
+$$N_t=\lambda^t N_0,$$
+where $N_t$ is the population size in year $t$ and $N_0$ is the initial 
+population size.  If we take the natural logarithm of both sides of this 
+equation we find
+$$\ln(N_t)=\ln(\lambda)\cdot t + \ln(N_0).$$
+In other words, abundance on a log-scale is a linear model with a slope 
+directly related to $\lambda$.  We use this relationship to our 
+advantage, fitting a linear model to the log-transformed segment level 
+estimated abundances in order to estimate the average population trend, 
+$\lambda$.  In particular we fit the model
+
+$$\log(abundance)\sim segment+year,$$
+
+taking into account the effect segment has on the relationship.
+
+This model was fit to segment level abundance estimates generated 
+by each of the abundance estimators described above, resulting in 7 
+abundance based trend estimators (2 for each of MKA, M$_0$, and M$_t$--- 
+see Aggregating bend level abundance to segment level---and 
+one for the CRDMS, or robust design estimator).  The estimated slope 
+($\hat{\beta}$) of the linear model and its standard error, were 
+then used to estimate the average trend:
+$$\hat{\lambda}=e^{\hat{\beta}}$$
+with standard error 
+$$e^{\hat{\beta}}\cdot SE(\beta),$$
+as calculated using a first order approximation under the delta method, 
+where $SE(\beta)$ is the standard error of the slope estimate $\beta$.
+
+
+##### Catch Effort
+The catch effort estimator assumes that catch per unit effort (CPUE) is 
+proportional to abundance, which is indeed as we modeled it in the 
+catch data:
+$$C=qfN,$$
+where $C$ is catch, $q$ is catchability described as the probability of 
+capturing a single fish with one unit of effort, $f$ is effort (in this 
+case, measured in minutes of gear deployment), and $N$ is abundance. 
+Therefore, we would expect CPUE (or $C/f$) to be proportional to 
+abundance.  Consequently, the log-transformed CPUE is also a linear 
+function of the log-transformed growth rate, $\lambda$, justifying the 
+use of the same approach as in the case of abundance, but instead 
+fitting the linear model
+
+$$\log(\mbox{CPUE})\sim segment+year,$$
+
+to the segment level catch effort data.  One issue with this approach, 
+however, is that zero catch values cannot be log-transformed.  To avoid 
+problems that arise due to zero catch values the Catch Effort Trend 
+estimator instead adjusts the CPUE by adding one to the catch prior to 
+dividing by the effort, i.e.,
+$$\tilde{\mbox{CPUE}}=\frac{C+1}{f}   \hspace{0.5cm} \mbox{ and } \hspace{0.5cm}
+\log(\tilde{\mbox{CPUE}})\sim segment+year.$$
+
+It is from this linear model that the estimate for $\lambda$ and its 
+standard error are calculated, using the same equations described for 
+the abundance based trend estimators above.
+
+##### Pradel
+When capture recapture histories are viewed in reverse order 
+recruitment can be estimated using what is referred to as a Pradel model 
+(Pradel 1996). This model relies on being able to differentiate recruits 
+based off of size or age which works well for fish populations. 
+Therefore there are 2 processes in which a pallid sturgeon can be 
+initially captured: 1) it is a new recruit and was not vulnerable to 
+capture and 2) the pallid sturgeon was vulnerable to capture but not 
+captured. The differentiating the 2 outcomes can be informed by size to 
+improve recruitment estimates. 
+
+In addition to estimating recruitment the Pradel estimator can also 
+estimate survival, allowing for an estimation of population trend to be 
+derived.
+
+##### Direct Estimation from Robust Design
+While not commonly employed in fisheries literature the robust design 
+can estimate population growth rate ($\lambda$). In particular, by 
+running capture histories backwards estimates the probability a pallid 
+sturgeon was present in the previous year given it was present in the 
+current year which is the per capita rate of additions to the population 
+($f$), or the number of individuals entering the population between 
+primary occasions. Survival rate ($\varphi $) can be estimated, and by 
+running them forward, survival can be estimated. Trend evaluated as 
+population growth rate is derived from model estimates as$\lambda 
+=\varphi \text{+}f$ and uncertainty can be estimated using the 
+previously described approaches for$N$.
 
 
 #### Aggregating Bend Level Abundance to the Segment Level
@@ -375,13 +500,23 @@ So for our example, we have
 EXAMPLE HERE
 
 ##### Standard Error
-For both aggregation methods the standard error was calculated using the 
-delta method {Powell 2012}.
+For the M$_0$ and M$_t$ estimators the segment level standard error was 
+calculated using the delta method {Powell 2012} for both aggregation 
+approaches.  Since non-zero bend level standard errors were not 
+available for the MKA estimator (See MKA estimator description above), 
+segment level standard errors were calculated using the variance in the 
+bend level densities under the given approach:
+$$Var(d_{s,i})=\sum_{j\epsilon J}  (\hat{d}_{s,i}-\hat{d_s})\cdot p_{s,i},$$
+where $p_{s,i}=1/bends_s$ for the arithmetic mean approach and 
+$p_{s,i}=w_{s,i}$ for the weighted mean approach.  The standard error is 
+then calculated as the square root of the variance.  
+<!--we might need to adjust this for comparison: N_s=d_s*RKM which the delta method can be applied to...although same approach above could be applied to all other estimators ignoring their SE's so we should address this somewhere in the discussion.-->
 
 
 #### Aggregating Segment Level Abundanc to the Basin Level
 Segment level estimates were aggregated to the basin level using the 
-weighted mean approach described above.
+weighted mean approach described above with standard errors calculated 
+using the delta method.
 
 #### Quantifying effects of management actions and auxiliary information
 
