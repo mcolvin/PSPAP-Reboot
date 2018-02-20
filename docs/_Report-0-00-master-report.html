@@ -190,7 +190,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overview of Pallid Sturgeon Assessment Framework Evaluation</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
-<h4 class="date"><em>17 February, 2018</em></h4>
+<h4 class="date"><em>20 February, 2018</em></h4>
 
 </div>
 
@@ -654,8 +654,8 @@ design.
 <p>The objectives of estimating population metrics are, for each monitoring design considered and for each of the catch data sets generated under the given monitoring design, to:</p>
 <ol style="list-style-type: decimal">
 <li>Generate an estimate of the average population trend over the 10-year period by basin,</li>
-<li>Generate segment-level abundance estimates, and</li>
-<li>Generate segment-level abundance estimates for each length class.</li>
+<li>Generate segment-level abundance estimates (as inputs for the collaborative population model, PSPAP Fundamental Objective 3) by length class, and</li>
+<li>Generate basin-level abundance estimates by aggregating segment-level estimates.</li>
 </ol>
 </div>
 <div id="major-assumptions-2" class="section level3">
@@ -675,13 +675,37 @@ design.
 <h4>Abundance Estimators</h4>
 <div id="minimum-known-alive" class="section level5">
 <h5>Minimum Known Alive</h5>
+<p>The minimum known alive (MKA) estimator</p>
 </div>
 <div id="closed-mark-recapture-estimators-m_0-and-m_t" class="section level5">
-<h5>Closed mark recapture estimators, <span class="math inline">\(M_0\)</span> and <span class="math inline">\(M_t\)</span></h5>
+<h5>Closed mark-recapture estimators, M<span class="math inline">\(_0\)</span> and M<span class="math inline">\(_t\)</span></h5>
+<p>The closed mark-recapture estimators take advantage of multiple capture occasions within a year to estimate both capture probability and abundance. The two estimators differ in the way they treat capture probability. The M<span class="math inline">\(_0\)</span> estimator assumes that the capture probability is constant across all capture occasions (<span class="math inline">\(p\)</span>). The M<span class="math inline">\(_t\)</span> estimator assumes that capture probability varies within a year from occasion to occasion (<span class="math inline">\(p_t\)</span>).</p>
+<p>In reality, we can expect capture probability to vary from occasion to occasion due to many factors (e.g., water velocity, temperature); however, if fluctuations in capture probability are expected to be small, then capture probability may best be modelled as a constant with some environmental noise. In this case, the M<span class="math inline">\(_0\)</span> estimator is likely the best choice of the two. On the other hand, if different gears are used during each capture occasion and we expect that the different gears will have a large difference in capture probability, then the M<span class="math inline">\(_t\)</span> estimator may be the better choice. In any of these cases there may be a tradeoff between estimating more parameters (multiple capture probabilities) and the bias and precision of thes pararmeter estimates. Therefore, we implemented both the M<span class="math inline">\(_0\)</span> and the M<span class="math inline">\(_t\)</span> estimators in all scenarios and compared their outcomes.</p>
+<p>Both the M<span class="math inline">\(_0\)</span> and M<span class="math inline">\(_t\)</span> estimators rely on the assumption that the population is closed across capture occasions; in other words no fish moves into the sampled bend or out of the sampled bend during the time period between the start of the first capture occasion to the end of the last within year capture occasion. In the analysis of monitoring programs presented here, this assumption will hold as it was one of the assumptions used to generate the reference population. This allows us to evaluate the performance of these estimators under the best of circumstances. If they do not perform well in these circumstances, then it is unlikely they will perform well in others.</p>
+<p>We assumed a single capture occasion will be approximately a 24-hour time period, so for the case of actually sampling pallid sturgeon in the Missouri River, we would want this assumption of no movement to approximately hold for at least a few days. Additionally, since it is likely this assumption will not be met consistently in the field, we have looked at the consequences of breaking the assumpiton of closure across capture occasions (See ??).</p>
+<p>The M<span class="math inline">\(_0\)</span> and M<span class="math inline">\(_t\)</span> estimators only analyze the data from within a year and do not compare data across years. Therefore, while these estimators can produce estimates of capture probability and annual bend level abundance, they cannot estimate annual survival or recruitment.</p>
 </div>
 <div id="robust-design" class="section level5">
 <h5>Robust Design</h5>
-<!--See Commented Out Section Below-->
+<p>The robust design estimator (RD) takes the analysis of capture recapture data a step further than the closed mark-recapture estimators described above. It uses multiple capture occasions within a year, as well as comparing capture data across years in order to directly estimate capture probability, abundance, and survival as described by Pollock {Pollok 1982}.</p>
+<p>The robust design frame work has been applied across a wide range of taxa to estimate demographic rates and population abundance. Its use has been extended to studies of species occurrence (i.e., occupancy models; {MacKenzie et al. 2002, Tyre et al. 2003}) and abundance (N-mixture models; {Royle 2004b, Royle 2004a}) of unmarked individuals. The robust design provides a rigorous framework that allows for the estimation of relevant demographic rates and abundance using marked individuals. As originally described by Pollock {1982}, a robust design consists of primary sampling occasions (e.g., years) with secondary sampling occasions nested within each primary occasion (Figure 1). Primary occasions are spaced temporally to capture processes like survival and growth. Secondary occasions occur over a short time frame, short enough that closure of the population from demographic processes (i.e., recruitment, mortality, immigration, emigration) can be assumed. The secondary sampling occasions provide multiple opportunities for individuals to be captured and thereby allowing capture probability and abundance to be estimated.</p>
+<p>The use of a robust design capture recapture approach to estimate Missouri River pallid sturgeon abundance, and demographic rates are not novel. The first application was Steffensen et al. (2012) as part of the annual brood stock collection in segment 9. Similarly, Winders and Steffensen (2014) used a robust design to estimate abundance and demographic rates for a portion of segment 10 using broodstock collection data. In both studies, pallid sturgeon were captured by setting multiple trotlines at random locations in the study area over a short period. The annual brood stock sampling was the primary occasion and daily capture efforts were the secondary occasions in both studies. Given the study design, survival was estimated over the open period (i.e., between annual broodstock collection events). Capture probability was estimated for each daily effort within the primary period and abundance during the closed period (i.e., broodstock collection). Additionally, both studies were able to estimate movement parameters that account for pallid sturgeon leaving or arriving in the study area between closed periods.</p>
+<p>There are variations of the robust design that estimate alternative sets of parameters. The most commonly used version, as well as the version used by Steffensen et al. (2012) and Winders and Steffensen (2014) is the version that estimates 6 parameters. Specifically these parameters are:</p>
+<ul>
+<li><span class="math inline">\(\varphi\)</span>: the probability of surviving between primary occasions,</li>
+<li><span class="math inline">\(\gamma^{\prime}\)</span>: the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was not present during the previous primary occasions given it survives to the current occasion (Figure 2),</li>
+<li><span class="math inline">\(\gamma^{\prime\prime}\)</span>: is the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was present during the previous primary occasions given it survives to the current occasion (Figure 2),</li>
+<li><span class="math inline">\(c\)</span> is the initial capture probability,</li>
+<li><span class="math inline">\(p\)</span> is the recapture probability, and</li>
+<li><span class="math inline">\(f_0\)</span> is number of unobserved individuals.</li>
+</ul>
+<p>Depending on the situation the number of parameters estimated can be reduced by assuming initial capture probability is equal to recapture probability where <span class="math inline">\(c=p\)</span>. Similarly, <span class="math inline">\({{\gamma }^{\prime }}\)</span> and <span class="math inline">\(\gamma^{\prime\prime}\)</span> can be specified to represent hypotheses about immigration and emigration processes. For example, even flow of fish in and out of the systems can be specified by imposing equality of immigration and emigration terms where <span class="math inline">\({{\gamma }^{\prime }}={{\gamma }^{\prime \prime }}\)</span>. Population abundance (<span class="math inline">\(N\)</span>) at each time period is a derived parameter calculated as: <span class="math inline">\(N={{f}_{0}}+M\)</span> where, <span class="math inline">\(M\)</span> is the number of marked fish. Uncerainty around derived parameter estimates can be estimated by profile likelihood and use of the delta method if estimated by maximizing the likelihood of the model given the data {Hilborn and Mangel 1997, Powell 2012}. Uncertainty can also be quantified simultaneously for estimated and derived parameters if fit by MCMC using a Bayesian approach.</p>
+<p>We used what is known as the closed robust design multi-state model (CRDMS). Between year movment from bend to bend or segment to segment may lead to individuals being collected in one sampling area (i.e., state) one year and another sampling area a future year. A multi-state model takes into consideration this movement by looking at and comparing capture histories from all connected states, allowing the estimation of transistion probabilities, or the probability that a fish moves from one state to another. In this case, all the parameters listed above are estimated, with the exception of the two gamma parameters (<span class="math inline">\(\gamma&#39;\)</span> and <span class="math inline">\(\gamma&#39;&#39;\)</span>), as movement into and out of the sampling (or observable area) is now taken into account with the transition probabilities:</p>
+<ul>
+<li><span class="math inline">\(\psi_{ij}\)</span>: the transition from state <span class="math inline">\(i\)</span> to state <span class="math inline">\(j\)</span>, where a state is either a sampling unit or the unobservable area outside all sampling units.</li>
+</ul>
+<p>For example, if we sample segments 7-10,13 and 14 in the lower Missouri, the multi-state model will provide transition probabilities from each of these segments to each of the other segments, as well as transition probabilities to an unobservable area (e.g. temporary migration to the Platte or Mississippi).</p>
+<p>We attempted to run the CRDMS model through R using Program MARK at the bend level (where each observable state would be a sampled bend); however, either the capture history data available (lack of enough recaptures), the computation time needed, or the memory needed caused issues with obtaining estimates from the estimator. We were, however, able to run the estimator at the segment level, running seperate estimates for each basin since basins are assumed unconnected by natural movement. This allowed for the estimation of segment level abundances and transition probabilities, as well as basin level annual survival and capture probability, where we assumed capture and recapture probabilities were equivalent (i.e, <span class="math inline">\(c=p\)</span>).</p>
 </div>
 </div>
 <div id="trend-estimators" class="section level4">
@@ -691,6 +715,44 @@ design.
 </div>
 <div id="abundance-based-estimators" class="section level5">
 <h5>Abundance Based Estimators</h5>
+</div>
+</div>
+<div id="aggregating-bend-level-abundance-to-the-segment-level" class="section level4">
+<h4>Aggregating Bend Level Abundance to the Segment Level</h4>
+<p>The minimum known alive (MKA) and closed mark-recapture M<span class="math inline">\(_0\)</span> and M<span class="math inline">\(_t\)</span> estimators were ran to estimate abundance at the bend level. However, abundance estimates at the segment and basin levels are desired for use in PSPAP Objectives 3 and 2, respectively. Here we’ll discuss the aggregation of the MKA, M<span class="math inline">\(_0\)</span>, and M<span class="math inline">\(_t\)</span> abundance estimates to the segment level, leaving discussion of the basin level estimates to the next section.</p>
+<p>Aggregation to the segment level was based on estimated bend level densities, or the estimated bend abundance divided by the bend length in river kilometers (rkm). We assume the segment density can be estimated by the average density of pallid sturgeon in the sampled bends within the segment. Therefore, the segment abundance can be estimated as the estimated segment density multiplied by the length (in rkm) of the segment.</p>
+<p>In calculating the average density of pallid sturgeon in a segment we took two approaches for the purposes of comparing: arithmetic mean bend density and weighted mean bend density. While we expect the weighted mean approach to be more accurate, we suspect that the arithmetic mean is a reasonable and commonly used approach, and therefore, wanted to highlight the differences between the two.</p>
+<div id="arithmetic-mean-am" class="section level5">
+<h5>Arithmetic Mean (AM)</h5>
+<p>For the arithmetic mean method, we calculate the estimated densities of each sampled bend and then take the typical average (add up the densities and divide by the total number of bends sampled). This averaged density is used as an estimate of the segment density. The segment abundance is then calculated from the segment density estimate and segment length. Mathematically, the segment abundance estimate is calculated as <span class="math display">\[\hat{N_s}=\frac{\sum_i\left(\frac{\hat{N}_{s,i}}{L_{s,i}}\right)}{bends_s}\cdot L_s,\]</span> where <span class="math inline">\(\hat{N_s}\)</span> and <span class="math inline">\(L_s\)</span> are the estimated abundance and total length (in rkm) of segment <span class="math inline">\(s\)</span>, repsectively, <span class="math inline">\(\hat{N}_{s,i}\)</span> and <span class="math inline">\(L_{s,i}\)</span> is the estimated abundance and length (in rkm) of sampled bend <span class="math inline">\(i\)</span> within segment <span class="math inline">\(s\)</span>, respectively, and <span class="math inline">\(bends_s\)</span> is the number of sampled bends in segment <span class="math inline">\(s\)</span>.</p>
+<p>A potential issue with the arithmetic mean is that it treats each bend as equivalent to any other bend, despite the fact that bends are of different lengths. To get a good understanding of how this can effect an estimate, let’s look at a simplified example with known abundances (i.e. perfect estimates).</p>
+<p>EXAMPLE HERE</p>
+</div>
+<div id="weighted-mean-wm" class="section level5">
+<h5>Weighted Mean (WM)</h5>
+<p>The weighted mean estimator attempts to remedy the issues discussed in the previous example that can arise from treating all bends as equal by weighting the bend densities. In particular, the weight for a bend is the length of that bend relative to the total length of all sampled bends within the segment, or, <span class="math display">\[w_{s,i}=\frac{L_{s,i}}{\sum_{j \epsilon J} L_{s,j}},\]</span> where <span class="math inline">\(w_{s,i}\)</span> and <span class="math inline">\(L_{s,i}\)</span> are the weight and length of sampled bend <span class="math inline">\(i\)</span> in segment <span class="math inline">\(s\)</span>, respectively, and the set <span class="math inline">\(J\)</span> is the set of all sampled bends in segment <span class="math inline">\(s\)</span>.</p>
+<p>The weighted mean density is then calculated as the sum of each bend density multiplied by its wieght, or, <span class="math display">\[\hat{d}_s=\sum_{j \epsilon J} w_{i,s}\cdot \hat{d}_{i,s},\]</span> where <span class="math inline">\(\hat{d_s}\)</span> is the estimated segment density and <span class="math inline">\(\hat{d}_{i,s}=\hat{N}_{i,s}/L_{i,s}\)</span> is the estimated density of sampled bend <span class="math inline">\(i\)</span> in segment <span class="math inline">\(s\)</span>. While this calculation might seem unusual, when all is said and done, it is really just the total estimated abundance in the sampled bends (add all sampled bend abundance estimates together) divided by the total length of the sampled bends (add all sampled bend lengths togher) within the river segment, i.e., <span class="math display">\[\hat{d}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}.\]</span></p>
+<p>The weighted mean estimated segment density is then turned into an estimated abundance in the same way it was for the arithmetic mean: by multiplying the estimated segment density by the length of the segment in river kilometers:<br />
+<span class="math display">\[\hat{N}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}\cdot L_s.\]</span> So for our example, we have</p>
+<p>EXAMPLE HERE</p>
+</div>
+<div id="standard-error" class="section level5">
+<h5>Standard Error</h5>
+<p>For both aggregation methods the standard error was calculated using the delta method {Powell 2012}.</p>
+</div>
+</div>
+<div id="aggregating-segment-level-abundanc-to-the-basin-level" class="section level4">
+<h4>Aggregating Segment Level Abundanc to the Basin Level</h4>
+<p>Segment level estimates were aggregated to the basin level using the weighted mean approach described above.</p>
+</div>
+<div id="quantifying-effects-of-management-actions-and-auxiliary-information" class="section level4">
+<h4>Quantifying effects of management actions and auxiliary information</h4>
+<p>Parameters in capture recapture models can be related to covariates which provide a potential means to quantify the population response to management actions. For example, changes in flow can be related to survival or migration parameters using a logit linear model as$()={{}<em>{0}}+{{}</em>{1}} X+$, where <span class="math inline">\(\theta\)</span> is an estimated parameter (e.g., <span class="math inline">\(\phi\)</span>, <span class="math inline">\(\gamma \prime\)</span>, <span class="math inline">\(\gamma\prime\prime\)</span>), <span class="math inline">\(\beta_0\)</span> is the intercept, <span class="math inline">\({{\beta }_{1}}\)</span> is the effect of covariate <span class="math inline">\(X\)</span>, and $$ is residual error. Additionally, auxiliary information can be used to inform parameter estimates. For example, telemetry can be used to determine whether a pallid sturgeon is in the study area or not and thereby inform estimates of <span class="math inline">\(\gamma \prime\)</span>and <span class="math inline">\(\gamma\prime\prime\)</span>. Overall ability of a capture recapture robust design to use auxiliary information and potential capture population level responses to management actions make this a potentially useful design beyond providing a means to quantify the metrics and targets for sub-objectives 1 and 2.</p>
+</div>
+<div id="caveats-and-considerations" class="section level4">
+<h4>Caveats and considerations</h4>
+<p>Monitoring pallid sturgeon in a system as large as the Missouri River is inherently challenging and it is likely that any approaches used will violate an assumption required to estimate demographic rates or population abundance. The previous section provides an overview of the robust design as a monitoring design for pallid sturgeon populations of the Upper and Lower Missouri River. The accurate estimation of population parameters represents a critical component of assessing the system state for pallid sturgeon in the Missouri River and providing key demographic values for evaluating management actions through predictive population modeling. The estimation of these metrics depends on the quality and quantity of data collected from a well-developed sampling design. The optimal design must be cost-efficient, and provide reliable, accurate data.</p>
+<p>Implementing an untested design on a large system like the Missouri River could prove costly from the expenditure of time and effort if the selected design performs poorly. Pallid sturgeon populations in the Upper and Lower Missouri Rivers differ (e.g., size and age at maturity, growth rates, life span). The habitats in which they live are also different. The Lower River is characterized by a narrow, self-scouring channel with higher water velocities, especially in the main channel. In contrast, the Yellowstone and Upper Missouri Rivers are characterized by lower velocities, shallower depths, and a more natural channel form. Differences between the two Missouri River portions has shown that the most effective sampling methodologies and potential strategies also differ significantly and therefore necessitate that the mark-recapture sample designs be tailored to each population. Provisional capture recapture population monitoring designs need to be evaluated by simulation modeling to identify the optimal design (that is, tradeoffs between precision, bias, and cost) and provide proof of concept before testing or implementing in the field as part of a level 1 science effort and adjusted periodically to improve the design so that it more effectively meets the monitoring and species objectives.</p>
 <!--
 Applications of Capture-Recapture Robust Design to PSPAP
 
@@ -945,7 +1007,6 @@ To do:
 </div>
 </div>
 </div>
-</div>
 <div id="valuation-of-a-monitoring-design" class="section level2">
 <h2>Valuation of a monitoring design</h2>
 <p>Valuating monitoring designs, or quantifying overall utility, provides a means for comparing alternative monitoring programs: the higher the value, the better the design (under the given valuation process). For monitoring design values to be as meaningful and objective as possible, it is necessary for the valuation process to formally link the outcomes of alternative monitoring designs to agency objectives with quantifiable metrics. The value of a monitoring design can then be thought of as an overall measurement of its utility, or usefulness, in achieving all objectives. Quantifying such an overall monitoring design utility requires two steps:</p>
@@ -1129,7 +1190,49 @@ The steps described in this example contain all the key elements of combining me
 <h5>Combining Performance Metrics (Bias, Precision, Reliability)</h5>
 <p>The 3 performance metrics described above under trend can be combined into a single metric—commonly referred to as a utility—representing the objective to <em>quantify population trend</em> <a href="mailto:%7B@RN4402%7D">{@RN4402}</a>. However, one problem we run into with the metrics above is that they are on different scales. Bias can be negative or positive with values approaching 0 being best, precision is a positive number varying from 0 (best) to potentially large numbers (worst), and reliability is constrained between 0 (worst) and 1 (best).</p>
 <p>To convert the 3 metrics to a common scale we can use methods like proportional scaling which normalizes values to a specified minimum and maximum. For example, we can scale the bias metric to utility values varying from 0 to 1 as:</p>
-<p><span class="math display">\[U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},\]</span></p>
+<p><span class="math display">\[U_{bias}=\frac{max(|bias|)-|bias|}{max(|bias|)-min(|bias|)},\]</span> <!-- FORMULAS WITH CUT OFFS FROM SWING WEIGHTING IMPLEMENTED:
+
+
+# TREND BIAS
+$$U_{t,bias}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.0001\\
+\frac{0.7-x}{0.7-0.0001}, & \mbox{ for } \hspace{2pt} 0.0001< x < 0.7\\
+0, & \mbox{ for } \hspace{2pt} x\geq 0.7
+\end{cases},$$
+
+where $x=|trend \hspace{4pt} bias|$.
+
+# TREND PRECISON
+$$U_{t,prec}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.00005\\
+\frac{0.375-x}{0.375-0.00005}, & \mbox{ for } \hspace{2pt} 0.00005< x < 0.375\\
+0, & \mbox{ for } \hspace{2pt} x\geq 0.375
+\end{cases},$$
+
+where $x=trend \hspace{4pt} CV$.
+
+
+
+
+# ABUNDANCE BIAS
+$$U_{a,bias}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.00001\\
+\frac{1-x}{1-0.00001}, & \mbox{ for } \hspace{2pt} 0.00001< x < 1\\
+0, & \mbox{ for } \hspace{2pt} x\geq 1
+\end{cases},$$
+
+where $x=|abundance \hspace{4pt} relative \hspace{4pt} bias|$.
+
+# TREND PRECISON
+$$U_{t,prec}(x)=\begin{cases}
+1, & \mbox{ for } \hspace{2pt} 0\leq x \leq 0.0001\\
+\frac{0.3-x}{0.3-0.0001}, & \mbox{ for } \hspace{2pt} 0.0001< x < 0.3\\
+0, & \mbox{ for } \hspace{2pt} x\geq 0.3
+\end{cases},$$
+
+where $x=abundance \hspace{4pt} CV$.
+
+--></p>
 <p>where <span class="math inline">\(|bias|\)</span> is the absolute value of bias and we refer to <span class="math inline">\(U_{bias}\)</span> as bias utility. We use absolute value here because we are assuming negative and positive bias are equally bad regarding satisfying the objective to <em>quantify population trend</em>. In the plot of trend bias utility, <span class="math inline">\(U_{t,bias}\)</span>, shown in Figure ??, trend esimates with smaller absolute bias are given higher utility values while increasingly large absolute bias values approach a utiliity of 0.</p>
 <p>Trend precision utility can be calculated in a similar manner. Suppose trend precision varies from a CV of 0.01 to 0.30 (where a CV value of 0.30 is not very precise). The equation to calculate scaled precision is the same as for bias; however, we do not need to take absolute values since all CV values are positive. In Figure ??, trend estimates with lower CV values have higher precision utility values, <span class="math inline">\(U_{t,prec}\)</span>, and precision utility approaches 0 as CV values increase to the maximum of 0.30.</p>
 <p>Lastly, as a probability, trend estimator reliability is already on a 0 to 1 scale and requires no additional scaling. However, the relationship of estimator reliability with the value of trend estimates is different than the relationship of bias and precision with trend estimates. Notice, estimator bias and precision can only be evaluated given an estimate was made, and reliability tells you the probability an estimate can be made. In other words, the bias and precision metrics are conditional on the estimator producing estimates. Hence, when combining trend bias, precision, and reliabilty to obtain trend utility we multiply the weighted average of the bias and trend utilities by the probability we can obtain estimates (estimator reliability):</p>
@@ -1322,7 +1425,7 @@ rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build p
 </div>
 <div id="page-break-2" class="section level5">
 <h5>Page Break</h5>
-<p><img src="images/Movement.jpeg" /><!-- --> Figure 3. Movement illustration.</p>
+<p><img src="images/Movement_Lines.png" /><!-- --> Figure 3. Movement illustration.</p>
 </div>
 <div id="page-break-3" class="section level5">
 <h5>Page Break</h5>
@@ -1336,7 +1439,7 @@ rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build p
 </div>
 <div id="page-break-5" class="section level5">
 <h5>page break</h5>
-<p><img src="images/EffortDistEx.jpeg" /><!-- --></p>
+<p><img src="images/GammaFitEx.png" /><!-- --></p>
 <p>Figure 6.</p>
 </div>
 <div id="page-break-6" class="section level5">
