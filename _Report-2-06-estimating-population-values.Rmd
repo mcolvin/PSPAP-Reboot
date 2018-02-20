@@ -128,30 +128,30 @@ recapture estimators.
 ##### Minimum Known Alive
 The minimum known alive (MKA) estimator
 
-##### Closed mark-recapture estimators, $M_0$ and $M_t$
+##### Closed mark-recapture estimators, M$_0$ and M$_t$
 The closed mark-recapture estimators take advantage of multiple capture 
 occasions within a year to estimate both capture probability and 
 abundance.  The two estimators differ in the way they treat capture 
-probability.  The $M_0$ estimator assumes that the capture probability 
-is constant across all capture occasions ($p$).  The  $M_t$ estimator 
+probability.  The M$_0$ estimator assumes that the capture probability 
+is constant across all capture occasions ($p$).  The  M$_t$ estimator 
 assumes that capture probability varies within a year from occasion to 
 occasion ($p_t$).  
 
 In reality, we can expect capture probability to vary from occasion to 
 occasion due to many factors (e.g., water velocity, temperature); 
-however, if fluctuation in capture probability are expected to be small, 
-capture probabiliy may best be modelled as a constant with some 
-environmental noise.  In this case, the $M_0$ estimator is likely the 
+however, if fluctuations in capture probability are expected to be small, 
+then capture probability may best be modelled as a constant with some 
+environmental noise.  In this case, the M$_0$ estimator is likely the 
 best choice of the two.   On the other hand, if different gears are used 
-each occasion and we expect that the different gears will have a large 
-difference in capture probability, then we can always use $M_t$ 
-estimator.  Since in any of these cases, there may be a tradeoff between 
-estimating more parameters (multiple capture probabilities) in order to 
-reflect reality better, and the bias and precision of these estimates.  
-Therefore, we implemented both the $M_0$ and the $M_t$ estimators in all 
-scenarios and compare their outcomes.  
+during each capture occasion and we expect that the different gears will 
+have a large difference in capture probability, then the M$_t$ estimator
+may be the better choice.  In any of these cases there may be a tradeoff 
+between estimating more parameters (multiple capture probabilities) and 
+the bias and precision of thes pararmeter estimates.  Therefore, we 
+implemented both the M$_0$ and the M$_t$ estimators in all scenarios and 
+compared their outcomes.  
 
-Both the $M_0$ and $M_t$ estimators rely on the assumption that the 
+Both the M$_0$ and M$_t$ estimators rely on the assumption that the 
 population is closed across capture occasions; in other words no fish 
 moves into the sampled bend or out of the sampled bend during the time 
 period between the start of the first capture occasion to the end of the 
@@ -168,9 +168,9 @@ Missouri River, we would want this assumption of no movement to
 approximately hold for at least a few days.  Additionally, since it is 
 likely this assumption will not be met consistently in the field, we 
 have looked at the consequences of breaking the assumpiton of closure 
-accross capture occasions (See ??).
+across capture occasions (See ??).
 
-The $M_0$ and $M_t$ estimators only analyze the data from within a year  
+The M$_0$ and M$_t$ estimators only analyze the data from within a year 
 and do not compare data across years.  Therefore, while these estimators 
 can produce estimates of capture probability and annual bend level 
 abundance, they cannot estimate annual survival or recruitment.
@@ -188,13 +188,13 @@ capture probability, abundance, and survival as described by Pollock
 The robust design frame work has been applied across a wide range of 
 taxa to estimate demographic rates and population abundance. Its use has 
 been extended to studies of species occurrence (i.e., occupancy models; 
-MacKenzie et al. 2002, Tyre et al. 2003) and abundance (N-mixture 
-models; Royle 2004b, Royle 2004a) of unmarked individuals. The robust 
+{MacKenzie et al. 2002, Tyre et al. 2003}) and abundance (N-mixture 
+models; {Royle 2004b, Royle 2004a}) of unmarked individuals. The robust 
 design provides a rigorous framework that allows for the estimation of 
 relevant demographic rates and abundance using marked individuals. As 
-originally described by Pollock (1982), a robust design consists of 
+originally described by Pollock {1982}, a robust design consists of 
 primary sampling occasions (e.g., years) with secondary sampling 
-occasions nested with the primary sampling occasion (Figure 1). 
+occasions nested within each primary occasion (Figure 1). 
 Primary occasions are spaced temporally to capture processes like 
 survival and growth. Secondary occasions occur over a short time frame, 
 short enough that closure of the population from demographic processes 
@@ -221,18 +221,16 @@ Additionally, both studies were able to estimate movement parameters
 that account for pallid sturgeon leaving or arriving in the study area 
 between closed periods. 
 
+There are variations of the robust design that estimate alternative sets 
+of parameters. The most commonly used version, as well as the version 
+used by Steffensen et al. (2012) and Winders and Steffensen (2014) is 
+the version that estimates 6 parameters. Specifically these parameters 
+are: 
 
-###### Specific parameters estimated by the robust design
-
-There are variations of the robust design that estimate varying 
-parameters. The most commonly used version, as well as the version used 
-by Steffensen et al. (2012) and Winders and Steffensen (2014) is the 
-version that estimates 6 parameters. Specifically these parameters are: 
-
-* $\varphi $: the probability of surviving between primary occasions, 
+* $\varphi$: the probability of surviving between primary occasions, 
 * $\gamma^{\prime}$:  the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was not present during the previous primary occasions given it survives to the current occasion (Figure 2),
 * $\gamma^{\prime\prime}$:  is the probability of being outside the study area and unavailable for capture during the primary occasions given the animal was present during the previous primary occasions given it survives to the current occasion (Figure 2),
-* $c$ is the initial capture probability
+* $c$ is the initial capture probability,
 * $p$ is the recapture probability, and 
 * $f_0$ is number of unobserved individuals.  
 
@@ -245,10 +243,10 @@ and out of the systems can be specified by imposing equality of
 immigration and emigration terms where ${{\gamma }^{\prime }}={{\gamma 
 }^{\prime \prime }}$. Population abundance ($N$) at each time period is 
 a derived parameter calculated as: $N={{f}_{0}}+M$ where, $M$ is the 
-number of marked fish. Uncerainty around parameter estimates derived 
-quantities can be estimated by profile likelihood and use of the delta 
-method if estimated by maximizing the likelihood of the model given the 
-data (Hilborn and Mangel 1997, Powell 2012). Uncertainty can also be 
+number of marked fish. Uncerainty around derived parameter estimates can 
+be estimated by profile likelihood and use of the delta method if 
+estimated by maximizing the likelihood of the model given the data 
+{Hilborn and Mangel 1997, Powell 2012}. Uncertainty can also be 
 quantified simultaneously for estimated and derived parameters if fit by 
 MCMC using a Bayesian approach. 
 
@@ -259,13 +257,32 @@ state) one year and another sampling area a future year.  A multi-state
 model takes into consideration this movement by looking at and comparing 
 capture histories from all connected states, allowing the estimation of 
 transistion probabilities, or the probability that a fish moves from one 
-state to another.
+state to another.  In this case, all the parameters listed above are 
+estimated, with the exception of the two gamma parameters ($\gamma'$ and 
+$\gamma''$), as movement into and out of the sampling (or observable 
+area) is now taken into account with the transition probabilities:
 
+* $\psi_{ij}$: the transition from state $i$ to state $j$, where a state 
+is either a sampling unit or the unobservable area outside all sampling 
+units. 
 
+For example, if we sample segments 7-10,13 and 14 in the lower Missouri, 
+the multi-state model will provide transition probabilities from each of 
+these segments to each of the other segments, as well as transition 
+probabilities to an unobservable area (e.g. temporary migration to the 
+Platte or Mississippi).
 
-
-
-
+We attempted to run the CRDMS model through R using Program MARK at the 
+bend level (where each observable state would be a sampled bend); 
+however, either the capture history data available (lack of enough 
+recaptures), the computation time needed, or the memory needed caused 
+issues with obtaining estimates from the estimator.  We were, however, 
+able to run the estimator at the segment level, running seperate 
+estimates for each basin since basins are assumed unconnected by natural 
+movement.  This allowed for the estimation of segment level abundances 
+and transition probabilities, as well as basin level annual survival and 
+capture probability, where we assumed capture and recapture 
+probabilities were equivalent (i.e, $c=p$). 
 
 
 
@@ -277,11 +294,11 @@ state to another.
 
 
 #### Aggregating Bend Level Abundance to the Segment Level
-The minimum known alive (MKA) and closed mark-recapture $M_0$ and $M_t$ 
+The minimum known alive (MKA) and closed mark-recapture M$_0$ and M$_t$ 
 estimators were ran to estimate abundance at the bend level.  However, 
 abundance estimates at the segment and basin levels are desired for use 
 in PSPAP Objectives 3 and 2, respectively.  Here we'll discuss the 
-aggregation of the MKA, $M_0$, and $M_t$ abundance estimates to the 
+aggregation of the MKA, M$_0$, and M$_t$ abundance estimates to the 
 segment level, leaving discussion of the basin level estimates to the 
 next section.
 
@@ -356,6 +373,10 @@ $$\hat{N}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}
 So for our example, we have
 
 EXAMPLE HERE
+
+##### Standard Error
+For both aggregation methods the standard error was calculated using the 
+delta method {Powell 2012}.
 
 
 #### Aggregating Segment Level Abundanc to the Basin Level
