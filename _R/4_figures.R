@@ -532,39 +532,42 @@ par(mfrow=c(2,2))
     # P2
     dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
     dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+    dat$estimator<-factor(as.character(dat$estimator), 
+                          levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                   "Mt_AM",  "Mt_WM",  "CRDMS"))
     dat<-dat[order(dat$estimator),]
     rlim<-0.5
     boxplot(rel_bias~estimator, data=dat,
-            subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-            at = 0:6*15 + 10, xlim = c(0, 102),
+            subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+            at = 0:6*15 + 1, xlim = c(0, 102),
             col="Gray",
             #range=rlim,
             #ylim=range(dat[which(dat$gear=="TLC1"),]$rel_bias, na.rm=TRUE),
-            ylim=c(-1,0.6),
+            ylim=c(-1,1),
             xaxt = "n",
             #main="Trotlines",
             ylab="Abundance Relative Bias")
     boxplot(rel_bias~estimator, data=dat,
-            subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-            at = 1:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+            subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+            at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
             at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-            at = 1:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
             at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-            at = 1:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
-            subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
-            at = 3:4*15 + 1, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+            subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+            at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
-            subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-            at = 3:4*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+            subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+            at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
     abline(h=0, lty=2, col="red")
     axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
     axis(3, at = -4, labels = "Estimator:", tick = FALSE)
@@ -572,7 +575,7 @@ par(mfrow=c(2,2))
     axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
     axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
     axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
-    legend("topleft", inset=.01, title="Sampling Type",
+    legend("topright", inset=.015, title="Sampling Type",
            c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
     mtext("Occasions", 1, padj=3.5)
     #mtext("Estimator", 3, padj=-3)
@@ -633,38 +636,42 @@ mtext("Trotlines", 3, padj=-4, font=2)
 # P4
 dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat$estimator<-factor(as.character(dat$estimator), 
+                      levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                               "Mt_AM",  "Mt_WM",  "CRDMS"))
 dat<-dat[order(dat$estimator),]
+
 boxplot(prec~estimator, data=dat,
-        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 10, xlim = c(0, 102),
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 1, xlim = c(0, 102),
         col="Gray",
         #range=rlim,
         #ylim=range(dat[which(dat$gear=="TLC1"),]$prec, na.rm=TRUE),
-        ylim=c(0,0.2),
+        ylim=c(0,0.3),
         xaxt = "n",
         #main="Trotlines",
         ylab="Abundance Precision (CV)")
 boxplot(prec~estimator, data=dat,
-        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
         at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
         at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
-        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
-        at = 3:4*15 + 1, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
-        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 3:4*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 axis(3, at = -4, labels = "Estimator:", tick = FALSE)
@@ -672,7 +679,7 @@ axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
 axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
 axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
 axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
-legend(55,0.2, inset=.01, title="Sampling Type",
+legend(42,0.3, inset=.01, title="Sampling Type",
        c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
 mtext("Occasions", 1, padj=3.5)
 #mtext("Estimator", 3, padj=-3)
@@ -738,11 +745,14 @@ par(mfrow=c(2,2))
   # P2
   dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
   dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+  dat$estimator<-factor(as.character(dat$estimator), 
+                        levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                 "Mt_AM",  "Mt_WM",  "CRDMS"))
   dat<-dat[order(dat$estimator),]
   rlim<-0.5
   boxplot(abund_bias_utility~estimator, data=dat,
-          subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-          at = 0:6*15 + 10, xlim = c(0, 102),
+          subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+          at = 0:6*15 + 1, xlim = c(0, 102),
           col="Gray",
           #range=rlim,
           ylim=range(dat[which(dat$gear=="TLC1"),]$abund_bias_utility, na.rm=TRUE),
@@ -751,26 +761,26 @@ par(mfrow=c(2,2))
           #main="Trotlines",
           ylab="Abundance Bias Utility")
   boxplot(abund_bias_utility~estimator, data=dat,
-          subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-          at = 1:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+          subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+          at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
           at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-          at = 1:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
           at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-          at = 1:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
-          subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
-          at = 3:4*15 + 1, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+          subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+          at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
-          subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-          at = 3:4*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+          subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+          at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
   #abline(h=0, lty=2, col="red")
   axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
   axis(3, at = -4, labels = "Estimator:", tick = FALSE)
@@ -778,7 +788,7 @@ par(mfrow=c(2,2))
   axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
   axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
   axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
-  legend("bottomleft", inset=.01, title="Sampling Type",
+  legend("bottomright", inset=.01, title="Sampling Type",
          c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
   mtext("Occasions", 1, padj=3.5)
   #mtext("Estimator", 3, padj=-3)
@@ -788,7 +798,11 @@ par(mfrow=c(2,2))
 # P1
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat$estimator<-factor(as.character(dat$estimator), 
+                      levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                               "Mt_AM",  "Mt_WM",  "CRDMS"))
 dat<-dat[order(dat$estimator),]
+
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
         at = 0:7*15 + 1, xlim = c(0, 117),
@@ -801,7 +815,7 @@ boxplot(trend_bias_utility~estimator, data=dat,
         ylab="Trend Bias Utility")
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
         at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
@@ -837,10 +851,14 @@ mtext("Trotlines", 3, padj=-4, font=2)
 # P4
 dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat$estimator<-factor(as.character(dat$estimator), 
+                      levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                               "Mt_AM",  "Mt_WM",  "CRDMS"))
 dat<-dat[order(dat$estimator),]
+
 boxplot(abund_prec_utility~estimator, data=dat,
-        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 10, xlim = c(0, 102),
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 1, xlim = c(0, 102),
         col="Gray",
         #range=rlim,
         ylim=range(dat[which(dat$gear=="TLC1"),]$abund_prec_utility, na.rm=TRUE),
@@ -849,26 +867,26 @@ boxplot(abund_prec_utility~estimator, data=dat,
         #main="Trotlines",
         ylab="Abundance Precision Utility")
 boxplot(abund_prec_utility~estimator, data=dat,
-        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
         at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
         at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
-        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
-        at = 3:4*15 + 1, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
-        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 3:4*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 axis(3, at = -4, labels = "Estimator:", tick = FALSE)
@@ -876,7 +894,7 @@ axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
 axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
 axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
 axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
-legend(55,0.1, inset=.01, title="Sampling Type",
+legend(40,0.1, inset=.01, title="Sampling Type",
        c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
 mtext("Occasions", 1, padj=3.5)
 #mtext("Estimator", 3, padj=-3)
@@ -900,7 +918,7 @@ boxplot(trend_precision_utility~estimator, data=dat,
         ylab="Trend Precision Utility")
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
         at = 0:7*15 + 4, xlim = c(0, 117),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
@@ -944,12 +962,15 @@ par(mfrow=c(2,1))
 # P1
 dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat$estimator<-factor(as.character(dat$estimator), 
+                      levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                               "Mt_AM",  "Mt_WM",  "CRDMS"))
 dat<-dat[order(dat$estimator),]
 dat$abund_utility<-(0.5*dat$abund_bias_utility+0.5*dat$abund_prec_utility)
 
 boxplot(abund_utility~estimator, data=dat,
-        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 10, xlim = c(0, 102),
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 1, xlim = c(0, 102),
         col="Gray",
         #range=rlim,
         ylim=range(dat[which(dat$gear=="TLC1"),]$abund_utility, na.rm=TRUE),
@@ -958,26 +979,26 @@ boxplot(abund_utility~estimator, data=dat,
         #main="Trotlines",
         ylab="Abundance Utility")
 boxplot(abund_utility~estimator, data=dat,
-        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
         at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
 boxplot(abund_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
         at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
 boxplot(abund_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 1:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_utility~estimator, data=dat,
-        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
-        at = 3:4*15 + 1, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(abund_utility~estimator, data=dat,
-        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 3:4*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 axis(3, at = -4, labels = "Estimator:", tick = FALSE)
@@ -994,6 +1015,9 @@ mtext("Trotlines", 3, padj=-4, font=2)
 # P2
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat$estimator<-factor(as.character(dat$estimator), 
+                      levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                               "Mt_AM",  "Mt_WM",  "CRDMS"))
 dat<-dat[order(dat$estimator),]
 dat$trend_utility<-(0.5*dat$trend_bias_utility+0.5*dat$trend_precision_utility)
 
@@ -1009,7 +1033,7 @@ boxplot(trend_utility~estimator, data=dat,
         ylab="Trend Utility")
 boxplot(trend_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)
 boxplot(trend_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
         at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
@@ -1041,5 +1065,212 @@ mtext("Occasions", 1, padj=3.5)
 #mtext("Estimator", 3, padj=-3)
 mtext("Trotlines", 3, padj=-4, font=2)
 }
+if(n==4)
+{
+#######################
+#  OVERALL UTILITIES  #
+#######################  
+  datT<-readRDS("D:/_output/4-tables/trnd_table.rds")
+  datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
+  datT$estimator<-factor(as.character(datT$estimator), 
+                        levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                 "Mt_AM",  "Mt_WM",  "CRDMS"))
+  datT<-datT[order(datT$estimator),]
+  datT$trend_utility<-(0.5*datT$trend_bias_utility+0.5*datT$trend_precision_utility)
+  datT<-datT[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator",
+                "trend_utility")]
+  datT[which(is.na(datT$trend_utility)),]$trend_utility<-0
+  datT_CPUE<-datT[which(datT$estimator=="CPUE"),]
+  datT_Abund<-datT[which(datT$estimator!="CPUE"),]
+  
+  datA<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
+  datA<-datA[which(datA$gear %in% c("GN14", "TLC1", "TN")),]
+  datA$estimator<-factor(as.character(datA$estimator), 
+                        levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                 "Mt_AM",  "Mt_WM",  "CRDMS"))
+  datA<-datA[order(datA$estimator),]
+  datA$abund_utility<-(0.5*datA$abund_bias_utility+0.5*datA$abund_prec_utility)
+  datA<-datA[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator", 
+                "abund_utility")]
+  datA[which(is.na(datA$abund_utility)),]$abund_utility<-0
+  datA_MKA_WM<-datA[which(datA$estimator=="MKA_WM"),
+                    c("pop_id", "catch_id","gear", "samp_type", "occasions", 
+                      "abund_utility")]
+  
+  dat<-merge(datT_Abund, datA, 
+             by=c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator"), 
+             all=TRUE)
+  dat_CPUE<-merge(datT_CPUE, datA_MKA_WM,
+                  by=c("pop_id", "catch_id","gear", "samp_type", "occasions"), 
+                  all=TRUE)
+  dat<-rbind(dat_CPUE, dat)
+  dat$utility<-(0.5*dat$trend_utility+0.5*dat$abund_utility)
+  dat$estimator<-factor(as.character(dat$estimator), 
+                         levels=c("CPUE", "M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
+  dat<-dat[order(datA$estimator),]
+ 
+# ALL 
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+          at = 0:7*15 + 1, xlim = c(0, 117),
+          col="Gray",
+          #range=0.5,
+          #ylim=range(dat[which(dat$gear=="TLC1"),]$utility, na.rm=TRUE),
+          ylim=c(0.55, 1),
+          xaxt = "n",
+          #main="Trotlines",
+          ylab="Combined Abundance & Trend Utility")
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+          at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
+          at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
+          at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", add=TRUE)
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
+          at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
+          at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", add=TRUE)
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+          at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", col="Gray",add=TRUE)
+  boxplot(utility~estimator, data=dat,
+          subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+          at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", add=TRUE)
+  #abline(h=0, lty=2, col="red")
+  axis(3, at = 0:7*15 + 6, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+  axis(3, at = -4, labels = "Estimator:", tick = FALSE)
+  axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
+  axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
+  axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
+  axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
+  legend("bottomleft", inset=.005, title="Sampling Type",
+         c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
+  mtext("Occasions", 1, padj=3.5)
+  #mtext("Estimator", 3, padj=-3)
+  mtext("Trotlines", 3, padj=-4, font=2)
+  
+#CPUE 
+names(datT_CPUE)[6]<-"trend_estimator"
+names(datA)[6]<-"abund_estimator"
+dat_CPUE_Abund<-merge(datT_CPUE, datA, 
+                      by=c("pop_id", "catch_id","gear", "samp_type", "occasions"),
+                      all=TRUE)
+dat_CPUE_Abund$utility<-(0.5*dat_CPUE_Abund$trend_utility+0.5*dat_CPUE_Abund$abund_utility)
+dat_CPUE_Abund$estimator<-paste0(dat_CPUE_Abund$trend_estimator, "+", 
+                                 dat_CPUE_Abund$abund_estimator)
+dat_CPUE_Abund$estimator<-factor(as.character(dat_CPUE_Abund$estimator), 
+                                 levels=c("CPUE+M0_AM", "CPUE+M0_WM", "CPUE+MKA_AM",
+                                          "CPUE+MKA_WM","CPUE+Mt_AM",  "CPUE+Mt_WM",
+                                          "CPUE+CRDMS"))
+dat_CPUE_Abund<-dat_CPUE_Abund[order(dat_CPUE_Abund$estimator),]
+
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 1, xlim = c(0, 102),
+        col="Gray",
+        #range=0.5,
+        ylim=range(dat_CPUE_Abund[which(dat_CPUE_Abund$gear=="TLC1"),]$utility, na.rm=TRUE),
+        #ylim=c(0.55, 1),
+        xaxt = "n",
+        #main="Trotlines",
+        ylab="Combined Abundance & Trend Utility")
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 4, xlim = c(0, 102), xaxt = "n",col="Gray", add=TRUE)
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 7, xlim = c(0, 102), xaxt = "n",col="Gray", add=TRUE)
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 8, xlim = c(0, 102), xaxt = "n", add=TRUE)
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
+        at = 0:6*15 + 10, xlim = c(0, 102), xaxt = "n", col="Gray",add=TRUE)
+boxplot(utility~estimator, data=dat_CPUE_Abund,
+        subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
+        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)
+#abline(h=0, lty=2, col="red")
+axis(3, at = 0:6*15 + 6, labels = unique(dat_CPUE_Abund[order(dat_CPUE_Abund$estimator),]$estimator), tick = FALSE)
+axis(3, at = -4, labels = "Estimator:", tick = FALSE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
+axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
+axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
+axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
+legend(40,0.53, inset=.005, title="Sampling Type",
+       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
+mtext("Occasions", 1, padj=3.5)
+#mtext("Estimator", 3, padj=-3)
+mtext("Trotlines", 3, padj=-4, font=2)
+}
+
+if(n==5){  
+#############################
+#  MEDIAN UTILITY VS. COST  #
+#############################  
+  datT<-readRDS("D:/_output/4-tables/trnd_table.rds")
+  datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
+  datT$estimator<-factor(as.character(datT$estimator), 
+                         levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
+  datT<-datT[order(datT$estimator),]
+  datT$trend_utility<-(0.5*datT$trend_bias_utility+0.5*datT$trend_precision_utility)
+  datT<-datT[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator",
+                "trend_utility")]
+  datT[which(is.na(datT$trend_utility)),]$trend_utility<-0
+  datT_CPUE<-datT[which(datT$estimator=="CPUE"),]
+  datT_Abund<-datT[which(datT$estimator!="CPUE"),]
+  
+  datA<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
+  datA<-datA[which(datA$gear %in% c("GN14", "TLC1", "TN")),]
+  datA$estimator<-factor(as.character(datA$estimator), 
+                         levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
+  datA<-datA[order(datA$estimator),]
+  datA$abund_utility<-(0.5*datA$abund_bias_utility+0.5*datA$abund_prec_utility)
+  datA<-datA[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator", 
+                "abund_utility")]
+  datA[which(is.na(datA$abund_utility)),]$abund_utility<-0
+  
+  dat<-merge(datT_Abund, datA, 
+             by=c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator"), 
+             all=TRUE)
+  
+  names(datT_CPUE)[6]<-"trend_estimator"
+  names(datA)[6]<-"abund_estimator"
+  dat_CPUE<-merge(datT_CPUE, datA, 
+                  by=c("pop_id", "catch_id","gear", "samp_type", "occasions"),
+                  all=TRUE)
+  dat_CPUE$estimator<-paste0(dat_CPUE$trend_estimator, "+", 
+                                   dat_CPUE$abund_estimator)
+  dat_CPUE[which(dat_CPUE$estimator=="CPUE+MKA_WM"), ]$estimator<-"CPUE"
+  dat_CPUE<-dat_CPUE[,names(dat)]
+  dat<-rbind(dat, dat_CPUE)
+  
+  dat$utility<-(0.5*dat$trend_utility+0.5*dat$abund_utility)
+  U_dat<-ddply(dat, .(gear, estimator, samp_type, occasions), summarize,
+                  median_utility=median(utility),
+                  mean_utility=mean(utility),
+                  sd_utility=sd(utility))
+  cost<-data.frame(occasions=1:4, 
+                   expected_cost=c(0.3011479,0.6022957, 0.9034436, 1.20459))
+  comp<-merge(U_dat, cost, by=("occasions"), all.x=TRUE)
+  #min(comp$median_utility)
+  plot(comp$expected_cost, comp$median_utility, xlab="Cost (millions of dollars)", ylab="Median Utility",
+       ylim=c(0.7,1), main="Trotlines")
+  plot(comp$expected_cost, comp$median_utility, xlab="Cost (millions of dollars)", ylab="Median Utility",
+       ylim=c(0,1), main="Trotlines")
+}  
 
 }
