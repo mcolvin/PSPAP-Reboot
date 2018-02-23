@@ -552,7 +552,10 @@ which is the sum of the bend abundances divided by the sum of the bend
 lengths, i.e., the segment abundance divided by the segment length, 
 which calculates the exact segment density, `r S_dens` fish per rkm. 
 Since the segment density is correct, the segment abundance estimated 
-from it will be correct as well,  $\hat{d_s}\cdot L_s=$ (`r S_dens`)(`r S_l`)=`r S_abund` fish.
+from it will be correct as well,  $\hat{d_s}\cdot L_s=$ (`r S_dens`)(`r S_l`)=`r S_abund` fish.  Since the weighted  mean produces a correct abundance estimate 
+given perfect knowledge, it is highly likely to produce a better 
+abundance estimate than those derived by the arithmetic mean approach 
+when given imperfect knowledge.
 
 
 ##### Standard Error
