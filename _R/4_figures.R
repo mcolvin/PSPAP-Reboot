@@ -522,7 +522,7 @@ fig_utilities<-function()
 
 results_boxplots<-function(n)
 {
-  if(n=1)
+  if(n==1)
   {
 #######################
 # PERFORMANCE METRICS #
@@ -746,7 +746,7 @@ mtext("Occasions", 1, padj=3.5)
 #mtext("Trotlines", 3, padj=-4, font=2)
 }
 
-if(n=2)
+if(n==2)
   {
 #########################
 # PERFORMANCE UTILITIES #
@@ -970,7 +970,7 @@ mtext("Occasions", 1, padj=3.5)
 
 
 
-if(n=3)
+if(n==3)
 {
 #############################
 # TREND/ABUNDANCE UTILITIES #

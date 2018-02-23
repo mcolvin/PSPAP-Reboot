@@ -190,7 +190,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overview of Pallid Sturgeon Assessment Framework Evaluation</h1>
 <h4 class="author"><em>Missouri River Pallid Sturgeon Technical Team</em></h4>
-<h4 class="date"><em>20 February, 2018</em></h4>
+<h4 class="date"><em>23 February, 2018</em></h4>
 
 </div>
 
@@ -740,27 +740,63 @@ design.
 </div>
 <div id="direct-estimation-from-robust-design" class="section level5">
 <h5>Direct Estimation from Robust Design</h5>
-<p>While not commonly employed in fisheries literature the robust design can estimate population growth rate (<span class="math inline">\(\lambda\)</span>). In particular, by running capture histories backwards estimates the probability a pallid sturgeon was present in the previous year given it was present in the current year which is the per capita rate of additions to the population (<span class="math inline">\(f\)</span>), or the number of individuals entering the population between primary occasions. Survival rate ($<span class="math inline">\() can be estimated, and by running them forward, survival can be estimated. Trend evaluated as population growth rate is derived from model estimates as\)</span> =f$ and uncertainty can be estimated using the previously described approaches for<span class="math inline">\(N\)</span>.</p>
+<p>While not commonly employed in fisheries literature the robust design can estimate population growth rate (<span class="math inline">\(\lambda\)</span>). In particular, by running capture histories backwards estimates the probability a pallid sturgeon was present in the previous year given it was present in the current year which is the per capita rate of additions to the population (<span class="math inline">\(f\)</span>), or the number of individuals entering the population between primary occasions. Survival rate (<span class="math inline">\(\varphi\)</span>) can be estimated, and by running them forward, survival can be estimated. Trend evaluated as population growth rate is derived from model estimates as <span class="math inline">\(\lambda =\varphi \text{+}f\)</span> and uncertainty can be estimated using the previously described approaches for<span class="math inline">\(N\)</span>.</p>
 </div>
 </div>
 <div id="aggregating-bend-level-abundance-to-the-segment-level" class="section level4">
 <h4>Aggregating Bend Level Abundance to the Segment Level</h4>
 <p>The minimum known alive (MKA) and closed mark-recapture M<span class="math inline">\(_0\)</span> and M<span class="math inline">\(_t\)</span> estimators were ran to estimate abundance at the bend level. However, abundance estimates at the segment and basin levels are desired for use in PSPAP Objectives 3 and 2, respectively. Here we’ll discuss the aggregation of the MKA, M<span class="math inline">\(_0\)</span>, and M<span class="math inline">\(_t\)</span> abundance estimates to the segment level, leaving discussion of the basin level estimates to the next section.</p>
 <p>Aggregation to the segment level was based on estimated bend level densities, or the estimated bend abundance divided by the bend length in river kilometers (rkm). We assume the segment density can be estimated by the average density of pallid sturgeon in the sampled bends within the segment. Therefore, the segment abundance can be estimated as the estimated segment density multiplied by the length (in rkm) of the segment.</p>
-<p>In calculating the average density of pallid sturgeon in a segment we took two approaches for the purposes of comparing: arithmetic mean bend density and weighted mean bend density. While we expect the weighted mean approach to be more accurate, we suspect that the arithmetic mean is a reasonable and commonly used approach, and therefore, wanted to highlight the differences between the two.</p>
+<p>In calculating the average density of pallid sturgeon in a segment we took two approaches for the purposes of comparing: arithmetic mean bend density and weighted mean bend density. While we expect the weighted mean approach to be more accurate, we suspect that the arithmetic mean is a commonly used approach, and therefore, wanted to highlight the differences between the two.</p>
 <div id="arithmetic-mean-am" class="section level5">
 <h5>Arithmetic Mean (AM)</h5>
 <p>For the arithmetic mean method, we calculate the estimated densities of each sampled bend and then take the typical average (add up the densities and divide by the total number of bends sampled). This averaged density is used as an estimate of the segment density. The segment abundance is then calculated from the segment density estimate and segment length. Mathematically, the segment abundance estimate is calculated as <span class="math display">\[\hat{N_s}=\frac{\sum_i\left(\frac{\hat{N}_{s,i}}{L_{s,i}}\right)}{bends_s}\cdot L_s,\]</span> where <span class="math inline">\(\hat{N_s}\)</span> and <span class="math inline">\(L_s\)</span> are the estimated abundance and total length (in rkm) of segment <span class="math inline">\(s\)</span>, repsectively, <span class="math inline">\(\hat{N}_{s,i}\)</span> and <span class="math inline">\(L_{s,i}\)</span> is the estimated abundance and length (in rkm) of sampled bend <span class="math inline">\(i\)</span> within segment <span class="math inline">\(s\)</span>, respectively, and <span class="math inline">\(bends_s\)</span> is the number of sampled bends in segment <span class="math inline">\(s\)</span>.</p>
-<p>A potential issue with the arithmetic mean is that it treats each bend as equivalent to any other bend, despite the fact that bends are of different lengths. To get a good understanding of how this can effect an estimate, let’s look at a simplified example with known abundances (i.e. perfect estimates).</p>
-<p>EXAMPLE HERE</p>
+<p>A potential issue with the arithmetic mean is that it treats each bend as equivalent to any other bend, despite the fact that bends are of different lengths. To get a good understanding of how this can effect an estimate, let’s look at a simplified example with known abundances (i.e. perfect estimates). Assume that the segment consists of 4 bends with the abundances and lengths of each bend given in the table below.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Bend Abundance</th>
+<th align="center">Bend Length (RKM)</th>
+<th align="center">Bend Density (fish/RKM)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">30</td>
+<td align="center">3</td>
+<td align="center">10</td>
+</tr>
+<tr class="even">
+<td align="left">45</td>
+<td align="center">5</td>
+<td align="center">9</td>
+</tr>
+<tr class="odd">
+<td align="left">14</td>
+<td align="center">7</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="left">36</td>
+<td align="center">12</td>
+<td align="center">3</td>
+</tr>
+</tbody>
+</table>
+<p>If we wanted to find the average segment density we would add all bend abundances together to get a segment abundance of 125 and divide by the total of the bend lengths, or 27, giving us a segment density of 4.6296296 fish per rkm. This process is different from calculating the density of each bend and taking the mean of these densities, as the arithmetic mean (AM) approach would do. This approach estimates the segment density as 6 fish per rkm, or after multiplying by the segment length, the AM approach estimates that there are 162 fish in the segment when there are 125. While a difference of 37 may not seem large, keep in mind we were working with small bend abundances and a relatively small length of river (27 rkm). Larger bend abundances, like those simulated in the reference populations, and larger segment stretches can easily lead to larger differences in this calculation.</p>
+<p>Even with perfect bend abundance knowledge, the arithmetic mean approach fails to calculate the segment abundance perfectly. The reason it fails is because the bends are of different lengths but treated the same (had they all been the same length, say 5, this approach would have worked!). A density of 3 fish per rkm means a lot more in terms of abundance when the bend length is 12 rkm (36 fish) versus 2 rkm (6 fish). As will be explained and shown below, in the case of perfect knowledge, the weighted mean approach will calculate the segment abundance correctly every time.</p>
 </div>
 <div id="weighted-mean-wm" class="section level5">
 <h5>Weighted Mean (WM)</h5>
 <p>The weighted mean estimator attempts to remedy the issues discussed in the previous example that can arise from treating all bends as equal by weighting the bend densities. In particular, the weight for a bend is the length of that bend relative to the total length of all sampled bends within the segment, or, <span class="math display">\[w_{s,i}=\frac{L_{s,i}}{\sum_{j \epsilon J} L_{s,j}},\]</span> where <span class="math inline">\(w_{s,i}\)</span> and <span class="math inline">\(L_{s,i}\)</span> are the weight and length of sampled bend <span class="math inline">\(i\)</span> in segment <span class="math inline">\(s\)</span>, respectively, and the set <span class="math inline">\(J\)</span> is the set of all sampled bends in segment <span class="math inline">\(s\)</span>.</p>
-<p>The weighted mean density is then calculated as the sum of each bend density multiplied by its wieght, or, <span class="math display">\[\hat{d}_s=\sum_{j \epsilon J} w_{i,s}\cdot \hat{d}_{i,s},\]</span> where <span class="math inline">\(\hat{d_s}\)</span> is the estimated segment density and <span class="math inline">\(\hat{d}_{i,s}=\hat{N}_{i,s}/L_{i,s}\)</span> is the estimated density of sampled bend <span class="math inline">\(i\)</span> in segment <span class="math inline">\(s\)</span>. While this calculation might seem unusual, when all is said and done, it is really just the total estimated abundance in the sampled bends (add all sampled bend abundance estimates together) divided by the total length of the sampled bends (add all sampled bend lengths togher) within the river segment, i.e., <span class="math display">\[\hat{d}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}.\]</span></p>
-<p>The weighted mean estimated segment density is then turned into an estimated abundance in the same way it was for the arithmetic mean: by multiplying the estimated segment density by the length of the segment in river kilometers:<br />
-<span class="math display">\[\hat{N}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}\cdot L_s.\]</span> So for our example, we have</p>
-<p>EXAMPLE HERE</p>
+<p>The weighted mean density is then calculated as the sum of each bend density multiplied by its weight, or, <span class="math display">\[\hat{d}_s=\sum_{j \epsilon J} w_{i,s}\cdot \hat{d}_{i,s},\]</span> where <span class="math inline">\(\hat{d_s}\)</span> is the estimated segment density and <span class="math inline">\(\hat{d}_{i,s}=\hat{N}_{i,s}/L_{i,s}\)</span> is the estimated density of sampled bend <span class="math inline">\(i\)</span> in segment <span class="math inline">\(s\)</span>. While this calculation might seem unusual, when all is said and done, it is really just the total estimated abundance in the sampled bends (add all sampled bend abundance estimates together) divided by the total length of the sampled bends (add all sampled bend lengths togher) within the river segment, i.e., <span class="math display">\[\hat{d}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}.\]</span></p>
+<p>The weighted mean estimated segment density is then turned into an estimated abundance in the same way it was for the arithmetic mean: by multiplying the estimated segment density by the length of the segment in river kilometers:</p>
+<p><span class="math display">\[\hat{N}_s=\hat{d_s}\cdot L_s.\]</span></p>
+<!--
+$$\hat{N}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}\cdot L_s.$$
+-->
+<p>So for our example, we would weight each bend density by the bend length divided by the total of the bend lengths. We would calculate the weighted mean density as the sum of each bend density multiplied by its weight:</p>
+<p><span class="math display">\[\hat{d_s}=10\cdot\frac{3}{27}+9\cdot \frac{5}{27}+2\cdot\frac{7}{27}+3\cdot\frac{12}{27}.\]</span> Notice that this simplifies to: <span class="math display">\[\hat{d_s}=\frac{30}{27}+\frac{45}{27}+\frac{14}{27}+\frac{36}{27} =\frac{30+45+14+36}{27},\]</span> which is the sum of the bend abundances divided by the sum of the bend lengths, i.e., the segment abundance divided by the segment length, which calculates the exact segment density, 4.6296296 fish per rkm. Since the segment density is correct, the segment abundance estimated from it will be correct as well, <span class="math inline">\(\hat{d_s}\cdot L_s=\)</span> (4.6296296)(27)=125 fish.</p>
 </div>
 <div id="standard-error" class="section level5">
 <h5>Standard Error</h5>
@@ -1415,7 +1451,7 @@ To do:
 <h1>Routing of monitoring design sub-objectives</h1>
 <div id="fecundity" class="section level2">
 <h2>Fecundity</h2>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-18-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-19-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
 </div>
 </div>
 <div id="results" class="section level1">
@@ -1471,9 +1507,9 @@ rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build p
 </div>
 <div id="page-break-6" class="section level5">
 <h5>page break</h5>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-2.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-3.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-4.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-5.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-6.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-7.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-26-8.png" width="672" /></p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-1.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-2.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-3.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-4.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-5.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-6.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-7.png" width="672" /><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-8.png" width="672" /></p>
 <p>Figure 7.</p>
-<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-27-1.png" width="672" /> Figure 8.</p>
+<p><img src="_Report-0-00-master-report_files/figure-html/unnamed-chunk-28-1.png" width="672" /> Figure 8.</p>
 <p>Figure 9.</p>
 <p>Figure 10. In the plot above, values with lower performance values have lower values and increasing values approach 1.</p>
 <p>Figure ?? <img src="images/Objectives_and_Metrics_5.png" /><!-- --></p>

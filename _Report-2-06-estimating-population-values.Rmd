@@ -411,10 +411,10 @@ running capture histories backwards estimates the probability a pallid
 sturgeon was present in the previous year given it was present in the 
 current year which is the per capita rate of additions to the population 
 ($f$), or the number of individuals entering the population between 
-primary occasions. Survival rate ($\varphi $) can be estimated, and by 
+primary occasions. Survival rate ($\varphi$) can be estimated, and by 
 running them forward, survival can be estimated. Trend evaluated as 
-population growth rate is derived from model estimates as$\lambda 
-=\varphi \text{+}f$ and uncertainty can be estimated using the 
+population growth rate is derived from model estimates as 
+$\lambda =\varphi \text{+}f$ and uncertainty can be estimated using the 
 previously described approaches for$N$.
 
 
@@ -439,8 +439,8 @@ In calculating the average density of pallid sturgeon in a segment we
 took two approaches for the purposes of comparing: arithmetic mean bend 
 density and weighted mean bend density.  While we expect the weighted 
 mean approach to be more accurate, we suspect that the arithmetic mean 
-is a reasonable and commonly used approach, and therefore, wanted to 
-highlight the differences between the two.
+is a commonly used approach, and therefore, wanted to highlight the 
+differences between the two.
 
 ##### Arithmetic Mean (AM)
 For the arithmetic mean method, we calculate the estimated densities of 
@@ -461,9 +461,49 @@ A potential issue with the arithmetic mean is that it treats each bend
 as equivalent to any other bend, despite the fact that bends are of 
 different lengths.  To get a good understanding of how this can effect 
 an estimate, let's look at a simplified example with known abundances 
-(i.e. perfect estimates). 
+(i.e. perfect estimates). Assume that the segment consists of 4 bends 
+with the abundances and lengths of each bend given in the table below.
 
-EXAMPLE HERE
+```{r,echo=FALSE,warning=FALSE, message=FALSE, eval=TRUE}
+source("_R/1_global.R")
+ex<-data.frame(Bend_Abundance=c(30, 45, 14, 36), Bend_Length_RKM=c(3, 5, 7, 12))
+ex$Bend_Density<-ex$Bend_Abundance/ex$Bend_Length
+kable(ex,row.names=FALSE,
+    col.names=c("Bend Abundance","Bend Length (RKM)","Bend Density (fish/RKM)"),
+    align="lcc")
+
+S_abund<-sum(ex$Bend_Abundance)
+S_l<-sum(ex$Bend_Length)
+S_dens=S_abund/S_l
+mn_b_dens=mean(ex$Bend_Density) 
+AM_approach=mn_b_dens*S_l
+```
+
+If we wanted to find the average segment density we would add 
+all bend abundances together to get a segment abundance of `r S_abund` 
+and divide by the total of the bend lengths, or `r S_l`, giving us a 
+segment density of `r S_dens` fish per rkm.  This process is different 
+from calculating the density of each bend and taking the mean of these 
+densities, as the arithmetic mean (AM) approach would do.  This approach 
+estimates the segment density as `r mn_b_dens` fish per rkm, or after 
+multiplying by the segment length, the AM approach estimates that there 
+are `r AM_approach` fish in the segment when there are `r S_abund`. 
+While a difference of `r AM_approach-S_abund` may not seem large, keep 
+in mind we were working with small bend abundances and a relatively 
+small length of river (27 rkm).  Larger bend abundances, like those 
+simulated in the reference populations, and larger segment stretches can 
+easily lead to larger differences in this calculation.  
+
+Even with perfect bend abundance knowledge, the arithmetic mean approach 
+fails to calculate the segment abundance perfectly.  The reason it fails 
+is because the bends are of different lengths but treated the same (had 
+they all been the same length, say 5, this approach would have worked!). 
+A density of 3 fish per rkm means a lot more in terms of abundance when 
+the bend length is 12 rkm (36 fish) versus 2 rkm (6 fish).  As will be 
+explained and shown below, in the case of perfect knowledge, the 
+weighted mean approach will calculate the segment abundance correctly 
+every time.
+
 
 
 ##### Weighted Mean (WM)
@@ -478,7 +518,7 @@ $i$ in segment $s$, respectively, and the set $J$ is the set of all
 sampled bends in segment $s$.  
 
 The weighted mean density is then calculated as the sum of each bend 
-density multiplied by its wieght, or, 
+density multiplied by its weight, or, 
 $$\hat{d}_s=\sum_{j \epsilon J} w_{i,s}\cdot \hat{d}_{i,s},$$
 where $\hat{d_s}$ is the estimated segment density and $\hat{d}_{i,s}=\hat{N}_{i,s}/L_{i,s}$ 
 is the estimated density of sampled bend $i$ in segment $s$.  While this 
@@ -494,10 +534,26 @@ The weighted mean estimated segment density is then turned into an
 estimated abundance in the same way it was for the arithmetic mean: by 
 multiplying the estimated segment density by the length of the segment 
 in river kilometers:  
-$$\hat{N}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}\cdot L_s.$$
-So for our example, we have
 
-EXAMPLE HERE
+$$\hat{N}_s=\hat{d_s}\cdot L_s.$$
+
+<!--
+$$\hat{N}_s=\frac{\sum_{j \epsilon J} \hat{N}_{i,s}}{\sum_{j \epsilon J} L_{i,s}}\cdot L_s.$$
+-->
+So for our example, we would weight each bend density by the bend length 
+divided by the total of the bend lengths.  We would calculate 
+the weighted mean density as the sum of each bend density multiplied by 
+its weight:
+
+$$\hat{d_s}=10\cdot\frac{3}{27}+9\cdot \frac{5}{27}+2\cdot\frac{7}{27}+3\cdot\frac{12}{27}.$$
+Notice that this simplifies to:
+$$\hat{d_s}=\frac{30}{27}+\frac{45}{27}+\frac{14}{27}+\frac{36}{27} =\frac{30+45+14+36}{27},$$
+which is the sum of the bend abundances divided by the sum of the bend 
+lengths, i.e., the segment abundance divided by the segment length, 
+which calculates the exact segment density, `r S_dens` fish per rkm. 
+Since the segment density is correct, the segment abundance estimated 
+from it will be correct as well,  $\hat{d_s}\cdot L_s=$ (`r S_dens`)(`r S_l`)=`r S_abund` fish.
+
 
 ##### Standard Error
 For the M$_0$ and M$_t$ estimators the segment level standard error was 
