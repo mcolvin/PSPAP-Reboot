@@ -229,13 +229,30 @@ table(outcomes$nreps)
 write.csv(outcomes,"_output/age1-detection-cpt.csv")
 
 
+par(mfrow=c(3,1),mar=c(1,1,1,1),oma=c(3,3,1,1))
+plot(detected_prob~ntrawlsLabs,outcomes,
+    subset=intLocation==1/3 & 
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0-0.02",las=1,xaxt="n",ylim=c(0,1)) ;panLab("A")       
+plot(detected_prob~ntrawlsLabs,outcomes,
+    subset=intLocation==1/3 & 
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0.02-0.04",las=1,xaxt="n",ylim=c(0,1));panLab("B")
+ plot(detected_prob~ntrawlsLabs,outcomes,
+    subset=intLocation==1/3 & 
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0.04-0.06",las=1,xaxt="n",ylim=c(0,1)) 
+axis(1,at=c(1:8), labels=c(2,3,4, "5-10","11-20","21-30","31-40","41-50"))  ;panLab("C")     
+mtext(side=1, "Number of within bend trawls",outer=TRUE,line=1.5)
+mtext(side=2, "Probability of detecting a recruit",outer=TRUE,line=1.5)
+       
+        
+
 #######################################################################
 #
 # PROCESS AND OUTCOME SIMULATIONS
 #
 #######################################################################
-
-
 bendAbund<-lapply(1:NN,function(x)
     {
     abund<-rmultinom(1,recruitmentLevel[x],
@@ -265,6 +282,7 @@ out<-data.frame(prop=prop,
     detected=yy$detected,
     reliability=yy$performance)
 out$sampleSize<- round(sum(nbends)*out$prop,0)
+write.csv(out,"_output\\recruit-out.csv")
 write.csv(out,"C:\\Users\\mcolvin\\Desktop\\recruit-out.csv")
 
 
