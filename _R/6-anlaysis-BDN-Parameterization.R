@@ -1,9 +1,7 @@
 
 #######################################################################
 #
-#  RECRUITMENT LEVEL NODE
-#  PARENT(S):
-#       1. BASIN
+#  RECRUITMENT DETECTION SUBMODEL 
 #
 #######################################################################
 wd<-getwd()
@@ -15,20 +13,23 @@ library(pbapply)
 library(plyr)
 library(reshape2)
 library(xlsx)
+
+# FUNCTION TO MAKE LABELS FOR CUT()
 makeLabs<-function(x){paste(x[-length(x)],x[-1],sep="-")}
+
+
 
 #######################################################################
 # READ IN BEND DATA FOR RPMA 2 (UPPER) AND 4 (LOWER)
 # USED FOR MOVEMENT ANALYSIS
 #######################################################################
 bends<- read.csv("./_dat/bend-data.csv")
-
 # make data.frame column names lower case
 names(bends)<- tolower(names(bends))
 bends<- subset(bends,b_segment %in% c(1,2,3,4,7,8,9,10,13,14))
 bends<-bends[-157,]
-## bend_start_rkm needs to be adjusted either upstream or downstream
-## of segment 9 bend 65
+
+
 
 # FIX ID COLUMN DUE TO REMOVED BEND
 bends<-bends[order(bends$lower_river_mile),]
@@ -38,10 +39,9 @@ bends$id<- 1:nrow(bends)
 ## FIND LOWER RKM FOR EACH BEND
 bends$lower_rkm<-0
 for(i in 2:length(bends$lower_rkm))
-{
-  bends$lower_rkm[i]<-bends$lower_rkm[i-1]+bends$length.rkm[i-1]
-}
-rm(i)
+    {
+    bends$lower_rkm[i]<-bends$lower_rkm[i-1]+bends$length.rkm[i-1]
+    }
 ## FIND BEND CENTER
 bends$center<- bends$lower_rkm + bends$length.rkm/2
 
@@ -62,7 +62,7 @@ bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
 design<- c("Stratified Random design","Fixed randomly selected sites")
 
 ## PROPORTION OF BENDS SAMPLED IN BASIN
-percentBends<-c(0.05,0.1,0.15,0.2,0.25)
+#percentBends<-c(0.05,0.1,0.15,0.2,0.25)
 
 ## NUMBER OF TRAWLS WITHIN BEND
 ntrawlsBrks<-c(2:5,10,20,30,40,50)
@@ -95,25 +95,12 @@ intLocationLabs<-c("Anywhere","Lower third","Lower 2/3","Outside of basin")
 pDetectBrks<-c(0,0.02,0.04,0.06,0.08,0.1)
 pDetectLabs<- makeLabs(pDetectBrks)
 
-## 5. NUMBER OF BENDS SAMPLED
-segs<-data.frame(
-    basin=c(2,2,2,2,4,4,4,4,4,4),
-    segment=c(1,2,3,4,
-        7,8,9,10,13,14),
-    nbends=c(1,40,91,24,
-        34,61,81,39,45,56))
-prop_sampled<-c(0.05,0.1,0.15,0.2,0.25)
-
-out<-matrix(0,10,length(prop_sampled))
-for(i in 1:length(prop_sampled))
-    {
-    out[,i]<- round(segs$nbends*prop_sampled[i],0)
-    }
-
-colSums(out[which(segs$basin==2),])    
-colSums(out[which(segs$basin==4),])  
-# write.csv(...,"_output/bdn_nodes/total_bends_sampled.csv"
-
+## 5. NUMBER OF BENDS SAMPLED BY OF FIELD OFFICES, SEGMENTS, AND NUMBER 
+##    SAMPLED WITHIN EACH SEGMENT PER PSPAP PROGRAM 
+segs<-data.frame(segment=c(1,2:4,7,8,9,9,10,13,14), 
+    nBends=c(0,12, 21, 12, 12, 15, 10,10, 10, 11, 14),## NE and MO does segment 9 equally
+    fieldOffice=c("MT","MT","MT","MR","SD","NE",
+        "NE","MO","MO","CF","CF"))
 
 #######################################################################
 #

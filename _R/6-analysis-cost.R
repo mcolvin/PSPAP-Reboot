@@ -4,7 +4,9 @@
 #
 #######################################################################
 library(RODBC);library(plyr)
-
+wd<-getwd()
+wd<-unlist(strsplit(wd,"/"))
+setwd(paste0(wd[-length(wd)],collapse="\\"))
 # IMPORT EFFORT FOR LINKING TO COST
 pcname<- Sys.info()[['nodename']]   
 
