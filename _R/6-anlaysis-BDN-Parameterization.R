@@ -51,7 +51,6 @@ bends$b_id[which(bends$rpma==2)]<- 1:length(which(bends$rpma==2))
 bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
 
 
-
 #######################################################################
 #
 # DECISION NODES 
@@ -59,10 +58,7 @@ bends$b_id[which(bends$rpma==4)]<- 1:length(which(bends$rpma==4))
 #######################################################################
 
 ## DESIGN
-design<- c("Stratified Random design","Fixed randomly selected sites")
-
-## PROPORTION OF BENDS SAMPLED IN BASIN
-#percentBends<-c(0.05,0.1,0.15,0.2,0.25)
+design<- c("Random","Fixed")
 
 ## NUMBER OF TRAWLS WITHIN BEND
 ntrawlsBrks<-c(2:5,10,20,30,40,50)
@@ -78,11 +74,10 @@ ntrawlsLabs<- makeLabs(ntrawlsBrks)
 basin<-c("Lower","Upper")
 
 
-
 ## 2. RECRUITMENT LEVEL
 recruitmentLevelBrks<-c(1,30,60,100,500,1000,5000)
 recruitmentLevelLabs<- makeLabs(recruitmentLevelBrks)
-recruitmentLevel<- round(runif(NN,1,1000),0)
+##recruitmentLevel<- round(runif(NN,1,1000),0)
 
 
 ## 3. INTERCEPTION LOCATION
@@ -97,18 +92,27 @@ pDetectLabs<- makeLabs(pDetectBrks)
 
 ## 5. NUMBER OF BENDS SAMPLED BY OF FIELD OFFICES, SEGMENTS, AND NUMBER 
 ##    SAMPLED WITHIN EACH SEGMENT PER PSPAP PROGRAM 
-segs<-data.frame(segment=c(1,2:4,7,8,9,9,10,13,14), 
+##    NOT REALLY A DECISION NODE RIGHT NOW, BUT WILL BE IN FUTURE
+segs<-data.frame(basin=c("Upper","Upper","Upper","Upper","Lower","Lower","Lower","Lower",
+        "Lower","Lower","Lower"),
+    segment=c(1,2:4,7,8,9,9,10,13,14), 
     nBends=c(0,12, 21, 12, 12, 15, 10,10, 10, 11, 14),## NE and MO does segment 9 equally
     fieldOffice=c("MT","MT","MT","MR","SD","NE",
         "NE","MO","MO","CF","CF"))
 
+        
+        
+        
+        
 #######################################################################
 #
 #  SIMULATE RESULTS TO PARAMETERIZE prob_detect NODE
 #
 #######################################################################
+
+## SET UP COMBINATIONS OF INPUTS
 combos<-expand.grid(design=design, 
-    percentBends=percentBends,
+    percentBends=22,
     ntrawlsLabs=ntrawlsLabs, 
     basin=basin,
     intLocation=intLocation, 
@@ -116,8 +120,10 @@ combos<-expand.grid(design=design,
     pDetectLabs=pDetectLabs)
 combos$id<-c(1:nrow(combos))
 
+
 ## SET UP VECTORS OF BENDS AND BEND LENGTHS
-### UPPer
+## TO SAMPLE IN SIMULATION
+### UPPER
 upper<- subset(bends,basin=="upper")
 upper<- upper[order(upper$b_segment,upper$bend_num),]
 upper$cumRkm<-cumsum(upper$length.rkm)
@@ -130,77 +136,71 @@ lower$cumRkm<-cumsum(lower$length.rkm)
 ## ~ 12 minutes to run on 3 cores
 cl<- makeCluster(3)
 library(pbapply)
-clusterExport(cl, c("combos","lower","upper"))
-outt<- pblapply(1:nrow(combos),function(x){
-    ## SET UP WHERE AGE-1 FISH ARE INTERECEPTED AND HANGING OUT
-    if(combos$basin[x]=="Upper")
-        {
-        pp<- sum(upper$length.rkm)-sum(upper$length.rkm)*combos$intLocation[x]
-        pp<-ifelse(upper$cumRkm>=pp,1,0)
-        }
-    if(combos$basin[x]=="Lower")
-        {
-        pp<- (sum(lower$length.rkm)+0.1)-sum(lower$length.rkm)*combos$intLocation[x]
-        pp<-ifelse(lower$cumRkm>=pp,1,0)
-        }
+clusterExport(cl, c("combos","lower","upper","bends","segs"))
+outt<- pblapply(1:nrow(combos),function(x)
+    {
+    ## SET UP REPS TO RUN FOR EACH COMBINATION OF INPUTS
+    reps<-250
+    
+    
+    bl<- bends[bends$basin==tolower(combos$basin[x]),]$length.rkm
+    bl[cumsum(bl)>sum(bl)*combos$intLocation[x]]<-0
+    if(sum(bl)>0){lwp<- bl/sum(bl)}else{lwp<-rep(0,length(bl))}
     
     ## SAMPLE WITHIN RECRUITMENT LEVEL INTERVALS
     rr<- as.numeric(unlist(strsplit(as.character(combos$recruitmentLevel[x]),"-")))
-    #abund<-rmultinom(1,
-    #   round(runif(1,rr[1],rr[2])),
-    #    pp/length(pp))
-    reps<-150
-    
-    ## ALLOCATE RECRUITS TO A BEND
+    ## RANDOMLY SELECT A NUMBER OF RECRUITS WITHIN THE BOUNDS
     abunds<-round(runif(reps,rr[1],rr[2]))
+    ## ALLOCATE RECRUITS TO A BEND FOR EACH REPLICATE    
     abund<-sapply(1:length(abunds), function(i) 
         {
-        if(sum(pp)>0){ww<-rmultinom(1, abunds[i],  pp/length(pp))}
-        if(sum(pp)==0){ww<-rep(0,length(pp))}
+        if(sum(lwp)>0){ww<-rmultinom(1, abunds[i],  lwp)}
+        if(sum(lwp)==0){ww<-rep(0,length(lwp))}
         return(ww)
         })
-    ## CONVERT THE BEND TO BEING OCCUPIED OR NOT 
-    abund[abund>1]<-1    
+    ### CONVERT THE BEND TO BEING OCCUPIED OR NOT 
+    abund[abund>1]<-1  
+    
     ## SET UP THE NUMBER OF TRAWLS TO RUN
     trawls<- as.numeric(unlist(strsplit(as.character(combos$ntrawlsLabs[x]),"-")))
     trawls<-floor(runif(ncol(abund),trawls[1],trawls[2]-0.001))
+    
     ## SET UP THE DETECTION PROBABILITY
     pdetect<- as.numeric(unlist(strsplit(as.character(combos$pDetectLabs[x]),"-")))    
-    pdetect<- runif(ncol(abund),pdetect[1],pdetect[2]-0.0001)
-    ## SET UP HOW MANY BENDS TO RANDOMLY SAMPLE
-    sampleSize<- round(nrow(abund)*combos$percentBends[x],0)
-
-    ## SIMULATE MANY REPLICATE SAMPLES AND WHETHER AN AN\
+    pdetect<- runif(ncol(abund),pdetect[1],pdetect[2]-0.0001)    
+    ## SIMULATE MANY REPLICATE SAMPLES AND WHETHER AN AN
     ## AGE-1 PS IS DETECTED IN AN OCCUPIED BEND
-    detected<-lapply(1:ncol(abund),function(i)
+    detected<-lapply(1:reps,function(i)
         {
-        # FIGURE OUT WHICH BEND TO SAMPLE
-        indx<- sample(1:nrow(abund),
-            sampleSize,replace=FALSE)
-        # CONDITIONAL ON HOW MANY AVAILIBLE FOR CAPTURE
-        # CAPTURE
+        b_segments<-data.frame(b_segment=bends[bends$basin==tolower(combos$basin[x]),]$b_segment,
+            tmp=0,
+            sampled=0,
+            FO=NA)
+        samp<-segs[segs$basin==combos$basin[x],]
+        for(ii in 1:nrow(samp))
+            {
+            indx<-which(b_segments$b_segment==samp$segment[ii] & b_segments$sampled != 1)
+            b_segments[indx,]$tmp<- runif(nrow(b_segments[indx,]),0,1)
+            b_segments[indx,]$sampled<- ifelse(order(b_segments[indx,]$tmp)<=samp$nBends[ii],1,0)
         
-        ## MATRIX FOR THE RESULTS OF EACH TRAWL 
-        #xx<-matrix(0,nrow(abund),trawls[i])
-        #for(i in 1:trawls[i])
-        #            {
-        #    xx[,i]<- rbinom(nrow(abund),1,pdetect[i]*abund)
-        #    }
-        xx<-matrix(
-        rbinom(nrow(abund)*trawls[i],1,pdetect[i]*abund),
-        nrow(abund),trawls[i])
-        
-        samp<-rowSums(xx[indx,])
+            if(samp$nBends[ii]>0){b_segments[b_segments$b_segment==samp$segment[ii] & 
+                b_segments$sampled == 1 & is.na(b_segments$FO),]$FO<- as.character(samp[i,]$fieldOffice)}
+          
+            }       
+        xx<-matrix(rbinom(nrow(abund)*trawls[i],1,pdetect[i]*abund),
+            nrow(abund),trawls[i])        
+        samp<-rowSums(xx[which(b_segments$sampled==1),])
         samp[samp>0]<-1
-        return(data.frame(detect=max(samp), 
-            reliable=length(which(samp>2))/sampleSize))
-        })
+        return(data.frame(detect=max(samp)))
+        })   
+    
     detected<-do.call("rbind",detected)
     return(data.frame(id=x,
-        notdetected = reps - colSums(detected)[1], 
-        detected= colSums(detected)[1],
-        performance=colSums(detected)[2]/reps))
+        notdetected = reps - sum(detected), 
+        detected= sum(detected)))
     },cl=cl)
+    
+    
 stopCluster(cl = cl)
 
 outcomes<- data.table::rbindlist(outt)
@@ -212,9 +212,46 @@ outcomes<-cbind(combos,outcomes)
 outcomes$nreps<- outcomes$notdetected+outcomes$detected
 outcomes$notdetected_prob<-outcomes$notdetected/outcomes$nreps
 outcomes$detected_prob<-outcomes$detected/outcomes$nreps
-table(outcomes$nreps)
+
+
+
+## ENSURE FACTORS ARE ORDERED FOR NETICA
+outcomes$design<- factor(as.character(outcomes$design),
+    levels=c("Fixed","Random"),
+    ordered=TRUE)
+outcomes$ntrawlsLabs<- factor(as.character(outcomes$ntrawlsLabs),
+    levels=c("2-3","3-4","4-5","5-10","10-20","20-30","30-40","40-50"),
+    labels=c("2","3","4","5-10","11-20","21-30","31-40","41-50"),
+    ordered=TRUE)
+outcomes$basin<- factor(as.character(outcomes$basin),
+    levels=c("Lower","Upper"),
+    ordered=TRUE)
+outcomes$intLocation<- factor(outcomes$intLocation,
+    levels=c(1.0000000,2/3,1/3,0),
+    labels=c("Anywhere","Lower 2/3rds","Lower 1/3rd","Outside basin"),
+    ordered=TRUE)
+outcomes$recruitmentLevelLabs<- factor(as.character(outcomes$recruitmentLevelLabs),
+    levels=c("1-30","30-60","60-100","100-500","500-1000","1000-5000"),
+    ordered=TRUE)
+outcomes$pDetectLabs<- factor(as.character(outcomes$pDetectLabs),
+    levels=c("0-0.02","0.02-0.04","0.04-0.06","0.06-0.08","0.08-0.1"),
+    ordered=TRUE)
+
+
+## ORDER FOR NETICA TO COPY AND PASTE
+outcomes<-outcomes[order(outcomes$design,
+    outcomes$ntrawlsLabs,
+    outcomes$basin,outcomes$intLocation,
+    outcomes$recruitmentLevelLabs, 
+    outcomes$pDetectLabs),]
+
+
+
 write.csv(outcomes,"_output/age1-detection-cpt.csv")
 
+
+outcomes<- read.csv("_output/age1-detection-cpt.csv")
+ 
 
 par(mfrow=c(3,1),mar=c(1,1,1,1),oma=c(3,3,1,1))
 plot(detected_prob~ntrawlsLabs,outcomes,
@@ -270,12 +307,13 @@ out<-data.frame(prop=prop,
     reliability=yy$performance)
 out$sampleSize<- round(sum(nbends)*out$prop,0)
 write.csv(out,"_output\\recruit-out.csv")
-write.csv(out,"C:\\Users\\mcolvin\\Desktop\\recruit-out.csv")
+out<-read.csv("_output\\recruit-out.csv")
 
 
+#write.csv(out,"C:\\Users\\mcolvin\\Desktop\\recruit-out.csv")
+#out<-read.csv("C:\\Users\\mcolvin\\Desktop\\recruit-out.csv")
 
-out<-read.csv("C:\\Users\\mcolvin\\Desktop\\recruit-out.csv")
-out<-read.csv("recruit-out.csv")
+
 
 
 
