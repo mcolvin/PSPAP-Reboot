@@ -4,9 +4,7 @@
 #
 #######################################################################
 library(RODBC);library(plyr)
-wd<-getwd()
-wd<-unlist(strsplit(wd,"/"))
-setwd(paste0(wd[-length(wd)],collapse="\\"))
+
 # IMPORT EFFORT FOR LINKING TO COST
 pcname<- Sys.info()[['nodename']]   
 
@@ -15,6 +13,7 @@ pcname<- Sys.info()[['nodename']]
 #dat<-sqlFetch(com4,"cost-summary")
 
 com4<-odbcConnectAccess("C:/Users/mcolvin/Documents/projects/Pallid Sturgeon/Analysis/Data/20171103-pallid-dbase.mdb")
+#if(pcname=="WFA-F3W30G2"){com4<-odbcConnectAccess2007("C:/Users/sreynolds/Google Drive/Pallid-Sturgeon/analysis-effort/20171103-pallid-dbase.mdb")}
 
 
 dat<-sqlFetch(com4,"effort")
