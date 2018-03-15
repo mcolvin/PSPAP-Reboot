@@ -535,6 +535,8 @@ par(mfrow=c(2,2),
     # P2
     dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
     dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+    dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+    #dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
     dat$estimator<-factor(as.character(dat$estimator), 
                           levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                    "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -591,6 +593,8 @@ par(mfrow=c(2,2),
 # P1
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat<-dat[order(dat$estimator),]
 
 boxplot(exp_bias~estimator, data=dat,
@@ -644,6 +648,8 @@ mtext("Trend", 3, padj=-3.5, font=2)
 # P4
 dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat$estimator<-factor(as.character(dat$estimator), 
                       levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -698,6 +704,8 @@ mtext("Occasions", 1, padj=3.5)
 # P3
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat<-dat[order(dat$estimator),]
 
 boxplot(exp_precision~estimator, data=dat,
@@ -758,6 +766,8 @@ if(n==2)
   # P2
   dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
   dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+  dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+  #dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
   dat$estimator<-factor(as.character(dat$estimator), 
                         levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -813,6 +823,8 @@ if(n==2)
 # P1
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat$estimator<-factor(as.character(dat$estimator), 
                       levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -867,6 +879,8 @@ mtext("Trend", 3, padj=-4, font=2)
 # P4
 dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat$estimator<-factor(as.character(dat$estimator), 
                       levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -922,6 +936,8 @@ mtext("Occasions", 1, padj=3.5)
 # P3
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat<-dat[order(dat$estimator),]
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
@@ -979,6 +995,8 @@ par(mfrow=c(2,1))
 # P1
 dat<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat$estimator<-factor(as.character(dat$estimator), 
                       levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -1023,8 +1041,8 @@ axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
 axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
 axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
 axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
-legend("bottomleft", inset=.01, title="Sampling Type",
-       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
+#legend("bottomleft", inset=.01, title="Sampling Type",
+#       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
 mtext("Occasions", 1, padj=3.5)
 #mtext("Estimator", 3, padj=-3)
 mtext("Trotlines", 3, padj=-4, font=2)
@@ -1032,6 +1050,8 @@ mtext("Trotlines", 3, padj=-4, font=2)
 # P2
 dat<-readRDS("D:/_output/4-tables/trnd_table.rds")
 dat<-dat[which(dat$gear %in% c("GN14", "TLC1", "TN")),]
+dat<-dat[-which(dat$estimator=="CRDMS" & dat$occasions==4),]
+#dat<-dat[which(dat$catch_id==3 | dat$catch_id==4),]
 dat$estimator<-factor(as.character(dat$estimator), 
                       levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -1089,6 +1109,8 @@ if(n==4)
 #######################  
   datT<-readRDS("D:/_output/4-tables/trnd_table.rds")
   datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
+  datT<-datT[-which(datT$estimator=="CRDMS" & datT$occasions==4),]
+  #datT<-datT[which(datT$catch_id==3 | datT$catch_id==4),]
   datT$estimator<-factor(as.character(datT$estimator), 
                         levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -1102,6 +1124,8 @@ if(n==4)
   
   datA<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
   datA<-datA[which(datA$gear %in% c("GN14", "TLC1", "TN")),]
+  datA<-datA[-which(datA$estimator=="CRDMS" & datA$occasions==4),]
+  #datA<-datA[which(datA$catch_id==3 | datA$catch_id==4),]
   datA$estimator<-factor(as.character(datA$estimator), 
                         levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
@@ -1128,6 +1152,7 @@ if(n==4)
   dat<-dat[order(datA$estimator),]
  
 # ALL 
+  par(mfrow=c(1,1))
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
           at = 0:7*15 + 1, xlim = c(0, 117),
@@ -1236,59 +1261,100 @@ if(n==5){
 #############################
 #  MEDIAN UTILITY VS. COST  #
 #############################  
-  datT<-readRDS("D:/_output/4-tables/trnd_table.rds")
-  datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
-  datT$estimator<-factor(as.character(datT$estimator), 
-                         levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
-                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
-  datT<-datT[order(datT$estimator),]
-  datT$trend_utility<-(0.5*datT$trend_bias_utility+0.5*datT$trend_precision_utility)
-  datT<-datT[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator",
-                "trend_utility")]
-  datT[which(is.na(datT$trend_utility)),]$trend_utility<-0
-  datT_CPUE<-datT[which(datT$estimator=="CPUE"),]
-  datT_Abund<-datT[which(datT$estimator!="CPUE"),]
+  # datT<-readRDS("D:/_output/4-tables/trnd_table.rds")
+  # datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
+  # datT<-datT[-which(datT$estimator=="CRDMS" & datT$occasions==4),]
+  # #datT<-datT[which(datT$catch_id==3 | datT$catch_id==4),]
+  # datT$estimator<-factor(as.character(datT$estimator), 
+  #                        levels=c("CPUE","M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+  #                                 "Mt_AM",  "Mt_WM",  "CRDMS"))
+  # datT<-datT[order(datT$estimator),]
+  # datT$trend_utility<-(0.5*datT$trend_bias_utility+0.5*datT$trend_precision_utility)
+  # datT<-datT[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator",
+  #               "trend_utility")]
+  # datT[which(is.na(datT$trend_utility)),]$trend_utility<-0
+  # datT_CPUE<-datT[which(datT$estimator=="CPUE"),]
+  # datT_Abund<-datT[which(datT$estimator!="CPUE"),]
+  # 
+  # datA<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
+  # datA<-datA[which(datA$gear %in% c("GN14", "TLC1", "TN")),]
+  # datA<-datA[-which(datA$estimator=="CRDMS" & datA$occasions==4),]
+  # #datA<-datA[which(datA$catch_id==3 | datA$catch_id==4),]
+  # datA$estimator<-factor(as.character(datA$estimator), 
+  #                        levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
+  #                                 "Mt_AM",  "Mt_WM",  "CRDMS"))
+  # datA<-datA[order(datA$estimator),]
+  # datA$abund_utility<-(0.5*datA$abund_bias_utility+0.5*datA$abund_prec_utility)
+  # datA<-datA[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator", 
+  #               "abund_utility")]
+  # datA[which(is.na(datA$abund_utility)),]$abund_utility<-0
+  # 
+  # dat<-merge(datT_Abund, datA, 
+  #            by=c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator"), 
+  #            all=TRUE)
+  # 
+  # names(datT_CPUE)[6]<-"trend_estimator"
+  # names(datA)[6]<-"abund_estimator"
+  # dat_CPUE<-merge(datT_CPUE, datA, 
+  #                 by=c("pop_id", "catch_id","gear", "samp_type", "occasions"),
+  #                 all=TRUE)
+  # dat_CPUE$estimator<-paste0(dat_CPUE$trend_estimator, "+", 
+  #                                  dat_CPUE$abund_estimator)
+  # dat_CPUE[which(dat_CPUE$estimator=="CPUE+MKA_WM"), ]$estimator<-"CPUE"
+  # dat_CPUE<-dat_CPUE[,names(dat)]
+  # dat<-rbind(dat, dat_CPUE)
+  # 
+  # dat$utility<-(0.5*dat$trend_utility+0.5*dat$abund_utility)
+  # U_dat<-ddply(dat, .(gear, estimator, samp_type, occasions), summarize,
+  #                 median_utility=median(utility),
+  #                 mean_utility=mean(utility),
+  #                 sd_utility=sd(utility))
+  # cost<-data.frame(occasions=1:4, 
+  #                  expected_cost=c(0.3011479,0.6022957, 0.9034436, 1.20459))
+  # comp<-merge(U_dat, cost, by=("occasions"), all.x=TRUE)
+  # #min(comp$median_utility)
+  # plot(comp$expected_cost, comp$median_utility, xlab="Cost (millions of dollars)", ylab="Median Utility",
+  #      ylim=c(0.7,1), main="Trotlines")
+  # plot(comp$expected_cost, comp$median_utility, xlab="Cost (millions of dollars)", ylab="Median Utility",
+  #      ylim=c(0,1), main="Trotlines")
+  results<-read.csv("_output/overall_cost_and_utility.csv")
+  comp<-results[results$gear=="TLC1",]
   
-  datA<-readRDS("D:/_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
-  datA<-datA[which(datA$gear %in% c("GN14", "TLC1", "TN")),]
-  datA$estimator<-factor(as.character(datA$estimator), 
-                         levels=c("M0_AM", "M0_WM", "MKA_AM", "MKA_WM",
-                                  "Mt_AM",  "Mt_WM",  "CRDMS"))
-  datA<-datA[order(datA$estimator),]
-  datA$abund_utility<-(0.5*datA$abund_bias_utility+0.5*datA$abund_prec_utility)
-  datA<-datA[,c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator", 
-                "abund_utility")]
-  datA[which(is.na(datA$abund_utility)),]$abund_utility<-0
-  
-  dat<-merge(datT_Abund, datA, 
-             by=c("pop_id", "catch_id","gear", "samp_type", "occasions","estimator"), 
-             all=TRUE)
-  
-  names(datT_CPUE)[6]<-"trend_estimator"
-  names(datA)[6]<-"abund_estimator"
-  dat_CPUE<-merge(datT_CPUE, datA, 
-                  by=c("pop_id", "catch_id","gear", "samp_type", "occasions"),
-                  all=TRUE)
-  dat_CPUE$estimator<-paste0(dat_CPUE$trend_estimator, "+", 
-                                   dat_CPUE$abund_estimator)
-  dat_CPUE[which(dat_CPUE$estimator=="CPUE+MKA_WM"), ]$estimator<-"CPUE"
-  dat_CPUE<-dat_CPUE[,names(dat)]
-  dat<-rbind(dat, dat_CPUE)
-  
-  dat$utility<-(0.5*dat$trend_utility+0.5*dat$abund_utility)
-  U_dat<-ddply(dat, .(gear, estimator, samp_type, occasions), summarize,
-                  median_utility=median(utility),
-                  mean_utility=mean(utility),
-                  sd_utility=sd(utility))
-  cost<-data.frame(occasions=1:4, 
-                   expected_cost=c(0.3011479,0.6022957, 0.9034436, 1.20459))
-  comp<-merge(U_dat, cost, by=("occasions"), all.x=TRUE)
-  #min(comp$median_utility)
-  plot(comp$expected_cost, comp$median_utility, xlab="Cost (millions of dollars)", ylab="Median Utility",
-       ylim=c(0.7,1), main="Trotlines")
-  plot(comp$expected_cost, comp$median_utility, xlab="Cost (millions of dollars)", ylab="Median Utility",
-       ylim=c(0,1), main="Trotlines")
+  plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
+       ylim=c(0.28,0.85), main="Trotlines")
+  plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
+       ylim=c(0,1), xlim=c(0.2, 1.6), main="Trotlines")
 }  
-
+if(n==6)
+{
+  ## FUNDAMENTAL OBJECTIVE 1
+  outcomes<- read.csv("_output/age1-detection-cpt.csv")
+  outcomes<-outcomes[,c(3, 5:9, 11, 12, 14)]
+  ### REPORT SAYS RECRUITMENT BETWEEN 1-1000 SO:
+  outcomes<-outcomes[outcomes$recruitmentLevelLabs!="1000-5000",]
+  outcomes$samp_type<-ifelse(outcomes$design=="Fixed", "f", "r")
+  outcomes<-outcomes[,c(10,2:9)]
+  
+  outcomes$ntrawlsLabs<-factor(as.character(outcomes$ntrawlsLabs), 
+                        levels=c("2", "3", "4", "5-9",
+                                 "10-19",  "20-29",  "30-39", "40-49"))
+  outcomes<-outcomes[order(outcomes$ntrawlsLabs),]
+  
+  boxplot(detected_prob~ntrawlsLabs, data=outcomes,
+          subset=c(samp_type=="f"),
+          at = 0:7*4 + 1, xlim = c(0, 31),
+          col="Gray",
+          #range=0.5,
+          ylim=range(outcomes$detected_prob),
+          #xaxt = "n",
+          #main="Trotlines",
+          ylab="Recruitment Detection Utility")
+  boxplot(detected_prob~ntrawlsLabs, data=outcomes,
+          subset=c(samp_type=="r"),
+          at = 0:7*4 + 2, xlim = c(0, 31), xaxt = "n", add=TRUE)
+  # legend("bottomleft", inset=.005, title="Sampling Type",
+  #        c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
+  mtext("Number of Trawls", 1, padj=3.5)
 }
 
+}
