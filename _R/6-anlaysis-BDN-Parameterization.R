@@ -131,12 +131,17 @@ upper$cumRkm<-cumsum(upper$length.rkm)
 lower<- subset(bends,basin=="lower")
 lower<- lower[order(lower$b_segment,lower$bend_num),]
 lower$cumRkm<-cumsum(lower$length.rkm)
+  # CAUTION! THIS CUMULATIVE SUM MIGHT NOT BE WHAT YOU WANTED,
+  #   LOWER BASIN BEND NUMBERS ARE DIFFERENT W/IN SEGMENT (SOME COUNT
+  #   UP, OTHERS COUNT DOWN)
+  # lower2<-lower[order(lower$lower_rkm),]
+  # all(lower$id==lower2$id)
 
 
 ## ~ 12 minutes to run on 3 cores
 cl<- makeCluster(3)
 library(pbapply)
-clusterExport(cl, c("combos","lower","upper","bends","segs"))
+clusterExport(cl, c("combos","bends","segs"))
 outt<- pblapply(1:nrow(combos),function(x)
     {
     ## SET UP REPS TO RUN FOR EACH COMBINATION OF INPUTS
@@ -182,16 +187,17 @@ outt<- pblapply(1:nrow(combos),function(x)
             indx<-which(b_segments$b_segment==samp$segment[ii] & b_segments$sampled != 1)
             b_segments[indx,]$tmp<- runif(nrow(b_segments[indx,]),0,1)
             b_segments[indx,]$sampled<- ifelse(order(b_segments[indx,]$tmp)<=samp$nBends[ii],1,0)
-        
+              # THIS RANDOMLY REORDERS THE BENDS THEN FINDS THE INDEX LOCATIONS OF THE FIRST XX
+              # BENDS (NUMBER TO BE SAMPLED) AND USES THESE INDICES FOR THE BENDS TO BE SAMPLED
             if(samp$nBends[ii]>0){b_segments[b_segments$b_segment==samp$segment[ii] & 
-                b_segments$sampled == 1 & is.na(b_segments$FO),]$FO<- as.character(samp[i,]$fieldOffice)}
-          
+                b_segments$sampled == 1 & is.na(b_segments$FO),]$FO<- as.character(samp[ii,]$fieldOffice)}
             }       
-        xx<-matrix(rbinom(nrow(abund)*trawls[i],1,pdetect[i]*abund),
+        xx<-matrix(rbinom(nrow(abund)*trawls[i],1,rep(pdetect[i]*abund[,i], trawls[i])),
             nrow(abund),trawls[i])        
         samp<-rowSums(xx[which(b_segments$sampled==1),])
         samp[samp>0]<-1
         return(data.frame(detect=max(samp)))
+          #RETURNS BASIN LEVEL DETECTION
         })   
     
     detected<-do.call("rbind",detected)
@@ -221,7 +227,8 @@ outcomes$design<- factor(as.character(outcomes$design),
     ordered=TRUE)
 outcomes$ntrawlsLabs<- factor(as.character(outcomes$ntrawlsLabs),
     levels=c("2-3","3-4","4-5","5-10","10-20","20-30","30-40","40-50"),
-    labels=c("2","3","4","5-10","11-20","21-30","31-40","41-50"),
+    labels=c("2","3","4","5-9","10-19","20-29","30-39","40-49"),
+      #Since "floor" was used
     ordered=TRUE)
 outcomes$basin<- factor(as.character(outcomes$basin),
     levels=c("Lower","Upper"),
@@ -255,18 +262,18 @@ outcomes<- read.csv("_output/age1-detection-cpt.csv")
 
 par(mfrow=c(3,1),mar=c(1,1,1,1),oma=c(3,3,1,1))
 plot(detected_prob~ntrawlsLabs,outcomes,
-    subset=intLocation==1/3 & 
+    subset=intLocation=="Lower 1/3rd" & 
         recruitmentLevelLabs=="1-30" & 
         pDetectLabs=="0-0.02",las=1,xaxt="n",ylim=c(0,1)) ;panLab("A")       
 plot(detected_prob~ntrawlsLabs,outcomes,
-    subset=intLocation==1/3 & 
+    subset=intLocation=="Lower 1/3rd" & 
         recruitmentLevelLabs=="1-30" & 
         pDetectLabs=="0.02-0.04",las=1,xaxt="n",ylim=c(0,1));panLab("B")
  plot(detected_prob~ntrawlsLabs,outcomes,
-    subset=intLocation==1/3 & 
+    subset=intLocation=="Lower 1/3rd" & 
         recruitmentLevelLabs=="1-30" & 
         pDetectLabs=="0.04-0.06",las=1,xaxt="n",ylim=c(0,1)) 
-axis(1,at=c(1:8), labels=c(2,3,4, "5-10","11-20","21-30","31-40","41-50"))  ;panLab("C")     
+axis(1,at=c(1:8), labels=c(2,3,4, "5-9","10-19","20-29","30-39","40-49"))  ;panLab("C")     
 mtext(side=1, "Number of within bend trawls",outer=TRUE,line=1.5)
 mtext(side=2, "Probability of detecting a recruit",outer=TRUE,line=1.5)
        
