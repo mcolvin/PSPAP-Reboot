@@ -18,7 +18,7 @@ _output/
 _photos/
 test
 
-*.neta
+
 *.sav
 *.mov
 *.mp4
