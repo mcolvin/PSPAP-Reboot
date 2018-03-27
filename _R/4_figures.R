@@ -230,7 +230,7 @@ if(n==4)
       #geom_line(aes(x=den$x, y=den$y), color="black", size = 1,linetype=4)+
       #geom_line(aes(x=dat$x, y=dgamma(dat$x,s, r)), color="black", size = 1,linetype=1) + 
       theme_classic()+
-      xlab("Effort (minutes)") +
+      xlab("Effort (minutes per gear deployment)") +
       ylab("Density") +
       #ggtitle("Trotline (TLC1) Effort Distribution")+
       theme(#plot.title = element_text(hjust = 0.5), 
@@ -1319,12 +1319,31 @@ if(n==5){
   #      ylim=c(0,1), main="Trotlines")
   results<-read.csv("_output/overall_cost_and_utility.csv")
   comp<-results[results$gear=="TLC1",]
+  comp$val<-NA
+  comp[which(comp$estimator=="CPUE"),]$val<-1
+  comp[which(comp$estimator=="MKA_AM" | comp$estimator=="CPUE+MKA_AM"),]$val<-0
+  comp[which(comp$estimator=="MKA_WM" | comp$estimator=="CPUE+MKA_WM"),]$val<-15
+  comp[which(comp$estimator=="M0_AM" | comp$estimator=="CPUE+M0_AM"),]$val<-2
+  comp[which(comp$estimator=="M0_WM" | comp$estimator=="CPUE+M0_WM"),]$val<-17
+  comp[which(comp$estimator=="Mt_AM" | comp$estimator=="CPUE+Mt_AM"),]$val<-5
+  comp[which(comp$estimator=="Mt_WM" | comp$estimator=="CPUE+Mt_WM"),]$val<-18
+  comp[which(comp$estimator=="CRDMS" | comp$estimator=="CPUE+CRDMS"),]$val<-8
   
   plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
-       ylim=c(0.28,0.85), main="Trotlines")
-  plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
-       ylim=c(0,1), xlim=c(0.2, 1.6), main="Trotlines")
-}  
+       ylim=c(0.28,0.85), main="Trotlines", type="p", pch=comp$val)
+  legend(0.26,0.865, title="Estimator",
+         c("CPUE","MKA_AM", "MKA_WM","M0_AM", "M0_WM","Mt_AM", "Mt_WM", "CRDMS"), 
+         pch=c(1, 0, 15, 2, 17, 5, 18, 8))
+  #plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
+  #     ylim=c(0,1), xlim=c(0.2, 1.6), main="Trotlines", asp=1, type="p", pch=comp$val)
+
+  zoom<-comp[which(comp$expected_cost==unique(comp$expected_cost)[5]),]
+  plot(zoom$expected_cost, zoom$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
+       ylim=c(0.777,0.799),xlim=c(0.65, 1.15),main="Trotlines", type="p", pch=zoom$val)
+  legend(0.64,0.7993, title="Estimator",
+         c("CPUE","MKA_AM", "MKA_WM","M0_AM", "M0_WM","Mt_AM", "Mt_WM", "CRDMS"), 
+         pch=c(1, 0, 15, 2, 17, 5, 18, 8))
+  }  
 if(n==6)
 {
   ## FUNDAMENTAL OBJECTIVE 1

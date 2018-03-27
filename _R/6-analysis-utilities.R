@@ -83,9 +83,9 @@ dat$FO_3_Utility<-ifelse(dat$samp_type=="r", 1, 1/10)
 
 ## FUNDAMENTAL OBJECTIVE 4
 dat$FO_4_Utility<-NA
-dat[dat$estimator=="CPUE",]$FO_4_Utility<-9.75/32
-dat[dat$estimator=="CRDMS" | dat$estimator=="CPUE+CRDMS",]$FO_4_Utility<-12/32
-dat[dat$estimator!="CPUE" & dat$estimator!="CRDMS" & dat$estimator!="CPUE+CRDMS",]$FO_4_Utility<-11.75/32
+dat[dat$estimator=="CPUE",]$FO_4_Utility<-2.75/18#9.75/32
+dat[dat$estimator=="CRDMS" | dat$estimator=="CPUE+CRDMS",]$FO_4_Utility<-5/18#12/32
+dat[dat$estimator!="CPUE" & dat$estimator!="CRDMS" & dat$estimator!="CPUE+CRDMS",]$FO_4_Utility<-4.75/18#11.75/32
 dat$FO_4_Utility<-(dat$abund_reliability*dat$FO_4_Utility+(1-dat$abund_reliability)*(32*dat$FO_4_Utility-2)/32)
 ### NEED TO ADD IN WHEN SURVIVAL IS NOT ABLE TO BE ESTIMATED
 
