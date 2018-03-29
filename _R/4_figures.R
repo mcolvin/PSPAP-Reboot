@@ -1338,6 +1338,7 @@ if(n==5){
   #     ylim=c(0,1), xlim=c(0.2, 1.6), main="Trotlines", asp=1, type="p", pch=comp$val)
 
   zoom<-comp[which(comp$expected_cost==unique(comp$expected_cost)[5]),]
+  zoom<-zoom[order(zoom$U_median),]
   plot(zoom$expected_cost, zoom$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
        ylim=c(0.777,0.799),xlim=c(0.65, 1.15),main="Trotlines", type="p", pch=zoom$val)
   legend(0.64,0.7993, title="Estimator",
