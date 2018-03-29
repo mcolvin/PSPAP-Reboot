@@ -86,7 +86,7 @@ dat$FO_4_Utility<-NA
 dat[dat$estimator=="CPUE",]$FO_4_Utility<-2.75/18#9.75/32
 dat[dat$estimator=="CRDMS" | dat$estimator=="CPUE+CRDMS",]$FO_4_Utility<-5/18#12/32
 dat[dat$estimator!="CPUE" & dat$estimator!="CRDMS" & dat$estimator!="CPUE+CRDMS",]$FO_4_Utility<-4.75/18#11.75/32
-dat$FO_4_Utility<-(dat$abund_reliability*dat$FO_4_Utility+(1-dat$abund_reliability)*(32*dat$FO_4_Utility-2)/32)
+dat$FO_4_Utility<- (dat$abund_reliability*dat$FO_4_Utility+(1-dat$abund_reliability)*(18*dat$FO_4_Utility-2)/18)  #(dat$abund_reliability*dat$FO_4_Utility+(1-dat$abund_reliability)*(32*dat$FO_4_Utility-2)/32)
 ### NEED TO ADD IN WHEN SURVIVAL IS NOT ABLE TO BE ESTIMATED
 
 write.csv(dat, "_output/replicate_FOs_2_3_4.csv", row.names=FALSE)
@@ -94,7 +94,7 @@ write.csv(dat, "_output/replicate_FOs_2_3_4.csv", row.names=FALSE)
 
 ## FUNDAMENTAL OBJECTIVE 1
 outcomes<- read.csv("_output/age1-detection-cpt.csv")
-outcomes<-outcomes[,c(3, 5:9, 11, 12, 14)]
+outcomes<-outcomes[,c(2, 4:8, 10, 11, 13)]
 ### REPORT SAYS RECRUITMENT BETWEEN 1-1000 SO:
 outcomes<-outcomes[outcomes$recruitmentLevelLabs!="1000-5000",]
 outcomes$samp_type<-ifelse(outcomes$design=="Fixed", "f", "r")
