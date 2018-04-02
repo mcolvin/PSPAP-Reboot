@@ -264,16 +264,16 @@ rd_tbl<-rd_tbl[-which(rd_tbl$recruitmentLevelLabs=="1000-5000"),]
 
 rd_tbl$discretization<-NA
 rd_tbl[rd_tbl$detected_prob==0,]$discretization<-"0"
-rd_tbl[rd_tbl$detected_prob>0 & rd_tbl$detected_prob<=0.1,]$discretization<-"0-0.1"
-rd_tbl[rd_tbl$detected_prob>0.1 & rd_tbl$detected_prob<=0.2,]$discretization<-"0.1-0.2"
-rd_tbl[rd_tbl$detected_prob>0.2 & rd_tbl$detected_prob<=0.3,]$discretization<-"0.2-0.3"
-rd_tbl[rd_tbl$detected_prob>0.3 & rd_tbl$detected_prob<=0.4,]$discretization<-"0.3-0.4"
-rd_tbl[rd_tbl$detected_prob>0.4 & rd_tbl$detected_prob<=0.5,]$discretization<-"0.4-0.5"
-rd_tbl[rd_tbl$detected_prob>0.5 & rd_tbl$detected_prob<=0.6,]$discretization<-"0.5-0.6"
-rd_tbl[rd_tbl$detected_prob>0.6 & rd_tbl$detected_prob<=0.7,]$discretization<-"0.6-0.7"
-rd_tbl[rd_tbl$detected_prob>0.7 & rd_tbl$detected_prob<=0.8,]$discretization<-"0.7-0.8"
-rd_tbl[rd_tbl$detected_prob>0.8 & rd_tbl$detected_prob<=0.9,]$discretization<-"0.8-0.9"
-rd_tbl[rd_tbl$detected_prob>0.9 & rd_tbl$detected_prob<=1,]$discretization<-"0.9-1"
+rd_tbl[rd_tbl$detected_prob>0 & rd_tbl$detected_prob<=0.1,]$discretization<-"0 to 0.1"
+rd_tbl[rd_tbl$detected_prob>0.1 & rd_tbl$detected_prob<=0.2,]$discretization<-"0.1 to 0.2"
+rd_tbl[rd_tbl$detected_prob>0.2 & rd_tbl$detected_prob<=0.3,]$discretization<-"0.2 to 0.3"
+rd_tbl[rd_tbl$detected_prob>0.3 & rd_tbl$detected_prob<=0.4,]$discretization<-"0.3 to 0.4"
+rd_tbl[rd_tbl$detected_prob>0.4 & rd_tbl$detected_prob<=0.5,]$discretization<-"0.4 to 0.5"
+rd_tbl[rd_tbl$detected_prob>0.5 & rd_tbl$detected_prob<=0.6,]$discretization<-"0.5 to 0.6"
+rd_tbl[rd_tbl$detected_prob>0.6 & rd_tbl$detected_prob<=0.7,]$discretization<-"0.6 to 0.7"
+rd_tbl[rd_tbl$detected_prob>0.7 & rd_tbl$detected_prob<=0.8,]$discretization<-"0.7 to 0.8"
+rd_tbl[rd_tbl$detected_prob>0.8 & rd_tbl$detected_prob<=0.9,]$discretization<-"0.8 to 0.9"
+rd_tbl[rd_tbl$detected_prob>0.9 & rd_tbl$detected_prob<=1,]$discretization<-"0.9 to 1"
 
 write.csv(rd_tbl, "_output/recruitment-detection-cpt.csv", row.names = FALSE)
  
