@@ -1,15 +1,17 @@
 # BDN TABLES
 
 
-#############
-#   TREND   #
-#############
+##########################################
+#                 TREND                  #
+##########################################
 datT<-readRDS("_output/4-tables/trnd_table.rds")
 datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
 datT<-datT[-which(datT$estimator=="CRDMS" & datT$occasions==4),]
 datT[which(datT$reliability==0),]$trend_bias_utility<-0
 datT[which(datT$reliability==0),]$trend_precision_utility<-0
 
+
+## BIN UP UNCERTAINTIES TO MATCH NETICA
 datT$q_in<-NA
 datT[datT$q_mean_input>0 & datT$q_mean_input<=0.0015,]$q_in<-"0 to 0.0015"
 datT[datT$q_mean_input>0.0015 & datT$q_mean_input<=0.003,]$q_in<-"0.0015 to 0.003"
@@ -53,6 +55,7 @@ datT$mov<-ifelse(is.na(datT$mv_beta), "None","Little")
 # datT[datT$q_sd_realized>0.024 & datT$q_sd_realized<=0.036,]$q_sd_real<-"High"
 # #length(which(is.na(datT$q_sd_real)))
 
+## GET DESCRITIZED BIAS AND PRECISION BINS
 datT$tbu<-NA
 datT[datT$trend_bias_utility==0,]$tbu<-0
 datT[which(datT$trend_bias_utility>0 & datT$trend_bias_utility<=0.1),]$tbu<-"0 to 0.1"
@@ -119,9 +122,6 @@ datT$rec<- factor(as.character(datT$rec),
 datT$mov<- factor(as.character(datT$mov),
                   levels=c("None","Little"),
                   ordered=TRUE)
-
-
-## ORDER FOR NETICA TO COPY AND PASTE
 datT<-datT[order(datT$samp_type,
                  datT$estimator,
                  datT$occasions,
@@ -136,7 +136,7 @@ T_bias<-dcast(datT,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~tbu,
               fun.aggregate=sum,drop=FALSE)
 T_bias$samp_size<-rowSums(T_bias[,9:25])
 T_bias[which(T_bias$samp_size!=0),9:25] <- T_bias[which(T_bias$samp_size!=0),9:25]/T_bias[which(T_bias$samp_size!=0),26]
-## ORDER FOR NETICA TO COPY AND PASTE
+### ORDER FOR NETICA TO COPY AND PASTE
 T_bias<-T_bias[order(T_bias$samp_type,
                    T_bias$estimator,
                    T_bias$occasions,
@@ -145,7 +145,7 @@ T_bias<-T_bias[order(T_bias$samp_type,
                    T_bias$B0_sd_in,
                    T_bias$rec,
                    T_bias$mov),]
-## SAVE
+### SAVE
 write.csv(T_bias, "_output/4-tables/trnd_bias_cpt.csv", row.names = FALSE)
 
 ## PRECISION
@@ -153,7 +153,7 @@ T_prec<-dcast(datT,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~tpu,
               fun.aggregate=sum,drop=FALSE)
 T_prec$samp_size<-rowSums(T_prec[,9:24])
 T_prec[which(T_prec$samp_size!=0),9:24] <- T_prec[which(T_prec$samp_size!=0),9:24]/T_prec[which(T_prec$samp_size!=0),25]
-## ORDER FOR NETICA TO COPY AND PASTE
+### ORDER FOR NETICA TO COPY AND PASTE
 T_prec<-T_prec[order(T_prec$samp_type,
                      T_prec$estimator,
                      T_prec$occasions,
@@ -162,7 +162,159 @@ T_prec<-T_prec[order(T_prec$samp_type,
                      T_prec$B0_sd_in,
                      T_prec$rec,
                      T_prec$mov),]
-## SAVE
+### SAVE
 write.csv(T_prec, "_output/4-tables/trnd_precision_cpt.csv", row.names = FALSE)
+
+
+##############################################
+#                 ABUNDANCE                  #
+##############################################
+datA<-readRDS("_output/4-tables/BasinData/Replicates Averaged Over Year & Basin/Replicates_Basin_Abund.rds")
+datA<-datA[which(datA$gear %in% c("GN14", "TLC1", "TN")),]
+datA<-datA[-which(datA$estimator=="CRDMS" & datA$occasions==4),]
+datA[which(datA$reliability==0),]$abund_bias_utility<-0
+datA[which(datA$reliability==0),]$abund_prec_utility<-0
+
+datCPUE<-datA[datA$estimator=="MKA_WM",]
+datCPUE$estimator<-"CPUE"
+datA<-rbind(datA,datCPUE)
+rm(datCPUE)
+
+## ORDERING
+datA$samp_type<- factor(as.character(datA$samp_type),
+                        levels=c("f","r"),
+                        ordered=TRUE)
+datA$estimator<- factor(as.character(datA$estimator),
+                        levels=c("CPUE","MKA_AM","MKA_WM","M0_AM","M0_WM", "Mt_AM",
+                                 "Mt_WM","CRDMS"),
+                        ordered=TRUE)
+datA$gear<- factor(as.character(datA$gear),
+                   levels=c("TLC1","TN", "GN14"),
+                   labels=c("Trotlines", "Trammel Nets", "Gill Nets"),
+                   ordered=TRUE)
+
+## ADD IN BINNED UNCERTAINTY VALUES (TO MATCH NETICA)
+datA<-merge(datA, datT[, c("samp_type", "pop_id", "catch_id", "estimator", "occasions",
+                     "gear", "q_in", "B0_sd_in", "rec", "mov")],
+      by=c("samp_type", "pop_id", "catch_id", "estimator", "occasions",
+           "gear"), all.x=TRUE)
+
+
+## GET DESCRITIZED BIAS AND PRECISION BINS
+datA$abu<-NA
+datA[datA$abund_bias_utility==0,]$abu<-0
+datA[which(datA$abund_bias_utility>0 & datA$abund_bias_utility<=0.1),]$abu<-"0 to 0.1"
+datA[which(datA$abund_bias_utility>0.1 & datA$abund_bias_utility<=0.2),]$abu<-"0.1 to 0.2"
+datA[which(datA$abund_bias_utility>0.2 & datA$abund_bias_utility<=0.3),]$abu<-"0.2 to 0.3"
+datA[which(datA$abund_bias_utility>0.3 & datA$abund_bias_utility<=0.4),]$abu<-"0.3 to 0.4"
+datA[which(datA$abund_bias_utility>0.4 & datA$abund_bias_utility<=0.5),]$abu<-"0.4 to 0.5"
+datA[which(datA$abund_bias_utility>0.5 & datA$abund_bias_utility<=0.6),]$abu<-"0.5 to 0.6"
+datA[which(datA$abund_bias_utility>0.6 & datA$abund_bias_utility<=0.7),]$abu<-"0.6 to 0.7"
+datA[which(datA$abund_bias_utility>0.7 & datA$abund_bias_utility<=0.8),]$abu<-"0.7 to 0.8"
+datA[which(datA$abund_bias_utility>0.8 & datA$abund_bias_utility<=0.9),]$abu<-"0.8 to 0.9"
+datA[which(datA$abund_bias_utility>0.9 & datA$abund_bias_utility<=0.95),]$abu<-"0.9 to 0.95"
+datA[which(datA$abund_bias_utility>0.95 & datA$abund_bias_utility<=1),]$abu<-"0.95 to 1"
+#length(which(is.na(datA$abu)))
+
+datA$apu<-NA
+datA[datA$abund_prec_utility==0,]$apu<-0
+datA[which(datA$abund_prec_utility>0 & datA$abund_prec_utility<=0.1),]$apu<-"0 to 0.1"
+datA[which(datA$abund_prec_utility>0.1 & datA$abund_prec_utility<=0.2),]$apu<-"0.1 to 0.2"
+datA[which(datA$abund_prec_utility>0.2 & datA$abund_prec_utility<=0.3),]$apu<-"0.2 to 0.3"
+datA[which(datA$abund_prec_utility>0.3 & datA$abund_prec_utility<=0.4),]$apu<-"0.3 to 0.4"
+datA[which(datA$abund_prec_utility>0.4 & datA$abund_prec_utility<=0.5),]$apu<-"0.4 to 0.5"
+datA[which(datA$abund_prec_utility>0.5 & datA$abund_prec_utility<=0.6),]$apu<-"0.5 to 0.6"
+datA[which(datA$abund_prec_utility>0.6 & datA$abund_prec_utility<=0.7),]$apu<-"0.6 to 0.7"
+datA[which(datA$abund_prec_utility>0.7 & datA$abund_prec_utility<=0.8),]$apu<-"0.7 to 0.8"
+datA[which(datA$abund_prec_utility>0.8 & datA$abund_prec_utility<=0.9),]$apu<-"0.8 to 0.9"
+datA[which(datA$abund_prec_utility>0.9 & datA$abund_prec_utility<=0.95),]$apu<-"0.9 to 0.95"
+datA[which(datA$abund_prec_utility>0.95 & datA$abund_prec_utility<=0.98),]$apu<-"0.95 to 0.98"
+datA[which(datA$abund_prec_utility>0.98 & datA$abund_prec_utility<=0.995),]$apu<-"0.98 to 0.995"
+datA[which(datA$abund_prec_utility>0.995 & datA$abund_prec_utility<=1),]$apu<-"0.995 to 1"
+#length(which(is.na(datA$apu)))
+
+
+datA$aru<-NA
+datA[datA$reliability==0,]$aru<-0
+datA[which(datA$reliability>0 & datA$reliability<=0.1),]$aru<-"0 to 0.1"
+datA[which(datA$reliability>0.1 & datA$reliability<=0.2),]$aru<-"0.1 to 0.2"
+datA[which(datA$reliability>0.2 & datA$reliability<=0.3),]$aru<-"0.2 to 0.3"
+datA[which(datA$reliability>0.3 & datA$reliability<=0.4),]$aru<-"0.3 to 0.4"
+datA[which(datA$reliability>0.4 & datA$reliability<=0.5),]$aru<-"0.4 to 0.5"
+datA[which(datA$reliability>0.5 & datA$reliability<=0.6),]$aru<-"0.5 to 0.6"
+datA[which(datA$reliability>0.6 & datA$reliability<=0.7),]$aru<-"0.6 to 0.7"
+datA[which(datA$reliability>0.7 & datA$reliability<=0.8),]$aru<-"0.7 to 0.8"
+datA[which(datA$reliability>0.8 & datA$reliability<=0.9),]$aru<-"0.8 to 0.9"
+datA[which(datA$reliability>0.9 & datA$reliability<=0.995),]$aru<-"0.9 to 0.995"
+datA[which(datA$reliability>0.995 & datA$reliability<=1),]$aru<-"0.995 to 1"
+#length(which(is.na(datA$aru)))
+
+
+## ORDER FOR NETICA TO COPY AND PASTE
+datA<-datA[order(datA$samp_type,
+                 datA$estimator,
+                 datA$occasions,
+                 datA$gear,
+                 datA$q_in,
+                 datA$B0_sd_in,
+                 datA$rec,
+                 datA$mov),]
+
+
+
+
+datA$freq<-1
+
+## BIAS
+A_bias<-dcast(datA,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~abu,value.var="freq",
+              fun.aggregate=sum,drop=FALSE)
+A_bias$samp_size<-rowSums(A_bias[,9:20])
+A_bias[which(A_bias$samp_size!=0),9:20] <- A_bias[which(A_bias$samp_size!=0),9:20]/A_bias[which(A_bias$samp_size!=0),21]
+## ORDER FOR NETICA TO COPY AND PASTE
+A_bias<-A_bias[order(A_bias$samp_type,
+                     A_bias$estimator,
+                     A_bias$occasions,
+                     A_bias$gear,
+                     A_bias$q_in,
+                     A_bias$B0_sd_in,
+                     A_bias$rec,
+                     A_bias$mov),]
+## SAVE
+write.csv(A_bias, "_output/4-tables/abund_bias_cpt.csv", row.names = FALSE)
+
+## PRECISION
+A_prec<-dcast(datA,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~apu,value.var="freq",
+              fun.aggregate=sum,drop=FALSE)
+A_prec$samp_size<-rowSums(A_prec[,9:22])
+A_prec[which(A_prec$samp_size!=0),9:22] <- A_prec[which(A_prec$samp_size!=0),9:22]/A_prec[which(A_prec$samp_size!=0),23]
+## ORDER FOR NETICA TO COPY AND PASTE
+A_prec<-A_prec[order(A_prec$samp_type,
+                     A_prec$estimator,
+                     A_prec$occasions,
+                     A_prec$gear,
+                     A_prec$q_in,
+                     A_prec$B0_sd_in,
+                     A_prec$rec,
+                     A_prec$mov),]
+## SAVE
+write.csv(A_prec, "_output/4-tables/abund_precision_cpt.csv", row.names = FALSE)
+
+
+## RELIABILITY
+A_reli<-dcast(datA,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~aru,value.var="freq",
+              fun.aggregate=sum,drop=FALSE)
+A_reli$samp_size<-rowSums(A_reli[,9:20])
+A_reli[which(A_reli$samp_size!=0),9:20] <- A_reli[which(A_reli$samp_size!=0),9:20]/A_reli[which(A_reli$samp_size!=0),21]
+## ORDER FOR NETICA TO COPY AND PASTE
+A_reli<-A_reli[order(A_reli$samp_type,
+                     A_reli$estimator,
+                     A_reli$occasions,
+                     A_reli$gear,
+                     A_reli$q_in,
+                     A_reli$B0_sd_in,
+                     A_reli$rec,
+                     A_reli$mov),]
+## SAVE
+write.csv(A_reli, "_output/4-tables/abund_reliability_cpt.csv", row.names = FALSE)
 
 
