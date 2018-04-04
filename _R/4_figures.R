@@ -233,7 +233,10 @@ if(n==4)
       xlab("Effort (minutes per gear deployment)") +
       ylab("Density") +
       #ggtitle("Trotline (TLC1) Effort Distribution")+
-      theme(#plot.title = element_text(hjust = 0.5), 
+      theme(#plot.title = element_text(hjust = 0.5),
+            axis.ticks.length=unit(-0.25, "cm"),
+            axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+            axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")),
             legend.title = element_blank(),
             panel.border = element_rect(colour = "black", fill=NA, size=1))#+
       #guides(colour = guide_legend(override.aes = list(size=3)))
@@ -269,15 +272,6 @@ fig_utilities<-function()
   t_prec_x<-c(tpmin, tpcutL, tpcutU, tpmax)
   t_prec_y<-c(1, 1, 0, 0)
   
-  par(mfrow=c(2,2))
-  plot(t_bias_x, t_bias_y, typ="l", xlab="Absolute Bias",ylab="",
-       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,tbmax))
-  mtext("Trend", side=2, padj=-5, font=2)
-  mtext("Bias", side=3, padj=-1, font=2)
-  plot(t_prec_x, t_prec_y, typ="l", xlab="CV",ylab="Utility",
-       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,tpmax))
-  mtext("Precision", side=3, padj=-1, font=2)
-  
   ## ABUNDANCE
   at<-read.csv( "_output/basin_abund_min_max.csv")
   abmin<-min(at$min_rel_abs_bias)
@@ -300,11 +294,29 @@ fig_utilities<-function()
   a_prec_x<-c(apmin, apcutL, apcutU, apmax)
   a_prec_y<-c(1, 1, 0, 0)
   
+  
+  ## PLOT
+  #pdf("images/Fig7.pdf", width=5.5, height=3.44, pointsize=10)
+  par(mfrow=c(2,2),
+      oma = c(4,-0.1,3,0) + 0.1,
+      mar = c(3,4,1,1) + 0.1,
+      las=1)
+  plot(t_bias_x, t_bias_y, typ="l", xlab="Absolute Bias",ylab="",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,tbmax),tck=0.02, mgp=c(1.5,0.1,0))
+  mtext("Trend", side=2, padj=-3.7, font=2, las=0)
+  mtext("Bias", side=3, padj=-1, font=2)
+  plot(t_prec_x, t_prec_y, typ="l", xlab="CV",ylab="",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,tpmax),tck=0.02, mgp=c(1.5,0.1,0))
+  mtext("Precision", side=3, padj=-1, font=2)
+  mtext("Utility", side=2, padj=-3, las=0)
+  
   plot(a_bias_x, a_bias_y, typ="l", xlab="Absolute Relative Bias",ylab="",
-       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,abmax))
-  mtext("Abundance", side=2, padj=-5,font=2)
-  plot(a_prec_x, a_prec_y, typ="l", xlab="CV",ylab="Utility",
-       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,apmax))
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,abmax),tck=0.02, mgp=c(1.5,0.1,0))
+  mtext("Abundance", side=2, padj=-3.7,font=2, las=0)
+  plot(a_prec_x, a_prec_y, typ="l", xlab="CV",ylab="",
+       ylim=c(0,1), yaxp=c(0,1,4), xlim=c(0,apmax),tck=0.02, mgp=c(1.5,0.1,0))
+  mtext("Utility", side=2, padj=-3, las=0)
+  #dev.off()
 }
 
 
@@ -527,6 +539,7 @@ results_boxplots<-function(n)
 #######################
 # PERFORMANCE METRICS #
 #######################
+#pdf("images/Fig9.pdf", width=9, height=4.5, pointsize=8)
 par(mfrow=c(2,2),
     oma = c(4,-0.1,3,0) + 0.1,
     mar = c(1,4,1,1) + 0.1,
@@ -544,44 +557,48 @@ par(mfrow=c(2,2),
     rlim<-0.5
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
-            at = 0:6*15 + 1, xlim = c(0, 102),
+            at = 0:6*15 + 1, 
+            xlim = c(0, 102),
             col="Gray",
-            ylab="Bias Metric",
+            ylab="",
             #range=rlim,
             #ylim=range(dat[which(dat$gear=="TLC1"),]$rel_bias, na.rm=TRUE),
             ylim=c(-1,1),
-            xaxt = "n"#,
+            xaxt = "n",
+            yaxt="n"
             #main="Trotlines",
             #ylab="Abundance Relative Bias",
             )
+    axis(2, at = c(-1,-0.5, 0, 0.5, 1), labels = c(-1.0,-0.5, 0.0, 0.5, 1.0), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
+    mtext("Bias Metric",2, las=0, padj=-3.25)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-            at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-            at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-            at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-            at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-            at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-            at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+            at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray",add=TRUE)#, range=rlim)
     boxplot(rel_bias~estimator, data=dat,
             subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-            at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+            at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
     abline(h=0, lty=2, col="red")
     axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
     axis(3, at = -4.25, labels = "Estimator:", tick = FALSE)
-    axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE)
-    axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE)
-    axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE)
-    axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE)
+    axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE, tck=0.02)
+    axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE,tck=0.02)
+    axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE,tck=0.02)
+    axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE,tck=0.02)
     legend("topright", inset=.015, title="Sampling Type",
            c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
     #mtext("Occasions", 1, padj=3.5)
@@ -604,38 +621,40 @@ boxplot(exp_bias~estimator, data=dat,
         #range=0.5,
         #ylim = range(dat[which(dat$gear=="TLC1"),]$exp_bias, na.rm=TRUE),
         ylim=c(-0.05, 0.05),
-        xaxt = "n"#,
+        xaxt = "n",
+        yaxt = "n"
         #main="Trotlines",
         #ylab="Trend Bias"
         )
+axis(2, at = c(-0.04,-0.02, 0, 0.02, 0.04), labels = c(-0.04,-0.02, 0.00, 0.02, 0.04), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", yaxt = "n", add=TRUE)
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+        at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray", add=TRUE)
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+        at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray", add=TRUE)
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", col="Gray",add=TRUE)
+        at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray",add=TRUE)
 boxplot(exp_bias~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 abline(h=0, lty=2, col="red")
-axis(3, at = 0:7*15 + c(5.5, 5.5, 5.5,5.4,5.65,5.8, 5.8, 5.8), labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+axis(3, at = 0:7*15 + c(5.25, 5.25, 5.25, 5.35, 7.5, 7.5, 7, 7), labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 #axis(3, at = -4.5, labels = "Estimator:", tick = FALSE)
-axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE)
-axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE)
-axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE)
-axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE, tck=0.02)
+axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE, tck=0.02)
+axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE, tck=0.02)
+axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE, tck=0.02)
 #legend("bottomleft", inset=.005, title="Sampling Type",
 #       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
 #mtext("Occasions", 1, padj=3.5)
@@ -663,40 +682,43 @@ boxplot(prec~estimator, data=dat,
         #ylim=range(dat[which(dat$gear=="TLC1"),]$prec, na.rm=TRUE),
         ylim=c(0,0.3),
         xaxt = "n",
+        yaxt = "n",
         #main="Trotlines",
         #ylab="Abundance Precision (CV)",
-        ylab="Precision(CV)")
+        ylab="")
+axis(2, at = c(0.00,0.05, 0.10, 0.15, 0.20, 0.25, 0.30), labels = c(0.00,0.05, 0.10, 0.15, 0.20, 0.25, 0.30), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
+mtext("Precision Metric (CV)",2, las=0, padj=-3.25)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(prec~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 #axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 #axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
-axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
-axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
-axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE, tck=0.02, padj=-1)
 #legend(42,0.3, inset=.01, title="Sampling Type",
 #       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
-mtext("Occasions", 1, padj=3.5)
+mtext("Occasions", 1, padj=2.5)
 #mtext("Estimator", 3, padj=-3)
 #mtext("Trotlines", 3, padj=-4, font=2)
 
@@ -715,43 +737,46 @@ boxplot(exp_precision~estimator, data=dat,
         #range=rlim,
         #ylim=range(dat[which(dat$gear=="TLC1"),]$exp_precision, na.rm=TRUE),
         ylim=c(0,0.028),
-        xaxt = "n"#,
+        xaxt = "n",
+        yaxt = "n"
         #main="Trotlines",
         #ylab="Trend Precision (CV)"
         )
+axis(2, at = c(0.000,0.005, 0.010, 0.015, 0.020, 0.025), labels = c(0.000,0.005, 0.010, 0.015, 0.020, 0.025), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 2, xlim = c(0, 96), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 4, xlim = c(0, 117),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 4, xlim = c(0, 117),xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 7, xlim = c(0, 117),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 7, xlim = c(0, 117),  xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 8, xlim = c(0, 117),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 8, xlim = c(0, 117),  xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 10, xlim = c(0, 117),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        at = 0:7*15 + 10, xlim = c(0, 117),  xaxt = "n", yaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(exp_precision~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 #axis(3, at = 0:7*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 #axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
-axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
-axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
-axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE, tck=0.02, padj=-1)
 #legend("topleft", inset=.01, title="Sampling Type",
 #       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
-mtext("Occasions", 1, padj=3.5)
+mtext("Occasions", 1, padj=2.5)
 #mtext("Estimator", 3, padj=-3)
 #mtext("Trotlines", 3, padj=-4, font=2)
+#dev.off()
 }
 
 if(n==2)
@@ -759,6 +784,7 @@ if(n==2)
 #########################
 # PERFORMANCE UTILITIES #
 #########################
+  #pdf("images/Fig10.pdf", width=9, height=4.5, pointsize=8)
   par(mfrow=c(2,2),
       oma = c(4,-0.1,3,0) + 0.1,
       mar = c(1,4,1,1) + 0.1,
@@ -781,37 +807,41 @@ if(n==2)
           ylim=range(dat[which(dat$gear=="TLC1"),]$abund_bias_utility, na.rm=TRUE),
           #ylim=c(-1,0.6),
           xaxt = "n",
+          yaxt = "n"
           #main="Trotlines",
           #ylab="Abundance Bias Utility")
-          ylab="Bias Utility")
+          #ylab="Bias Utility"
+          )
+  axis(2, at = c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0), labels = c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
+  mtext("Bias Utility",2, las=0, padj=-2.75)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-          at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-          at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-          at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-          at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-          at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-          at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+          at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray",add=TRUE)#, range=rlim)
   boxplot(abund_bias_utility~estimator, data=dat,
           subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-          at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+          at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
   #abline(h=0, lty=2, col="red")
   axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
   #axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-  axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE)
-  axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE)
-  axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE)
-  axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE)
+  axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
+  axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
+  axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
+  axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
   #legend("bottomright", inset=.01, title="Sampling Type",
   #       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
   #mtext("Occasions", 1, padj=3.5)
@@ -837,37 +867,39 @@ boxplot(trend_bias_utility~estimator, data=dat,
         #range=0.5,
         #ylim=range(dat[which(dat$gear=="TLC1"),]$trend_bias_utility, na.rm=TRUE),
         ylim=c(0.8, 1),
-        xaxt = "n")#,
+        xaxt = "n",
+        yaxt = "n")
         #main="Trotlines",
         #ylab="Trend Bias Utility")
+axis(2, at = c(0.80, 0.85, 0.90, 0.95, 1.0), labels = c(0.80, 0.85, 0.90, 0.95, 1.0), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+        at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray", add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+        at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray", add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", col="Gray",add=TRUE)
+        at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray",add=TRUE)
 boxplot(trend_bias_utility~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", add=TRUE)
+        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
 #abline(h=0, lty=2, col="red")
-axis(3, at = 0:7*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
+axis(3, at = 0:7*15 + c(5.5, 5.5, 5.5, 6, 7.5, 7.5, 6.5, 6), labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 #axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE)
-axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE)
-axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE)
-axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 4.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 7.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 10.5, labels = rep("",8), tick = TRUE, tck=0.02, padj=-1)
 #legend("bottomleft", inset=.005, title="Sampling Type",
 #       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
 #mtext("Occasions", 1, padj=3.5)
@@ -894,40 +926,43 @@ boxplot(abund_prec_utility~estimator, data=dat,
         ylim=range(dat[which(dat$gear=="TLC1"),]$abund_prec_utility, na.rm=TRUE),
         #ylim=c(0,0.2),
         xaxt = "n",
+        yaxt = "n")
         #main="Trotlines",
         #ylab="Abundance Precision Utility"
-        ylab="Precision Utility")
+        #ylab="Precision Utility")
+axis(2, at = c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0), labels = c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
+mtext("Precision Utility",2, las=0, padj=-2.75)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 2, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 4, xlim = c(0, 102),xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 5, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 7, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 8, xlim = c(0, 102),  xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        at = 0:6*15 + 10, xlim = c(0, 102),  xaxt = "n", yaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(abund_prec_utility~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:6*15 + 11, xlim = c(0, 102), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 #axis(3, at = 0:6*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 #axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
-axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
-axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
-axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE, tck=0.02, padj=-1)
 legend(33,0.2, inset=.01, title="Sampling Type",
        c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
-mtext("Occasions", 1, padj=3.5)
+mtext("Occasions", 1, padj=2.5)
 #mtext("Estimator", 3, padj=-3)
 #mtext("Trotlines", 3, padj=-4, font=2)
 
@@ -946,42 +981,45 @@ boxplot(trend_precision_utility~estimator, data=dat,
         #range=rlim,
         #ylim=range(dat[which(dat$gear=="TLC1"),]$trend_precision_utility, na.rm=TRUE),
         ylim=c(0.85,1),
-        xaxt = "n")#,
+        xaxt = "n",
+        yaxt = "n")
         #main="Trotlines",
         #ylab="Trend Precision Utility")
+axis(2, at = c(0.85, 0.90, 0.95, 1.0), labels = c(0.85, 0.90, 0.95, 1.0), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 4, xlim = c(0, 117),xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 4, xlim = c(0, 117),xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 7, xlim = c(0, 117),  xaxt = "n",col="Gray", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 7, xlim = c(0, 117),  xaxt = "n", yaxt = "n", col="Gray", add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 8, xlim = c(0, 117),  xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 8, xlim = c(0, 117),  xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-        at = 0:7*15 + 10, xlim = c(0, 117),  xaxt = "n", col="Gray",add=TRUE)#, range=rlim)
+        at = 0:7*15 + 10, xlim = c(0, 117),  xaxt = "n", yaxt = "n", col="Gray",add=TRUE)#, range=rlim)
 boxplot(trend_precision_utility~estimator, data=dat,
         subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", add=TRUE)#, range=rlim)
+        at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)#, range=rlim)
 #abline(h=0, lty=2, col="red")
 #axis(3, at = 0:7*15 + 5.5, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
 #axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
-axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
-axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
-axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
+axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE, tck=0.02, padj=-1)
+axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE, tck=0.02, padj=-1)
 #legend("bottomleft", inset=.01, title="Sampling Type",
 #       c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
-mtext("Occasions", 1, padj=3.5)
+mtext("Occasions", 1, padj=2.5)
 #mtext("Estimator", 3, padj=-3)
 #mtext("Trotlines", 3, padj=-4, font=2)
+#dev.off()
 }
 
 
@@ -1152,6 +1190,7 @@ if(n==4)
   dat<-dat[order(datA$estimator),]
  
 # ALL 
+  #pdf("images/Fig11.pdf", width=9, height=4.5, pointsize=8)
   par(mfrow=c(1,1))
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="1" & gear=="TLC1" & samp_type=="f"),
@@ -1161,41 +1200,45 @@ if(n==4)
           #ylim=range(dat[which(dat$gear=="TLC1"),]$utility, na.rm=TRUE),
           ylim=c(0.55, 1),
           xaxt = "n",
+          yaxt = "n",
           #main="Trotlines",
-          ylab="Combined Abundance & Trend Utility")
+          ylab="")
+  axis(2, at = c(0.6, 0.7, 0.8, 0.9, 1.0), labels = c(0.6, 0.7, 0.8, 0.9, 1.0), tick = TRUE, tck=0.02, mgp=c(2,0.2,0))
+  mtext("Combined Abundance & Trend Utility",2, las=0, padj=-3.25)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="1" & gear=="TLC1" & samp_type=="r"),
-          at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", add=TRUE)
+          at = 0:7*15 + 2, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="2" & gear=="TLC1" & samp_type=="f"),
-          at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+          at = 0:7*15 + 4, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray", add=TRUE)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="2" & gear=="TLC1" & samp_type=="r"),
-          at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", add=TRUE)
+          at = 0:7*15 + 5, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="3" & gear=="TLC1" & samp_type=="f"),
-          at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n",col="Gray", add=TRUE)
+          at = 0:7*15 + 7, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray", add=TRUE)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="3" & gear=="TLC1" & samp_type=="r"),
-          at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", add=TRUE)
+          at = 0:7*15 + 8, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="4" & gear=="TLC1" & samp_type=="f"),
-          at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", col="Gray",add=TRUE)
+          at = 0:7*15 + 10, xlim = c(0, 117), xaxt = "n", yaxt = "n", col="Gray",add=TRUE)
   boxplot(utility~estimator, data=dat,
           subset=c(occasions=="4" & gear=="TLC1" & samp_type=="r"),
-          at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", add=TRUE)
+          at = 0:7*15 + 11, xlim = c(0, 117), xaxt = "n", yaxt = "n", add=TRUE)
   #abline(h=0, lty=2, col="red")
   axis(3, at = 0:7*15 + 6, labels = unique(dat[order(dat$estimator),]$estimator), tick = FALSE)
   axis(3, at = -4, labels = "Estimator:", tick = FALSE)
-  axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE)
-  axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE)
-  axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE)
-  axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE)
-  legend("bottomleft", inset=.005, title="Sampling Type",
+  axis(1, at = 0:7*15 + 1.5, labels = rep("1",8), tick = TRUE, tck=0.02, padj=-1)
+  axis(1, at = 0:7*15 + 4.5, labels = rep("2",8), tick = TRUE, tck=0.02, padj=-1)
+  axis(1, at = 0:7*15 + 7.5, labels = rep("3",8), tick = TRUE, tck=0.02, padj=-1)
+  axis(1, at = 0:7*15 + 10.5, labels = rep("4",8), tick = TRUE, tck=0.02, padj=-1)
+  legend(-2, 0.6, inset=.005, title="Sampling Type",
          c("Fixed","Random"), fill=c("Gray", "White"), horiz=TRUE, cex=0.8)
-  mtext("Occasions", 1, padj=3.5)
+  mtext("Occasions", 1, padj=2.5)
   #mtext("Estimator", 3, padj=-3)
   mtext("Trotlines", 3, padj=-4, font=2)
+  #dev.off()
   
 #CPUE 
 names(datT_CPUE)[6]<-"trend_estimator"
@@ -1329,20 +1372,24 @@ if(n==5){
   comp[which(comp$estimator=="Mt_WM" | comp$estimator=="CPUE+Mt_WM"),]$val<-18
   comp[which(comp$estimator=="CRDMS" | comp$estimator=="CPUE+CRDMS"),]$val<-8
   
+  #pdf("images/Fig12.pdf", width=6.5, height=4.5, pointsize=8)
   plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
-       ylim=c(0.28,0.85), main="Trotlines", type="p", pch=comp$val)
-  legend(0.26,0.865, title="Estimator",
+       ylim=c(0.28,0.85), main="Trotlines", type="p", pch=comp$val,tck=0.02, mgp=c(2,0.2,0))
+  legend(0.28,0.865, title="Estimator",
          c("CPUE","MKA_AM", "MKA_WM","M0_AM", "M0_WM","Mt_AM", "Mt_WM", "CRDMS"), 
          pch=c(1, 0, 15, 2, 17, 5, 18, 8))
+  #dev.off()
   #plot(comp$expected_cost, comp$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
   #     ylim=c(0,1), xlim=c(0.2, 1.6), main="Trotlines", asp=1, type="p", pch=comp$val)
 
   zoom<-comp[which(comp$expected_cost==unique(comp$expected_cost)[5]),]
+  #pdf("images/Fig13.pdf", width=6.5, height=4.5, pointsize=8)
   plot(zoom$expected_cost, zoom$U_median, xlab="Cost (millions of dollars)", ylab="Median Utility",
-       ylim=c(0.777,0.799),xlim=c(0.65, 1.15),main="Trotlines", type="p", pch=zoom$val)
+       ylim=c(0.777,0.799),xlim=c(0.65, 1.15),main="Trotlines", type="p", pch=zoom$val, tck=0.02, mgp=c(2.2,0.2,0))
   legend(0.64,0.7993, title="Estimator",
          c("CPUE","MKA_AM", "MKA_WM","M0_AM", "M0_WM","Mt_AM", "Mt_WM", "CRDMS"), 
          pch=c(1, 0, 15, 2, 17, 5, 18, 8))
+  #dev.off()
   }  
 if(n==6)
 {
