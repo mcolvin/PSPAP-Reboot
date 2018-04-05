@@ -235,8 +235,8 @@ datA[which(datA$abund_prec_utility>0.995 & datA$abund_prec_utility<=1),]$apu<-"0
 
 
 datA$aru<-NA
-datA[datA$reliability==0,]$aru<-0
-datA[which(datA$reliability>0 & datA$reliability<=0.1),]$aru<-"0 to 0.1"
+datA[which(datA$reliability>=0 & datA$reliability<=0.005),]$aru<-"0 to 0.005"
+datA[which(datA$reliability>0.005 & datA$reliability<=0.1),]$aru<-"0.005 to 0.1"
 datA[which(datA$reliability>0.1 & datA$reliability<=0.2),]$aru<-"0.1 to 0.2"
 datA[which(datA$reliability>0.2 & datA$reliability<=0.3),]$aru<-"0.2 to 0.3"
 datA[which(datA$reliability>0.3 & datA$reliability<=0.4),]$aru<-"0.3 to 0.4"
@@ -318,3 +318,24 @@ A_reli<-A_reli[order(A_reli$samp_type,
 write.csv(A_reli, "_output/4-tables/abund_reliability_cpt.csv", row.names = FALSE)
 
 
+
+## FO4 TABLE
+datA$FO_4_Utility<-NA
+datA[datA$estimator=="CPUE",]$FO_4_Utility<-2.75/18
+datA[datA$estimator=="CRDMS",]$FO_4_Utility<-5/18
+datA[datA$estimator!="CPUE" & datA$estimator!="CRDMS",]$FO_4_Utility<-4.75/18
+#length(which(is.na(datA$FO_4_Utility)))
+datA$FO_4_Utility<- (datA$reliability*datA$FO_4_Utility+(1-datA$reliability)*(18*datA$FO_4_Utility-2)/18) 
+
+FO4<-dcast(datA, estimator+aru~FO_4_Utility,value.var="freq",
+              fun.aggregate=sum,drop=FALSE)
+FO4$samp_size<-rowSums(FO4[,9:20])
+FO4[which(FO4$samp_size!=0),9:20] <- FO4[which(FO4$samp_size!=0),9:20]/FO4[which(FO4$samp_size!=0),21]
+## ORDER FOR NETICA TO COPY AND PASTE
+FO4<-FO4[order(FO4$samp_type,
+                     FO4$estimator,
+                     FO4$occasions,
+                     FO4$gear,
+                     FO4$q_in,
+                     FO4$B0_sd_in,
+                     FO4$rec),]
