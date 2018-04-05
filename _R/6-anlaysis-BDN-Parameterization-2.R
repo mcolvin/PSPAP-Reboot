@@ -327,15 +327,47 @@ datA[datA$estimator!="CPUE" & datA$estimator!="CRDMS",]$FO_4_Utility<-4.75/18
 #length(which(is.na(datA$FO_4_Utility)))
 datA$FO_4_Utility<- (datA$reliability*datA$FO_4_Utility+(1-datA$reliability)*(18*datA$FO_4_Utility-2)/18) 
 
-FO4<-dcast(datA, estimator+aru~FO_4_Utility,value.var="freq",
+datA$Scaled_FO4<-(datA$FO_4_Utility-0.15)/(0.28-0.15)
+
+datA$FO4_bins<-NA
+if(length(which(datA$Scaled_FO4>=0 & datA$Scaled_FO4<=0.1))>0)
+  {datA[which(datA$Scaled_FO4>=0 & datA$Scaled_FO4<=0.1),]$FO4_bins<-"0 to 0.1"}
+if(length(which(datA$Scaled_FO4>=0.1 & datA$Scaled_FO4<=0.2))>0)
+  {datA[which(datA$Scaled_FO4>0.1 & datA$Scaled_FO4<=0.2),]$FO4_bins<-"0.1 to 0.2"}
+if(length(which(datA$Scaled_FO4>=0.2 & datA$Scaled_FO4<=0.3))>0)
+  {datA[which(datA$Scaled_FO4>0.2 & datA$Scaled_FO4<=0.3),]$FO4_bins<-"0.2 to 0.3"}
+if(length(which(datA$Scaled_FO4>=0.3 & datA$Scaled_FO4<=0.4))>0)
+  {datA[which(datA$Scaled_FO4>0.3 & datA$Scaled_FO4<=0.4),]$FO4_bins<-"0.3 to 0.4"}
+if(length(which(datA$Scaled_FO4>=0.4 & datA$Scaled_FO4<=0.5))>0)
+  {datA[which(datA$Scaled_FO4>0.4 & datA$Scaled_FO4<=0.5),]$FO4_bins<-"0.4 to 0.5"}
+if(length(which(datA$Scaled_FO4>=0.5 & datA$Scaled_FO4<=0.6))>0)
+  {datA[which(datA$Scaled_FO4>0.5 & datA$Scaled_FO4<=0.6),]$FO4_bins<-"0.5 to 0.6"}
+if(length(which(datA$Scaled_FO4>=0.6 & datA$Scaled_FO4<=0.7))>0)
+  {datA[which(datA$Scaled_FO4>0.6 & datA$Scaled_FO4<=0.7),]$FO4_bins<-"0.6 to 0.7"}
+if(length(which(datA$Scaled_FO4>=0.7 & datA$Scaled_FO4<=0.8))>0)
+  {datA[which(datA$Scaled_FO4>0.7 & datA$Scaled_FO4<=0.8),]$FO4_bins<-"0.7 to 0.8"}
+if(length(which(datA$Scaled_FO4>=0.8 & datA$Scaled_FO4<=0.9))>0)
+  {datA[which(datA$Scaled_FO4>0.8 & datA$Scaled_FO4<=0.9),]$FO4_bins<-"0.8 to 0.9"}
+if(length(which(datA$Scaled_FO4>=0.9 & datA$Scaled_FO4<=1))>0)
+  {datA[which(datA$Scaled_FO4>0.9 & datA$Scaled_FO4<=1),]$FO4_bins<-"0.9 to 1"}
+#length(which(is.na(datA$FO4_bins)))
+
+### ORDERING
+datA$aru<- factor(as.character(datA$aru),
+                   levels=c("0 to 0.005","0.005 to 0.1","0.1 to 0.2", "0.2 to 0.3",
+                            "0.3 to 0.4","0.4 to 0.5", "0.5 to 0.6", "0.6 to 0.7",
+                            "0.7 to 0.8","0.8 to 0.9","0.9 to 0.995","0.995 to 1"),
+                   ordered=TRUE)
+datA<-datA[order(datA$estimator,
+                 datA$aru),]
+
+
+FO4<-dcast(datA, estimator+aru~FO4_bins,value.var="freq",
               fun.aggregate=sum,drop=FALSE)
-FO4$samp_size<-rowSums(FO4[,9:20])
-FO4[which(FO4$samp_size!=0),9:20] <- FO4[which(FO4$samp_size!=0),9:20]/FO4[which(FO4$samp_size!=0),21]
+FO4$samp_size<-rowSums(FO4[,3:12])
+FO4[which(FO4$samp_size!=0),3:12] <- FO4[which(FO4$samp_size!=0),3:12]/FO4[which(FO4$samp_size!=0),13]
 ## ORDER FOR NETICA TO COPY AND PASTE
-FO4<-FO4[order(FO4$samp_type,
-                     FO4$estimator,
-                     FO4$occasions,
-                     FO4$gear,
-                     FO4$q_in,
-                     FO4$B0_sd_in,
-                     FO4$rec),]
+FO4<-FO4[order(FO4$estimator,
+               FO4$aru),]
+
+write.csv(FO4, "_output/4-tables/scaled_FO4_cpt.csv", row.names = FALSE)
