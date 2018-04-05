@@ -279,8 +279,9 @@ pp<- subset(outcomes,
 plot(detected_prob~x,pp,type='n',
     ylim=c(0,1),
     xlab="",
-    ylab="",las=1,xaxt='n')
-axis(1, at=axTicks(1),labels=FALSE)
+    ylab="",las=1,xaxt='n',tck=0.02)
+axis(1, at=axTicks(1),labels=FALSE,tck=0.02)
+    axis(3, at=axTicks(1),labels=FALSE,tck=0.02);axis(4, at=axTicks(2),labels=FALSE,tck=0.02)
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Lower 1/3rd",pch=18)
 points(detected_prob~x,pp,type='b',
@@ -294,7 +295,7 @@ legend(29,0.5,
         "Anywhere in basin", "Outside of basin"),
     pch=c(18,17,16,1),lty=1,bty="n",
     title="Interception location")
-panLab("a) Upper; p=0.00 to 0.02")
+panLab("  a) Upper; p=0.00 to 0.02")
 
 ## [1,2]  
 pp<- subset(outcomes,
@@ -304,8 +305,9 @@ pp<- subset(outcomes,
 plot(detected_prob~x,pp,type='n',
     ylim=c(0,1),
     xlab="",
-    ylab="",las=1,yaxt='n',xaxt='n')
-axis(1, at=axTicks(1),labels=FALSE)
+    ylab="",las=1,yaxt='n',xaxt='n',tck=0.02)
+axis(1, at=axTicks(1),labels=FALSE,tck=0.02)
+    axis(3, at=axTicks(1),labels=FALSE,tck=0.02);axis(4, at=axTicks(2),labels=FALSE,tck=0.02)
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Lower 1/3rd",pch=18)
 points(detected_prob~x,pp,type='b',
@@ -314,7 +316,7 @@ points(detected_prob~x,pp,type='b',
     subset=intLocation=="Anywhere",pch=16)   
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Outside basin")       
-panLab("b) Lower; p=0.00 to 0.02") 
+panLab("  b) Lower; p=0.00 to 0.02") 
 
 ## [2,1]
 pp<- subset(outcomes,
@@ -323,8 +325,9 @@ pp<- subset(outcomes,
 plot(detected_prob~x,pp,type='n',
     ylim=c(0,1),
     xlab="",
-    ylab="",las=1,xaxt='n')
-axis(1, at=axTicks(1),labels=FALSE)
+    ylab="",las=1,xaxt='n',tck=0.02)
+axis(1, at=axTicks(1),labels=FALSE,tck=0.02)
+    axis(3, at=axTicks(1),labels=FALSE,tck=0.02);axis(4, at=axTicks(2),labels=FALSE,tck=0.02)
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Lower 1/3rd",pch=18)
 points(detected_prob~x,pp,type='b',
@@ -333,8 +336,7 @@ points(detected_prob~x,pp,type='b',
     subset=intLocation=="Anywhere",pch=16)   
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Outside basin")       
-legend(29,0.5, 
-panLab("c) Upper; p=0.02 to 0.04")      
+panLab("  c) Upper; p=0.02 to 0.04")      
     
 ## [2,2]   
 pp<- subset(outcomes,
@@ -345,8 +347,9 @@ plot(detected_prob~x,pp,type='n',
     ylim=c(0,1),
     xlab="",
     ylab="",las=1,yaxt='n',xaxt='n')
-axis(1, at=axTicks(1),labels=FALSE)
-axis(2, at=axTicks(2),labels=FALSE)
+axis(1, at=axTicks(1),labels=FALSE,tck=0.02)
+axis(2, at=axTicks(2),labels=FALSE,tck=0.02)
+    axis(3, at=axTicks(1),labels=FALSE,tck=0.02);axis(4, at=axTicks(2),labels=FALSE,tck=0.02)
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Lower 1/3rd",pch=18)
 points(detected_prob~x,pp,type='b',
@@ -355,7 +358,7 @@ points(detected_prob~x,pp,type='b',
     subset=intLocation=="Anywhere",pch=16)   
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Outside basin")       
-panLab("d) Lower; p=0.02 to 0.04")     
+panLab("  d) Lower; p=0.02 to 0.04")     
     
   
  ## [3,1]
@@ -365,7 +368,7 @@ pp<- subset(outcomes,
 plot(detected_prob~x,pp,type='n',
     ylim=c(0,1),
     xlab="",
-    ylab="",las=1,xaxt='n')
+    ylab="",las=1,xaxt='n',tck=0.02);    axis(3, at=axTicks(1),labels=FALSE,tck=0.02);axis(4, at=axTicks(2),labels=FALSE,tck=0.02)
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Lower 1/3rd",pch=18)
 points(detected_prob~x,pp,type='b',
@@ -374,7 +377,7 @@ points(detected_prob~x,pp,type='b',
     subset=intLocation=="Anywhere",pch=16)   
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Outside basin")       
-panLab("e) Upper; p=0.04 to 0.06")      
+panLab("  e) Upper; p=0.04 to 0.06")      
 axis(1, at=c(2,3,4,7.5, 15.5,25.5,35.5,45.5),
     labels=as.character(unique(pp$ntrawlsLabs)),las=2)   
 
@@ -387,7 +390,9 @@ pp<- subset(outcomes,
 plot(detected_prob~x,pp,type='n',
     ylim=c(0,1),
     xlab="",
-    ylab="",las=1,yaxt='n',xaxt='n');axis(2, at=axTicks(2),labels=FALSE)
+    ylab="",las=1,yaxt='n',xaxt='n',tck=0.02);axis(2, at=axTicks(2),labels=FALSE,tck=0.02);
+    axis(3, at=axTicks(1),labels=FALSE,tck=0.02);axis(4, at=axTicks(2),labels=FALSE,tck=0.02)
+    
 mtext(side=2,  "Probablity of detecting a recruit",line=0.75, outer=TRUE)  
 
 points(detected_prob~x,pp,type='b',
@@ -398,13 +403,17 @@ points(detected_prob~x,pp,type='b',
     subset=intLocation=="Anywhere",pch=16)   
 points(detected_prob~x,pp,type='b',
     subset=intLocation=="Outside basin")       
-panLab("f) Lower; p=0.04 to 0.06")     
+panLab("  f) Lower; p=0.04 to 0.06")     
 axis(1, at=c(2,3,4,7.5, 15.5,25.5,35.5,45.5),
     labels=as.character(unique(pp$ntrawlsLabs)),las=2)            
 mtext(side=1,  "Number of trawls",line=3, outer=TRUE)         
        
-       
-       
+savePlot("C:\\Users\\mcolvin\\Documents\\projects\\Pallid Sturgeon\\Analysis\\PSPAP-Reboot\\images\\fig8.pdf",
+type='pdf')
+
+
+
+     
        
        
 par(mfrow=c(3,1),mar=c(1,1,1,1),oma=c(3,3,1,1))
