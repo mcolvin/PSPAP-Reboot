@@ -67,6 +67,7 @@ for(seg in unique(tmp$segment_id))
 
 out<-out[order(out$segment, out$quantile),]
 write.csv(out,"_output/length_inputs.csv")
+out<-read.csv("_output/length_inputs.csv")
 
 head(out)
 

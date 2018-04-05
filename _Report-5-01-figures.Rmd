@@ -16,7 +16,7 @@ output:
 ---
 
 <!--
-rmarkdown::render("_Report-5-01-figures",output_format='word_document')# build page
+rmarkdown::render("_Report-5-01-figures",output_format='html_document')# build page
 -->
 
 ```{r, warning=FALSE, include=FALSE}

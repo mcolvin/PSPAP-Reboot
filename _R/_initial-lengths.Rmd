@@ -54,7 +54,7 @@ for(seg in unique(tmp$segment_id))
     }
 
 out<-out[order(out$segment, out$quantile),]
-write.csv(out,"_output/length_inputs.csv")
+#write.csv(out,"_output/length_inputs.csv")
 
 head(out)
 
@@ -75,5 +75,30 @@ xyplot(quantile~val,
         space="right",
         lines=TRUE,
         points=FALSE))
+dev.off()
+out<-subset(out,segment %in% c(2,3,4,7,8,9,10,13,14))
+out$segment<- factor(out$segment) 
 
+plot(quantile~val,data=out,
+    xlab="Length, mm",
+    ylab="Quantile",
+    type='n',las=1,tck = 0.02)
+points(quantile~val,data=out,subset=segment==2,type="l",lty=1,lwd=2,col='grey')
+points(quantile~val,data=out,subset=segment==3,type="l",lty=2,lwd=2,col='grey')
+points(quantile~val,data=out,subset=segment==4,type="l",lty=3,lwd=2,col='grey')
 
+points(quantile~val,data=out,subset=segment==7,type="l",lty=1,lwd=2)
+points(quantile~val,data=out,subset=segment==8,type="l",lty=2,lwd=2)
+points(quantile~val,data=out,subset=segment==9,type="l",lty=3,lwd=2)
+points(quantile~val,data=out,subset=segment==10,type="l",lty=4,lwd=2)
+points(quantile~val,data=out,subset=segment==13,type="l",lty=5,lwd=2)
+points(quantile~val,data=out,subset=segment==14,type="l",lty=6,lwd=2)
+axis(3,at=axTicks(1),labels=FALSE,tck=0.02)
+axis(4,at=axTicks(2),labels=FALSE,tck=0.02)
+legend("bottomright",
+    legend=c(2,3,4,7,8,9,10,13,14),
+    lty=c(1:3,1:6),
+    col=c(rep("grey",3),rep("black",6)),
+    title="Segment",bty="n",ncol=2,lwd=2)
+savePlot("C:\\Users\\mcolvin\\Documents\\projects\\Pallid Sturgeon\\Analysis\\PSPAP-Reboot\\images\\fig4.pdf",
+type='pdf')

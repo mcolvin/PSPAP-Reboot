@@ -244,6 +244,10 @@ outcomes$pDetectLabs<- factor(as.character(outcomes$pDetectLabs),
     levels=c("0-0.02","0.02-0.04","0.04-0.06","0.06-0.08","0.08-0.1"),
     ordered=TRUE)
 
+    
+    
+    
+    
 
 ## ORDER FOR NETICA TO COPY AND PASTE
 outcomes<-outcomes[order(outcomes$design,
@@ -258,13 +262,157 @@ write.csv(outcomes,"_output/age1-detection-cpt.csv")
 
 
 outcomes<- read.csv("_output/age1-detection-cpt.csv")
- 
+outcomes$x<- 2
+outcomes$x[outcomes$ntrawlsLabs==3]<-3
+outcomes$x[outcomes$ntrawlsLabs==4]<-4
+outcomes$x[outcomes$ntrawlsLabs=="5-10"]<-7.5
+outcomes$x[outcomes$ntrawlsLabs=="11-20"]<-15.5
+outcomes$x[outcomes$ntrawlsLabs=="21-30"]<-25.5
+outcomes$x[outcomes$ntrawlsLabs=="31-40"]<-35.5
+outcomes$x[outcomes$ntrawlsLabs=="41-50"]<-45.5
 
+
+par(mfrow=c(3,2),mar=c(1,2,0,0),oma=c(4,2,1,1))
+pp<- subset(outcomes,
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0-0.02" & design=="Random" & basin=="Upper")
+plot(detected_prob~x,pp,type='n',
+    ylim=c(0,1),
+    xlab="",
+    ylab="",las=1,xaxt='n')
+axis(1, at=axTicks(1),labels=FALSE)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 1/3rd",pch=18)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 2/3rds",pch=17)    
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Anywhere",pch=16)   
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Outside basin")       
+legend(29,0.5, 
+    legend=c("Lower 1/3rd of basin","Lower 2/3rds of basin",
+        "Anywhere in basin", "Outside of basin"),
+    pch=c(18,17,16,1),lty=1,bty="n",
+    title="Interception location")
+panLab("a) Upper; p=0.00 to 0.02")
+
+## [1,2]  
+pp<- subset(outcomes,
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0-0.02" & design=="Random" & basin=="Lower")
+
+plot(detected_prob~x,pp,type='n',
+    ylim=c(0,1),
+    xlab="",
+    ylab="",las=1,yaxt='n',xaxt='n')
+axis(1, at=axTicks(1),labels=FALSE)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 1/3rd",pch=18)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 2/3rds",pch=17)    
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Anywhere",pch=16)   
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Outside basin")       
+panLab("b) Lower; p=0.00 to 0.02") 
+
+## [2,1]
+pp<- subset(outcomes,
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0.02-0.04" & design=="Random" & basin=="Upper")
+plot(detected_prob~x,pp,type='n',
+    ylim=c(0,1),
+    xlab="",
+    ylab="",las=1,xaxt='n')
+axis(1, at=axTicks(1),labels=FALSE)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 1/3rd",pch=18)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 2/3rds",pch=17)    
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Anywhere",pch=16)   
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Outside basin")       
+legend(29,0.5, 
+panLab("c) Upper; p=0.02 to 0.04")      
+    
+## [2,2]   
+pp<- subset(outcomes,
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0.02-0.04" & design=="Random" & basin=="Lower")
+
+plot(detected_prob~x,pp,type='n',
+    ylim=c(0,1),
+    xlab="",
+    ylab="",las=1,yaxt='n',xaxt='n')
+axis(1, at=axTicks(1),labels=FALSE)
+axis(2, at=axTicks(2),labels=FALSE)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 1/3rd",pch=18)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 2/3rds",pch=17)    
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Anywhere",pch=16)   
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Outside basin")       
+panLab("d) Lower; p=0.02 to 0.04")     
+    
+  
+ ## [3,1]
+pp<- subset(outcomes,
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0.04-0.06" & design=="Random" & basin=="Upper")
+plot(detected_prob~x,pp,type='n',
+    ylim=c(0,1),
+    xlab="",
+    ylab="",las=1,xaxt='n')
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 1/3rd",pch=18)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 2/3rds",pch=17)    
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Anywhere",pch=16)   
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Outside basin")       
+panLab("e) Upper; p=0.04 to 0.06")      
+axis(1, at=c(2,3,4,7.5, 15.5,25.5,35.5,45.5),
+    labels=as.character(unique(pp$ntrawlsLabs)),las=2)   
+
+ 
+## [3,2]   
+pp<- subset(outcomes,
+        recruitmentLevelLabs=="1-30" & 
+        pDetectLabs=="0.04-0.06" & design=="Random" & basin=="Lower")
+
+plot(detected_prob~x,pp,type='n',
+    ylim=c(0,1),
+    xlab="",
+    ylab="",las=1,yaxt='n',xaxt='n');axis(2, at=axTicks(2),labels=FALSE)
+mtext(side=2,  "Probablity of detecting a recruit",line=0.75, outer=TRUE)  
+
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 1/3rd",pch=18)
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Lower 2/3rds",pch=17)    
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Anywhere",pch=16)   
+points(detected_prob~x,pp,type='b',
+    subset=intLocation=="Outside basin")       
+panLab("f) Lower; p=0.04 to 0.06")     
+axis(1, at=c(2,3,4,7.5, 15.5,25.5,35.5,45.5),
+    labels=as.character(unique(pp$ntrawlsLabs)),las=2)            
+mtext(side=1,  "Number of trawls",line=3, outer=TRUE)         
+       
+       
+       
+       
+       
 par(mfrow=c(3,1),mar=c(1,1,1,1),oma=c(3,3,1,1))
 plot(detected_prob~ntrawlsLabs,outcomes,
     subset=intLocation=="Lower 1/3rd" & 
         recruitmentLevelLabs=="1-30" & 
-        pDetectLabs=="0-0.02",las=1,xaxt="n",ylim=c(0,1)) ;panLab("A")       
+        pDetectLabs=="0-0.02" & design=="Random",        
+        las=1,xaxt="n",ylim=c(0,1)) ;panLab("A")       
 plot(detected_prob~ntrawlsLabs,outcomes,
     subset=intLocation=="Lower 1/3rd" & 
         recruitmentLevelLabs=="1-30" & 
