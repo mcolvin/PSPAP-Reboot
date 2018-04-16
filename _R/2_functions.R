@@ -1333,6 +1333,199 @@ RD.ests<-function(pop_num=NULL,
 }
 
 
+RD_r.ests<-function(basin_code=NULL, #"L" for lower or "U" for upper
+                    pop_num=NULL,
+                    catch_num=NULL,
+                    location=NULL,
+                    max_occ=NULL, #Number of occasions to use for estimate
+                    gear_combi=NULL, # A vector of gears of length "max_occ", one type deployed for each occasion
+                    ...)
+{
+  # MASSAGE DATA INTO SHAPE 
+  ## PULL SIMULATED DATA
+  sim_dat<-readRDS(paste0(location, "_output/2-catch/catch_dat_r_", pop_num,
+                          "-", catch_num, ".rds"))
+  inputs<-sim_dat$inputs
+  catch<-sim_dat$catch_dat
+  catch$basin<-ifelse(catch$b_segment %in% c(1:4), "U", "L")
+  catch<-catch[which(catch$basin==basin_code),]
+  samp<-sim_dat$samp_dat
+  samp$basin<-ifelse(samp$b_segment %in% c(1:4), "U", "L")
+  samp<-samp[which(samp$basin==basin_code),]
+  if(is.null(max_occ)){max_occ<-inputs$occasions}
+  if(max_occ>sim_dat$inputs$occasions | max_occ<2)
+  {return(print(paste0("max_occ needs to be at least 2 AND less than or equal to ",
+                       inputs$occasions)))}
+  occ<-as.character(1:max_occ)
+  catch<-catch[which(catch$occasion %in% occ),] #use the number of occasions to limit the data used
+  samp<-samp[which(samp$occasion %in% occ),]
+  ## OCCASIONS INPUT
+  nsec<-rep(max_occ,inputs$nyears)
+  ends<-cumsum(nsec) # last sampling occasion each year
+  occs<- rep(0,sum(nsec))
+  occs[ends]<-1# last occasion in primary
+  occs<- occs[-length(occs)]# drop last 1 for processing
+  ## CAPTURE HISTORIES INPUT BY BASIN
+  if(basin_code=="U")
+  {
+    catch$st_code<-catch$b_segment
+  }
+  if(basin_code=="L")
+  {
+    catch$st_code<-catch$b_segment-6
+    if(any(catch$st_code==7)){catch[which(catch$st_code==7),]$st_code<-5}
+    if(any(catch$st_code==8)){catch[which(catch$st_code==8),]$st_code<-6}
+  }
+  ss<-ddply(catch, .(basin, st_code, year, gear, b_segment), summarize, 
+            no_of_bends=length(unique(bend_num)))
+  names(ss)[2]<-"state"
+  names(ss)[5]<-"segment"
+  if(length(gear_combi)==1)
+  {
+    catch<-catch[which(catch$gear==gear_combi),]
+    #gear_combi<-rep(gear_combi,max_occ)
+    ch<- dcast(catch, 
+               fish_id~year+occasion,
+               value.var="st_code")
+    ch$gear<-gear_combi
+    for(i in 2:(ncol(ch)-1))
+      {
+        ch[which(is.na(ch[,i])),i]<-0
+      }
+    tmp<-matrix(0, nrow=nrow(ch), ncol=max_occ*inputs$nyears)
+    for(i in 1:ncol(tmp))
+      {
+        tmp[,i]<-ch[,i+1]
+      }
+    ch$ch<-apply(tmp,1,paste0,collapse="")
+    ch$freq<-1
+    ch<-ch[,c("ch", "freq","gear")]
+  }
+  if(length(gear_combi)!=1){return(print("Different gear combinations not supported 
+                                        at this time, please specify a single gear 
+                                        written as one entry."))}
+  # if(!is.null(gear_combi))
+  # {
+  #   catch<-lapply(1:length(gear_combi),function(x)
+  #   {
+  #     out<-catch[which(catch$gear==gear_combi[x] & catch$occasion==x),]
+  #     return(out)
+  #   })
+  #   catch<-do.call("rbind",catch)
+  #   ch<- dcast(catch,
+  #              fish_id~year+occasion,
+  #              value.var="id", sum)
+  #   ch$gear<-"COMBI"
+  # }
+  
+  library(RMark)# NEED TO COMMUNICATION TO PROGRAM MARK
+  
+  # SET UP DESIGN MATRIX AND CAPTURE HISTORIES FOR PROGRAM MARK
+  states<-unique(catch$st_code)
+  ch<-ch[,1:2]
+  crdms<-process.data(data=ch, # CAPTURE HISTORIES FOR EACH FISH
+                      model="CRDMS",  # MODEL TYPE
+                      time.interval=occs, # FUNKY INPUTS TO DEFINE PRIMARY AND SECONDARY OCCASIONS
+                      strata.labels=c(as.character(states), "U")) #DEFINE STATES
+      # MAKE ADJUSTMENTS 
+      ## Change Psi parameters that are obtained by subtraction so that probability 
+      ##  of moving to the unobservable state is determined by subtraction
+      crdms.ddl<-make.design.data(data=crdms,
+                                  parameters=list(Psi=list(
+                                  subtract.stratum=rep("U",length(states)+1))))
+      
+      ## Create grouping index for unobserved p and c (i.e., always zero)
+      up<-as.numeric(row.names(crdms.ddl$p[crdms.ddl$p$stratum=="U",]))
+      uc<-as.numeric(row.names(crdms.ddl$c[crdms.ddl$c$stratum=="U",]))
+      
+      # SET UP THE FORMULA AND UNDERLYING DESIGN MATRIX ASSUMING CONSTANT SURVIVAL 
+      S=list(formula=~1)# SURVIVAL
+      
+      # SET UP THE FORMULA AND UNDERLYING DESIGN MATRIX FOR CAPTURE PROBABILITY
+      # RD CAN DO CAPTURE (P) AND RECAPTURE (C) PROBABILITY
+      # WE ALLOW P TO CHANGE WITH OCCASION AND STRATA BUT ASSUME C=P AT A GIVEN TIME
+      # AND PLACE.  THUS, WE FIX C = P USING THE SHARE STATEMENT:  SHARE = TRUE
+      p=list(formula=~1, share=TRUE,
+             fixed=list(index=up,value=0)) #p set to zero for unobs
+      
+      
+      # f0 IS THE THE NUMBER OF FISH NEVER ENCOUNTERED
+      # AS A LINEAR COMBINATION, NEED TO ALLOW IT TO VARY 
+      # AMONG EACH PRIMARY OCCASION WHICH IS DONE BY SETTING UP 
+      # A DESIGN MATRIX THAT WILL ESTIMATE AN EFFECT OF EACH PRIMARY 
+      # OCCASION, THEN TOTAL ABUNDANDANCE IS DERIVED AS THE LINEAR COMBO 
+      # OF THE INTERCEPT, TIME SPECIFIC EFFECT AND NUMBER OF TAGGED FISH
+      # CAPTURED AT THAT TIME
+      # Default: f0<- list(formula=~session)  # NUMBER NOT ENCOUNTERED
+      
+      
+      # MARKOV MOVEMENT HETEROGENEOUS IN TIME
+      # SIMULATED MOVEMENT RATES DEPENDENT ON CURRENT STATE 
+      # MOVEMENT RATES DIFFER BASED ON WHICH STATE THE FISH IS HEADED TO
+      Psi=list(formula=~-1+stratum:tostratum)
+      # DO WE WANT THIS DEPENDENT ON ANYTHING ELSE...E.G. TIME??? 
+      # ARE WE GOING TO HAVE A WAY TO COMPARED MODELS AND CHOOSE "BEST" OR WEIGHT???
+      
+      # FIT THE MODEL USING PROGRAM MARK
+      fit<-try(mark(data=crdms,
+                    ddl=crdms.ddl,
+                    model="CRDMS",
+                    time.intervals = time.intervals,
+                    model.parameters=list(S=S,
+                                          p=p,
+                                          c = list(fixed=list(index=uc, value=0)),
+                                          Psi=Psi),
+                    threads=4,
+                    brief=TRUE))
+      indx<-lapply(states,grep, x=ch$ch)
+      samp_size<-lapply(indx,length)
+      samp_size<-rep(unlist(samp_size),each=inputs$nyears)
+      n<-length(states)*inputs$nyears
+      if(class(fit)[1]!="try-error")
+      {
+        saveRDS(fit, paste0(location, "_output/6-MARK/", fit$output,"_r_", pop_num, "-", 
+                            catch_num, "-occ", max_occ, ".rds"))
+        params<-fit$results$real[which(!duplicated(fit$results$real$estimate)),]
+        params<-params[which(params$fixed!="Fixed"),1:4]
+        if(length(which(params$note!="                    "))>0){return(print("NOTES!"))}
+        params<-cbind(gear=rep(gear_combi,nrow(params)),params,
+                      fit=rep(fit$output,nrow(params)))
+        ests<-data.frame(gear=rep(gear_combi,n),
+                         state=rep(states, each=inputs$nyears), 
+                         year=rep(1:inputs$nyears, length(states)),
+                         state_samp_size=samp_size,
+                         basin_samp_size=rep(sum(ch$freq),n),
+                         Nhat=fit$results$derived$`N Population Size`$estimate[1:n],
+                         SE_Nhat=fit$results$derived$`N Population Size`$se[1:n],
+                         LC_Nhat=fit$results$derived$`N Population Size`$lcl[1:n],
+                         UC_Nhat=fit$results$derived$`N Population Size`$ucl[1:n],
+                         fit=rep(fit$output,n))
+      }
+      if(class(fit)[1]=="try-error")
+      {
+        params<-NULL
+        ests<-data.frame(gear=rep(g,n),
+                         state=rep(states, each=inputs$nyears), 
+                         year=rep(1:inputs$nyears, length(states)),
+                         state_samp_size=samp_size,
+                         basin_samp_size=rep(sum(datg$freq),n),
+                         Nhat=rep(NA,n),
+                         SE_Nhat=rep(NA,n),
+                         LC_Nhat=rep(NA,n),
+                         UC_Nhat=rep(NA,n),
+                         fit=rep(NA,n))
+      }
+      ests$basin<-basin_code
+      ests<-merge(ests,ss,by=c("basin","state","year","gear"), all.x=TRUE)
+      ests$occasions<-max_occ
+      keep<-list(abundance=ests,
+                 parameters=params,
+                 model=data.frame(fit_type=fit$model.name, fit=fit$output))
+      out<-list(ests=keep$abundance, COMBI=NULL, parameters=keep$parameters, model=keep$model)
+      return(out)
+  }
+
+
 
 
 
@@ -1774,7 +1967,44 @@ abund.trnd<-function(samp_type=NULL,
         tmp$dens<-tmp$Nhat/tmp$sampled_rkm
         ## ADD SEGMENT LENGTHS
         tmp<-merge(tmp,seg_length, by="segment",all.x=TRUE)
+        ## ADD BASIN AND SAMPLED BASIN LENGTHS
+        seg_length$basin<-ifelse(seg_length$segment %in% c(1:4), "UB", "LB")
+        L_basin<-aggregate(seg_rkm~basin, seg_length, sum)
+        names(L_basin)[2]<-"basin_rkm"
+        tmp<-merge(tmp,L_basin, by="basin", all.x=TRUE)
+        bend_dat$basin<-ifelse(bend_dat$b_segment %in% c(1:4), "UB", "LB")
+        L_basin<-aggregate(sampled_rkm~basin,bend_dat, sum)
+        names(L_basin)[2]<-"sampled_basin_rkm"
+        tmp<-merge(tmp,L_basin, by="basin", all.x=TRUE)
         # ABUNDANCE
+        ## f0
+        f01<-dat$parameters[grep("f0 s4", rownames(dat$parameters)),]
+        f01$basin<-"UB"
+        f01$year<-rep(1:10,length(unique(f01$gear)))
+        f02<-dat$parameters[grep("f0 s6", rownames(dat$parameters)),]
+        f02$basin<-"LB"
+        f02$year<-rep(1:10,length(unique(f02$gear)))
+        f01<-rbind(f01, f02)
+        names(f01)[c(2,3)]<-c("f0", "SE_f0")
+        tmp<-merge(tmp, f01[,c("gear", "f0", "SE_f0","basin","year", "fit")], 
+                   by=c("gear", "basin", "year", "fit"), all.x=TRUE)
+        f02<-tmp[,c("gear", "basin", "year", "fit", "basin_samp_size", 
+                    "occasions", "estimator", "basin_rkm", "sampled_basin_rkm", 
+                    "f0", "SE_f0")]
+        f02<-f02[f02$basin=="UB",]
+        f02<-f02[!duplicated(f02),]
+        f02$segment<-1
+        f02$state<-"U"
+        f02$state_samp_size<-0
+        f02$sampled_rkm<-0
+        f02$seg_rkm<-seg_length[seg_length$segment==1,"seg_rkm"]
+        tmp<-rbind.fill(tmp,f02)
+        tmp$f0_part<-((tmp$seg_rkm-tmp$sampled_rkm)/(tmp$basin_rkm-tmp$sampled_basin_rkm))*tmp$f0
+        tmp$Nhat_f0<-ifelse(is.na(tmp$Nhat), tmp$f0_part, tmp$Nhat+tmp$f0_part)
+        tmp$SE_Nhat_f0<-ifelse(is.na(tmp$Nhat), 
+                               ((tmp$seg_rkm-tmp$sampled_rkm)/(tmp$basin_rkm-tmp$sampled_basin_rkm))*tmp$SE_f0,
+                               (1+(tmp$seg_rkm-tmp$sampled_rkm)/(tmp$basin_rkm-tmp$sampled_basin_rkm))*tmp$SE_Nhat)
+                               
         ## ESTIMATE SEGMENT ABUNDANCE
         names(tmp)[which(names(tmp)=="Nhat")]<-"samp_Nhat"
         tmp$Nhat<-tmp$seg_rkm*tmp$dens
@@ -1782,11 +2012,13 @@ abund.trnd<-function(samp_type=NULL,
         tmp<-merge(tmp, true_abund, by=c("segment","year"), all.x=TRUE)
         ## ADD BIAS
         tmp$bias<-tmp$Nhat-tmp$abundance
+        tmp$bias_f0<-tmp$Nhat_f0-tmp$abundance
         ## ADD PRECISION
         ### CALCULATE SE
         tmp$SE<-(tmp$seg_rkm/tmp$sampled_rkm)*tmp$SE_Nhat
         ### CALCULATE CV
         tmp$precision<-tmp$SE/abs(tmp$Nhat)
+        tmp$precision_f0<-tmp$SE_Nhat_f0/abs(tmp$Nhat_f0)
         ## ADD ABUNDANCE EXTRAS
         occ<-1:y
         samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
@@ -1805,9 +2037,16 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         tmp<-merge(tmp, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
+        tmp[tmp$segment==1,]$effort<-0
         ### PERFORMANCE
         tmp$perform<-tmp$no_of_bends/tmp$sampled_bends
-
+        ### REORGANIZE TABLE
+        tmpH<-tmp[,c(1:3,13:16,27:29,32,34:38)]
+        tmpH<-tmpH[tmpH$segment!=1,]
+        tmp_f0<-tmp[,c(1:3,13:16,25,28,30,33:38)]
+        tmp_f0$estimator<-paste0(tmp_f0$estimator,"_f0")
+        colnames(tmp_f0)<-gsub("_f0", "", colnames(tmp_f0))
+        tmp<-rbind(tmpH,tmp_f0)
         
         # TREND
         ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
@@ -1815,29 +2054,35 @@ abund.trnd<-function(samp_type=NULL,
         outA<-lapply(gears,function(g)
         {
           tmp1<-subset(tmp, gear==g)
-          perform<-sum(tmp1$no_of_bends)/sum(tmp1$sampled_bends) #total no. of bends with usable data/total no. of bends sampled (in all years across the entire river, for a particular gear)
-          effort<-sum(tmp1$effort)
-          fit<-lm(log(Nhat)~year+as.factor(segment),tmp1)
-          tmp2<- data.frame(
-            # THE GOODIES
-            ## GEAR
-            gear=g,
-            ## TREND ESTIMATE
-            trnd=ifelse(is.na(summary(fit)$coefficients['year',2]),NA,
-                           coef(fit)['year']),
-            ## STANDARD ERROR FOR TREND ESTIMATE
-            se=summary(fit)$coefficients['year',2],
-            ## PVALUE FOR TREND ESTIMATE
-            pval=summary(fit)$coefficients['year',4],
-            ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
-            perform=perform,
-            effort=effort
-          )
-          return(tmp2)
+          out2<-lapply(unique(tmp1$estimator), function(e)
+          {
+            tmp1<-subset(tmp1, estimator==e)
+            perform<-sum(tmp1$no_of_bends, na.rm=TRUE)/sum(tmp1$sampled_bends, na.rm=TRUE) #total no. of bends with usable data/total no. of bends sampled (in all years across the entire river, for a particular gear)
+            effort<-sum(tmp1$effort)
+            fit<-lm(log(Nhat)~year+as.factor(segment),tmp1)
+            tmp2<- data.frame(
+              # THE GOODIES
+              ## GEAR
+              gear=g,
+              ## ESTIMATOR
+              estimator=e,
+              ## TREND ESTIMATE
+              trnd=ifelse(is.na(summary(fit)$coefficients['year',2]),NA,
+                               coef(fit)['year']),
+              ## STANDARD ERROR FOR TREND ESTIMATE
+              se=summary(fit)$coefficients['year',2],
+              ## PVALUE FOR TREND ESTIMATE
+              pval=summary(fit)$coefficients['year',4],
+              ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
+              perform=perform,
+              effort=effort
+            )
+            return(tmp2)
+          })
+          out2<-do.call("rbind", out2)
+          return(out2)
         })
         outA<-do.call("rbind",outA)
-        ## ADD TREND ESTIMATOR
-        outA$estimator<-"CRDMS"
         ## ADD POPULATION TREND
         outA$pop_trnd<-pop_trnd
         ## CALCULATE TREND BIAS

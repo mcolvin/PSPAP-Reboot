@@ -27,36 +27,47 @@ if(pcname!="WF-FGNL842")
 setwd("E:/_output/6-MARK/MARK")
 
 ptm<-proc.time()
-lapply(294:350, function(i)
+lapply(337:400, function(i)
 {
-  #lapply(3:4, function(j)
-  #{
-  j<-4
+  lapply(3:4, function(j)
+  {
   # SET OCCASIONS TO BE USED
   occasions<-2:3
   lapply(occasions, function(y)
   {
-    # GET RD ESTIMATES
-    est<-try(RD.ests(pop_num=i, catch_num = j, location = loc, max_occ=y), silent=TRUE)
+    basin<-c("U", "L")
+    lapply(basin, function(b)
+    {
+      g<-"TLC1"
+      #gears<-c("GN14","TLC1", "TN")
+      #lapply(gears, function(g)
+      #{
+      # GET RD ESTIMATES
+      est<-try(RD_r.ests(basin_code=b, pop_num=i, catch_num = j, location = loc,
+                       max_occ=y, gear_combi=g), silent=TRUE)
     # SAVE ESTIMATES
     if(class(est)!="try-error")
-    {
-      if(file.exists(paste0(loc, "_output/3-estimates/RD_est_f_", i, "-", j,
-                            ".rds")))
       {
-        old<-readRDS(file=paste0(loc, "_output/3-estimates/RD_est_f_", i, "-",
-                                 j, ".rds"))
-        est$ests<-rbind(old$ests,est$ests)
-        est$COMBI<-rbind(old$COMBI,est$COMBI)
-        est$parameters<-rbind(old$parameters,est$parameters)
-        est$model<-rbind(old$model,est$model)
-        rm(old)
+      saveRDS(est, file=paste0(loc,"_output/3-estimates/RD_est_r_", i, "-", j,
+                               "_occ-", y, "_", b, "B-",g,".rds"))
       }
-      saveRDS(est, file=paste0(loc,"_output/3-estimates/RD_est_f_", i, "-", j,
-                               ".rds"))
-    }
-    rm(est)
+    #     if(file.exists(paste0(loc, "_output/3-estimates/RD_est_r_", i, "-", j,
+    #                         ".rds")))
+    #   {
+    #     old<-readRDS(file=paste0(loc, "_output/3-estimates/RD_est_f_", i, "-",
+    #                              j, ".rds"))
+    #     est$ests<-rbind(old$ests,est$ests)
+    #     est$COMBI<-rbind(old$COMBI,est$COMBI)
+    #     est$parameters<-rbind(old$parameters,est$parameters)
+    #     est$model<-rbind(old$model,est$model)
+    #     rm(old)
+    #   }
+    #   saveRDS(est, file=paste0(loc,"_output/3-estimates/RD_est_f_", i, "-", j,
+    #                            ".rds"))
+    # }
+      rm(est)
+    })
   })
-  #})
+  })
 })
 proc.time()-ptm
