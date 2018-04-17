@@ -9,6 +9,12 @@ datT<-datT[which(datT$gear %in% c("GN14", "TLC1", "TN")),]
 datT<-datT[-which(datT$estimator=="CRDMS" & datT$occasions==4),]
 datT[which(datT$reliability==0),]$trend_bias_utility<-0
 datT[which(datT$reliability==0),]$trend_precision_utility<-0
+cp_trend<-readRDS("_output/4-tables/cp_trnd.rds")
+datT<-merge(datT, 
+             cp_trend[,c("samp_type", "pop_id", "catch_id", "gear", "occasions",
+                         "mn_cp", "sd_cp","mn_cp_occ", "sd_cp_occ", "deriv_mn_q_occ")], 
+             by=c("samp_type", "pop_id", "catch_id", "gear", "occasions"), 
+             all.x=TRUE)   #ADD IN CP DATA
 
 
 ## BIN UP UNCERTAINTIES TO MATCH NETICA
@@ -24,6 +30,26 @@ datT[datT$B0_sd_input>0 & datT$B0_sd_input<=0.5,]$B0_sd_in<-"Low"
 datT[datT$B0_sd_input>0.5 & datT$B0_sd_input<=1,]$B0_sd_in<-"Moderate"
 datT[datT$B0_sd_input>1 & datT$B0_sd_input<=1.5,]$B0_sd_in<-"High"
 #length(which(is.na(datT$B0_sd_in)))
+
+## BIN UP UNCERTAINTIES TO MATCH NETICA
+datT$cp_occ<-NA
+datT[datT$mn_cp_occ>0 & datT$mn_cp_occ<=0.05,]$cp_occ<-"0 to 0.05"
+datT[datT$mn_cp_occ>0.05 & datT$mn_cp_occ<=0.1,]$cp_occ<-"0.05 to 0.1"
+datT[datT$mn_cp_occ>0.1 & datT$mn_cp_occ<=0.2,]$cp_occ<-"0.1 to 0.2"
+datT[datT$mn_cp_occ>0.2 & datT$mn_cp_occ<=0.3,]$cp_occ<-"0.2 to 0.3"
+datT[datT$mn_cp_occ>0.3 & datT$mn_cp_occ<=0.4,]$cp_occ<-"0.3 to 0.4"
+datT[datT$mn_cp_occ>0.4 & datT$mn_cp_occ<=0.9,]$cp_occ<-"0.4 to 0.9"
+#length(which(is.na(datT$cp_occ)))
+
+datT$cp_occ_sd<-NA
+datT[datT$sd_cp_occ>0 & datT$sd_cp_occ<=0.025,]$cp_occ_sd<-"0 to 0.025"
+datT[datT$sd_cp_occ>0.025 & datT$sd_cp_occ<=0.05,]$cp_occ_sd<-"0.025 to 0.05"
+datT[datT$sd_cp_occ>0.05 & datT$sd_cp_occ<=0.1,]$cp_occ_sd<-"0.05 to 0.1"
+datT[datT$sd_cp_occ>0.1 & datT$sd_cp_occ<=0.15,]$cp_occ_sd<-"0.1 to 0.15"
+datT[datT$sd_cp_occ>0.15 & datT$sd_cp_occ<=0.2,]$cp_occ_sd<-"0.15 to 0.2"
+datT[datT$sd_cp_occ>0.2 & datT$sd_cp_occ<=0.25,]$cp_occ_sd<-"0.2 to 0.25"
+datT[datT$sd_cp_occ>0.25 & datT$sd_cp_occ<=0.3,]$cp_occ_sd<-"0.25 to 0.3"
+#length(which(is.na(datT$cp_occ_sd)))
 
 
 #LB_recruit:  Input mean number of recruits
@@ -116,6 +142,14 @@ datT$q_in<- factor(as.character(datT$q_in),
 datT$B0_sd_in<- factor(as.character(datT$B0_sd_in),
                        levels=c("Low","Moderate","High"),
                        ordered=TRUE)
+datT$cp_occ<- factor(as.character(datT$cp_occ),
+                   levels=c("0 to 0.05","0.05 to 0.1","0.1 to 0.2","0.2 to 0.3",
+                            "0.3 to 0.4","0.4 to 0.9"),
+                   ordered=TRUE)
+datT$cp_occ_sd<- factor(as.character(datT$cp_occ_sd),
+                     levels=c("0 to 0.025","0.025 to 0.05","0.05 to 0.1","0.1 to 0.15",
+                              "0.15 to 0.2","0.2 to 0.25","0.25 to 0.3"),
+                     ordered=TRUE)
 datT$rec<- factor(as.character(datT$rec),
                   levels=c("None","Low"),
                   ordered=TRUE)
@@ -131,6 +165,10 @@ datT<-datT[order(datT$samp_type,
                  datT$rec,
                  datT$mov),]
 
+#########################################
+#               ORIGINAL                #
+#########################################
+
 ## BIAS
 T_bias<-dcast(datT,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~tbu,value.var="freq",
               fun.aggregate=sum,drop=FALSE)
@@ -145,6 +183,45 @@ T_bias<-T_bias[order(T_bias$samp_type,
                    T_bias$B0_sd_in,
                    T_bias$rec,
                    T_bias$mov),]
+### SAVE
+write.csv(T_bias, "_output/4-tables/trnd_bias_cpt.csv", row.names = FALSE)
+
+## PRECISION
+T_prec<-dcast(datT,samp_type+estimator+occasions+gear+q_in+B0_sd_in+rec+mov~tpu,value.var="freq",
+              fun.aggregate=sum,drop=FALSE)
+T_prec$samp_size<-rowSums(T_prec[,9:24])
+T_prec[which(T_prec$samp_size!=0),9:24] <- T_prec[which(T_prec$samp_size!=0),9:24]/T_prec[which(T_prec$samp_size!=0),25]
+### ORDER FOR NETICA TO COPY AND PASTE
+T_prec<-T_prec[order(T_prec$samp_type,
+                     T_prec$estimator,
+                     T_prec$occasions,
+                     T_prec$gear,
+                     T_prec$q_in,
+                     T_prec$B0_sd_in,
+                     T_prec$rec,
+                     T_prec$mov),]
+### SAVE
+write.csv(T_prec, "_output/4-tables/trnd_precision_cpt.csv", row.names = FALSE)
+
+
+##########################################
+#                   CP                   #
+##########################################
+
+## BIAS
+T_bias<-dcast(datT,samp_type+estimator+occasions+gear+cp_occ+rec+mov~tbu,value.var="freq",
+              fun.aggregate=sum,drop=FALSE)
+T_bias$samp_size<-rowSums(T_bias[,8:24])
+T_bias[which(T_bias$samp_size!=0),9:25] <- T_bias[which(T_bias$samp_size!=0),9:25]/T_bias[which(T_bias$samp_size!=0),26]
+### ORDER FOR NETICA TO COPY AND PASTE
+T_bias<-T_bias[order(T_bias$samp_type,
+                     T_bias$estimator,
+                     T_bias$occasions,
+                     T_bias$gear,
+                     T_bias$q_in,
+                     T_bias$B0_sd_in,
+                     T_bias$rec,
+                     T_bias$mov),]
 ### SAVE
 write.csv(T_bias, "_output/4-tables/trnd_bias_cpt.csv", row.names = FALSE)
 
