@@ -447,6 +447,9 @@ saveRDS(lgth_table,file=paste0(loc, "_output/4-tables/lgth_table.rds"))
 ###########################################
 #                 PRADEL                  #
 ###########################################
+
+#r: 201-284 3 & 4 FAILS
+
 library(plyr)
 library(reshape2)
 
@@ -467,7 +470,82 @@ out<-lapply(c("r", "f"), function(s)
 })
 out<-do.call("rbind", out)
     
+saveRDS(out, "D:/_output/4-tables/Pradel/surv_table.rds")
+
+
+#####################################
+#       TAKE CARE OF R 1-200        #
+#####################################
+
+
+trial1<-lapply(1:200, function(i)
+{
+  readRDS(paste0("D:/_output/4-tables/Pradel/surv_r_", i, "-1.rds"))
+})
+trial1<-do.call("rbind", trial1)
+anyDuplicated(trial1)
+
+trial2<-lapply(1:200, function(i)
+{
+  readRDS(paste0("D:/_output/4-tables/Pradel/surv_r_", i, "-2.rds"))
+})
+trial2<-do.call("rbind", trial2)
+anyDuplicated(trial2)
+
+trial3<-lapply(1:200, function(i)
+{
+  readRDS(paste0("D:/_output/4-tables/Pradel/surv_r_", i, "-3.rds"))
+})
+trial3<-do.call("rbind", trial3)
+anyDuplicated(trial3)
+
+trial4<-lapply(1:200, function(i)
+{
+  readRDS(paste0("D:/_output/4-tables/Pradel/surv_r_", i, "-4.rds"))
+})
+trial4<-do.call("rbind", trial4)
+trial4<-trial4[!duplicated(trial4[,c(2:4,14)]),]
+
+out<-rbind(trial1, trial2)
+out<-rbind(out, trial3)
+out<-rbind(out, trial4)
+
+combos<-merge(data.frame(basin=c(rep("UB",3), rep("LB",6)), 
+                         segment=c(2:4, 7,8,9,10,13,14)),
+              data.frame(gear=c("GN14", "TLC1", "TN")),all=TRUE)
+combos<-merge(combos, data.frame(occasions=c(1:4)),all=TRUE)
+combos<-merge(combos, data.frame(pop_id=c(1:200)),all=TRUE)
+combos<-merge(combos, data.frame(catch_id=c(1:4)),all=TRUE)
+
+out<-merge(combos, out, by=names(combos), all.x=TRUE)
+
+saveRDS(out, "D:/_output/4-tables/Pradel/surv_r_1-200.rds")
+
+#tab<-tab[!duplicated(tab[,c(2:4,14,15)]),]
+#saveRDS(tab, "D:/_output/4-tables/Pradel/surv_r_201-284_1-2.rds")
+
+#tab<-tab[!duplicated(tab[,c(2:4,14,15)]),]
+#saveRDS(tab, "D:/_output/4-tables/Pradel/surv_r_285-400.rds")
+
+
+# SURVIVAL TABLE
+out<-readRDS("D:/_output/4-tables/Pradel/surv_table.rds")
+# BIAS UTILITY
+max(out$abs_bias, na.rm = TRUE)
+min(out$abs_bias, na.rm = TRUE)
+#out$bias_utility2<-1-out$abs_bias
+#out[is.na(out$bias_utility2),]$bias_utility2<-0
+## OR USE SAME CUT-OFF AS FOR TREND: 0.7
+out$bias_utility<-ifelse(out$abs_bias<=0.7, (0.7-out$abs_bias)/0.7, 0)
+out[is.na(out$bias_utility),]$bias_utility<-0
+# PRECISION UTILITY
+max(out$precision, na.rm = TRUE)
+## USE SAME MAX CUT-OFF AS FOR TREND: 0.375
+min(out$precision, na.rm = TRUE)
+out$precision_utility<-ifelse(out$precision<=0.375, (0.375-out$precision)/0.375, 0)
+out[is.na(out$precision_utility),]$precision_utility<-0
+# OVERALL UTILITY WEIGHTED EVENLY
+out$utility<-0.5*out$bias_utility+0.5*out$precision_utility
 saveRDS(out, "D:/_output/4-tables/surv_table.rds")
-
-
+saveRDS(out, "_output/4-tables/surv_table.rds")
 
