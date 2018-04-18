@@ -440,3 +440,34 @@ saveRDS(lgth_table,file=paste0(loc, "_output/4-tables/lgth_table.rds"))
 # 
 # ## COMBINE CPUE AND M0t TREND ANALYSIS
 # abund_table<-rbind(abund_cpue,abund_M0t)
+
+
+
+
+###########################################
+#                 PRADEL                  #
+###########################################
+library(plyr)
+library(reshape2)
+
+out<-lapply(c("r", "f"), function(s)
+{
+  outi<-lapply(c(1:400), function(i)
+  {
+    outj<-lapply(c(1:4), function(j)
+    {
+      tab<-phi.dat(location="D:/", samp_type = s, pop_num = i, catch_num = j)
+      return(tab)
+    })
+    tab<-do.call("rbind", outj)
+    return(tab)
+  })
+  tab<-do.call("rbind", outi)
+  return(tab)
+})
+out<-do.call("rbind", out)
+    
+saveRDS(out, "D:/_output/4-tables/surv_table.rds")
+
+
+

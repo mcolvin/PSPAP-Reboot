@@ -2597,6 +2597,82 @@ Pradel.ests<-function(pop_num=NULL,
 }
 
 
+phi.dat<-function(samp_type=NULL, 
+                  pop_num=NULL, 
+                  catch_num=NULL,
+                  location=NULL, #Optional: character string describing where "_output" is located when not located in GitHub; Ex. for Crunch use "E:/"
+                  ...) 
+{
+  ## ERROR HANDLING
+  if(samp_type!="r" & samp_type!="f")
+  {return(print("samp_type needs to be one of two characters: \n
+                r, which randomly selects bends for each year of sampling or \n
+                f, which randomly selects a single set of bends and fixes them
+                to be sampled every year \n"))}
+  
+  # PULL CATCH DATA AND ASSOCIATED ESTIMATES
+  id<-paste0(samp_type, "_", pop_num, "-", catch_num)
+  sim_dat<-readRDS(file=paste0(location,"_output/2-catch/catch_dat_",id,".rds"))
+  p_dat<-readRDS(paste0(location, "_output/3-estimates/Pradel_est_", id, ".rds"))
+  
+  # # INPUT/REALIZED PHI CHECK
+  # pop_dat<-readRDS(file=paste0(location,"_output/1-populations/sim_pop_",pop_num,".rds"))
+  # Z<-data.frame(pop_dat$Z)
+  # Z$phi1<-ifelse(Z$X1==1, Z$X2/Z$X1, NA)
+  # Z$phi2<-ifelse(Z$X2==1, Z$X3/Z$X2, NA)
+  # Z$phi3<-ifelse(Z$X3==1, Z$X4/Z$X3, NA)
+  # Z$phi4<-ifelse(Z$X4==1, Z$X5/Z$X4, NA)
+  # Z$phi5<-ifelse(Z$X5==1, Z$X6/Z$X5, NA)
+  # Z$phi6<-ifelse(Z$X6==1, Z$X7/Z$X6, NA)
+  # Z$phi7<-ifelse(Z$X7==1, Z$X8/Z$X7, NA)
+  # Z$phi8<-ifelse(Z$X8==1, Z$X9/Z$X8, NA)
+  # Z$phi9<-ifelse(Z$X9==1, Z$X10/Z$X9, NA)
+  # phi<-Z[,11:19]
+  # phi<-as.matrix(phi)
+  # mean(phi, na.rm = TRUE)
+  # pop_dat$inputs$phi[1,1]
+  # mean(phi, na.rm = TRUE)-pop_dat$inputs$phi[1,1]
+
+    
+  # FIND MEAN INPUT PHI VALUE BY SEGMENT
+  phi_dat<-data.frame(segment=sim_dat$inputs$segs, phi_in=rowMeans(sim_dat$inputs$phi))
+    ## SINCE ALL THE SAME rowMeans WORKS, BUT IF VALUES OF sim_dat$inputs$phi 
+    ## DIFFERED BY YEAR, IT MAY BE BEST TO USE A WEIGHTED MEAN RELATED TO 
+    ## SEGMENT ABUNDANCE 
+  # ADD IN SEGMENT LENGTHS
+  seg_length<-aggregate(seg_rkm~b_segment, data=sim_dat$true_vals, mean)
+  names(seg_length)[2]<-"length.rkm"
+  phi_dat<-merge(phi_dat, seg_length, by.x="segment", by.y="b_segment")
+  
+  # COMPILE SEGMENT LEVEL SURVIVAL ESTIMATES
+  p_dat<-p_dat[p_dat$param=="phi",]
+  p_dat<-p_dat[-which(p_dat$segment==1),]
+  names(p_dat)[2:3]<-c("phi_hat", "SE_phi_hat")
+  p_dat$basin<-ifelse(p_dat$segment %in% c(1:4), "UB", "LB")
+  
+  # ADD INPUT SURVIVAL
+  p_dat<-merge(p_dat, phi_dat, by=c("segment"), all.x=TRUE)
+  
+  # ADD BIAS
+  p_dat$bias<-p_dat$phi_hat-p_dat$phi_in
+  p_dat$abs_bias<-abs(p_dat$bias)
+
+  # ADD PRECISION
+  p_dat$precision<-p_dat$SE_phi_hat/p_dat$phi_hat
+  
+  # ADD ESTIMATOR AND INPUTS
+  p_dat$estimator<-"Pradel"
+  p_dat$samp_type<-samp_type
+  p_dat$pop_id<-pop_num
+  p_dat$catch_id<-catch_num
+  
+  # OUTPUT
+  p_dat<-p_dat[,c("basin", "segment", "gear", "occasions", "estimator", "phi_in",
+                  "phi_hat", "SE_phi_hat", "samp_size", "bias", "abs_bias", "precision",
+                  "length.rkm", "pop_id", "catch_id", "samp_type")]
+  saveRDS(p_dat, paste0(location, "_output/4-tables/Pradel/surv_", id, ".rds"))
+  return(p_dat)
+}
 
 
 
