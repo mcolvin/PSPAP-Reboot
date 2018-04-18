@@ -1033,7 +1033,7 @@ MKA.ests.seg<-function(sim_dat=NULL,
   colnames(tmp)[which(colnames(tmp)=="b_segment")]<-"segment"
   colnames(tmp)[which(colnames(tmp)=="length.rkm")]<-"rkm"
   tmp$occasions<-max(occ)
-  tmp$estimator<-"MKA"
+  tmp$estimator<-"MKA_seg"
   if(!is.null(gear_combi))
   {
     colnames(COMBI)[which(colnames(COMBI)=="b_segment")]<-"segment"
