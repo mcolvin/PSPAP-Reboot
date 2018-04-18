@@ -2114,16 +2114,53 @@ abund.trnd<-function(samp_type=NULL,
         bend_dat<-unique(sim_dat$samp_dat[,c("b_segment","bend_num")])
         inputs<-sim_dat$inputs
         bend_dat<-merge(bend_dat, inputs$bends[,c("b_segment","bend_num", "length.rkm")],
-                     by=c("b_segment", "bend_num"), all.x=TRUE)
+                        by=c("b_segment", "bend_num"), all.x=TRUE)
         bend_dat<-ddply(bend_dat, .(b_segment), summarize,
-                     sampled_bends=length(bend_num),
-                     sampled_rkm=sum(length.rkm))
+                        sampled_bends=length(bend_num),
+                        sampled_rkm=sum(length.rkm))
         tmp<-merge(tmp, bend_dat, by.x="segment", by.y="b_segment", all.x=TRUE)
         ## ADD SAMPLED SEGMENT DENSITY
         tmp$dens<-tmp$Nhat/tmp$sampled_rkm
         ## ADD SEGMENT LENGTHS
         tmp<-merge(tmp,seg_length, by="segment",all.x=TRUE)
+        ## ADD BASIN AND SAMPLED BASIN LENGTHS
+        seg_length$basin<-ifelse(seg_length$segment %in% c(1:4), "UB", "LB")
+        L_basin<-aggregate(seg_rkm~basin, seg_length, sum)
+        names(L_basin)[2]<-"basin_rkm"
+        tmp<-merge(tmp,L_basin, by="basin", all.x=TRUE)
+        bend_dat$basin<-ifelse(bend_dat$b_segment %in% c(1:4), "UB", "LB")
+        L_basin<-aggregate(sampled_rkm~basin,bend_dat, sum)
+        names(L_basin)[2]<-"sampled_basin_rkm"
+        tmp<-merge(tmp,L_basin, by="basin", all.x=TRUE)
         # ABUNDANCE
+        ## f0
+        f01<-dat$parameters[grep("f0 s4", rownames(dat$parameters)),]
+        f01$basin<-"UB"
+        f01$year<-rep(1:10,length(unique(f01$gear)))
+        f02<-dat$parameters[grep("f0 s6", rownames(dat$parameters)),]
+        f02$basin<-"LB"
+        f02$year<-rep(1:10,length(unique(f02$gear)))
+        f01<-rbind(f01, f02)
+        names(f01)[c(2,3)]<-c("f0", "SE_f0")
+        tmp<-merge(tmp, f01[,c("gear", "f0", "SE_f0","basin","year", "fit")], 
+                   by=c("gear", "basin", "year", "fit"), all.x=TRUE)
+        f02<-tmp[,c("gear", "basin", "year", "fit", "basin_samp_size", 
+                    "occasions", "estimator", "basin_rkm", "sampled_basin_rkm", 
+                    "f0", "SE_f0")]
+        f02<-f02[f02$basin=="UB",]
+        f02<-f02[!duplicated(f02),]
+        f02$segment<-1
+        f02$state<-"U"
+        f02$state_samp_size<-0
+        f02$sampled_rkm<-0
+        f02$seg_rkm<-seg_length[seg_length$segment==1,"seg_rkm"]
+        tmp<-rbind.fill(tmp,f02)
+        tmp$f0_part<-((tmp$seg_rkm-tmp$sampled_rkm)/(tmp$basin_rkm-tmp$sampled_basin_rkm))*tmp$f0
+        tmp$Nhat_f0<-ifelse(is.na(tmp$Nhat), tmp$f0_part, tmp$Nhat+tmp$f0_part)
+        tmp$SE_Nhat_f0<-ifelse(is.na(tmp$Nhat), 
+                               ((tmp$seg_rkm-tmp$sampled_rkm)/(tmp$basin_rkm-tmp$sampled_basin_rkm))*tmp$SE_f0,
+                               (1+(tmp$seg_rkm-tmp$sampled_rkm)/(tmp$basin_rkm-tmp$sampled_basin_rkm))*tmp$SE_Nhat)
+        
         ## ESTIMATE SEGMENT ABUNDANCE
         names(tmp)[which(names(tmp)=="Nhat")]<-"samp_Nhat"
         tmp$Nhat<-tmp$seg_rkm*tmp$dens
@@ -2131,11 +2168,13 @@ abund.trnd<-function(samp_type=NULL,
         tmp<-merge(tmp, true_abund, by=c("segment","year"), all.x=TRUE)
         ## ADD BIAS
         tmp$bias<-tmp$Nhat-tmp$abundance
+        tmp$bias_f0<-tmp$Nhat_f0-tmp$abundance
         ## ADD PRECISION
         ### CALCULATE SE
         tmp$SE<-(tmp$seg_rkm/tmp$sampled_rkm)*tmp$SE_Nhat
         ### CALCULATE CV
         tmp$precision<-tmp$SE/abs(tmp$Nhat)
+        tmp$precision_f0<-tmp$SE_Nhat_f0/abs(tmp$Nhat_f0)
         ## ADD ABUNDANCE EXTRAS
         occ<-1:y
         samp<-sim_dat$samp_dat[which(sim_dat$samp_dat$occasion %in% occ),]
@@ -2154,9 +2193,16 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         tmp<-merge(tmp, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
+        tmp[tmp$segment==1,]$effort<-0
         ### PERFORMANCE
         tmp$perform<-tmp$no_of_bends/tmp$sampled_bends
-
+        ### REORGANIZE TABLE
+        tmpH<-tmp[,c(1:3,13:16,27:29,32,34:38)]
+        tmpH<-tmpH[tmpH$segment!=1,]
+        tmp_f0<-tmp[,c(1:3,13:16,25,28,30,33:38)]
+        tmp_f0$estimator<-paste0(tmp_f0$estimator,"_f0")
+        colnames(tmp_f0)<-gsub("_f0", "", colnames(tmp_f0))
+        tmp<-rbind(tmpH,tmp_f0)
         
         # TREND
         ## FIT LINEAR MODEL FOR TREND FOR EACH GEAR
@@ -2164,29 +2210,35 @@ abund.trnd<-function(samp_type=NULL,
         outA<-lapply(gears,function(g)
         {
           tmp1<-subset(tmp, gear==g)
-          perform<-sum(tmp1$no_of_bends)/sum(tmp1$sampled_bends) #total no. of bends with usable data/total no. of bends sampled (in all years across the entire river, for a particular gear)
-          effort<-sum(tmp1$effort)
-          fit<-lm(log(Nhat)~year+as.factor(segment),tmp1)
-          tmp2<- data.frame(
-            # THE GOODIES
-            ## GEAR
-            gear=g,
-            ## TREND ESTIMATE
-            trnd=ifelse(is.na(summary(fit)$coefficients['year',2]),NA,
-                           coef(fit)['year']),
-            ## STANDARD ERROR FOR TREND ESTIMATE
-            se=summary(fit)$coefficients['year',2],
-            ## PVALUE FOR TREND ESTIMATE
-            pval=summary(fit)$coefficients['year',4],
-            ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
-            perform=perform,
-            effort=effort
-          )
-          return(tmp2)
+          out2<-lapply(unique(tmp1$estimator), function(e)
+          {
+            tmp1<-subset(tmp1, estimator==e)
+            perform<-sum(tmp1$no_of_bends, na.rm=TRUE)/sum(tmp1$sampled_bends, na.rm=TRUE) #total no. of bends with usable data/total no. of bends sampled (in all years across the entire river, for a particular gear)
+            effort<-sum(tmp1$effort)
+            fit<-lm(log(Nhat)~year+as.factor(segment),tmp1)
+            tmp2<- data.frame(
+              # THE GOODIES
+              ## GEAR
+              gear=g,
+              ## ESTIMATOR
+              estimator=e,
+              ## TREND ESTIMATE
+              trnd=ifelse(is.na(summary(fit)$coefficients['year',2]),NA,
+                          coef(fit)['year']),
+              ## STANDARD ERROR FOR TREND ESTIMATE
+              se=summary(fit)$coefficients['year',2],
+              ## PVALUE FOR TREND ESTIMATE
+              pval=summary(fit)$coefficients['year',4],
+              ## PERFORMANCE (FRACTION OF SEGMENT-YEAR DATA USED)
+              perform=perform,
+              effort=effort
+            )
+            return(tmp2)
+          })
+          out2<-do.call("rbind", out2)
+          return(out2)
         })
         outA<-do.call("rbind",outA)
-        ## ADD TREND ESTIMATOR
-        outA$estimator<-"CRDMS"
         ## ADD POPULATION TREND
         outA$pop_trnd<-pop_trnd
         ## CALCULATE TREND BIAS
@@ -2226,7 +2278,7 @@ abund.trnd<-function(samp_type=NULL,
       }
       return(list(trnd=out, abund=ests))
     })
-    # MULTI-GEAR DATA       
+    # MULTI-GEAR DATA
     codes<-unique(estC$g_code)
     outttC<-lapply(codes, function(z)
     {

@@ -108,7 +108,7 @@ length(repeats)
 ## 2. MKA SEG ESTIMATES ##
 ##########################
 ptm<-proc.time()
-out_dat<-lapply(1:400, function(i)
+out_dat<-lapply(179:400, function(i)
 {
   if(pcname=="WF-FGNL842")
   {
@@ -189,9 +189,32 @@ proc.time()-ptm
 ests<-do.call(rbind,lapply(out_dat, `[[`, 1))
 COMBI<-do.call(rbind,lapply(out_dat, `[[`, 2))
 out_dat<-list(ests=ests, COMBI=COMBI)
-saveRDS(out_dat, "D:/_output/3-estimates/MKA_seg_est_table.rds")
+saveRDS(out_dat, "D:/_output/3-estimates/MKA_seg_est_table_179-400.rds")
 
 
+outj<-lapply(1:4, function(j)
+{
+  outi<-lapply(1:178, function(i)
+  {
+    est1<-readRDS(paste0("D:/_output/3-estimates/MKA_seg_est_r_", i, "-", j, ".rds"))
+    est2<-readRDS(paste0("D:/_output/3-estimates/MKA_seg_est_f_", i, "-", j, ".rds"))
+    ests<-rbind(est1$ests, est2$ests)
+    COMBI<-rbind(est1$COMBI, est2$COMBI)
+    out<-list(ests=ests, COMBI=COMBI)
+    return(out)
+  })
+  ests<-do.call(rbind,lapply(outi, `[[`, 1))
+  COMBI<-do.call(rbind,lapply(outi, `[[`, 2))
+  out<-list(ests=ests, COMBI=COMBI)
+  saveRDS(out, paste0("D:/_output/3-estimates/MKA_seg_est_table_1-178_", j, ".rds"))
+  return(out)
+})
+
+ests<-do.call(rbind,lapply(outj, `[[`, 1))
+COMBI<-do.call(rbind,lapply(outj, `[[`, 2))
+out_dat2<-list(ests=ests, COMBI=COMBI)
+
+out<-rbind(out_dat2, out_dat)
 
 
 

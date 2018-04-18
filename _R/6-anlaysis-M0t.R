@@ -109,6 +109,65 @@ proc.time()-ptm
 
 
 
+#####################################
+#           SEGMENT LEVEL           #
+#####################################
+# DO NOT RUN IN PARALLEL SINCE M0t.ests IS IN PARALLEL
+ptm<-proc.time()
+out<-lapply(1:400, function(i)
+{
+  catch_list<-dir("D:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+  catch_list<-c(catch_list,dir("D:/_output/2-catch", 
+                               pattern=paste0("catch_dat_f_",i,"-")))
+  outi<-lapply(1:length(catch_list), function(j)
+  {
+    # READ IN DATA
+    sim_dat<-readRDS(file=paste0("D:/_output/2-catch/",catch_list[j]))
+    # SET OCCASIONS TO BE USED
+    occasions<-2:4
+    outj<-lapply(occasions, function(y)
+    {
+      # GET M0 & Mt ESTIMATES
+      est<-M0t.ests.seg(sim_dat=sim_dat, max_occ=y)
+      return(est)
+    })
+    ests<-do.call(rbind,lapply(outj, `[[`, 1))
+    id<-strsplit(catch_list[j], "catch_dat_")[[1]][2]
+    s<-strsplit(id, "_")[[1]][1]
+    ests$samp_type<-s
+    pc<-strsplit(id, "_")[[1]][2]
+    pid<-as.numeric(strsplit(pc, "-")[[1]][1])
+    ests$pop_id<-pid
+    cid<-strsplit(pc, "-")[[1]][2]
+    cid<-as.numeric(strsplit(cid, ".rds")[[1]][1])
+    ests$catch_id<-cid
+    COMBI<-do.call(rbind,lapply(outj, `[[`, 2))
+    if(!is.null(COMBI))
+    {
+      COMBI$samp_type<-s
+      COMBI$pop_id<-pid
+      COMBI$catch_id<-cid
+    }
+    est<-list(ests=ests, COMBI=COMBI)
+    # SAVE ESTIMATES
+    saveRDS(est,
+            file=paste0("D:/_output/3-estimates/M0t_seg_est",
+                        strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    return(est)
+  })
+  ests<-do.call(rbind,lapply(outi, `[[`, 1))
+  COMBI<-do.call(rbind,lapply(outi, `[[`, 2))
+  est<-list(ests=ests, COMBI=COMBI)
+  return(est)
+})
+proc.time()-ptm
+
+ests<-do.call(rbind,lapply(out, `[[`, 1))
+COMBI<-do.call(rbind,lapply(out, `[[`, 2))
+out_dat<-list(ests=ests, COMBI=COMBI)
+saveRDS(out_dat, "D:/_output/3-estimates/M0t_seg_est_table.rds")
+
+
 
 
 
