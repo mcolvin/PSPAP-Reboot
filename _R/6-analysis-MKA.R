@@ -188,8 +188,8 @@ proc.time()-ptm
 
 ests<-do.call(rbind,lapply(out_dat, `[[`, 1))
 COMBI<-do.call(rbind,lapply(out_dat, `[[`, 2))
-out_dat<-list(ests=ests, COMBI=COMBI)
-saveRDS(out_dat, "D:/_output/3-estimates/MKA_seg_est_table_179-400.rds")
+out<-list(ests=ests, COMBI=COMBI)
+saveRDS(out, "D:/_output/3-estimates/MKA_seg_est_table_179-400.rds")
 
 
 outj<-lapply(1:4, function(j)
@@ -214,7 +214,11 @@ ests<-do.call(rbind,lapply(outj, `[[`, 1))
 COMBI<-do.call(rbind,lapply(outj, `[[`, 2))
 out_dat2<-list(ests=ests, COMBI=COMBI)
 
-out<-rbind(out_dat2, out_dat)
+ests<-rbind(out_dat2$ests, out$ests)
+COMBI<-rbind(out_dat2$COMBI, out$COMBI)
+out_dat<-list(ests=ests, COMBI=COMBI)
+saveRDS(out_dat, "D:/_output/3-estimates/MKA_seg_est_table.rds")
+
 
 
 

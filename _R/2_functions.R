@@ -1806,7 +1806,11 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         ests<-merge(ests, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
-            
+        ### RECRUITMENT
+        r_stats<-true[,c("segment", "year", "age_0", "r_year")]
+        names(r_stats)[3]<-c("recruits_realized")
+        r_stats$r_year<-ifelse(r_stats$r_year==0, "No", "Yes")
+        ests<-merge(ests, r_stats, by=c("segment", "year"), all.x=TRUE)    
             
         # TREND
         ## ABUNDANCE TREND
@@ -1900,11 +1904,27 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         out<-merge(out, q_stats, by="gear", all.x=TRUE)
+        ### RECRUITMENT
+        true$basin<-ifelse(true$segment %in% 1:4, "UB", "LB")
+        r_stats<-ddply(true, .(basin), summarize,
+                       recruits_realized=sum(age_0), 
+                       total_rec_years=sum(r_year),
+                       samp_size=length(unique(segment)))
+        r_stats$total_rec_years<-r_stats$total_rec_years/r_stats$samp_size
+        r_stats<-data.frame(UB_recruits_realized=r_stats[r_stats$basin=="UB", "recruits_realized"],
+                            UB_total_rec_years=r_stats[r_stats$basin=="UB", "total_rec_years"],
+                            LB_recruits_realized=r_stats[r_stats$basin=="LB", "recruits_realized"],
+                            LB_total_rec_years=r_stats[r_stats$basin=="LB", "total_rec_years"])
+        out<-merge(out, r_stats, all.x=TRUE) 
             
         # ADD INPUTS
         inputs<-sim_dat$inputs
         in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
+                           UB_recruitment_mean_input=inputs$upper$r_beta0,
+                           UB_recruitment_period_input=inputs$upper$r_period,
+                           LB_recruitment_mean_input=inputs$lower$r_beta0,
+                           LB_recruitment_period_input=inputs$lower$r_period,
                            occasions=y, samp_type=inputs$samp_type,pop_id=pop_num,
                            catch_id=catch_num)
         in_dat<-merge(in_dat, inputs$gear_codes, by="gear", all.x=TRUE)
@@ -1986,6 +2006,11 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         ests<-merge(ests, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
+        ### RECRUITMENT
+        r_stats<-true[,c("segment", "year", "age_0", "r_year")]
+        names(r_stats)[3]<-c("recruits_realized")
+        r_stats$r_year<-ifelse(r_stats$r_year==0, "No", "Yes")
+        ests<-merge(ests, r_stats, by=c("segment", "year"), all.x=TRUE) 
             
             
         # TREND
@@ -2071,9 +2096,6 @@ abund.trnd<-function(samp_type=NULL,
         outA$bias<-outA$trnd-outA$pop_trnd
         ## CALCULATE TREND PRECISION
         outA$precision<-outA$se/abs(outA$trnd)
-        #######################################
-        #  DO WE WANT EXP VERSION OF THIS???  #
-        #######################################
         ## ADD TREND EXTRAS
         ### FLAGS
         fl<-ddply(P, .(gear), summarize, flags=length(which(flag!=0))/length(flag))
@@ -2084,10 +2106,26 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         outA<-merge(outA, q_stats, by="gear")
+        ### RECRUITMENT
+        true$basin<-ifelse(true$segment %in% 1:4, "UB", "LB")
+        r_stats<-ddply(true, .(basin), summarize,
+                       recruits_realized=sum(age_0), 
+                       total_rec_years=sum(r_year),
+                       samp_size=length(unique(segment)))
+        r_stats$total_rec_years<-r_stats$total_rec_years/r_stats$samp_size
+        r_stats<-data.frame(UB_recruits_realized=r_stats[r_stats$basin=="UB", "recruits_realized"],
+                            UB_total_rec_years=r_stats[r_stats$basin=="UB", "total_rec_years"],
+                            LB_recruits_realized=r_stats[r_stats$basin=="LB", "recruits_realized"],
+                            LB_total_rec_years=r_stats[r_stats$basin=="LB", "total_rec_years"])
+        out<-merge(outA, r_stats, all.x=TRUE) 
         # ADD INPUTS
         inputs<-sim_dat$inputs
         in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
+                           UB_recruitment_mean_input=inputs$upper$r_beta0,
+                           UB_recruitment_period_input=inputs$upper$r_period,
+                           LB_recruitment_mean_input=inputs$lower$r_beta0,
+                           LB_recruitment_period_input=inputs$lower$r_period,
                            occasions=y, samp_type=inputs$samp_type, pop_id=pop_num,
                            catch_id=catch_num)
         in_dat<-merge(in_dat, inputs$gear_codes, by="gear", all.x=TRUE)
@@ -2194,9 +2232,17 @@ abund.trnd<-function(samp_type=NULL,
                        q_sd_realized=sd(q))
         tmp<-merge(tmp, q_stats, by=c("segment", "year", "gear"), all.x=TRUE)
         tmp[tmp$segment==1,]$effort<-0
+        ### RECRUITMENT
+        r_stats<-true[,c("segment", "year", "age_0", "r_year")]
+        names(r_stats)[3]<-c("recruits_realized")
+        r_stats$r_year<-ifelse(r_stats$r_year==0, "No", "Yes")
+        tmp<-merge(tmp, r_stats, by=c("segment", "year"), all.x=TRUE) 
         ### PERFORMANCE
         tmp$perform<-tmp$no_of_bends/tmp$sampled_bends
         ### REORGANIZE TABLE
+        ###################################
+        #   NEED TO ADJUST THESE!!!       #
+        ###################################
         tmpH<-tmp[,c(1:3,13:16,27:29,32,34:38)]
         tmpH<-tmpH[tmpH$segment!=1,]
         tmp_f0<-tmp[,c(1:3,13:16,25,28,30,33:38)]
@@ -2255,11 +2301,27 @@ abund.trnd<-function(samp_type=NULL,
                        q_mean_realized=mean(q),
                        q_sd_realized=sd(q))
         outA<-merge(outA, q_stats, by="gear")
+        ### RECRUITMENT
+        true$basin<-ifelse(true$segment %in% 1:4, "UB", "LB")
+        r_stats<-ddply(true, .(basin), summarize,
+                       recruits_realized=sum(age_0), 
+                       total_rec_years=sum(r_year),
+                       samp_size=length(unique(segment)))
+        r_stats$total_rec_years<-r_stats$total_rec_years/r_stats$samp_size
+        r_stats<-data.frame(UB_recruits_realized=r_stats[r_stats$basin=="UB", "recruits_realized"],
+                            UB_total_rec_years=r_stats[r_stats$basin=="UB", "total_rec_years"],
+                            LB_recruits_realized=r_stats[r_stats$basin=="LB", "recruits_realized"],
+                            LB_total_rec_years=r_stats[r_stats$basin=="LB", "total_rec_years"])
+        out<-merge(outA, r_stats, all.x=TRUE) 
         ### OCCASIONS
         outA$occasions<-y
         # ADD INPUTS
         in_dat<-data.frame(gear=inputs$gears, q_mean_input=inputs$catchability, 
                            B0_sd_input=inputs$B0_sd, deployments=inputs$deployments,
+                           UB_recruitment_mean_input=inputs$upper$r_beta0,
+                           UB_recruitment_period_input=inputs$upper$r_period,
+                           LB_recruitment_mean_input=inputs$lower$r_beta0,
+                           LB_recruitment_period_input=inputs$lower$r_period,
                            samp_type=inputs$samp_type, pop_id=pop_num, catch_id=catch_num)
         in_dat<-merge(in_dat, inputs$gear_codes, by="gear", all.x=TRUE)
         outA<-merge(outA, in_dat, by="gear", all.x=TRUE)
@@ -2278,7 +2340,10 @@ abund.trnd<-function(samp_type=NULL,
       }
       return(list(trnd=out, abund=ests))
     })
-    # MULTI-GEAR DATA
+    # MULTI-GEAR DATA   
+    #########################################################################
+    #           NEED TO ADD RECRUITMENT TO AND CHECK FOR OTHER THINGS       #
+    #########################################################################
     codes<-unique(estC$g_code)
     outttC<-lapply(codes, function(z)
     {
