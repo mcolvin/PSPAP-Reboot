@@ -105,6 +105,122 @@ length(repeats)
 
 
 
+##########################
+## 2. MKA SEG ESTIMATES ##
+##########################
+ptm<-proc.time()
+out_dat<-lapply(1:400, function(i)
+{
+  if(pcname=="WF-FGNL842")
+  {
+    catch_list<-dir("E:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("E:/_output/2-catch", 
+                                 pattern=paste0("catch_dat_f_",i,"-")))
+  }
+  if(pcname!="WF-FGNL842")
+  {
+    catch_list<-dir("D:/_output/2-catch", pattern=paste0("catch_dat_r_",i,"-"))
+    catch_list<-c(catch_list,dir("D:/_output/2-catch", 
+                                 pattern=paste0("catch_dat_f_",i,"-")))
+  }
+  library(parallel)
+  ## USE ALL CORES
+  numCores<-detectCores()
+  ## INITIATE CLUSTER
+  cl<-makeCluster(numCores)
+  ## MAKE PREVIOUS ITEMS AND FUNCTIONS AVAILABLE
+  clusterExport(cl, c("pcname","catch_list"),envir=environment())
+  clusterEvalQ(cl, source("_R/2_functions.R"))
+  clusterEvalQ(cl, library(plyr))
+  clusterEvalQ(cl, library(reshape2))
+  out<-parLapply(cl,1:length(catch_list), function(j)
+  {
+    # READ IN DATA
+    if(pcname=="WF-FGNL842")
+    {sim_dat<-readRDS(file=paste0("E:/_output/2-catch/",catch_list[j]))}
+    if(pcname!="WF-FGNL842")
+    {sim_dat<-readRDS(file=paste0("D:/_output/2-catch/",catch_list[j]))}
+    # SET OCCASIONS TO BE USED
+    occasions<-1:4
+    outj<-lapply(occasions, function(y)
+    {
+      # GET MKA ESTIMATES
+      est<-MKA.ests.seg(sim_dat=sim_dat, max_occ = y, gear_combi = NULL)
+      return(est)
+    })
+    ests<-do.call(rbind,lapply(outj, `[[`, 1))
+    id<-strsplit(catch_list[j], "catch_dat_")[[1]][2]
+    s<-strsplit(id, "_")[[1]][1]
+    ests$samp_type<-s
+    pc<-strsplit(id, "_")[[1]][2]
+    pid<-as.numeric(strsplit(pc, "-")[[1]][1])
+    ests$pop_id<-pid
+    cid<-strsplit(pc, "-")[[1]][2]
+    cid<-as.numeric(strsplit(cid, ".rds")[[1]][1])
+    ests$catch_id<-cid
+    COMBI<-do.call(rbind,lapply(outj, `[[`, 2))
+    if(!is.null(COMBI))
+    {
+      COMBI$samp_type<-s
+      COMBI$pop_id<-pid
+      COMBI$catch_id<-cid
+    }
+    est<-list(ests=ests, COMBI=COMBI)
+    # SAVE ESTIMATES
+    if(pcname=="WF-FGNL842")
+    {
+      saveRDS(est, file=paste0("E:/_output/3-estimates/MKA_seg_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    if(pcname!="WF-FGNL842")
+    {
+      saveRDS(est, file=paste0("D:/_output/3-estimates/MKA_seg_est", 
+                               strsplit(catch_list[j], "catch_dat")[[1]][2]))
+    }
+    return(est)
+  })
+  stopCluster(cl)
+  ests<-do.call(rbind,lapply(out, `[[`, 1))
+  COMBI<-do.call(rbind,lapply(out, `[[`, 2))
+  out<-list(ests=ests, COMBI=COMBI)
+  return(out)
+})
+proc.time()-ptm
+
+ests<-do.call(rbind,lapply(out_dat, `[[`, 1))
+COMBI<-do.call(rbind,lapply(out_dat, `[[`, 2))
+out<-list(ests=ests, COMBI=COMBI)
+saveRDS(out, "E:/_output/3-estimates/MKA_seg_est_table.rds")
+
+rm
+# outj<-lapply(1:4, function(j)
+# {
+#   outi<-lapply(1:178, function(i)
+#   {
+#     est1<-readRDS(paste0("D:/_output/3-estimates/MKA_seg_est_r_", i, "-", j, ".rds"))
+#     est2<-readRDS(paste0("D:/_output/3-estimates/MKA_seg_est_f_", i, "-", j, ".rds"))
+#     ests<-rbind(est1$ests, est2$ests)
+#     COMBI<-rbind(est1$COMBI, est2$COMBI)
+#     out<-list(ests=ests, COMBI=COMBI)
+#     return(out)
+#   })
+#   ests<-do.call(rbind,lapply(outi, `[[`, 1))
+#   COMBI<-do.call(rbind,lapply(outi, `[[`, 2))
+#   out<-list(ests=ests, COMBI=COMBI)
+#   saveRDS(out, paste0("D:/_output/3-estimates/MKA_seg_est_table_1-178_", j, ".rds"))
+#   return(out)
+# })
+# 
+# ests<-do.call(rbind,lapply(outj, `[[`, 1))
+# COMBI<-do.call(rbind,lapply(outj, `[[`, 2))
+# out_dat2<-list(ests=ests, COMBI=COMBI)
+# 
+# ests<-rbind(out_dat2$ests, out$ests)
+# COMBI<-rbind(out_dat2$COMBI, out$COMBI)
+# out_dat<-list(ests=ests, COMBI=COMBI)
+# saveRDS(out_dat, "D:/_output/3-estimates/MKA_seg_est_table.rds")
+
+
 
 
 
