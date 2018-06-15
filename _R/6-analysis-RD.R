@@ -24,13 +24,56 @@ if(pcname!="WF-FGNL842")
   loc<-"D:/"
 }
 
-setwd("E:/_output/6-MARK/MARK")
 
+#######################
+#       RANDOM        #
+#######################
+samp_type<-"r"
+
+setwd("E:/_output/6-MARK/MARK")
 ptm<-proc.time()
-lapply(368:400, function(i)
+lapply(145:150, function(i)
 {
   lapply(3:4, function(j)
   {
+    # SET OCCASIONS TO BE USED
+    occasions<-2:3
+    lapply(occasions, function(y)
+    {
+      #basin<-c("U", "L")
+      #lapply(basin, function(b)
+      #{
+      b<-"L"
+      g<-"GN14"
+      # GET RD ESTIMATES
+      est<-try(RD_r.ests(basin_code=b, pop_num=i, catch_num = j, location = loc,
+                         max_occ=y, gear_combi=g), silent=TRUE)
+      # SAVE ESTIMATES
+      if(class(est)!="try-error")
+      {
+        saveRDS(est, file=paste0(loc,"_output/3-estimates/RD_est_r_", i, "-", j,
+                                 "_occ-", y, "_", b, "B-", g, ".rds"))
+      }
+      rm(est)
+      #})
+    })
+  })
+})
+proc.time()-ptm
+
+
+
+######################
+#       FIXED        #
+######################
+setwd("E:/_output/6-MARK/MARK")
+ptm<-proc.time()
+#391-4 occ2 LB MARK RUN FAIL
+lapply(c(363:366), function(i)
+{
+  #lapply(3:4, function(j)
+  #{
+  j<-3
     # SET OCCASIONS TO BE USED
     occasions<-2:3
     lapply(occasions, function(y)
@@ -68,7 +111,7 @@ lapply(368:400, function(i)
         rm(est)
       })
     })
-  })
+  #})
 })
 proc.time()-ptm
 
