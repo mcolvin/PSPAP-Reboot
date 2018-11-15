@@ -19,7 +19,7 @@ _output/
 _photos/
 test
 *.camproj
-
+*.trec
 *.sav
 *.mov
 *.mp4
