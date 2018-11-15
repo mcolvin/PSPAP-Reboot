@@ -18,7 +18,7 @@ PSPAP-Population-Assessment-Robust-Design/
 _output/
 _photos/
 test
-
+*.camproj
 
 *.sav
 *.mov
