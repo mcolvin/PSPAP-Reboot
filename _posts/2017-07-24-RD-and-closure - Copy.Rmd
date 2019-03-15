@@ -1,0 +1,419 @@
+---
+title: "Effect of daily movement on abundance estimates: Robust Design"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+bibliography: PSref.bib
+csl: ecology.csl  
+---
+
+<!---
+rmarkdown::render_site("2017-07-24-RD-and-closure.Rmd")# build website
+--->
+
+```{r,eval=FALSE,echo=FALSE}
+source("_R/6-analysis-RD-and-Closure.R")
+input<-list()
+input$nprim = 10
+input$phi=rep(0.8,input$nprim-1)## SURVIVAL
+# FECUNDITY
+input$f=rep(0,input$nprim-1)
+input$n=500 # initial population size
+#input$n_inn=600 # initial number in study area
+## RANDOM MOVEMENT PRIMARY
+#input$gam_prime=rep(0.3,input$nprim-1) # UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+input$gam_d_prime=rep(0.3,input$nprim-1) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]; TEMP EMIGRATION
+input$nsec=rep(4,input$nprim)## SECONDARY OCCASIONS
+## RANDOM MOVEMENT SECONDARY
+input$gam_d_prime2<-rep(0,input$nprim) # OBSERVABLE[t-1] --> UNOBSERVABLE[t]
+#input$gam_prime2<- rep(1,input$nprim)# UNOBSERVABLE[t-1]--> UNOBSERVABLE[t]
+input$p=rep(0.3,input$nprim)## CAPTURE PROBABILITY
+inputs<-input
+ch<-sim_ch(inputs=input)
+ests<-est_rd(inputs=ch)
+
+combos<- expand.grid(gam_d_prime2=seq(0,0.5,by=0.05),
+    reps=c(1:100))
+nn<-pp<-data.frame()
+for(i in 1:nrow(combos))
+    {
+    input$gam_d_prime2<-rep(combos$gam_d_prime2[i],input$nprim) 
+    ch<-sim_ch(inputs=input)
+    ests<-try(est_rd(inputs=ch))
+    if(class(ests)!="try-error")
+        {
+        parms=data.frame(
+            rep=i,
+            gamma2=input$gam_d_prime2[1],
+            gammaTrue=input$gam_d_prime[1],
+            gammahat=ests$parameters[ests$parameters$parameter=="GammaDoublePrime:(Intercept)",]$ests,
+            ptrue= input$p[1],  
+            phat= ests$parameters[ests$parameters$parameter=="p:(Intercept)",]$ests,
+            Strue=input$phi[1],
+            Shat=ests$parameters[ests$parameters$parameter=="S:(Intercept)",]$ests)
+        abund<-data.frame(
+            rep=i,
+            gamma2=input$gam_d_prime2[1],
+            year=c(1:input$nprim),
+            Ntrue=ch$trueN,        
+            Nhat= ests$abundance$derived.estimate)
+        pp<- rbind(pp,parms)
+        nn<-rbind(nn,abund)
+        }
+    }
+write.csv(pp,"_output/RD-daily-movement-output-parameters.csv")
+write.csv(nn,"_output/RD-daily-movement-output-abundance.csv")
+```
+
+<!--
+# Model 3 = no TE 
+# fix Gamma's = 0
+GammaDoublePrime.zeroTE=list(formula=~1, fixed=0, share=TRUE)
+
+-->
+
+
+
+
+```{r,echo=FALSE}
+pp<-read.csv("_output/RD-daily-movement-output-parameters.csv")
+pp$rep<- c(1:nrow(pp))
+nn<-read.csv("_output/RD-daily-movement-output-abundance.csv")
+nn$year<- rep(c(1:10),nrow(pp))
+nn$rep<- sort(rep(pp$rep,10))
+nn$bias<- nn$Nhat-nn$Ntrue
+nn$pbias<- (nn$Nhat-nn$Ntrue)/nn$Ntrue
+xx<- aggregate(cbind(bias,pbias)~gamma2+rep,nn,mean)
+```
+
+### In a nutshell
+
+Here are the highlights for those that do not want to read the post in 
+its entirety. 
+
+* This post follows up on a previous post exploring the effect of 
+daily movement on estimates of abundance, but in this post, we use a 
+robust design capture mark recapture approach that estimates abundance, 
+survival, and movement rates 
+* A small amount of day to day movement can result in biased estimates of
+abundance, movement rate between primary sampling occasions (i.e., year to year), and
+capture probability, albeit it is likely that day to day movement rates outside of
+spring are pretty low based off input from previous work by the Nebraska Crew.
+* Estimates of survival appear to be robust to day to day movement, which is a good 
+thing.
+* In relation to the fundamental objectives, the robust design can potentially
+provide estimates of the population trend (trend is survival in the absence of recruitment) and
+abundance. We explore bias as a metric to quantify these fundamental objectives. 
+* For more information on in an approachable form see a book chapter by
+Dr. Larkin Powell [here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bbba6b058ff21540.pdf)
+
+
+### Engage in the process
+
+Want to engage in the process? Please let us know what you think in the 
+comments or email mike.colvin [at] msstate.edu. In this post, we use 
+measures of bias as a way to quantify the performance of a monitoring 
+design. We are also investigating precision of estimates as well which 
+will be addressed in a future post. We are also linking effort and costs 
+to the designs. 
+
+
+Are there other metrics (e.g., bias, precision) you suggest we should be 
+using to evaluate the performance of a monitoring design? 
+
+
+
+
+### Background overview
+
+In a previous post, we looked at the effect of violating the assumption 
+of closure. Specifically, we evaluated a situation we might encounter on 
+the Missouri River where Pallid Sturgeon move in and out of a bend on a 
+daily basis. The analysis showed that as daily movement rates increased, 
+there was a positive bias associated with abundance estimates using the 
+M0 abundance estimator for capture mark recapture (cmr) approaches [(see 
+here)](https://mcolvin.github.io/PSPAP-Reboot/2017-06-28-M0-and-closure. 
+html). In this post we will look at a similar analysis but for the 
+Robust Design. But first a couple of thing before we get started. 
+
+
+
+1. For more information on in an approachable form see a book chapter by 
+Dr. Larkin Powell 
+[here](http://docs.wixstatic.com/ugd/95e73b_6b4fc965e7054321bbba6b058ff2 
+1540.pdf) 1. The analyses presented in the blog posts are, in some 
+cases, simplifications of the analyses that are being conducted. 
+Specifically, we hold some parameters like survival and capture 
+probability constant for simplicity and to illustrate the effect of 
+parameters on monitoring design metrics like bias. The full analysis 
+does allow for varying parameters and the potential to evaluate 
+difference between origin or behavioral response (e.g., trap shyness). 
+
+
+
+The EA team has evaluated varying monitoring approaches identified 
+during the workshop by comparing known population (i.e., virtual) to 
+simulated monitoring designs including catch effort and closed 
+population estimators. One alternative to a catch effort program or 
+estimating abundance using a closed population estimator like the M0 
+model is the robust design. The robust design is similar to the M0 
+estimator because it assumes a short period of closure to estimate 
+abundance but also can estimate demographic rates among primary 
+occasions like survival ($\phi$) and movement $(\gamma^\prime$ and 
+$\gamma^{\prime\prime})$ among primary occasions. The idea of primary 
+and secondary occasions are illustrated in the figure below. 
+
+
+
+
+
+```{r,out.width='90%',echo=FALSE}
+knitr::include_graphics("images/RD-conceptual-figure.png")
+```
+
+The time between primary occasions is commonly a year, and the 
+population demographics like survival and movement can play out. The 
+secondary occasions occur during a short period of time when closure can 
+be assumed. Relevant assumptions for the secondary occasion within a 
+primary occasion (i.e., periods of where closure is assumed) are: 
+
+
+
+1. Stay put (Emigration = 0),
+2. New fish do not enter the bend (Immigration = 0), 
+3. New fish are not recruited (Recruitment = 0), and 
+4. Fish do not die (Survival = 1).
+
+We also assume:
+
+1. Fish do not lose tags,
+2. We detect tags perfectly, and
+3. Capture probability is equal among fish. 
+
+
+
+The parameters estimated by the robust design include:
+
+* the probability of surviving between primary occasions $\phi$ , 
+* the probability of being outside the study area and 
+unavailable for capture during the primary occasions given the animal 
+was not present during the previous primary occasions given it survives 
+to the current occasion $\gamma^{\prime}$, 
+* the probability of being outside the study 
+area and unavailable for capture during the primary occasions given the 
+animal was present during the previous primary occasions given it 
+survives to the current occasion $\gamma^{\prime\prime}$, and 
+* the capture probability $p$.
+
+The movement and survival parameters are added here relative to the 
+previous analysis, and the movement parameters especially need a bit of 
+background information. Pallid Sturgeon are allowed to move around among 
+primary occasions, and the $\gamma^{\prime}$ and the 
+$\gamma^{\prime\prime}$ are illustrated in the figure below. The gist is 
+that the parameters are probabilities of being in one location
+or another. There are varying ways 
+to specify movement, but the most common one used is random where 
+$\gamma^{\prime}$ and $\gamma^{\prime\prime}$ are assumed to be equal.
+Random movement is the assumption of previous applications of the robust
+design to estimate Pallid Sturgeon abundance and demographic rates [@WS14; @SPP12]. 
+In the figure below, the observable portion of the population would be
+fish within the bend, and the unobservable portion is those fish outside 
+of the bend. Keep in mind these fish in the bend are 'observable' or 
+in other words, you have a chance at catching them whereas fish outside the 
+bend are unobservable because you are not sampling outside the bend.
+
+
+```{r,out.width='90%',echo=FALSE}
+knitr::include_graphics("images/RD-conceptual-figure2.png")
+```
+
+## Is there a problem if daily movement occurs?
+
+If bends are used as the sampling unit, there may be an effect of day to 
+day movement on abundance and demographic rate estimates. Given the 
+results of daily movement on the closed population estimator, it seems 
+likely that abundance will be overestimated with increased daily 
+movement however it is not clear how the daily movement will influence 
+survival and movement among primary occasions. To be clear, estimated 
+movement rate refers to movement between primary occasions (e.g., year 
+to year) and is different than daily movement rate (e.g., day to day). 
+In the robust design daily movement rate is assumed to be 0 (i.e., fish 
+stay put in a bend) but fish can move in and out of the bend between 
+primary occasions. If biased estimates result because of daily movement, 
+it may limit the ability of a monitoring design to meet the fundamental 
+objectives identified in the workshop. Similar to the previous analysis 
+we are going to kick the wheels, so to say, of the robust design to see 
+how it performs with some level of daily movement in and out of the 
+bend. The objectives of this analysis were to evaluate the effect of 
+daily movement on estimates of abundance, survival, movement rate and 
+capture probability. 
+
+To evaluate the effect of daily movement we simulated a cmr dataset for 
+a 10 year period (i.e., 10 primary occasions) representing a single 
+bend. The true parameters used to simulate the dataset were: 
+
+* $\phi$ = 0.8 (survival)
+* $\gamma^\prime$ = 0.3 (probability of staying outside of the bend)
+* $\gamma^{\prime\prime}$ = 0.3 (probability of moving out of bend) 
+* $p$ = 0.3 (capture probability)
+
+For simplicity, all parameters were assumed to be constant among years. 
+The initial population (in and outside of a bend) was 500 fish with 300 
+of those Pallid Sturgeon occupying the bend. Daily movement rates of 0 
+to 0.5 in increments of 0.05 were used to simulate 100 replicate cmr 
+datasets. We then estimate abundance, survival, movement (among primary occasions, not 
+daily), and capture probability using a robust design 
+estimator in Program Mark. 
+
+
+
+
+
+### Effect of violating closure assumption
+
+Not surprisingly, as daily movement rate increased, estimated bend-level 
+abundance increased. This was a similar result to the analysis of the M0 
+model. The figure below illustrates the effect of daily movement on 
+bend-level abundance estimates over time. The black lines are 100 
+replicates of true population dynamics and the red lines are the 
+estimated population dynamics. As daily movement rate increases the gap 
+between the black and red lines increases illustrating the positive 
+bias. 
+
+ 
+```{r,echo=FALSE}
+trans_black<- rgb(0,0,0,alpha=40,maxColorValue=255)
+trans_red<- rgb(255,0,0,alpha=40,maxColorValue=255)
+nn<-nn[order(nn$gamma2,nn$year),]
+par(mfrow=c(4,3),mar=c(1,2,1,1),oma=c(4,4,1,1))
+for(g2 in unique(nn$gamma2))
+    {
+    xxx<-subset(nn,gamma2==g2)
+    est<-reshape2::dcast(xxx,year~rep,value.var="Nhat",mean)
+    true<-reshape2::dcast(xxx,year~rep,value.var="Ntrue",mean)
+    matplot(est[,-1],,col=trans_red,type='l',las=1,ylim=c(0,500))
+    matlines(true[,-1],,col=trans_black,type='l')
+    mtext(side=3, paste("Daily movement rate = ",g2,sep=""),line=-1,cex=0.65)
+    }
+plot.new()
+legend("center", c("True abundance", "Estimated abundance"),
+    col=c("black","red"),lty=1,lwd=3)
+mtext(side=1, "Year",outer=TRUE,line=2)
+mtext(side=2, "Abundance",outer=TRUE,line=2)
+```
+
+In the figure above, we can calculate the bias of each yearly estimate 
+for each replicate where bias is the estimated abundance minus the true 
+abundance (Fortunately, this is simulated data, so we know what the true 
+abundance is!). Bias is measured as numbers of fish and we can make 
+statements like abundance was overestimated by 20 Pallid Sturgeon. 
+However, a bias of 20 Pallid Sturgeon when the true abundance is 35 fish 
+versus 4000 fish is different and therefore we used a proportional bias 
+calculated as $(estimated-true)/true$. Proportional bias allows a 
+comparison of estimates of varying magnitude. Proportional bias is 
+illustrated in the figure below for the scenarios in the above plot.
+The red line denotes no bias. 
+
+```{r,echo=FALSE}
+trans_black<- rgb(0,0,0,alpha=40,maxColorValue=255)
+par(mfrow=c(4,3),mar=c(1,2,1,1),oma=c(4,4,1,1))
+for(g2 in unique(nn$gamma2))
+    {
+    xxx<-subset(nn,gamma2==g2)
+    pbias<-reshape2::dcast(xxx,year~rep,value.var="pbias",mean)
+    matplot(pbias[,-1],type='l',las=1,col=trans_black,ylim=c(-0.2,2))
+    abline(h=0,col="red")
+    mtext(side=3, paste("Daily movement rate = ",g2,sep=""),line=-1,cex=0.65)
+    }
+mtext(side=1, "Year",outer=TRUE,line=2)
+mtext(side=2, "Proportional bias",outer=TRUE,line=2)
+```
+
+Using the proportional bias values illustrated above we can calculate 
+the average bias for each replicate, thus characterizing bias over the 
+10 year monitoring period. Using the mean proportional bias values, we 
+can visualize the effect of increasing daily movement rates on 
+bend-level abundance estimates for a 10 year period in the boxplot below. 
+
+
+```{r,echo=FALSE}
+boxplot(pbias~gamma2,xx,las=1, 
+    ylab="Proportional bias", xlab="Movement rate")
+    abline(h=0,col="red")
+    text(10.3,0,"No bias", col="red",pos=1)
+```
+
+We can also look at how estimates of survival, movement, and capture 
+probability are affected by daily movement as well. Fortunately, we used 
+constant values among years so no need to average among years. The 
+boxplot below illustrates the effect of daily movement on estimates of 
+movement rate and survival among primary occasions and capture probability. 
+Even with a little bit of daily movement 
+the among primary occasion movement probability has a substantial 
+negative bias. 
+
+
+
+
+```{r,fig.align="center",echo=FALSE}
+boxplot(I((gammahat-gammaTrue)/gammaTrue)~gamma2,pp,boxwex=0.25,
+    at=c(1:11)-0.3,xaxt='n',range=8,xlab="Daily movement rate",
+    ylab="Proportional bias")
+boxplot(I((Shat-Strue)/Strue)~gamma2,pp,add=TRUE,boxwex=0.25,col="red",range=8)
+boxplot(I((phat-ptrue)/ptrue)~gamma2,pp,add=TRUE,boxwex=0.25,
+at=c(1:11)+0.3,xaxt='n',col="darkgrey",range=8)
+abline(h=0,col="red")
+legend("top", c("Movement","Survival","Capture probability"),
+    fill=c("white","red","darkgrey"),ncol=3,cex=0.8,bty='n')
+
+```
+The effect of daily movement on survival estimates was negligible as 
+illustrated above, suggesting estimates of the trend may be robust to 
+violating the assumption of closure among secondary occasions. Similar 
+to the M0 analysis capture probability estimates show a negative bias 
+with increasing daily movement rate. 
+
+
+### Linking back to fundamental objectives
+
+
+ The robust design has the potential to achieve a couple of fundamental 
+objectives, specifically those relating to abundance and trend 
+estimates. In addition estimated movement rates can inform one of the 
+sub objectives identified during the workshop, movement. In the process 
+of evaluating how a monitoring design can meet fundamental objectives, 
+we are pushing the models to violate the assumptions and see what the 
+consequences are. In this analysis violating closure can influence 
+abundance estimates, but survival estimates appear to be robust. So it 
+seems the robust design can do a decent job at estimating trend since 
+there is no recruitment population trend is simply survival, but it may 
+result in some overestimates of abundance. However given the input from 
+the Nebraska crew we can potentially look at whether daily movement rates 
+are large enough to result in any real issue. One caveat to consider is 
+that if recruitment is occurring $\lambda$ is survival plus recruitment 
+rate, so further work needs to evaluate the effect of daily movement 
+when recruitment > 0. 
+
+
+## Coming up
+
+Coming up we will explore how the outcomes of alternative monitoring 
+designs can be evaluated regarding the achieving the fundamental 
+objectives. 
+
+
+
+## References
+
+
+
+
+ 
+
+
+
+
+
+
+

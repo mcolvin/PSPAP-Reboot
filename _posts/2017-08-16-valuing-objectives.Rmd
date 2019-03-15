@@ -1,0 +1,224 @@
+---
+title: "Linking monitoring design estimates and objectives"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+bibliography: PSref.bib
+csl: ecology.csl  
+---
+<!---
+rmarkdown::render_site("2017-08-16-valuing-objectives.Rmd")# build website
+--->
+
+```{r opts, echo = FALSE}
+knitr::opts_chunk$set(fig.path = "./images/")
+```
+
+### Background
+
+The process for the evaluation of the PSPAP is intended to be 
+transparent and objective. In previous posts, we provide some technical 
+overviews of identifying some of the uncertainties (i.e., demographic 
+closure) that can influence the performance of alternative monitoring 
+designs. For example, in simulations of a capture-recapture estimator, 
+violating the closure assumption can bias population estimates.^[https://mcolvin.github.io/PSPAP-Reboot/2017-07-24-RD-and-closure.html] We 
+used bias to evaluate the consequence of violating an assumption, but we 
+can also use it to evaluate how well a monitoring design performs. The 
+purpose of this post is to discuss how we can link simulated monitoring 
+designs to agency objectives. Caveat: this post is a simplification of 
+the analyses being conducted and is intended to provide an overview of 
+the process and solicit input. 
+
+
+
+### Engage in the process
+ Want to engage in the process? Please let us know what you think in the 
+comments area below or email mike.colvin [at] msstate.edu. 
+Specifically, we are interested in, when we evaluate the performance of a 
+monitoring design, are there 
+
+
+* other metrics in addition to the ones we covered in this post, and  
+* ones that we present here that should not be considered?
+
+
+### Valuing fundamental objectives
+
+Let's look at how we can quantify one of the fundamental objectives
+for the PSPAP going forward, specifically the objective to:
+
+_Quantify population trend_.
+
+In simulating population monitoring designs, we are using 3
+metrics to quantify how a monitoring design meets the objective of _quantifying
+population trend_. Specifically, the 
+estimates from a monitoring program, as it relates to trend are evaluated 
+by calculating:  
+
+1. **Bias: How does an estimate compare to the true value.** Bias is 
+calculated as the true value minus the estimated value. We then divide 
+the bias by the true value to be able to combine estimates of varying 
+magnitude (i.e., survival, abundance), recall the previous post that 
+used proportional bias [link](2017-07-24-RD-and-closure.html). 
+2. **Precision: How precise are estimated values.** Precision is 
+specified as the coefficient of variation (CV) calculated as the 
+standard error of the estimate divided by the parameter estimate. There 
+is no real threshold for what is optimal for estimator precision 
+regarding decision making. Generally speaking, the more precise an 
+estimate, the better. There are other alternatives to CV. However, CV is 
+commonly used in fisheries and therefore likely to be familiar. 
+3. **Performance: How likely is an estimator successful.** In some 
+cases, an estimator like the Robust Design may not have enough 
+information for the estimator to provide an actual estimate. This 
+measure is quantified as the proportion of stochastic simulations where 
+the estimator did not converge, or convergence was problematic. Let's 
+step through an example to clarify exactly what we are talking about. 
+Suppose we have randomly generated 200 Pallid Sturgeon Populations. Then 
+we simulate 2 alternative monitoring programs, a catch effort program 
+and a capture recapture program. Then we estimate trend from the 
+estimates from the 2 designs. In the case of a catch effort based 
+monitoring program, the performance is 100% because there are no 
+instances where trend cannot be estimated from CPUE data, albeit zeros 
+can be an issue at low abundances or capture probability, but that does 
+not preclude us from calculating CPUE. However, if capture probability 
+is low, then there may be instances where a capture recapture estimator 
+just does not work, and estimates cannot be made because the capture 
+recapture histories are just too sparse! 
+
+
+### Valuing the fundamental objective
+
+The 3 metrics described above can be combined into a single 
+metric---commonly referred to as a utility---representing the objective 
+to _quantify population trend_ [@RN4402]. The utility is then used to 
+evaluate alternative monitoring programs. However, one problem we run 
+into with the metrics above is that they are on different scales. Bias 
+can be negative or positive with values approaching 0 being best, 
+precision is a positive number varying from 0 (best) to potentially 
+large numbers (worst), and conformance is constrained between 0 (worst) 
+and 100 (best). 
+
+
+To convert the 3 metrics to a common scale we can use methods like proportional scaling
+which normalized values to a specified minimum and maximum. For example, we can scale
+the bias to values varying from 0 to 1 as:
+
+$$U=\frac{|bias|-max(|bias|)}{max(|bias|)-min(|bias|)},$$
+
+where $|bias|$ is the absolute value of bias. We use absolute value here 
+because we are assuming negative and positive bias are equally bad 
+regarding satisfying the objective to _quantify population trend_. In 
+the plot below, values with lower proportional bias are given higher 
+values, and increasing values approach 0. 
+
+
+
+```{r,echo=FALSE,fig.align='center'}
+pbias<- c(-300:300)
+pbias_u<- (max(abs(pbias))-abs(pbias))/(max(abs(pbias))-min(abs(pbias)))
+u_bias<- approxfun(pbias,pbias_u)
+plot(pbias_u~pbias,type='l',xlab="Proportional bias",
+    ylab="Scaled proportional bias",las=1)
+```
+
+ 
+
+Now let's look at the precision metric. Suppose it varies from 10 to 300 
+(not very precise). The equation to calculate scaled precision is the 
+same as before. However, we do not need to take absolute values since 
+all values are positive. In the plot below, values with lower CV values 
+have higher values, and increasing values approach 0. 
+
+
+
+```{r,echo=FALSE,fig.align='center'}
+pbias<- c(10:300)
+pbias_u<- (max(pbias)-pbias)/(max(pbias)-min(pbias))
+u_cv<- approxfun(pbias,pbias_u)
+plot(pbias_u~pbias,type='l',xlab="Scaled coefficient of variation",
+    ylab="Scaled coefficient of variation",las=1)
+```
+
+
+Lastly, let's look at performance. Suppose performance values from simulating
+multiple replicates of each monitoring design vary from 35% to 100%. The difference
+between the performance metric with bias and precision is that higher values are more
+desirable and therefore we need to rearrange the proportional scaling equation to reflect
+this as, 
+
+$$U=\frac{Performance-min(Performance)}{max(Performance)-min(Performance)}.$$
+
+In the plot below, values with lower performance values have lower 
+values and increasing values approach 1. 
+
+
+```{r,echo=FALSE,fig.align='center'}
+pbias<- c(30:100)
+pbias_u<- (pbias-min(pbias))/(max(pbias)-min(pbias))
+u_perf<- approxfun(pbias,pbias_u)
+plot(pbias_u~pbias,type='l',xlab="Performance",
+    ylab="Scaled performance",las=1)
+```
+
+### Linking monitoring designs and objectives
+
+We can combine the utility values now such that monitoring designs 
+resulting in a trend estimate with low bias, good precision, and good 
+performance have higher values (i.e., approaching 1) and estimates of 
+the trend that is biased, imprecise with poor performance approach 0. 
+Values approach 1 because each of the scaled metrics is weighted. For 
+example, if each metric is valued equally, then the weights would be 
+1/3. Alternatively, if really precise estimates of trend were desired 
+the weight for scaled trend could be 0.5 and the remaining metrics 
+weighted at 0.25. Suppose this last weighting scheme is the case and the 
+output from 2 monitoring programs, a catch effort based and capture 
+recapture program, are the values below. 
+
+
+* Catch effort
+    * Proportional bias = -60, scaled = `r round(u_bias(-60),3)`
+    * Precision = 112, scaled = `r round(u_cv(112),3)`
+    * Performance = 100, scaled = `r round(u_perf(100),3)`
+* Capture recapture
+    * Proportional bias = 5, scaled = `r round(u_bias(5),3)`
+    * Precision = 115, scaled = `r round(u_cv(115),3)`
+    * Performance = 90, scaled = `r round(u_perf(90),3)`
+
+The scaled utility for the catch effort program is:
+
+
+$$`r round(0.25*u_bias(-60)+0.50*u_cv(112)+0.25*u_perf(100),3)`= 
+0.25\cdot `r round(u_bias(-60),3)`+
+0.50 \cdot `r round(u_cv(112),3)`+
+0.25\cdot`r round(u_perf(100),3)`,$$
+
+and the scaled utility for the capture recapture program is 
+
+$$`r round(0.25*u_bias(5)+0.50*u_cv(115)+0.25*u_perf(90),3)`= 
+0.25\cdot `r round(u_bias(5),3)`+
+0.50 \cdot `r round(u_cv(115),3)`+
+0.25\cdot`r round(u_perf(90),3)`.$$
+
+The combined utility values indicate that the capture recapture program has slightly more
+value to achieve the objective of _quantifing population trend_. 
+
+
+
+### Closing
+
+This was an example outlining how alternative monitoring programs can be 
+objectively evaluated and compared in the context of meeting agency 
+objectives. Many uncertainties remain in Pallid Sturgeon population 
+dynamics and capture that will need to be accounted for. Additionally, 
+the weighting of utility values can be a treacherous territory and how 
+metrics are weighted can drive outcomes. However, sensitivity analyses 
+can be conducted to evaluate the influence of weighting on outcomes. 
+This process of evaluating alternative monitoring programs is designed 
+purposely to be as objective as possible and therefore formally linking 
+the outcomes of alternative monitoring designs to agency objectives with 
+quantifiable metrics is necessary. 
+
+
+### References
+

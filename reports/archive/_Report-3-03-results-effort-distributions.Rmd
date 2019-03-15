@@ -1,0 +1,201 @@
+---
+title: "Effort Distribution"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
+---
+
+<!--
+source("_R/1_global.R")
+source("_R/2_functions.R")
+# effort_data<-   # NEEDED TO CREATE TABLE 2... COMMENT THIS & TABLE 2 OUT TO SAVE TIME
+source("_R/3_load-and-clean.R")
+source("_R/5_tables.R")
+rmarkdown::render("_Catch-Data.Rmd",output_format='word_document')# build page
+-->
+
+
+
+
+
+
+
+
+
+
+
+# Quantifying effort and distribution of PSPAP gears
+ 
+## Objectives
+In carrying out the goals of the PSPAP, it is important to understand 
+the use of gears over space and time. Catch effort by gear is linked 
+both to data collection costs (including man-hours for gear deployment), 
+as well as power to detect changes in population size. Both costs and 
+detection power are important for determining optimal data collection 
+strategies for accurate population estimation under budget constraints. 
+To study effort by gear type and frequency of gear use, we address the 
+following objectives: 
+
+
+1. Characterize temporal use of gear for PSPAP duration.
+2. Quantify effort and associated dispersion for each PSPAP standard 
+gear. 
+
+
+## Methods
+For all analyses, the data for the lower and upper basins were 
+considered separately. Using the data entries for which effort could be 
+calculated (see the following paragraph), the number of deployments for 
+each gear was calculated to measure frequency of use. Deployments of 
+each gear were considered over time (by year), as well as over space and 
+time (by bend within river segment and year). 
+
+
+The effort, or the time (in minutes) that a gear was set for in a single 
+deployment, was calculated using the start and stop times given in the 
+PSPAP database. Hence, all data without a start or stop time was 
+excluded from this analysis. The relevant data entries from the PSPAP 
+database were merged with the gear data. A stop date column was added to 
+take into account gears that are set over night, and all data entries 
+using times in AM/PM format were converted to 24 hour clock times. 
+Effort was calculated as the difference between the stop time and the 
+set time in minutes, and negative effort values were removed from the 
+analysis. All calculations were done using the statistical computing 
+environment R. Any differences in the set date and stop date were taken 
+into account by using the `strptime` function in R to link the start and 
+stop times to their corresponding set and stop dates, respectively. 
+
+
+To quantify effort and associated dispersion, probability density 
+distributions were fit to the effort data for common gear types by 
+basin. We considered a common gear to be a standard gear that was used 
+more than a total of 10 times between 2003 and 2016. A gamma 
+distribution was fit to the effort data for each common gear in the 
+lower basin using the function "fitdistr" from the MASS package in R. 
+This process was repeated for each common gear in the upper basin. The 
+mean effort, standard deviation of the effort data, minimum effort, 
+maximum effort, and median effort were also calculated for each common 
+gear by basin. The results from these computations (all done using R) 
+are given in Table 2. 
+
+
+## Results
+
+As expected, results varied by basin. In the lower basin trotlines TLC4 
+were deployed the least (24 times) and mini-fike nets were deployed the 
+most (7,411 times) out of all common gear types across the PSPAP 
+duration (Table 4). In the upper basin, trotlines TLO1 were the least 
+deployed common gear type (20 times) and trammel nets were the most 
+deployed common gear type (10,924 times) throughout the 14 years 
+reported. Gear deployment also varied by year and bend. 
+
+
+
+### Gear Use Over Time by Basin
+In the lower basin, mini-fyke nets (MF), trammel nets (TN), and 3 types 
+of gill nets (GN14, GN18, GN81) were each deployed during every year of 
+the PSPAP (see Table 1). Additionally, Table 1 reveals, that a fourth 
+gill net (GN41), as well as otter trawls (OT16) and 2 trotline 
+configurations (TLC1, TLC2) were used regularly in the lower basin over 
+the PSPAP duration. While none of the gears were deployed in the upper 
+basin every year of the PSPAP, mini-fyke nets (MF), otter trawls (OT16), 
+trammel nets (TN), 2 configurations of gill nets (GN14, GN41), and one 
+configuration of trotlines (TLC1) were used consistently. 
+
+
+Figure 1 nicely illustrates the data in Table 1. Each dot in Figure 1 is 
+associated with a gear and year, and represents that at least one 
+deployment was made by the indicated gear during the given year. All of 
+the deployment dots are connected by lines to illustrate the use of the 
+gear over time. Hence, the gears that were used consistently, are those 
+that have dots and lines that expand across the majority of the years. 
+In the upper basin, Figure 1 shows that the gears used most consistently 
+were deployed all but 1 or 2 years of the study with these years most 
+likely being near the beginning of the study. 
+
+
+All of the gears that have been used consistently over the duration of 
+the PSPAP have the designation of standard gear. There are, however, 
+several configurations of trotlines that were not used very consistently 
+over time but are designated as standard gears. In the lower basin there 
+are 8 configurations of standard trotlines that were used but not 
+consistently (TLC3, TLC4, TLC5, TLC6, TLC7, TLC8, TLS1, TLS2, TLS3) and 
+in the upper basin there are 2 configurations of standard trotlines that 
+were used inconsistently (TLC2,TL01). 
+
+
+###Gear Use Over Time by Bend
+Gear deployments over time are also important at a smaller spatial 
+scale: by bend within river segment. Table 2 gives the number of 
+deployments of each gear type within a particular bend during each year 
+of the PSPAP. This information is summarized in Table 3. 
+
+
+No bend was sampled by standard gears during every year of the PSPAP. 
+Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and 
+three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 
+3) were sampled the least at only one deployment of a standard gear in 
+the 14 years of the PSPAP. These lower basin bends were sampled by a 
+trotline (TLS2 & TLC2, respectively) while the upper basin bends were 
+sampled by a trammel net. Overall, the bend with the most total 
+deployments of standard gears over the course of the PSPAP was bend 17 
+within the upper basin river segment 4 at a total of 719 deployments. In 
+the lower basin, river segment 7 bend 4 had the highest standard gear 
+usage with 368 deployments. 
+
+
+
+As seen in Table 3, several standard gears were deployed only once in a 
+given bend over the entire duration of the PSPAP. On the opposite side 
+of the spectrum, in 2005 there were 205 trammel nets deployed within 
+upper basin segment 4 bend 14---the most deployments of a particular 
+standard gear in a river bend in any year. Across years, the most 
+deployments of a single gear type by bend was 503 trammel net 
+deployments, which occurred in upper basin bend 17 within river segment 
+4. In the lower basin, the bends with the most deployments of a single 
+gear type within and across years were both found in segment 7. Across 
+years, bend 4 had the most gear deployments (127 trotlines, 
+configuration TLC1), while within years bend 17 had the most (32 
+mini-fyke nets in 2010). 
+
+
+
+
+###Effort Analysis
+Effort data (pooled across years and bends) was calculated for each 
+common gear by basin (Table 4). In both basins, otter trawls had by far 
+the shortest mean effort with an average of 3 minutes per deployment in 
+the lower basin and an average of 4 minutes per deployment in the upper 
+basin. To compare, 999 minutes (or 16 hours and 39 minutes) per 
+deployment by a trotline in the upper basin is the shortest mean effort 
+of a common gear when otter trawls are excluded. In both basins, trammel 
+nets had the longest mean effort. Trammel nets were used an average of 
+1444 minutes (a little over 24 hours) per deployment in the lower basin 
+and an average of 1447 minutes per deployment in the upper basin. 
+
+
+In general, gamma distributions provided a good fit to the effort data. 
+The two scenarios that were not fit as well as others, were those where 
+the effort data seemed to have multiple modes (LB: TLS1; UB: OT16, TLC1) 
+and those where one effort level occurred often and several other effort 
+levels occurred rarely, resulting in a probability density function with 
+a large spike (LB: TN; UB:GN81, TLC2). 
+
+
+No bend was sampled by standard gears during every year of the PSPAP.  Two lower basin bends (segment 13 bend 45 and segment 28 bend 5) and three upper basin bends (segment 15 bend 21 and segment 21 bends 2 and 3) were sampled the least at only one deployment of a standard gear in the 14 years of the PSPAP.  These lower basin bends were sampled by a trotline (TLS2 & TLC2, respectively) while the upper basin bends were sampled by a trammel net. Overall, the bend with the most total deployments of standard gears over the course of the PSPAP was bend 17 within the upper basin river segment 4 at a total of 718 deployments.  In the lower  basin, river segment 7 bend 4 had the highest standard gear usage with 368 deployments. 
+
+As seen in Table 3, several standard gears were deployed only once in a given bend over the entire duration of the PSPAP.  On the opposite side of the spectrum, in 2005 there were 204 trammel nets deployed within upper basin segment 4 bend 14---the most deployments of a particular standard gear in a river bend in any year.  Across years, the most deployments of a single gear type by bend was 502 trammel net deployments, which occurred in upper basin bend 17 within river segment 4.  In the lower basin, the most deployments of a single gear type within a year was 32, which occurred in two different bends during different years: bend 17 in segment 7 (32 mini-fyke nets in 2010) and bend 1 in segment 9 (32 TLS1 trotlines in 2007). Across years, segment 7 bend 4 had the most gear deployments (127 trotlines, configuration TLC1).
+
+
+
+

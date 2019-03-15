@@ -1,0 +1,46 @@
+---
+title: "August 31st Webinar Follow-Up:  Movement"
+output: 
+  html_document:
+    includes:
+      in_header: header_banner.html 
+bibliography: PSref.bib
+csl: ecology.csl  
+---
+  
+<!---
+  rmarkdown::render_site("2017-09-01-Movement.Rmd")# build website
+--->
+  
+
+
+### Engage in the process
+
+Thank you to all the webinar participants for their feedback during the webinar.  
+If you were unable to attend, a recording of the webinar was posted [previously](2017-08-31-webinar-recording.html).
+We welcome further comments.
+
+When wrapping up the webinar yesterday, we were left with a few topics and questions
+still to address.  To continue the discussion, we will be posting a series of questions
+here on the blog.  Today's topic is on Pallid Sturgeon movement.      
+Movement was identified as a sub objective that should potentially be addressed 
+by the PSPAP.  We need to clarify how movement should be quantified in simulations. 
+
+* What temporal scales are of interest for Pallid Sturgeon movement? 
+    * Would you be happy with a site fidelity type estimate where the 
+    probability of moving from one bend to another in the next year is 
+    sufficient?
+    * Are long 
+* What spatial scales are of interest for Pallid Sturgeon movement 
+(among bends, among segments within RPMAs or management units)?
+* What types of Pallid Sturgeon movement are of interest 
+(yearly base location, spawning, etc.)?
+* What metric or value the represents movement do you think should be 
+estimated?
+
+
+Want to engage in the process? Please let us know what you think in the 
+comments or email thoughts about Pallid Sturgeon movement to mike.colvin [at] msstate.edu.
+  
+  
+  

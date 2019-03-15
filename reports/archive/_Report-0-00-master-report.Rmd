@@ -1,0 +1,121 @@
+---
+title: "Overview of Pallid Sturgeon Assessment Framework Evaluation"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "Missouri River Pallid Sturgeon Technical Team"
+output:  
+  html_document:
+    theme: readable
+    highlight: tango
+  pdf_document:
+    highlight: zenburn 
+  word_document:
+    highlight: monochrome
+    fig_width: 6.5  
+    fig_height: 6.5 
+    reference_docx: tmp-editing.docx
+---
+
+<!--
+https://rpubs.com/ajlyons/autonumfigs
+rmarkdown::render("_Report-0-00-master-report.Rmd",output_format="word_document",output_file = paste(format(Sys.time(), '%Y%m%d%H%M'),         "reboot-master-report.docx",sep="-"))# build page
+-->
+
+
+
+
+```{r, warning=FALSE, include=FALSE}
+source("_R/1_global.R")
+source("_R/2_functions.R")
+#effort_data<-TRUE   # NEEDED TO CREATE "effort" FROM DATABASE FROM SCRATCH
+source("_R/3_load-and-clean.R")
+source("_R/4_figures.R")
+source("_R/5_tables.R")
+dat<- readRDS("_output/effort-data.Rds")
+common<-UBcommon<-c("GN14","GN41","MF","OT16","TLC1","TLC2","TN")
+LBcommon<-c("GN18","GN81","TLC4","TLS1","TLS2")
+```
+
+<!--Executive summary-->
+
+
+# Introduction
+
+```{r echo=FALSE, results='asis'}
+# knit the first three lines of first.Rmd
+cat(knit_child(text = readLines('_Report-1-01-introduction.Rmd')[1:170], quiet=TRUE), sep = '\n')
+```
+
+```{r child="_Report-1-01-introduction.Rmd", echo=FALSE,eval=FALSE}
+```
+
+# Methods
+<!--Methodological overview: a couple of paragraphs overviewing 
+the process-->
+```{r child="_Report-2-01-methods-overview.Rmd", echo=FALSE,eval=TRUE}
+```
+
+
+<!--Methods: reference population-->
+```{r child="_Report-2-04-methods-Reference-Population.Rmd", echo=FALSE,eval=TRUE}
+```
+
+
+```{r child="_Report-2-05-methods-simulating-catch.Rmd", echo=FALSE,eval=TRUE}
+```
+
+##  Estimation of population metrics given alternative monitoring designs
+
+```{r child="_Report-2-06-estimating-population-values.Rmd", echo=FALSE,eval=TRUE}
+```
+
+<!--Methods: valuing design outcomes-utilities-->
+```{r child="_Report-2-07-methods-valuing-objectives.Rmd", echo=FALSE,eval=TRUE}
+```
+
+```{r child="_Report-2-08-methods-evaluating-and-routing-ancillary-objectives.Rmd", echo=FALSE,eval=TRUE}
+```
+
+# Results
+```{r,echo=FALSE}
+knitr::include_graphics("images/F4estComp.png")
+knitr::include_graphics("images/F_TL_estComp.png")
+knitr::include_graphics("images/F_TN_estComp.png")
+```
+
+# Discussion
+
+<!--
+# Discussion
+  * Virtual versus power analysis of a post-hoc glm to get trend
+
+How did wildhaber and adam do it did they do virtual or just trend.
+
+They did essentially the same thing, evaluating what the change in cpue
+was rather than actually doing trend. In other words what is the power to 
+detect a 10% decrease in the mean where mean cpue was estimated for each 
+year but not as a function of year.
+-->
+
+
+
+##### page break
+
+# Figures
+
+```{r child="_Report-5-01-figures.Rmd", echo=FALSE,eval=TRUE}
+```
+
+# Tables
+
+```{r child="_Report-5-02-tables.Rmd", echo=FALSE,eval=TRUE}
+```
+
+# Appendix
+
+```{r child="_Report-5-03-appendix.Rmd", echo=FALSE,eval=FALSE}
+```
+
+# References
+
+
+
