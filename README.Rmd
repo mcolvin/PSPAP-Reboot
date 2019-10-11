@@ -1,0 +1,70 @@
+---
+title: "PSPAP Phase 1 Pilot Analysis"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+author: "M.E. Colvin"
+---
+
+```{r,echo=FALSE,eval=FALSE}
+rmarkdown::render("README.Rmd",
+    output_format=c("md_document","html_document"))
+```
+
+# Tasks overview
+
+```{r,echo=FALSE}
+library(plan)
+## PROJECT SUMMARY
+dat<-xlsx::read.xlsx("tasks.xlsx",sheetName="summary")[1,]
+dat$key<-100
+dat0<-data.frame(key=100, 
+    description=dat$Project, 
+    start= paste(dat$start,"00:00:01",sep=" "),
+    end= paste(dat$end,"23:59:59",sep=" "), 
+    done=dat$done, 
+    neededBy="")
+
+## TASK SUMMARY
+dat<-xlsx::read.xlsx("tasks.xlsx",sheetName="tasks")
+dat$startTime<-format(dat$startTime, "%H:%M:%S")
+dat$endTime<-format(dat$endTime, "%H:%M:%S")
+dat$start<- paste(dat$startDate,dat$startTime,sep=" ")
+dat$stop<- paste(dat$endDate,dat$endTime,sep=" ")
+dat<-subset(dat, !(is.na(duration)))
+dat<-dat[order(dat$start),]
+dat<-data.frame(key=dat$key, 
+    description=dat$task, 
+    start= as.character(dat$start),
+    end= as.character(dat$stop), 
+    done=dat$done, 
+    neededBy=rep("",nrow(dat)))
+
+dat<-rbind(dat0,dat)
+    
+dat<- as.gantt(key=dat$key, 
+    description=as.character(dat$description), 
+    start= as.character(dat$start),
+    end= as.character(dat$end), 
+    done=dat$done, 
+    neededBy=rep("",nrow(dat)))
+par(lend = "square",mar = c(5, 4, 5, 1),oma = c(1, 1, 2, 1),cex.axis=0.8)
+plot(dat,
+    col.done = gray(0.3), col.notdone = gray(0.9),
+    ylabel = list(font = ifelse(dat[["key"]]==100, 2, 1)),  # task labels on y-axis
+    event.time = Sys.Date(),  # vertical line for current day
+    event.label = "Report date")  # label for current day line
+```
+
+## Tasks
+
+```{r,echo=FALSE}
+tasks<- data.frame(
+    description=dat[["description"]], 
+    start= dat[["start"]],
+    end= dat[["end"]], 
+    done=dat[["done"]])
+knitr::kable(tasks,
+    col.names=c("Task","Start","End","Done (%)"),
+    align="lccc")
+
+
+ 
